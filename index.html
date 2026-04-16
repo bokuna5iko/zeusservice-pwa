@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="apple-touch-icon" href="icons/ios/180.png">
+<meta name="apple-mobile-web-app-status-bar-style" content="#1e3c72">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarWash PWA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+    <header class="header">
+        <div class="logo">ZEUS<span>AUTO</span></div>
+        <div class="user-info">Привет, Иван! 👋</div>
+    </header>
+
+    <main class="content">
+        
+        <section class="card loyalty-card">
+            <div class="card-header">
+                <h2>Ваши визиты</h2>
+                <span class="badge">5 / 8</span>
+            </div>
+            
+            <div class="points-grid">
+                <div class="point active">✓</div>
+                <div class="point active">✓</div>
+                <div class="point active">✓</div>
+                <div class="point active">✓</div>
+                <div class="point active">✓</div>
+                
+                <div class="point next-visit">6</div>
+                
+                <div class="point">7</div>
+                
+                <div class="point gift">🎁</div>
+            </div>
+            
+            <p class="hint">Еще 3 визита, и мойка за наш счет!</p>
+        </section>
+
+        <section class="card qr-section">
+            <p>Покажите код администратору</p>
+            <div class="qr-placeholder">
+                <div class="qr-mock"></div>
+            </div>
+            <div class="user-id">ID: 448-129</div>
+        </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active">🏠<span>Главная</span></div>
+        <div class="nav-item">📋<span>История</span></div>
+        <div class="nav-item">👤<span>Профиль</span></div>
+    </nav>
+</div>
+
+<div id="qr-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3>Ваш персональный код</h3>
+        <div class="qr-full"></div>
+        <p>Покажите этот код мастеру для начисления баллов</p>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

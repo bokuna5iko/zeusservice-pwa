@@ -1,0 +1,176 @@
+/* Обнуление и база */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+body { background-color: #f0f2f5; display: flex; justify-content: center; }
+
+.app-container {
+    width: 100%;
+    max-width: 400px; /* Ограничение для десктопа, чтобы было как телефон */
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    position: relative;
+}
+
+/* Шапка */
+.header {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    padding: 30px 20px;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+.logo { font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; }
+.logo span { color: #00d2ff; }
+.user-info { margin-top: 10px; font-size: 0.9rem; opacity: 0.9; }
+
+/* Карточки */
+.content { padding: 20px; margin-top: -20px; }
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Сетка баллов */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.badge { background: #e3f2fd; color: #1e3c72; padding: 4px 12px; border-radius: 20px; font-weight: bold; }
+
+.points-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.point {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    border: 2px dashed #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ccc;
+    font-weight: bold;
+}
+
+/* Состояния баллов */
+.point.active {
+    background: #4CAF50;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.point.next-visit {
+    border: 2px solid #1e3c72;
+    color: #1e3c72;
+    animation: pulse 2s infinite;
+}
+
+.point.gift {
+    border: 2px solid #ff9800;
+    color: #ff9800;
+    font-size: 1.5rem;
+}
+
+/* Анимация для привлечения внимания */
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(30, 60, 114, 0.4); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(30, 60, 114, 0); }
+    100% { transform: scale(1); }
+}
+
+/* QR секция */
+.qr-section { text-align: center; }
+.qr-placeholder {
+    margin: 20px auto;
+    width: 150px;
+    height: 150px;
+    background: #eee;
+    padding: 10px;
+}
+.qr-mock {
+    width: 100%;
+    height: 100%;
+    background: repeating-conic-gradient(#333 0% 25%, #fff 0% 50%) 50% / 20px 20px;
+}
+
+/* Навигация */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 400px;
+    height: 70px;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #eee;
+}
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.7rem;
+    color: #888;
+}
+.nav-item.active { color: #1e3c72; font-weight: bold; }
+
+/* Стили для модального окна */
+.modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8); /* Полупрозрачный черный фон */
+    backdrop-filter: blur(5px); /* Размытие заднего плана */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 30px;
+    width: 85%;
+    max-width: 350px;
+    text-align: center;
+    position: relative;
+    animation: zoomIn 0.3s ease-out;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.qr-full {
+    width: 220px;
+    height: 220px;
+    background: repeating-conic-gradient(#333 0% 25%, #fff 0% 50%) 50% / 30px 30px;
+    margin: 20px auto;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px;
+    color: #888;
+    cursor: pointer;
+}
+
+/* Добавим курсор на маленький QR, чтобы было понятно, что на него можно нажать */
+.qr-placeholder { cursor: pointer; }
