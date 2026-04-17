@@ -174,3 +174,26 @@ body { background-color: #f0f2f5; display: flex; justify-content: center; }
 
 /* Добавим курсор на маленький QR, чтобы было понятно, что на него можно нажать */
 .qr-placeholder { cursor: pointer; }
+
+/* Логика переключения страниц */
+.page {
+    display: none; /* Скрыто */
+    animation: slideIn 0.3s ease-out; /* Плавное появление */
+}
+
+.page.active {
+    display: block; /* Показываем активную */
+}
+
+/* Красивая анимация выезда страницы */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Стиль для активной кнопки в меню */
+.nav-item.active {
+    color: #1e3c72;
+    border-top: 2px solid #1e3c72;
+    padding-top: 8px; /* Чтобы компенсировать рамку */
+}

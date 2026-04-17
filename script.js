@@ -108,3 +108,25 @@ document.querySelector('.user-info').onclick = function() {
 
 // Запускаем отрисовку при старте
 updateUI();
+
+// Переключение вкладок меню
+const navItems = document.querySelectorAll('.nav-item');
+const pages = document.querySelectorAll('.page');
+
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        const targetPage = item.getAttribute('data-page');
+
+        // Меняем активную кнопку
+        navItems.forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+
+        // Меняем видимую страницу
+        pages.forEach(page => {
+            page.classList.remove('active');
+            if (page.id === `${targetPage}-page`) {
+                page.classList.add('active');
+            }
+        });
+    });
+});

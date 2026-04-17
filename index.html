@@ -2,13 +2,13 @@
 <html lang="ru">
 <head>
     <link rel="apple-touch-icon" href="icons/ios/180.png">
-<meta name="apple-mobile-web-app-status-bar-style" content="#1e3c72">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#1e3c72">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarWash PWA</title>
+    <title>ZEUS AUTO | Лояльность</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,43 +21,79 @@
 
     <main class="content">
         
-        <section class="card loyalty-card">
-            <div class="card-header">
-                <h2>Ваши визиты</h2>
-                <span class="badge">5 / 8</span>
+        <section id="home-page" class="page active">
+            <div class="card loyalty-card">
+                <div class="card-header">
+                    <h2>Ваши визиты</h2>
+                    <span class="badge">0 / 8</span>
+                </div>
+                
+                <div class="points-grid">
+                    <div class="point">1</div>
+                    <div class="point">2</div>
+                    <div class="point">3</div>
+                    <div class="point">4</div>
+                    <div class="point">5</div>
+                    <div class="point">6</div>
+                    <div class="point">7</div>
+                    <div class="point gift">🎁</div>
+                </div>
+                
+                <p class="hint">Загрузка данных...</p>
             </div>
-            
-            <div class="points-grid">
-                <div class="point active">✓</div>
-                <div class="point active">✓</div>
-                <div class="point active">✓</div>
-                <div class="point active">✓</div>
-                <div class="point active">✓</div>
-                
-                <div class="point next-visit">6</div>
-                
-                <div class="point">7</div>
-                
-                <div class="point gift">🎁</div>
+
+            <div class="card qr-section">
+                <p>Покажите код администратору</p>
+                <div class="qr-placeholder">
+                    <div class="qr-mock"></div>
+                </div>
+                <div class="user-id">ID: 448-129</div>
             </div>
-            
-            <p class="hint">Еще 3 визита, и мойка за наш счет!</p>
         </section>
 
-        <section class="card qr-section">
-            <p>Покажите код администратору</p>
-            <div class="qr-placeholder">
-                <div class="qr-mock"></div>
+        <section id="history-page" class="page">
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">История визитов</h2>
+                <div class="history-list">
+                    <div class="history-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee;">
+                        <div>
+                            <div style="font-weight: bold;">Комплексная мойка</div>
+                            <div style="font-size: 0.8em; color: #888;">17 апреля, 14:20</div>
+                        </div>
+                        <div style="color: #27ae60; font-weight: bold;">+1 балл</div>
+                    </div>
+                    <div class="history-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee;">
+                        <div>
+                            <div style="font-weight: bold;">Мойка кузова</div>
+                            <div style="font-size: 0.8em; color: #888;">10 апреля, 10:05</div>
+                        </div>
+                        <div style="color: #27ae60; font-weight: bold;">+1 балл</div>
+                    </div>
+                </div>
             </div>
-            <div class="user-id">ID: 448-129</div>
+        </section>
+
+        <section id="profile-page" class="page">
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">Мой профиль</h2>
+                <div class="profile-details" style="line-height: 2;">
+                    <p><strong>Телефон:</strong> +7 (999) 000-12-34</p>
+                    <p><strong>Авто:</strong> BMW X5 M (А777АА)</p>
+                    <p><strong>Статус:</strong> Постоянный клиент</p>
+                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                    <button class="btn" style="background: #ff4757; width: 100%; border: none; padding: 12px; border-radius: 8px; color: white; font-weight: bold;">
+                        Выйти из аккаунта
+                    </button>
+                </div>
+            </div>
         </section>
 
     </main>
 
     <nav class="bottom-nav">
-        <div class="nav-item active">🏠<span>Главная</span></div>
-        <div class="nav-item">📋<span>История</span></div>
-        <div class="nav-item">👤<span>Профиль</span></div>
+        <div class="nav-item active" data-page="home">🏠<span>Главная</span></div>
+        <div class="nav-item" data-page="history">📋<span>История</span></div>
+        <div class="nav-item" data-page="profile">👤<span>Профиль</span></div>
     </nav>
 </div>
 
