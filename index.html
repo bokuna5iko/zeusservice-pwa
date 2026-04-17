@@ -88,6 +88,60 @@
             </div>
         </section>
 
+        <section id="admin-page" class="page">
+            <div class="card admin-card">
+                <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>Панель управления</h2>
+                    <span class="badge" style="background: #f39c12;">Демо</span>
+                </div>
+        
+                <div class="metrics-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.8em; color: #888;">Всего клиентов</div>
+                        <div style="font-size: 1.8em; font-weight: bold; color: #1e3c72;">1,248</div>
+                        <div style="font-size: 0.8em; color: #27ae60;">+5% за нед.</div>
+                    </div>
+                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.8em; color: #888;">Возвращаемость</div>
+                        <div style="font-size: 1.8em; font-weight: bold; color: #1e3c72;">68%</div>
+                        <div style="font-size: 0.8em; color: #27ae60;">Высокая</div>
+                    </div>
+                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.8em; color: #888;">Выдано бесплатных</div>
+                        <div style="font-size: 1.8em; font-weight: bold; color: #f39c12;">42</div>
+                        <div style="font-size: 0.8em; color: #888;">за месяц</div>
+                    </div>
+                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.8em; color: #888;">Средний чек</div>
+                        <div style="font-size: 1.8em; font-weight: bold; color: #1e3c72;">1,850 ₽</div>
+                        <div style="font-size: 0.8em; color: #888;">(прогноз)</div>
+                    </div>
+                </div>
+        
+                <div class="chart-placeholder" style="margin-bottom: 25px;">
+                    <h4 style="margin-bottom: 10px;">Динамика визитов (нед.)</h4>
+                    <div style="width: 100%; height: 150px; background: #eef2f3; border-radius: 10px; position: relative; display: flex; align-items: flex-end; padding: 10px; gap: 5px;">
+                        <div style="flex: 1; height: 40%; background: #4facfe; border-radius: 4px;"></div>
+                        <div style="flex: 1; height: 60%; background: #4facfe; border-radius: 4px;"></div>
+                        <div style="flex: 1; height: 90%; background: #1e3c72; border-radius: 4px;"></div> <div style="flex: 1; height: 75%; background: #4facfe; border-radius: 4px;"></div>
+                        <div style="flex: 1; height: 50%; background: #4facfe; border-radius: 4px;"></div>
+                        <div style="flex: 1; height: 30%; background: #4facfe; border-radius: 4px;"></div>
+                        <div style="flex: 1; height: 65%; background: #4facfe; border-radius: 4px;"></div>
+                        <span style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 0.7em; color: #888;">Пн Вт Ср Чт Пт Сб Вс</span>
+                    </div>
+                </div>
+        
+                <div class="admin-actions" style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 30px;">
+                    <button class="btn" style="background: #27ae60; border: none; padding: 12px; border-radius: 8px; color: white; font-weight: bold; width: 100%;">
+                        📷 Сканировать QR клиента
+                    </button>
+                    <button class="btn" style="background: #eef2f3; color: #1e3c72; border: 1px solid #ccc; padding: 10px; border-radius: 8px; width: 100%;">
+                        👥 Список всех клиентов
+                    </button>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <nav class="bottom-nav">
@@ -102,9 +156,16 @@
         <span class="close-btn">&times;</span>
         <h3>Ваш персональный код</h3>
         <div class="qr-full"></div>
-        <p>Покажите этот код администратору для начисления баллов</p>
+        <p>Покажите этот код мастеру для начисления баллов</p>
     </div>
 </div>
+
+<nav class="bottom-nav">
+    <div class="nav-item active" data-page="home">🏠<span>Главная</span></div>
+    <div class="nav-item" data-page="history">📋<span>История</span></div>
+    <div class="nav-item" data-page="profile">👤<span>Профиль</span></div>
+    <div class="nav-item" data-page="admin" style="color: #f39c12;">⚙️<span>Админ</span></div>
+</nav>
 
 <script src="script.js"></script>
 
