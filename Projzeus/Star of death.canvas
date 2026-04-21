@@ -35,7 +35,7 @@
 		{"id":"7a662cda292742a7","type":"text","text":"[[Database]]","x":4282,"y":1179,"width":118,"height":60},
 		{"id":"22e2d342ae803b32","type":"text","text":"[[Hosting & Domain]]","x":4264,"y":1361,"width":196,"height":50},
 		{"id":"b4d1fbb8d0220534","type":"text","text":"[[Telegram Bot Logic]]","x":4009,"y":1580,"width":214,"height":60},
-		{"id":"e8ffd424745299ef","x":2627,"y":553,"width":250,"height":60,"color":"#7c6e81","type":"text","text":"[[RoadMap.canvas]]"}
+		{"id":"e8ffd424745299ef","type":"text","text":"[[RoadMap.canvas]]","x":2590,"y":600,"width":250,"height":60,"color":"#7c6e81"}
 	],
 	"edges":[
 		{"id":"4fbdd3ad5a3ed5bf","fromNode":"d9995331ecc8d03d","fromSide":"right","toNode":"082ec95c554c2859","toSide":"left"},

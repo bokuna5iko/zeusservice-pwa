@@ -22,17 +22,17 @@
             }
           },
           {
-            "id": "5b7cb4fc09b925ce",
+            "id": "2ed9dbfee28243c4",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Projzeus/Docs/Инструкции.md",
+                "file": "Тест.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Инструкции"
+              "title": "Тест"
             }
           },
           {
@@ -43,9 +43,9 @@
               "state": {
                 "file": "Projzeus/Star of death.canvas",
                 "viewState": {
-                  "x": 1948,
-                  "y": 310,
-                  "zoom": -2.14355256842274
+                  "x": 2601.0339770771166,
+                  "y": 621.3593595244862,
+                  "zoom": -1.8102192350894069
                 }
               },
               "icon": "lucide-layout-dashboard",
@@ -53,7 +53,7 @@
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -207,23 +207,23 @@
       "templates:Вставить шаблон": false,
       "command-palette:Открыть палитру команд": false,
       "bases:Создать новую базу": false,
-      "table-editor-obsidian:Advanced Tables Toolbar": false,
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "d1826fa0e8cea5ab",
+  "active": "2ed9dbfee28243c4",
   "lastOpenFiles": [
+    "Projzeus/How/PWA.md",
+    "Тест.md",
+    "Projzeus/Star of death.canvas",
     "Projzeus/RoadMap/v0.1.md",
     "Projzeus/RoadMap/RoadMap.canvas",
     "Projzeus/RoadMap/Без названия.base",
     "Projzeus/Без названия.md",
     "Projzeus/RoadMap/Roadmap base.md",
-    "Projzeus/Star of death.canvas",
     "Projzeus/Свалка идей (Backlog).md",
     "Projzeus/RoadMap",
     "Projzeus/Docs/Инструкции.md",
     "Projzeus/Docs/Backend.md",
-    "Projzeus/How/PWA.md",
     "Projzeus/Docs.Backend.md",
     "Projzeus/Docs",
     "Projzeus/How/Backend/Telegram Bot Logic.md",
