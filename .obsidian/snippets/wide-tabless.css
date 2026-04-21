@@ -1,0 +1,20 @@
+/* Снимаем ограничение по ширине в режиме редактирования (Live Preview) */
+.markdown-source-view.mod-cm6 .cm-scroller {
+  overflow-x: visible !important;
+  max-width: none !important;
+}
+
+/* Растягиваем саму область контента */
+.markdown-source-view.mod-cm6 .cm-content {
+  width: 100% !important;
+  max-width: none !important;
+  overflow-x: visible !important;
+}
+
+/* Для надёжности: убираем рамки и контейнеры, которые мешают */
+.workspace-leaf-content,
+.view-content,
+.cm-s-obsidian {
+  overflow-x: visible !important;
+  max-width: none !important;
+}

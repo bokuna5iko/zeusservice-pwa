@@ -1,0 +1,270 @@
+{
+  "main": {
+    "id": "01301b56a0c4a3d0",
+    "type": "split",
+    "children": [
+      {
+        "id": "402babacbdb69afa",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e7cf206f4c979ca7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Projzeus/How/PWA.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "PWA"
+            }
+          },
+          {
+            "id": "5b7cb4fc09b925ce",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Projzeus/Docs/Инструкции.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Инструкции"
+            }
+          },
+          {
+            "id": "d1826fa0e8cea5ab",
+            "type": "leaf",
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "Projzeus/Star of death.canvas",
+                "viewState": {
+                  "x": 1948,
+                  "y": 310,
+                  "zoom": -2.14355256842274
+                }
+              },
+              "icon": "lucide-layout-dashboard",
+              "title": "Star of death"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "2d6164c153fc17f4",
+    "type": "split",
+    "children": [
+      {
+        "id": "8862956339b9ddc1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2c58408373b07149",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "byCreatedTime",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Файловый менеджер"
+            }
+          },
+          {
+            "id": "c43980557ffddc57",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Поиск"
+            }
+          },
+          {
+            "id": "50bd4474d9b45f86",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Закладки"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 248.5
+  },
+  "right": {
+    "id": "1a3aa3a7c0cf7e23",
+    "type": "split",
+    "children": [
+      {
+        "id": "da0359f579081e47",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c373ef4cf7dec9ad",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Без названия.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Обратные ссылки для Без названия"
+            }
+          },
+          {
+            "id": "46d154fc024f3a4b",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Без названия.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Исходящие ссылки из Без названия"
+            }
+          },
+          {
+            "id": "032beaf97d86661c",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Теги"
+            }
+          },
+          {
+            "id": "861120d3a1227ead",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Projzeus/Star of death.canvas",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Структура Star of death"
+            }
+          },
+          {
+            "id": "3992e861fc73d1a6",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "bases:Создать новую базу": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "obsidian-git:Open Git source control": false
+    }
+  },
+  "active": "d1826fa0e8cea5ab",
+  "lastOpenFiles": [
+    "Projzeus/RoadMap/v0.1.md",
+    "Projzeus/RoadMap/RoadMap.canvas",
+    "Projzeus/RoadMap/Без названия.base",
+    "Projzeus/Без названия.md",
+    "Projzeus/RoadMap/Roadmap base.md",
+    "Projzeus/Star of death.canvas",
+    "Projzeus/Свалка идей (Backlog).md",
+    "Projzeus/RoadMap",
+    "Projzeus/Docs/Инструкции.md",
+    "Projzeus/Docs/Backend.md",
+    "Projzeus/How/PWA.md",
+    "Projzeus/Docs.Backend.md",
+    "Projzeus/Docs",
+    "Projzeus/How/Backend/Telegram Bot Logic.md",
+    "Projzeus/How/Backend/API.md",
+    "Projzeus/How/Backend/Database.md",
+    "Projzeus/How/Back.md",
+    "Projzeus/How/Backend/Hosting & Domain.md",
+    "Projzeus/How/Backend",
+    "Projzeus/How/Без названия.md",
+    "Projzeus/How/Тык.md",
+    "Projzeus/Без названия.base",
+    "Projzeus/How/Без названия.base",
+    "Projzeus/How",
+    "Projzeus/how.canvas",
+    "statisfactory/Без названия 1 1.canvas",
+    "Canvas",
+    "projtur/__Roadmap.canvas",
+    "Projzeus",
+    "QA/Жизненный цикл тестирования.md",
+    "Без названия.canvas",
+    "projtur/Без названия",
+    "QA/Test Case.md",
+    "SDLC-stages 1.png",
+    "QA/dsd2da223.png",
+    "QA/Аналоги Jira и Trello (трекеры).md",
+    "QA/Testing technique (Техники тестирования).md",
+    "QA/Bug reported (test case).md",
+    "QA/Виды тестирования.md",
+    "Без названия 1.canvas",
+    "Pasted image 20251011062228.png",
+    "dsd2das2.png",
+    "dsd2das2 1.png",
+    "dsd2da223 1.png",
+    "QA/Разработка тестов на основе требований.md",
+    "Pasted image 20251011060509.png",
+    "SDLC-stages.png",
+    "QA/Pasted image 20251011060437.png",
+    "18 декабря.md",
+    "Системный админ/Знание семейства OC семейства Windows на уровне Администратора.md",
+    "Системный админ/Без названия.canvas",
+    "Системный админ/1.blog-dns-1.png",
+    "Без названия/Без названия.canvas"
+  ]
+}
