@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Тест.md",
+                "file": "🛠 Шпаргалка Git для VS Code.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Тест"
+              "title": "🛠 Шпаргалка Git для VS Code"
             }
           },
           {
@@ -212,8 +212,9 @@
   },
   "active": "2ed9dbfee28243c4",
   "lastOpenFiles": [
-    "Projzeus/How/PWA.md",
     "Тест.md",
+    "🛠 Шпаргалка Git для VS Code.md",
+    "Projzeus/How/PWA.md",
     "Projzeus/Star of death.canvas",
     "Projzeus/RoadMap/v0.1.md",
     "Projzeus/RoadMap/RoadMap.canvas",
