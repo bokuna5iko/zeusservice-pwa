@@ -4,70 +4,24 @@
     "type": "split",
     "children": [
       {
-        "id": "402babacbdb69afa",
+        "id": "f40e5917a8e85157",
         "type": "tabs",
         "children": [
-          {
-            "id": "e7cf206f4c979ca7",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Projzeus/How/PWA.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "PWA"
-            }
-          },
           {
             "id": "2ed9dbfee28243c4",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Projzeus/Readme/Backend/Telegram Bot Logic.md",
+                "file": "Projzeus/Project-Structure.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Telegram Bot Logic"
-            }
-          },
-          {
-            "id": "d1826fa0e8cea5ab",
-            "type": "leaf",
-            "state": {
-              "type": "canvas",
-              "state": {
-                "file": "Projzeus/Star of death.canvas",
-                "viewState": {
-                  "x": 2624.0285714285715,
-                  "y": 693.2453781512605,
-                  "zoom": -2.14355256842274
-                }
-              },
-              "icon": "lucide-layout-dashboard",
-              "title": "Star of death"
-            }
-          },
-          {
-            "id": "92aaba4bcd3e0bbb",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Docs/Backend.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Backend"
+              "title": "Project-Structure"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -86,7 +40,7 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "byCreatedTime",
+                "sortOrder": "alphabetical",
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
@@ -124,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 248.5
+    "width": 293.5
   },
   "right": {
     "id": "1a3aa3a7c0cf7e23",
@@ -224,52 +178,53 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "d1826fa0e8cea5ab",
+  "active": "2ed9dbfee28243c4",
   "lastOpenFiles": [
-    "Projzeus/RoadMap/Versions/v0.2/Map.canvas",
-    "Projzeus/RoadMap/Versions/v0.2/Readme.md",
-    "Projzeus/RoadMap/Versions/v0.1/Readme.md",
-    "Projzeus/RoadMap/Versions/v0.1/Map.canvas",
-    "Projzeus/RoadMap/Versions/v0.2",
-    "Projzeus/RoadMap/Readme.md",
-    "Projzeus/RoadMap/Versions/v0.1.md",
-    "Projzeus/RoadMap/Versions/v0.1",
-    "Projzeus/RoadMap/Versions",
-    "Projzeus/Star of death.canvas",
-    "Docs/Backend.md",
-    "Projzeus/Readme/Backend/Telegram Bot Logic.md",
-    "Projzeus/RoadMap/Без названия.base",
-    "Projzeus/Readme/Backend/API.md",
-    "Projzeus/Readme/Backend/Database.md",
-    "Projzeus/Readme/Backend/Hosting & Domain.md",
-    "Projzeus/Docs/Инструкции.md",
-    "Docs",
-    "Projzeus/Readme/PWA.md",
-    "Projzeus/Свалка идей (Backlog).md",
-    "🛠 Шпаргалка Git для VS Code.md",
     "Тест.md",
-    "Без названия.md",
-    "Projzeus/Без названия.md",
-    "Projzeus/RoadMap/Roadmap base.md",
-    "Projzeus/RoadMap",
-    "Projzeus/Docs/Backend.md",
-    "Projzeus/Docs.Backend.md",
-    "Projzeus/Docs",
-    "Projzeus/How/Back.md",
-    "Projzeus/Readme/Backend",
-    "Projzeus/How/Без названия.md",
-    "Projzeus/How/Тык.md",
+    "Projzeus/Project-Structure.md",
+    "Projzeus/Dashboard.md",
+    "Projzeus/🧠Readme/Backend/Telegram bot.md",
+    "Projzeus/🌌Star of death.canvas",
+    "Projzeus/🧠Readme/📱Progressive Web App/Server/Telegram Bot Logic.md",
+    "Projzeus/🧠Readme/📱Progressive Web App/Server/Hosting & Domain.md",
+    "Projzeus/🧠Readme/📱Progressive Web App/Server/Database.md",
+    "Projzeus/🧠Readme/📱Progressive Web App/Server/API.md",
+    "Projzeus/🧠Readme/Backend/API.md",
+    "Projzeus/🧠Readme/Infrastructure",
+    "Projzeus/🧠Readme/Backend/Database.md",
+    "Projzeus/🧠Readme/📱Progressive Web App/PWA.md",
+    "Projzeus/🧠Readme/Backend",
+    "Projzeus/🧠Readme/PWA",
+    "Projzeus/🧠Readme",
+    "Projzeus/Readme.md",
+    "Projzeus/📥Backlog/Readme.md",
+    "Projzeus/Progressive Web App/Без названия.md",
+    "Projzeus/📚Docs/How use.md",
+    "Docs/Setup/Git guide for OBS&VSCODE.md",
+    "Docs/Setup",
+    "Docs",
+    "Projzeus/📚Docs/Setup/🛠 Guide git for OBS&VSCODE.md",
+    "Projzeus/📚Docs/Setup/Dev-Environment.md",
+    "Projzeus/📚Docs/Environment.md",
+    "Projzeus/📚Docs/Tutorials/PWA-Icons.md",
+    "Docs/Инструкции/Как зайти в БД.md",
+    "Docs/How use.md",
+    "Readme/Readme.md",
+    "Readme",
     "Projzeus/Без названия.base",
-    "Projzeus/How/Без названия.base",
+    "Projzeus/📥Backlog/1-Refined.md",
+    "Projzeus/📥Backlog/0-Inbox.md",
+    "Projzeus/📚Docs/Management/Project-Pitch.md",
+    "Projzeus/📥Backlog",
+    "Projzeus/📚Docs/Tutorials",
+    "Projzeus/🗺RoadMap/Versions/v0.1/Map.canvas",
+    "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
     "Projzeus/how.canvas",
     "statisfactory/Без названия 1 1.canvas",
     "projtur/__Roadmap.canvas",
-    "QA/Жизненный цикл тестирования.md",
     "Без названия.canvas",
-    "QA/Test Case.md",
     "SDLC-stages 1.png",
     "QA/dsd2da223.png",
-    "QA/Аналоги Jira и Trello (трекеры).md",
     "Без названия 1.canvas",
     "Pasted image 20251011062228.png",
     "dsd2das2.png",
