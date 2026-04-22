@@ -25,14 +25,17 @@
             "id": "2ed9dbfee28243c4",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "canvas",
               "state": {
-                "file": "🛠 Шпаргалка Git для VS Code.md",
-                "mode": "source",
-                "source": false
+                "file": "Projzeus/RoadMap/RoadMap.canvas",
+                "viewState": {
+                  "x": 1083.530347448624,
+                  "y": -74.24082101594513,
+                  "zoom": -2.333333333333333
+                }
               },
-              "icon": "lucide-file",
-              "title": "🛠 Шпаргалка Git для VS Code"
+              "icon": "lucide-layout-dashboard",
+              "title": "RoadMap"
             }
           },
           {
@@ -212,32 +215,33 @@
   },
   "active": "2ed9dbfee28243c4",
   "lastOpenFiles": [
-    "Тест.md",
+    "Projzeus/Readme/Backend/Telegram Bot Logic.md",
+    "Projzeus/Readme/PWA.md",
+    "Projzeus/Readme/Backend/API.md",
+    "Projzeus/Readme/Backend/Database.md",
+    "Projzeus/Readme/Backend/Hosting & Domain.md",
+    "Projzeus/Docs/Инструкции.md",
+    "Projzeus/Свалка идей (Backlog).md",
     "🛠 Шпаргалка Git для VS Code.md",
-    "Projzeus/How/PWA.md",
+    "Тест.md",
+    "Без названия.md",
     "Projzeus/Star of death.canvas",
-    "Projzeus/RoadMap/v0.1.md",
     "Projzeus/RoadMap/RoadMap.canvas",
     "Projzeus/RoadMap/Без названия.base",
+    "Projzeus/RoadMap/v0.1.md",
     "Projzeus/Без названия.md",
     "Projzeus/RoadMap/Roadmap base.md",
-    "Projzeus/Свалка идей (Backlog).md",
     "Projzeus/RoadMap",
-    "Projzeus/Docs/Инструкции.md",
     "Projzeus/Docs/Backend.md",
     "Projzeus/Docs.Backend.md",
     "Projzeus/Docs",
-    "Projzeus/How/Backend/Telegram Bot Logic.md",
-    "Projzeus/How/Backend/API.md",
-    "Projzeus/How/Backend/Database.md",
     "Projzeus/How/Back.md",
-    "Projzeus/How/Backend/Hosting & Domain.md",
-    "Projzeus/How/Backend",
+    "Projzeus/Readme/Backend",
     "Projzeus/How/Без названия.md",
     "Projzeus/How/Тык.md",
     "Projzeus/Без названия.base",
     "Projzeus/How/Без названия.base",
-    "Projzeus/How",
+    "Projzeus/Readme",
     "Projzeus/how.canvas",
     "statisfactory/Без названия 1 1.canvas",
     "Canvas",
@@ -262,8 +266,6 @@
     "Pasted image 20251011060509.png",
     "SDLC-stages.png",
     "QA/Pasted image 20251011060437.png",
-    "18 декабря.md",
-    "Системный админ/Знание семейства OC семейства Windows на уровне Администратора.md",
     "Системный админ/Без названия.canvas",
     "Системный админ/1.blog-dns-1.png",
     "Без названия/Без названия.canvas"
