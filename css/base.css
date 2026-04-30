@@ -1,0 +1,27 @@
+/*Здесь мы оставляем "фундамент" и общие настройки текста.
+
+/* Обнуление и база */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+body { 
+    background-color: #f0f2f5; 
+    display: flex; 
+    justify-content: center; 
+    color: #333;
+}
+
+/* Основной контейнер-телефон */
+.app-container {
+    width: 100%;
+    max-width: 400px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}

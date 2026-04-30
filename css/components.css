@@ -1,0 +1,83 @@
+/* Здесь лежат элементы, которые мы используем на разных страницах: карточки, кнопки, баджи и модалки.
+
+/* Карточки */
+.content { padding: 20px; margin-top: -20px; }
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.badge { 
+    background: #e3f2fd; 
+    color: #1e3c72; 
+    padding: 4px 12px; 
+    border-radius: 20px; 
+    font-weight: bold; 
+}
+
+/* Кнопки */
+.btn-auth {
+    width: 100%;
+    padding: 15px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Модальное окно */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 9999; /* Выше всех, даже выше шапки */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.85); /* Затемнение */
+    backdrop-filter: blur(8px);
+    align-items: center; /* Центрируем по вертикали */
+    justify-content: center; /* Центрируем по горизонтали */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 30px;
+    width: 85%; /* Чтобы были отступы по бокам на телефоне */
+    max-width: 340px; /* Чтобы на компьютере не было гигантским */
+    text-align: center;
+    position: relative; /* Нужно для позиционирования крестика */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 32px;
+    color: #333;
+    cursor: pointer;
+    line-height: 1;
+    z-index: 10; /* Чтобы точно была сверху */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 30px;
+    width: 85%;
+    text-align: center;
+    animation: zoomIn 0.3s ease-out;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}

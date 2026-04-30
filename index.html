@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="apple-touch-icon" href="icons/ios/180.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#1e3c72">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZEUS AUTO | Лояльность</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+<div class="app-container">
+    <header class="header">
+        <div class="logo">ZEUS<span>AUTO</span></div>
+        <div class="user-info">Привет, Иван! 👋</div>
+    </header>
+
+    <main class="content">
+
+    <!-- Поменяли -->
+<section id="auth-page" class="page active"> 
+    <div class="auth-card">
+        <div class="auth-logo">ZEUS<span>AUTO</span></div>
+        <h2 id="auth-title">С возвращением!</h2>
+        <p id="auth-subtitle">Введите данные для входа</p>
+        
+        <form id="auth-form">
+            <div class="input-group">
+                <input type="tel" id="user-phone-input" placeholder="+7 (___) ___-__-__" required>
+            </div>
+            <div class="input-group" id="name-group" style="display: none;">
+                <input type="text" id="user-name-input" placeholder="Ваше имя">
+            </div>
+            <button type="button" id="btn-login" class="btn-auth">Войти</button>
+            <button type="button" id="btn-show-reg" style="background:none; border:none; color:#1e3c72; margin-top:10px;">
+                У меня еще нет аккаунта
+            </button>
+        </form>
+    </div>
+</section>    
+        
+        <section id="home-page" class="page">
+            <div class="card loyalty-card">
+                <div class="card-header">
+                    <h2>Ваши визиты</h2>
+                    <span class="badge">0 / 8</span>
+                </div>
+                
+                <div class="points-grid">
+                    <div class="point">1</div>
+                    <div class="point">2</div>
+                    <div class="point">3</div>
+                    <div class="point">4</div>
+                    <div class="point">5</div>
+                    <div class="point">6</div>
+                    <div class="point">7</div>
+                    <div class="point gift">🎁</div>
+                </div>
+                
+                <p class="hint">Загрузка данных...</p>
+            </div>
+
+            <div class="card qr-section">
+                <p>Покажите код администратору</p>
+                <div class="qr-placeholder">
+                    <div class="qr-mock"></div>
+                </div>
+                <div class="user-id">ID: 448-129</div>
+            </div>
+        </section>
+
+        <section id="history-page" class="page">
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">История визитов</h2>
+                <div class="history-list">
+                    <div class="history-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee;">
+                        <div>
+                            <div style="font-weight: bold;">Комплексная мойка</div>
+                            <div style="font-size: 0.8em; color: #888;">17 апреля, 14:20</div>
+                        </div>
+                        <div style="color: #27ae60; font-weight: bold;">+1 балл</div>
+                    </div>
+                    <div class="history-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee;">
+                        <div>
+                            <div style="font-weight: bold;">Мойка кузова</div>
+                            <div style="font-size: 0.8em; color: #888;">10 апреля, 10:05</div>
+                        </div>
+                        <div style="color: #27ae60; font-weight: bold;">+1 балл</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="profile-page" class="page">
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">Мой профиль</h2>
+                <div class="profile-details" style="line-height: 2;">
+                    <p><strong>Телефон:</strong> +7 (999) 000-12-34</p>
+                    <p><strong>Авто:</strong> BMW X5 M (А777АА)</p>
+                    <p><strong>Статус:</strong> Постоянный клиент</p>
+                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                    <button class="btn" style="background: #ff4757; width: 100%; border: none; padding: 12px; border-radius: 8px; color: white; font-weight: bold;">
+                        Выйти из аккаунта
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin-page" class="page">
+            <div class="card admin-card">
+                <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>Панель управления</h2>
+                    <span class="badge" style="background: #f39c12;">Демо</span>
+                </div>
+        
+                <div class="metrics-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.8em; color: #888;">Всего клиентов</div>
+                        <div style="font-size: 1.8em; font-weight: bold; color: #1e3c72;">1,248</div>
+                        <div style="font-size: 0.8em; color: #27ae60;">+5% за нед.</div>
+                    </div>
+                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.8em; color: #888;">Возвращаемость</div>
+                        <div style="font-size: 1.8em; font-weight: bold; color: #1e3c72;">68%</div>
+                        <div style="font-size: 0.8em; color: #27ae60;">Высокая</div>
+                    </div>
+                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.8em; color: #888;">Выдано бесплатных</div>
+                        <div style="font-size: 1.8em; font-weight: bold; color: #f39c12;">42</div>
+                        <div style="font-size: 0.8em; color: #888;">за месяц</div>
+                    </div>
+                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.8em; color: #888;">Средний чек</div>
+                        <div style="font-size: 1.8em; font-weight: bold; color: #1e3c72;">1,850 ₽</div>
+                        <div style="font-size: 0.8em; color: #888;">(прогноз)</div>
+                    </div>
+                </div>
+        
+                <div class="chart-placeholder" style="margin-bottom: 25px;">
+                    <h4 style="margin-bottom: 10px;">Динамика визитов (нед.)</h4>
+                    <div style="width: 100%; height: 150px; background: #eef2f3; border-radius: 10px; position: relative; display: flex; align-items: flex-end; padding: 10px; gap: 5px;">
+                        <div style="flex: 1; height: 40%; background: #4facfe; border-radius: 4px;"></div>
+                        <div style="flex: 1; height: 60%; background: #4facfe; border-radius: 4px;"></div>
+                        <div style="flex: 1; height: 90%; background: #1e3c72; border-radius: 4px;"></div> <div style="flex: 1; height: 75%; background: #4facfe; border-radius: 4px;"></div>
+                        <div style="flex: 1; height: 50%; background: #4facfe; border-radius: 4px;"></div>
+                        <div style="flex: 1; height: 30%; background: #4facfe; border-radius: 4px;"></div>
+                        <div style="flex: 1; height: 65%; background: #4facfe; border-radius: 4px;"></div>
+                        <span style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 0.7em; color: #888;">Пн Вт Ср Чт Пт Сб Вс</span>
+                    </div>
+                </div>
+        
+                <div class="admin-actions" style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 30px;">
+                    <button class="btn" style="background: #27ae60; border: none; padding: 12px; border-radius: 8px; color: white; font-weight: bold; width: 100%;">
+                        📷 Сканировать QR клиента
+                    </button>
+                    <button class="btn" style="background: #eef2f3; color: #1e3c72; border: 1px solid #ccc; padding: 10px; border-radius: 8px; width: 100%;">
+                        👥 Список всех клиентов
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-page="home">🏠<span>Главная</span></div>
+        <div class="nav-item" data-page="history">📋<span>История</span></div>
+        <div class="nav-item" data-page="profile">👤<span>Профиль</span></div>
+        <!-- Скрываем админку по умолчанию через display: none -->
+    <div id="nav-admin" class="nav-item" data-page="admin" style="display: none; color: #f39c12;">
+        ⚙️<span>Админ</span>
+    </nav>
+</div>
+
+<div id="qr-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3>Ваш персональный код</h3>
+        <div class="qr-full"></div>
+        <p>Покажите этот код мастеру для начисления баллов</p>
+    </div>
+</div>
+
+<!-- Сначала Firebase -->
+<script type="module" src="js/main.js"></script>
+
+<!-- Затем твои модули в строгом порядке -->
+<script type="module" src="js/firebase-config.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/ui-controller.js"></script>
+<script type="module" src="js/main.js"></script>
+
+</body>
+</html>

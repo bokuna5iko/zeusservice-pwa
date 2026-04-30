@@ -1,0 +1,179 @@
+/*Тут стили, которые уникальны только для своих разделов (сетка баллов, страница входа, графики админки)
+
+/* Базовое состояние страниц */
+.page {
+    display: none; /* Скрываем все страницы по умолчанию */
+    animation: slideIn 0.3s ease-out; /* Плавное появление */
+}
+
+/* Состояние активной страницы */
+.page.active {
+    display: block; /* Показываем только ту, у которой есть класс active */
+}
+
+/* Красивая анимация выезда страницы */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Страница Авторизации */
+/* --- СТРАНИЦА АВТОРИЗАЦИИ (AUTH) --- */
+#auth-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #1e3c72; /* Фирменный синий */
+    z-index: 9999; /* Поверх всего */
+    display: none; /* Скрыто по умолчанию */
+    align-items: center;
+    justify-content: center;
+}
+
+#auth-page.active {
+    display: flex !important; /* Force display when active */
+}
+
+.auth-card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 25px;
+    width: 90%;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    animation: zoomIn 0.3s ease-out;
+}
+
+.auth-logo {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #1e3c72;
+}
+
+.auth-card h2 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.auth-card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+/* Поля ввода внутри карточки */
+.input-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #1e3c72;
+}
+
+/* Сетка баллов (Главная) */
+.points-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.point {
+    width: 60px; height: 60px;
+    border-radius: 15px;
+    border: 2px dashed #ddd;
+    display: flex;
+    justify-content: center; align-items: center;
+    color: #ccc; font-weight: bold;
+}
+
+/* --- СЕКЦИЯ QR (ГЛАВНАЯ) --- */
+.qr-section { 
+    text-align: center; 
+}
+
+.qr-placeholder {
+    margin: 20px auto;
+    width: 150px;
+    height: 150px;
+    background: #eee;
+    padding: 10px;
+    border-radius: 15px; /* Немного скруглим углы для стиля */
+    cursor: pointer; /* Чтобы пользователь понимал: сюда можно нажать */
+    transition: transform 0.2s;
+}
+
+.qr-placeholder:active {
+    transform: scale(0.95); /* Эффект нажатия */
+}
+
+.qr-mock {
+    width: 100%;
+    height: 100%;
+    background: repeating-conic-gradient(#333 0% 25%, #fff 0% 50%) 50% / 20px 20px;
+}
+
+.user-id { 
+    font-size: 0.8rem; 
+    color: #888; 
+    margin-top: 5px; 
+}
+
+/* Стили для QR внутри модального окна */
+.qr-full {
+    width: 220px;
+    height: 220px;
+    background: repeating-conic-gradient(#333 0% 25%, #fff 0% 50%) 50% / 30px 30px;
+    margin: 20px auto;
+    border-radius: 10px;
+}
+
+.point.active { background: #4CAF50; border: none; color: white; }
+.point.next-visit { border: 2px solid #1e3c72; color: #1e3c72; animation: pulse 2s infinite; }
+
+/* Админка (Метрики и Графики) */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.metric-item {
+    background: #eef2f3;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.chart-container {
+    width: 100%; height: 150px;
+    background: #eef2f3;
+    border-radius: 10px;
+    display: flex;
+    align-items: flex-end;
+    padding: 10px; gap: 5px;
+}
+
+.bar { flex: 1; background: #4facfe; border-radius: 4px; }
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    70% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
