@@ -1,0 +1,15 @@
+{
+	"nodes":[
+		{"id":"18679e525a657af0","type":"text","text":"## v0.1\n1. Front: Экран авторизации(простой) + Главный экран со счётчиком\n2. Logic: Сохранение входа в LocalStorage(что бы не вылетало)\n3. Server: Выдаёт API, которое просто записывает номер и возвращает 8 моек","x":-540,"y":-360,"width":360,"height":251},
+		{"id":"f63471aa9e902508","type":"text","text":"Реализовать Auth \n(связь Фронт-Сервер)","x":-420,"y":40,"width":250,"height":60},
+		{"id":"39bdd1bf716d174e","type":"text","text":"v0.3","x":320,"y":-169,"width":84,"height":60},
+		{"id":"f86a1a6834b14f6d","type":"text","text":"v0.2","x":-80,"y":-360,"width":360,"height":251},
+		{"id":"26bf03de6fb783fc","x":-485,"y":-480,"width":250,"height":60,"type":"text","text":"[[Readme-v0.1|Чекоинты задач]]"}
+	],
+	"edges":[
+		{"id":"69a5849ffc525a07","fromNode":"18679e525a657af0","fromSide":"right","toNode":"f86a1a6834b14f6d","toSide":"left"},
+		{"id":"85c309298813d54f","fromNode":"f86a1a6834b14f6d","fromSide":"right","toNode":"39bdd1bf716d174e","toSide":"left"},
+		{"id":"d653ee5239ca7738","fromNode":"f63471aa9e902508","fromSide":"top","toNode":"18679e525a657af0","toSide":"bottom"},
+		{"id":"c94ce70348c88583","fromNode":"26bf03de6fb783fc","fromSide":"bottom","toNode":"18679e525a657af0","toSide":"top"}
+	]
+}

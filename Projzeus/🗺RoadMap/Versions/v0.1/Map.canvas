@@ -1,6 +1,6 @@
 {
 	"nodes":[
-		{"id":"4fed671a25554df7","type":"group","x":-880,"y":-600,"width":2000,"height":2560,"color":"1","label":"v0.1"},
+		{"id":"4fed671a25554df7","type":"group","x":-880,"y":-600,"width":2000,"height":3280,"color":"1","label":"v0.1"},
 		{"id":"277c75191e383601","type":"group","x":514,"y":-1664,"width":1500,"height":680,"label":"Пример 1"},
 		{"id":"9b87eb7725118241","type":"group","x":-600,"y":-40,"width":1407,"height":520,"label":"Infcore"},
 		{"id":"c51138fa65fb803e","type":"group","x":-600,"y":560,"width":1400,"height":520,"label":"LayUI"},
@@ -10,25 +10,26 @@
 		{"id":"baffdd908f6e66f0","type":"text","text":"Горизонтальная структуризация ","x":-400,"y":-1456,"width":250,"height":60},
 		{"id":"94be14f73b599c1c","type":"text","text":"Какую структуру лучше использовать?","x":-1160,"y":-1800,"width":250,"height":60},
 		{"id":"942a763af29c0a78","type":"text","text":"Пример который мне нравится, структура дерева","x":-1124,"y":-1256,"width":250,"height":60},
-		{"id":"b78ed45d4d61b39b","type":"text","text":"**UI-Заглушка:** Создать один главный экран с заголовком проекта и иконкой загрузки","x":400,"y":604,"width":276,"height":96},
-		{"id":"6cbd64c996b4197d","type":"text","text":"**Install Prompt:** Проверка, появляется ли у браузера предложение «Установить на главный экран».","x":299,"y":1179,"width":327,"height":111},
-		{"id":"8edc312363a61caf","type":"text","text":"Связь (Logic & Data)","x":-20,"y":1260,"width":250,"height":60},
-		{"id":"22c5391c61a65245","type":"text","text":"Каркас (Layout & UI)","x":-20,"y":641,"width":250,"height":60},
-		{"id":"a9ba0ff69a230f05","type":"text","text":"**Main.css:** Базовые стили (сброс отступов, шрифты, центрирование контента).","x":-410,"y":899,"width":303,"height":99},
-		{"id":"524cb925644708a8","type":"text","text":"**SW Registration:** Добавить в `app.js` код, который проверяет поддержку Service Worker и регистрирует его.","x":-382,"y":1190,"width":307,"height":130},
 		{"id":"59695684bb0f7268","type":"text","text":"**Git:** Инициализировать репозиторий и пригласить друга.","x":-379,"y":40,"width":290,"height":87},
-		{"id":"c0e1ac1334a3259d","type":"text","text":"**Index.html:** Базовая структура с мета-тегами для мобильных устройств (`viewport`).","x":-379,"y":613,"width":240,"height":115},
+		{"id":"6cbd64c996b4197d","type":"text","text":"**Install Prompt:** Проверка, появляется ли у браузера предложение «Установить на главный экран».","x":299,"y":1179,"width":327,"height":111},
+		{"id":"524cb925644708a8","type":"text","text":"**SW Registration:** Добавить в `app.js` код, который проверяет поддержку Service Worker и регистрирует его.","x":-382,"y":1190,"width":307,"height":130},
+		{"id":"c5ccce8bcc77c9df","type":"text","text":"**Console Check:** Вывод в консоль сообщения «API Server: Online/Offline» (простая проверка доступности сервера друга, даже если там пока пусто).","x":-378,"y":1414,"width":299,"height":130},
+		{"id":"8edc312363a61caf","type":"text","text":"Связь (Logic & Data)","x":-40,"y":1260,"width":250,"height":60},
 		{"id":"d05a50ac75751542","type":"text","text":"**Manifest:** Создать `manifest.json` (имя, короткое имя, иконки 192/512, цвет темы).","x":-374,"y":269,"width":285,"height":117},
+		{"id":"ba6a2efd3223e4e0","type":"text","text":"Авторизация","x":-366,"y":-236,"width":250,"height":60},
+		{"id":"a9ba0ff69a230f05","type":"text","text":"**Main.css:** Базовые стили (сброс отступов, шрифты, центрирование контента).","x":-410,"y":899,"width":303,"height":99},
+		{"id":"c0e1ac1334a3259d","type":"text","text":"**Index.html:** Базовая структура с мета-тегами для мобильных устройств (`viewport`).","x":-379,"y":613,"width":240,"height":115},
 		{"id":"8e991812bf380f4f","type":"text","text":"v0.1 — MVP (Minimum Viable Product)","x":952,"y":-1644,"width":250,"height":60},
 		{"id":"e2a5e87d1201d77e","type":"text","text":"Связь (Logic & Data)","x":1114,"y":-1516,"width":250,"height":60},
+		{"id":"22c5391c61a65245","type":"text","text":"Каркас (Layout & UI)","x":-20,"y":641,"width":250,"height":60},
+		{"id":"b78ed45d4d61b39b","type":"text","text":"**UI-Заглушка:** Создать один главный экран с заголовком проекта и иконкой загрузки","x":400,"y":604,"width":276,"height":96},
 		{"id":"ab6d070ed20c468f","type":"text","text":"Результат (Definition of Done)","x":1414,"y":-1516,"width":250,"height":60},
 		{"id":"d1b2128f9c770416","type":"text","text":"soon..","x":1714,"y":-1516,"width":250,"height":60},
-		{"id":"c5ccce8bcc77c9df","type":"text","text":"**Console Check:** Вывод в консоль сообщения «API Server: Online/Offline» (простая проверка доступности сервера друга, даже если там пока пусто).","x":-378,"y":1414,"width":299,"height":130},
 		{"id":"5e72db594a8830f0","type":"text","text":"[[Readme-v0.1]] — MVP (Minimum Viable Product)","x":-21,"y":-360,"width":250,"height":50},
-		{"id":"1b23f692ef2efde8","type":"text","text":"Основа (Infrastructure & Core)","x":-20,"y":180,"width":250,"height":60},
 		{"id":"86bc41d02f4c4742","type":"text","text":"**HTTPS/Localhost:** Настроить окружение (PWA работает только через защищенное соединение или localhost).","x":296,"y":40,"width":271,"height":140},
 		{"id":"38017c2bd4d46a22","type":"text","text":"**Service Worker (Shell):** Написать минимальный скрипт `sw.js`, который просто регистрируется в браузере.","x":296,"y":269,"width":310,"height":147},
-		{"id":"1d7f73ef1e0b2a12","type":"text","text":"soon..","x":-40,"y":1680,"width":250,"height":60}
+		{"id":"1b23f692ef2efde8","type":"text","text":"Основа (Infrastructure & Core)","x":-20,"y":180,"width":250,"height":60},
+		{"id":"1d7f73ef1e0b2a12","type":"text","text":"Auth","x":45,"y":1680,"width":80,"height":60}
 	],
 	"edges":[
 		{"id":"0341b57e4a4646a0","fromNode":"5e72db594a8830f0","fromSide":"bottom","toNode":"1b23f692ef2efde8","toSide":"top"},
@@ -48,6 +49,7 @@
 		{"id":"c33ab13ffd687afd","fromNode":"baffdd908f6e66f0","fromSide":"bottom","toNode":"277c75191e383601","toSide":"top"},
 		{"id":"3d8fba92e74afd6a","fromNode":"94be14f73b599c1c","fromSide":"right","toNode":"baffdd908f6e66f0","toSide":"top"},
 		{"id":"bbd08b5b8a2dc7c6","fromNode":"94be14f73b599c1c","fromSide":"bottom","toNode":"942a763af29c0a78","toSide":"top"},
-		{"id":"e888fc907af33fc6","fromNode":"942a763af29c0a78","fromSide":"bottom","toNode":"4fed671a25554df7","toSide":"top"}
+		{"id":"e888fc907af33fc6","fromNode":"942a763af29c0a78","fromSide":"bottom","toNode":"4fed671a25554df7","toSide":"top"},
+		{"id":"802227e0c5969f17","fromNode":"5e72db594a8830f0","fromSide":"left","toNode":"ba6a2efd3223e4e0","toSide":"right"}
 	]
 }

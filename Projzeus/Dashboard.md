@@ -1,22 +1,23 @@
-# 🏛 ЦЕНТР УПРАВЛЕНИЯ (DASHBOARD)
+# 🏛 PROJECT ZEUS: HUB
 
-## ⚡️ ГОРЯЧИЕ ССЫЛКИ
-- **Текущий этап:** [[Projzeus/🗺RoadMap/Versions/v0.1/Map.canvas|🗺 Карта v0.1]]
-- **Задачи:** [Ссылка на YouGile] 🚀
-- **Код:** [Ссылка на GitHub] 📂
-
----
-
-## 🌌 АРХИТЕКТУРА
-- **Глобальный план:** [[🌌Star of death.canvas|Звезда Смерти]]
-- **Тех. описание:** [[Projzeus/Readme|Описание мозга]]
-- **Новые идеи:** [[0-Inbox|Входящие]]
+## 🎯 СТАТУС: v0.1 (Base Logic)
+- **Прогресс:** [▓▓▓░░░░░░░] 30%
+- **Карта:** [[RoadMap/Versions/v0.1/Map.canvas|🗺 Открыть v0.1]]
+- **Задачи:** [YouGile ↗️] | [GitHub ↗️]
 
 ---
 
-## 🛠 ПОДДЕРЖКА
-- **Гит:** [[🛠 Guide git for OBS&VSCODE|Гайды и команды для git]]
-- **Инструкции:** [[How use|Как использовать?]]
+## 🧠 BRAINSTORM (Мозг)
+- **Функционал:** [[Buslog|⚙️ Logic]] | [[Front|🎨 UI]]
+- **Тех. долг:** [[PWALog|🐞 Bugs]]
 
-## **О структуре проекта**
-- [[Project-Structure|📖 Как всё устроено?]]
+---
+
+## 📚 СКАМЬЯ ЗАПАСНЫХ
+- **Гайды:** [[Git guide for OBS&VSCODE|Git]] | [[Dev-Environment|Setup]]
+- **Идеи:** [[0-Inbox|📥 Inbox]]
+
+---
+
+## 💼 БОССУ
+- **Презентация:** [[Project-Pitch|Pitch]] | [[Boss-Demo-v0.1|Demo]]
