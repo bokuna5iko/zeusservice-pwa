@@ -45,3 +45,5 @@ function updateUI() {
         }
     }
 }
+
+window.updateUI = updateUI;
