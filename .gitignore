@@ -4,3 +4,4 @@ backend/.env
 
 # Frontend (если появятся зависимости в будущем)
 frontend/node_modules/
+frontend/.env
