@@ -86,18 +86,21 @@ npx serve . -l 5000
 
 ### 5. Тестирование
 
-Введи номер телефона (любой, например +79123456789).
+Введи номер телефона (любой, например +79123456789).<br>
 Если номер новый – появится поле "Ваше имя". Введи имя и нажми «Создать аккаунт».
-Если номер уже существует – авторизуешься сразу.
+Если номер уже существует – авторизуешься сразу.<br>
 После входа ты попадёшь на главную с карточкой визитов.
-Перейди на вкладку «Профиль» – увидишь свои данные и кнопку «Выйти».
-Чтобы начислить визиты от имени администратора:
+Перейди на вкладку «Профиль» – увидишь свои данные и кнопку «Выйти».<br>
+Чтобы начислить визиты от имени администратора:<br>
 
 В psql сделай своего пользователя админом:
+```sql
 UPDATE users SET role='admin' WHERE phone='79XXXXXXXXX';
+```
 В браузере на странице приложения открой консоль (F12) и скопируй accessToken:
-console.log(localStorage.getItem('accessToken'));
+console.log(localStorage.getItem('accessToken'));<br>
 В терминале выполни (замени TOKEN и номер телефона):
+
 ```bash
 curl -X POST http://localhost:3000/api/admin/visits/add \
   -H "Content-Type: application/json" \
@@ -131,10 +134,10 @@ curl -X POST http://localhost:3000/api/admin/visits/add \
 ### 🛠️ Используемые технологии
 
 Frontend: Чистый JavaScript, PWA (Service Worker, Manifest)
-Backend: Node.js, Express, jsonwebtoken, pg
+Backend: Node.js, Express, jsonwebtoken, pg<br>
 База данных: PostgreSQL
 ### 📌 Примечания
 
 Нормализация номеров: все номера хранятся в формате 79XXXXXXXXX. При вводе автоматически добавляется +7.
-Refresh-токены живут 90 дней, access-токены – 30 минут.
+Refresh-токены живут 90 дней, access-токены – 30 минут.<br>
 Для безопасности не коммитьте .env и node_modules.
