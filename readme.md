@@ -17,11 +17,12 @@ markdown
 git clone https://github.com/bokuna5iko/zeusservice-pwa.git
 cd zeusservice-pwa
 git checkout backend-integration
+```
 #### 2. Настройка базы данных
 
 Убедись, что PostgreSQL запущен. Затем войди в psql под суперпользователем (обычно твой системный пользователь macOS) и выполни:
 
-sql
+```sql
 CREATE USER zeus_user WITH PASSWORD 'твой_пароль';
 CREATE DATABASE zeus_auto_db OWNER zeus_user;
 GRANT ALL PRIVILEGES ON DATABASE zeus_auto_db TO zeus_user;
@@ -43,39 +44,44 @@ CREATE TABLE refresh_tokens (
     token TEXT NOT NULL,
     expires_at TIMESTAMP NOT NULL
 );
+```
 ### 3. Настройка бэкенда
 
 Перейди в папку backend:
 
-bash
+``` bash
 cd backend
+```
 Создай файл .env со следующим содержимым:
 
-text
+```text
 DATABASE_URL=postgresql://zeus_user:твой_пароль@localhost:5432/zeus_auto_db
 JWT_SECRET=очень_секретная_фраза_не_менее_32_символов
 REFRESH_SECRET=другая_секретная_фраза
 Установи зависимости и запусти сервер:
-
-bash
+```
+``` bash
 npm install
 npm run dev
 Сервер запустится на http://localhost:3000. API готов принимать запросы.
-
+```
 ### 4. Запуск фронтенда
 
 Открой новый терминал, перейди в папку frontend из корня проекта:
 
-bash
+```bash
 cd ../frontend
+```
 Установи простой HTTP-сервер (если ещё не установлен):
 
-bash
+```bash
 npm install -g serve
+```
 Запусти фронтенд:
 
-bash
+```bash
 npx serve . -l 5000
+``` 
 Откроется адрес http://localhost:5000. Перейди по нему в браузере.
 
 ### 5. Тестирование
@@ -92,13 +98,15 @@ UPDATE users SET role='admin' WHERE phone='79XXXXXXXXX';
 В браузере на странице приложения открой консоль (F12) и скопируй accessToken:
 console.log(localStorage.getItem('accessToken'));
 В терминале выполни (замени TOKEN и номер телефона):
-bash
+```bash
 curl -X POST http://localhost:3000/api/admin/visits/add \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ТВОЙ_ТОКЕН" \
   -d '{"phone":"79123456789"}'
+```
 Обнови страницу – прогресс-бар сдвинется.
-🔄 Переключение между аккаунтами
+
+### 🔄 Переключение между аккаунтами
 
 Нажми «Выйти» в профиле, затем войди под другим номером.
 
@@ -106,9 +114,9 @@ curl -X POST http://localhost:3000/api/admin/visits/add \
 
 Находясь на localhost:5000 с телефона в той же Wi-Fi сети, открой http://<IP_твоего_компьютера>:5000 и добавь страницу на домашний экран.
 
-📁 Структура проекта
+### 📁 Структура проекта
 
-text
+```text
 /
 ├── frontend/          # PWA (HTML/CSS/JS)
 │   ├── js/            # Логика (api.js, main.js, ui-controller.js)
@@ -119,12 +127,13 @@ text
     ├── server.js
     ├── package.json
     └── .env
-🛠️ Используемые технологии
+```
+### 🛠️ Используемые технологии
 
 Frontend: Чистый JavaScript, PWA (Service Worker, Manifest)
 Backend: Node.js, Express, jsonwebtoken, pg
 База данных: PostgreSQL
-📌 Примечания
+### 📌 Примечания
 
 Нормализация номеров: все номера хранятся в формате 79XXXXXXXXX. При вводе автоматически добавляется +7.
 Refresh-токены живут 90 дней, access-токены – 30 минут.
