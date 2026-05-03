@@ -24,6 +24,20 @@ const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
 });
 
+// Функция-прокладка для проверки токена (Middleware)
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user; // Сохраняем данные из токена (id и роль) в запрос
+        next();
+    });
+}
+
 // Проверка существования пользователя
 app.post('/api/auth/check', async (req, res) => {
     const { phone: rawPhone } = req.body;
@@ -79,40 +93,38 @@ app.post('/api/auth', async (req, res) => {
     }
 });
 
-// Профиль
-app.get('/api/user/me', async (req, res) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.sendStatus(401);
-
+// --- ОБНОВЛЕННЫЙ ПРОФИЛЬ (iserId, visitCount, lastVisitdate) ---
+app.get('/api/user/me', authenticateToken, async (req, res) => {
     try {
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-        const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [payload.userId]);
-        if (!userResult.rows.length) return res.sendStatus(404);
+        // Достаем userId именно так, как он записан в токене (из функции generateAccessToken)
+        const userId = req.user.userId; 
+
+        const userResult = await pool.query(
+            'SELECT id, phone, name, role, total_visits, last_visit FROM users WHERE id = $1',
+            [userId]
+        );
+
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
+        }
 
         const user = userResult.rows[0];
-        const cycleVisit = user.total_visits % 8;
-        let nextBonusType = 'скидки';
-        let remaining = 4 - cycleVisit;
-        if (cycleVisit >= 4) {
-            nextBonusType = 'подарка';
-            remaining = 8 - cycleVisit;
-        }
-        if (remaining === 0) remaining = 8;
+        const isEligibleForFree = user.total_visits > 0 && user.total_visits % 8 === 0;
 
         res.json({
-            id: user.id,
+            userId: user.id,
             phone: user.phone,
             name: user.name,
             role: user.role,
-            total_visits: user.total_visits,
-            next_bonus: {
-                type: nextBonusType,
-                remaining
-            }
+            visitCount: user.total_visits || 0,
+            lastVisitDate: user.last_visit,
+            isEligibleForFreeWash: isEligibleForFree,
+            nextBonusIn: 8 - (user.total_visits % 8) === 0 ? 8 : 8 - (user.total_visits % 8)
         });
+
     } catch (err) {
-        return res.sendStatus(403);
+        console.error('Ошибка профиля:', err);
+        res.status(500).json({ message: 'Ошибка сервера' });
     }
 });
 

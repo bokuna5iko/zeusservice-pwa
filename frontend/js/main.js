@@ -89,7 +89,7 @@ async function loadUserData() {
         // Обновление UI главного экрана (визиты)
         const userData = {
             userName: profile.name,
-            currentVisits: profile.total_visits % 8,
+            currentVisits: profile.visitCount % 8,
             totalRequired: 8,
             role: profile.role
         };
@@ -108,7 +108,7 @@ async function loadUserData() {
 
         if (profileName) profileName.textContent = profile.name || '—';
         if (profilePhone) profilePhone.textContent = profile.phone || '—';
-        if (profileVisits) profileVisits.textContent = profile.total_visits || 0;
+        if (profileVisits) profileVisits.textContent = profile.visitCount || 0;
         if (profileRole) profileRole.textContent = profile.role === 'admin' ? 'Администратор' : 'Клиент';
 
         // Показываем кнопку админа, если роль admin
