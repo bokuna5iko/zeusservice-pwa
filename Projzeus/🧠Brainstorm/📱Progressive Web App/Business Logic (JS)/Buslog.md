@@ -17,7 +17,6 @@
 
 - `logic.js` — основной контроллер счетчика.
     
-- `animation-engine.js` — расчет вероятностей для спрайтов маскота.
     
 - `storage.js` — работа с LocalStorage (сохранение состояния, если пропал интернет).
 
@@ -40,3 +39,6 @@
   "lastVisitDate": "2026-04-20",
   "isEligibleForFreeWash": true
 }
+```
+
+^standard-json
