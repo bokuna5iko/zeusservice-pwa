@@ -156,28 +156,43 @@ app.post('/api/refresh', async (req, res) => {
     }
 });
 
-// Начисление визита (админ)
+// Начисление визита (админ) — теперь по userId
 app.post('/api/admin/visits/add', async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
+    
     if (!token) return res.sendStatus(401);
 
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // Проверка, что это действительно админ
         if (payload.role !== 'admin') return res.sendStatus(403);
 
-        const { phone: rawPhone } = req.body;
-        const phone = normalizePhone(rawPhone);
-        if (!phone) return res.status(400).json({ error: 'Номер обязателен' });
+        // Получаем userId (так как фронтенд шлет { userId: ... })
+        const { userId } = req.body; 
+        
+        if (!userId) {
+            return res.status(400).json({ error: 'ID пользователя обязателен' });
+        }
 
+        // Обновляем запись, используя первичный ключ (id)
         const updateResult = await pool.query(
-            'UPDATE users SET total_visits = total_visits + 1, last_visit = NOW() WHERE phone = $1 RETURNING *',
-            [phone]
+            'UPDATE users SET total_visits = total_visits + 1, last_visit = NOW() WHERE id = $1 RETURNING total_visits',
+            [userId]
         );
-        if (!updateResult.rows.length) return res.status(404).json({ error: 'Пользователь не найден' });
 
-        res.json({ success: true, total_visits: updateResult.rows[0].total_visits });
+        if (updateResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Пользователь с таким ID не найден' });
+        }
+
+        res.json({ 
+            success: true, 
+            total_visits: updateResult.rows[0].total_visits 
+        });
+
     } catch (err) {
+        console.error('Ошибка в админ-панели:', err);
         return res.sendStatus(500);
     }
 });

@@ -69,8 +69,8 @@
 
             <div class="card qr-section">
                 <p>Покажите код администратору</p>
-                <div class="qr-placeholder">
-                    <div class="qr-mock"></div>
+                <div class="qr-placeholder" id="qrcode-container">
+                    <!-- Сюда скрипт вставит QR-код -->
                 </div>
                 <div class="user-id">ID: 448-129</div>
             </div>
@@ -157,10 +157,15 @@
                     </div>
                 </div>
         
-                <div class="admin-actions" style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 30px;">
-                    <button class="btn" style="background: #27ae60; border: none; padding: 12px; border-radius: 8px; color: white; font-weight: bold; width: 100%;">
+                <<div class="admin-actions" style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 30px;">
+                    <!-- Контейнер для видеопотока камеры -->
+                    <div id="reader" style="width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 15px; display: none; border: 2px solid #1e3c72;"></div>
+                    
+                    <!-- Добавили id="btn-scan-qr" для скрипта -->
+                    <button id="btn-scan-qr" class="btn" style="background: #27ae60; border: none; padding: 12px; border-radius: 8px; color: white; font-weight: bold; width: 100%;">
                         📷 Сканировать QR клиента
                     </button>
+                    
                     <button class="btn" style="background: #eef2f3; color: #1e3c72; border: 1px solid #ccc; padding: 10px; border-radius: 8px; width: 100%;">
                         👥 Список всех клиентов
                     </button>
@@ -184,13 +189,13 @@
     <div class="modal-content">
         <span class="close-btn">&times;</span>
         <h3>Ваш персональный код</h3>
-        <div class="qr-full"></div>
+        <div id="qrcode-modal-container" class="qr-full"></div> <!-- Заменили qr-full на id -->
         <p>Покажите этот код мастеру для начисления баллов</p>
     </div>
 </div>
 
-<!-- Сначала Firebase -->
-
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="js/ui-controller.js"></script>
 <script type="module" src="js/main.js"></script>
 

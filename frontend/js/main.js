@@ -116,11 +116,55 @@ async function loadUserData() {
             const adminNav = document.getElementById('nav-admin');
             if (adminNav) adminNav.style.display = 'flex';
         }
+
+        // === ГЕНЕРАЦИЯ QR-КОДА ===
+        // Используем profile.userId или profile.id (смотря что пришло с бэка)
+        const idForQR = profile.userId || profile.id;
+        if (idForQR) {
+            generateUserQR(idForQR);
+            
+            // Обновляем текстовый ID под QR-кодом для красоты
+            const userIdDisplay = document.querySelector('.user-id');
+            if (userIdDisplay) userIdDisplay.textContent = `ID: ${idForQR}`;
+        }
+
     } catch (e) {
         console.error('Ошибка загрузки профиля', e);
         document.getElementById('auth-page').classList.add('active');
         document.getElementById('home-page').classList.remove('active');
     }
+}
+
+// Вспомогательная функция для отрисовки QR
+function generateUserQR(userId) {
+    const qrContainer = document.getElementById('qrcode-container');
+    const qrModalContainer = document.getElementById('qrcode-modal-container');
+
+    if (!qrContainer || !qrModalContainer) return;
+
+    // Очищаем старые QR перед отрисовкой новых
+    qrContainer.innerHTML = '';
+    qrModalContainer.innerHTML = '';
+
+    // Маленький QR для главного экрана
+    new QRCode(qrContainer, {
+        text: `zeus:user:${userId}`,
+        width: 128,
+        height: 128,
+        colorDark: "#1e3c72",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+    // Большой QR для модального окна
+    new QRCode(qrModalContainer, {
+        text: `zeus:user:${userId}`,
+        width: 250, // Сделаем чуть побольше для удобства сканирования
+        height: 250,
+        colorDark: "#1e3c72",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
 }
 // Проверка сессии при загрузке
 window.addEventListener('DOMContentLoaded', () => {
@@ -169,8 +213,82 @@ if (btnLogout) {
 // Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
+        navigator.serviceWorker.register('sw.js')
             .then(reg => console.log('SW registered'))
             .catch(err => console.error('SW registration failed', err));
     });
+}
+
+let html5QrCode;
+
+async function startScanner() {
+    const readerElement = document.getElementById('reader');
+    readerElement.style.display = 'block';
+
+    if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("reader");
+    }
+    
+    const config = { 
+        fps: 10, 
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1.0 
+    };
+
+    try {
+        await html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            async (decodedText) => {
+                console.log("QR отсканирован:", decodedText);
+                
+                // Останавливаем камеру сразу после скана
+                await html5QrCode.stop();
+                readerElement.style.display = 'none';
+
+                if (decodedText.startsWith('zeus:user:')) {
+                    const userId = decodedText.replace('zeus:user:', '');
+                    // ВМЕСТО alert ЗАПУСКАЕМ НАЧИСЛЕНИЕ
+                    await addVisitByAdmin(userId); 
+                } else {
+                    alert("Это не QR-код ZEUS AUTO");
+                }
+            }
+        );
+    } catch (err) {
+        console.error("Ошибка камеры:", err);
+        alert("Не удалось запустить камеру. Убедитесь, что сайт работает через HTTPS или localhost.");
+    }
+}
+
+async function addVisitByAdmin(userId) {
+    const token = localStorage.getItem('accessToken');
+    
+    try {
+        const response = await fetch('http://localhost:3000/api/admin/visits/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ userId: userId }) 
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert(`Успех! Визит начислен клиенту #${userId}. Всего визитов: ${result.total_visits}`);
+        } else {
+            alert(`Ошибка: ${result.error || 'Не удалось начислить визит'}`);
+        }
+    } catch (err) {
+        console.error("Ошибка при начислении:", err);
+        alert("Проблема с сетью или сервером при попытке начислить визит");
+    }
+}
+
+// Привязываем запуск к кнопке
+const scanBtn = document.getElementById('btn-scan-qr');
+if (scanBtn) {
+    scanBtn.addEventListener('click', startScanner);
 }
