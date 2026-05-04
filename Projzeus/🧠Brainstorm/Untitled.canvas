@@ -1,0 +1,9 @@
+{
+	"nodes":[
+		{"id":"ffe26bca8bd84574","x":-325,"y":-269,"width":250,"height":60,"type":"text","text":"Регистрация "},
+		{"id":"249e6658b0b08d74","x":65,"y":-269,"width":250,"height":60,"type":"text","text":"id, data,"}
+	],
+	"edges":[
+		{"id":"1bf656cac4055247","fromNode":"ffe26bca8bd84574","fromSide":"right","toNode":"249e6658b0b08d74","toSide":"left"}
+	]
+}

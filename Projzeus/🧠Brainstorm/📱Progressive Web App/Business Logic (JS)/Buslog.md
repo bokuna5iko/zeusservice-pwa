@@ -34,10 +34,19 @@
 
 ```json
 {
-  "userId": "12345",
+  "userId": 1,
   "visitCount": 8,
-  "lastVisitDate": "2026-04-20",
-  "isEligibleForFreeWash": true
+  "lastVisitDate": "2026-05-04T22:37:23.013Z",
+  "isEligibleForFreeWash": true,
+  "phone": "79123456789",
+  "name": "Иван",
+  "role": "admin",
+  "total_visits": 8,
+  "nextBonusIn": 8,
+  "next_bonus": {
+    "type": "подарка",
+    "remaining": 8
+  }
 }
 ```
 
