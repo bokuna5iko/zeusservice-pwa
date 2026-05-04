@@ -93,15 +93,17 @@ app.post('/api/auth', async (req, res) => {
     }
 });
 
-// --- ОБНОВЛЕННЫЙ ПРОФИЛЬ (iserId, visitCount, lastVisitdate) ---
-app.get('/api/user/me', authenticateToken, async (req, res) => {
-    try {
-        // Достаем userId именно так, как он записан в токене (из функции generateAccessToken)
-        const userId = req.user.userId; 
+// --- ОБНОВЛЁННЫЙ ПРОФИЛЬ (userId, visitCount, lastVisitDate, isEligibleForFreeWash) ---
+app.get('/api/user/me', async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return res.sendStatus(401);
 
+    try {
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
         const userResult = await pool.query(
             'SELECT id, phone, name, role, total_visits, last_visit FROM users WHERE id = $1',
-            [userId]
+            [payload.userId]
         );
 
         if (userResult.rows.length === 0) {
@@ -109,25 +111,45 @@ app.get('/api/user/me', authenticateToken, async (req, res) => {
         }
 
         const user = userResult.rows[0];
-        const isEligibleForFree = user.total_visits > 0 && user.total_visits % 8 === 0;
+        const visits = user.total_visits;
+
+        // Флаг "бесплатная мойка" (8, 16, 24...)
+        const isEligibleForFreeWash = visits > 0 && visits % 8 === 0;
+
+        // Расчёт ближайшего бонуса (скидка или подарок)
+        const cycle = visits % 8;
+        let nextBonusType = 'discount';   // 'discount' или 'gift'
+        let remaining = 4 - cycle;
+        if (cycle >= 4) {
+            nextBonusType = 'gift';
+            remaining = 8 - cycle;
+        }
+        if (remaining === 0) remaining = 8;
 
         res.json({
+            // Новые поля для фронтенда (Obsidian)
             userId: user.id,
+            visitCount: visits,
+            lastVisitDate: user.last_visit ? user.last_visit.toISOString() : null,
+            isEligibleForFreeWash: isEligibleForFreeWash,
+            nextBonusIn: remaining,               // сколько визитов до любого бонуса
+
+            // Старые поля (для совместимости с профилем и карточкой)
+            id: user.id,
             phone: user.phone,
             name: user.name,
             role: user.role,
-            visitCount: user.total_visits || 0,
-            lastVisitDate: user.last_visit,
-            isEligibleForFreeWash: isEligibleForFree,
-            nextBonusIn: 8 - (user.total_visits % 8) === 0 ? 8 : 8 - (user.total_visits % 8)
+            total_visits: visits,
+            next_bonus: {
+                type: nextBonusType === 'discount' ? 'скидки' : 'подарка',
+                remaining
+            }
         });
-
     } catch (err) {
         console.error('Ошибка профиля:', err);
-        res.status(500).json({ message: 'Ошибка сервера' });
+        return res.sendStatus(403);
     }
 });
-
 // Обновление токенов
 app.post('/api/refresh', async (req, res) => {
     const { refreshToken } = req.body;
@@ -156,41 +178,53 @@ app.post('/api/refresh', async (req, res) => {
     }
 });
 
-// Начисление визита (админ) — теперь по userId
+// Начисление визита (админ) — с записью в visits и учётом услуги/суммы
 app.post('/api/admin/visits/add', async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    
     if (!token) return res.sendStatus(401);
 
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
-        
-        // Проверка, что это действительно админ
         if (payload.role !== 'admin') return res.sendStatus(403);
 
-        // Получаем userId (так как фронтенд шлет { userId: ... })
-        const { userId } = req.body; 
-        
-        if (!userId) {
-            return res.status(400).json({ error: 'ID пользователя обязателен' });
-        }
+        const { userId, amount, service } = req.body;
+        if (!userId) return res.status(400).json({ error: 'ID пользователя обязателен' });
 
-        // Обновляем запись, используя первичный ключ (id)
+        // Увеличиваем счётчик и обновляем дату
         const updateResult = await pool.query(
-            'UPDATE users SET total_visits = total_visits + 1, last_visit = NOW() WHERE id = $1 RETURNING total_visits',
+            'UPDATE users SET total_visits = total_visits + 1, last_visit = NOW() WHERE id = $1 RETURNING *',
             [userId]
         );
-
         if (updateResult.rows.length === 0) {
             return res.status(404).json({ error: 'Пользователь с таким ID не найден' });
         }
 
-        res.json({ 
-            success: true, 
-            total_visits: updateResult.rows[0].total_visits 
-        });
+        const updatedUser = updateResult.rows[0];
+        const v = updatedUser.total_visits;
 
+        // Определяем бонус
+        let bonusType = null;
+        let bonusMessage = '';
+        if (v % 8 === 4) {
+            bonusType = 'discount';
+            bonusMessage = 'Скидка 20%';
+        } else if (v % 8 === 0 && v > 0) {
+            bonusType = 'gift';
+            bonusMessage = 'Бесплатная мойка';
+        }
+
+        // Вставляем запись в таблицу visits
+        await pool.query(
+            'INSERT INTO visits (user_id, amount, service, bonus_type) VALUES ($1, $2, $3, $4)',
+            [userId, amount || 0, service || 'Не указана', bonusType]
+        );
+
+        res.json({
+            success: true,
+            total_visits: v,
+            bonus: bonusType ? { type: bonusType, message: bonusMessage } : null
+        });
     } catch (err) {
         console.error('Ошибка в админ-панели:', err);
         return res.sendStatus(500);
@@ -223,4 +257,42 @@ function generateRefreshToken(user) {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Zeus API запущен на http://localhost:${PORT}`);
+});
+// Статистика для админки
+app.get('/api/admin/stats', async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return res.sendStatus(401);
+    try {
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        if (payload.role !== 'admin') return res.sendStatus(403);
+
+        const totalVisits = await pool.query('SELECT COUNT(*)::int AS count FROM visits');
+        const monthlyVisits = await pool.query(
+            "SELECT COUNT(*)::int AS count FROM visits WHERE created_at >= date_trunc('month', NOW())"
+        );
+        const repeatClients = await pool.query(`
+            SELECT COUNT(*)::int AS count
+            FROM (SELECT user_id FROM visits GROUP BY user_id HAVING COUNT(*) > 1) AS sub
+        `);
+        const avgCheck = await pool.query('SELECT COALESCE(AVG(amount), 0)::float AS avg FROM visits');
+        const dailyStats = await pool.query(`
+            SELECT to_char(created_at, 'DD.MM') AS day, COUNT(*)::int AS count
+            FROM visits
+            WHERE created_at >= NOW() - INTERVAL '30 days'
+            GROUP BY to_char(created_at, 'DD.MM'), created_at::date
+            ORDER BY created_at::date
+        `);
+
+        res.json({
+            totalVisits: totalVisits.rows[0].count,
+            monthlyVisits: monthlyVisits.rows[0].count,
+            repeatClients: repeatClients.rows[0].count,
+            avgCheck: parseFloat(avgCheck.rows[0].avg).toFixed(0),
+            daily: dailyStats.rows
+        });
+    } catch (err) {
+        console.error(err);
+        res.sendStatus(500);
+    }
 });
