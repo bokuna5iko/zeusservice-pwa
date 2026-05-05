@@ -1,34 +1,36 @@
 {
 	"nodes":[
+		{"id":"5da48ce3bbe2abe5","x":73,"y":-760,"width":2137,"height":1305,"color":"#36452b","type":"group","label":"V1"},
+		{"id":"2f916583e246ca2b","x":2320,"y":-269,"width":1680,"height":814,"color":"#a546c8","type":"group","label":"v2"},
+		{"id":"601fc1e88d46f0fa","x":200,"y":-480,"width":1705,"height":314,"color":"1","type":"group","label":"Пользовательский инетерфейс"},
 		{"id":"e49fc63d28a9dcec","x":200,"y":-166,"width":1710,"height":286,"color":"6","type":"group","label":"Админ"},
-		{"id":"f13c1d63f4b796a2","x":1960,"y":-65,"width":1580,"height":305,"color":"3","type":"group","label":"Босс"},
-		{"id":"601fc1e88d46f0fa","x":200,"y":-480,"width":1400,"height":314,"color":"1","type":"group","label":"Пользовательский инетерфейс"},
+		{"id":"f13c1d63f4b796a2","x":2360,"y":40,"width":1580,"height":305,"color":"3","type":"group","label":"Босс"},
 		{"id":"8cf529a2e7deb826","x":-204,"y":-171,"width":250,"height":60,"type":"text","text":"PWA\n"},
 		{"id":"6ee32f29bab29bf0","x":250,"y":-277,"width":250,"height":60,"type":"text","text":"Регистрация"},
-		{"id":"5b6589ef0aedab4e","x":1660,"y":-277,"width":250,"height":60,"type":"text","text":"Push уведомления\n"},
-		{"id":"8c337b9def7143a6","x":245,"y":-66,"width":250,"height":60,"type":"text","text":"Админка\n"},
 		{"id":"1d28542af6a52cdb","x":599,"y":-64,"width":250,"height":60,"type":"text","text":"Сканирование "},
 		{"id":"fbd247eb3335e5a5","x":949,"y":-64,"width":250,"height":60,"type":"text","text":"Начисление визитов"},
 		{"id":"5856385fea38a7e5","x":1315,"y":-64,"width":250,"height":60,"type":"text","text":"Калькулятор услуги\n"},
 		{"id":"8d8c671ef942476a","x":1655,"y":-65,"width":250,"height":163,"type":"text","text":"Стата в админке\n3 показателя\n- Средний чек за чегодня\n- Колличество клиентов\n- Бесплатных визитов "},
-		{"id":"d76add222242cdad","x":2009,"y":-166,"width":250,"height":60,"type":"text","text":"Дизайн"},
-		{"id":"af1230dfb4b1ef89","x":2009,"y":-40,"width":250,"height":60,"type":"text","text":"отедльный  веб со всей статой"},
 		{"id":"486a635bbfe49681","x":960,"y":-330,"width":250,"height":60,"type":"text","text":"Бонусы"},
 		{"id":"de39ed1c97ff2425","x":1317,"y":-329,"width":250,"height":60,"type":"text","text":"Прескурант"},
 		{"id":"8b85db97d7d61ac2","x":600,"y":-330,"width":250,"height":60,"type":"text","text":"QR\n"},
-		{"id":"9f89cc923bf0e1f2","x":2432,"y":-39,"width":250,"height":60,"type":"text","text":"Редактирование группы админов"},
-		{"id":"15a0b40fae7c6d79","x":2848,"y":-35,"width":250,"height":60,"type":"text","text":"Глубокая стата"},
-		{"id":"70acd8a34676a7e4","x":3223,"y":-33,"width":250,"height":60,"type":"text","text":"Ведение финансов"},
 		{"id":"930f1e0687864f02","x":250,"y":-401,"width":250,"height":60,"type":"text","text":"СМС"},
 		{"id":"4efd5bac261234c2","x":951,"y":38,"width":250,"height":60,"type":"text","text":"по QR и номеру теелефона\n"},
-		{"id":"db2409f56e941d2a","x":2009,"y":96,"width":250,"height":104,"type":"text","text":"И для телефона и ПК \nНа начальном экране % из месяца в месяц\n"}
+		{"id":"644140932517d222","x":1600,"y":-330,"width":250,"height":60,"type":"text","text":"Профиль"},
+		{"id":"5b6589ef0aedab4e","x":1960,"y":-330,"width":250,"height":60,"type":"text","text":"Push уведомления\n"},
+		{"id":"af1230dfb4b1ef89","x":2409,"y":65,"width":250,"height":60,"type":"text","text":"отедльный  веб со всей статой"},
+		{"id":"db2409f56e941d2a","x":2409,"y":201,"width":250,"height":104,"type":"text","text":"И для телефона и ПК \nНа начальном экране % из месяца в месяц\n"},
+		{"id":"9f89cc923bf0e1f2","x":2832,"y":66,"width":250,"height":60,"type":"text","text":"Редактирование группы админов"},
+		{"id":"15a0b40fae7c6d79","x":3248,"y":70,"width":250,"height":60,"type":"text","text":"Глубокая стата"},
+		{"id":"70acd8a34676a7e4","x":3623,"y":72,"width":250,"height":60,"type":"text","text":"Ведение финансов"},
+		{"id":"d76add222242cdad","x":2320,"y":-125,"width":250,"height":60,"type":"text","text":"Дизайн"},
+		{"id":"8c337b9def7143a6","x":245,"y":-60,"width":250,"height":60,"type":"text","text":"Админка\n"}
 	],
 	"edges":[
 		{"id":"5e86b2d24d63064d","fromNode":"8cf529a2e7deb826","fromSide":"right","toNode":"6ee32f29bab29bf0","toSide":"left"},
 		{"id":"f4f9970a05fcb267","fromNode":"6ee32f29bab29bf0","fromSide":"right","toNode":"8b85db97d7d61ac2","toSide":"left"},
 		{"id":"93531933e1aed034","fromNode":"8b85db97d7d61ac2","fromSide":"right","toNode":"486a635bbfe49681","toSide":"left"},
 		{"id":"ec7cab3b09571b87","fromNode":"486a635bbfe49681","fromSide":"right","toNode":"de39ed1c97ff2425","toSide":"left"},
-		{"id":"a4eb25fe1fbee39e","fromNode":"de39ed1c97ff2425","fromSide":"right","toNode":"5b6589ef0aedab4e","toSide":"left"},
 		{"id":"30ee7541c5717767","fromNode":"6ee32f29bab29bf0","fromSide":"bottom","toNode":"8c337b9def7143a6","toSide":"top"},
 		{"id":"4b620febd0dc6b50","fromNode":"8c337b9def7143a6","fromSide":"right","toNode":"1d28542af6a52cdb","toSide":"left"},
 		{"id":"3029843eb546ee9e","fromNode":"1d28542af6a52cdb","fromSide":"right","toNode":"fbd247eb3335e5a5","toSide":"left"},
@@ -42,6 +44,8 @@
 		{"id":"f3622b144771e0f0","fromNode":"15a0b40fae7c6d79","fromSide":"right","toNode":"70acd8a34676a7e4","toSide":"left"},
 		{"id":"fb8a7764910143e1","fromNode":"6ee32f29bab29bf0","fromSide":"top","toNode":"930f1e0687864f02","toSide":"bottom"},
 		{"id":"c183984e4e12c685","fromNode":"fbd247eb3335e5a5","fromSide":"bottom","toNode":"4efd5bac261234c2","toSide":"top"},
-		{"id":"0c84f9a85eb84570","fromNode":"af1230dfb4b1ef89","fromSide":"bottom","toNode":"db2409f56e941d2a","toSide":"top"}
+		{"id":"0c84f9a85eb84570","fromNode":"af1230dfb4b1ef89","fromSide":"bottom","toNode":"db2409f56e941d2a","toSide":"top"},
+		{"id":"3e5a2469bbd75933","fromNode":"de39ed1c97ff2425","fromSide":"right","toNode":"644140932517d222","toSide":"left"},
+		{"id":"4c68bcdf0f8ccdc4","fromNode":"644140932517d222","fromSide":"right","toNode":"5b6589ef0aedab4e","toSide":"left"}
 	]
 }
