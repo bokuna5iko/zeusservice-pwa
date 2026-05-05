@@ -1,4 +1,4 @@
-const API_BASE = 'http://172.20.10.10:3000/api';
+const API_BASE = 'http://localhost:3000/api';
 
 export async function authenticate(phone, name) {
     const res = await fetch(`${API_BASE}/auth`, {
