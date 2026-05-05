@@ -1,11 +1,11 @@
 {
 	"nodes":[
-		{"id":"5da48ce3bbe2abe5","type":"group","x":73,"y":-760,"width":2137,"height":1305,"color":"#36452b","label":"V1"},
+		{"id":"5da48ce3bbe2abe5","type":"group","x":73,"y":-640,"width":2137,"height":893,"color":"#36452b","label":"V1"},
 		{"id":"2f916583e246ca2b","type":"group","x":2320,"y":-269,"width":1680,"height":814,"color":"#a546c8","label":"v2"},
-		{"id":"601fc1e88d46f0fa","type":"group","x":200,"y":-480,"width":1705,"height":314,"color":"1","label":"Пользовательский инетерфейс"},
-		{"id":"e49fc63d28a9dcec","type":"group","x":200,"y":-166,"width":1710,"height":286,"color":"6","label":"Админ"},
+		{"id":"601fc1e88d46f0fa","type":"group","x":200,"y":-480,"width":1740,"height":314,"color":"1","label":"Пользовательский инетерфейс"},
+		{"id":"e49fc63d28a9dcec","type":"group","x":200,"y":-166,"width":1740,"height":286,"color":"6","label":"Админ"},
 		{"id":"f13c1d63f4b796a2","type":"group","x":2360,"y":40,"width":1580,"height":305,"color":"3","label":"Босс"},
-		{"id":"8cf529a2e7deb826","type":"text","text":"PWA\n","x":-204,"y":-171,"width":250,"height":60},
+		{"id":"8cf529a2e7deb826","type":"text","text":"PWA\n","x":-204,"y":-171,"width":250,"height":60,"color":"#fad900"},
 		{"id":"6ee32f29bab29bf0","type":"text","text":"Регистрация","x":250,"y":-277,"width":250,"height":60},
 		{"id":"fbd247eb3335e5a5","type":"text","text":"Начисление визитов","x":949,"y":-64,"width":250,"height":60},
 		{"id":"930f1e0687864f02","type":"text","text":"СМС","x":250,"y":-401,"width":250,"height":60},
