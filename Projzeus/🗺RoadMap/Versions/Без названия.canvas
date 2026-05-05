@@ -1,0 +1,43 @@
+{
+	"nodes":[
+		{"id":"ee59ff3204c43019","x":-700,"y":-320,"width":2000,"height":709,"type":"group","label":"PWA мойка"},
+		{"id":"286946ef56c1974b","type":"group","x":-700,"y":-1280,"width":1570,"height":709,"label":"PWA сервис"},
+		{"id":"062623cd2af6bc13","x":-320,"y":-173,"width":250,"height":62,"type":"text","text":"Отображение статы для телефона админа"},
+		{"id":"16e759b88f650990","x":260,"y":-79,"width":250,"height":62,"type":"text","text":"Прейскурант для клиента"},
+		{"id":"31106d3944129a26","x":600,"y":70,"width":250,"height":60,"type":"text","text":"Подключить историю визитов"},
+		{"id":"190639c7abcd0eb1","type":"text","text":"","x":220,"y":-780,"width":250,"height":60},
+		{"id":"d9d95bbb3d18b60f","type":"text","text":"Калькулятор","x":260,"y":-1229,"width":250,"height":62},
+		{"id":"92e361354036c8d4","type":"text","text":"Прейскурант для клиента","x":260,"y":-1039,"width":250,"height":62},
+		{"id":"2ef74ffc092357b6","type":"text","text":"Подключить историю визитов","x":600,"y":-890,"width":250,"height":60},
+		{"id":"6f0b4ce98a610c4b","type":"text","text":"Готовое приложение +-\nБез смс","x":-680,"y":-1260,"width":250,"height":62},
+		{"id":"40f44fe6694b14d7","type":"text","text":"Отображение статы для телефона админа","x":-320,"y":-1133,"width":250,"height":62},
+		{"id":"20d17f1ae02c3186","type":"text","text":"","x":-260,"y":-651,"width":250,"height":60},
+		{"id":"bc6be2676c1178f6","type":"text","text":"","x":-195,"y":-860,"width":250,"height":60},
+		{"id":"9c167f3180aa7180","x":949,"y":-204,"width":250,"height":62,"type":"text","text":"Калькулятор"},
+		{"id":"15d88cedb559f202","x":1020,"y":240,"width":250,"height":60,"type":"text","text":"Редизайн"},
+		{"id":"88f2b6810322fee5","x":80,"y":210,"width":250,"height":60,"type":"text","text":""},
+		{"id":"00e5ae587db17416","x":-385,"y":300,"width":250,"height":60,"type":"text","text":""},
+		{"id":"9526044cad234fe1","x":-300,"y":100,"width":250,"height":60,"type":"text","text":""},
+		{"id":"2797fa290095a8dc","x":-660,"y":-266,"width":250,"height":62,"type":"text","text":"Готовое приложение +-\nБез смс"},
+		{"id":"6372e5ca18a3c177","x":-2960,"y":-1611,"width":450,"height":540,"type":"text","text":"БАЗА\n"}
+	],
+	"edges":[
+		{"id":"558de2663d134bee","fromNode":"2797fa290095a8dc","fromSide":"right","toNode":"062623cd2af6bc13","toSide":"left"},
+		{"id":"a383176ba938b39c","fromNode":"062623cd2af6bc13","fromSide":"right","toNode":"9c167f3180aa7180","toSide":"left"},
+		{"id":"c21b46165a0605b5","fromNode":"062623cd2af6bc13","fromSide":"right","toNode":"16e759b88f650990","toSide":"left"},
+		{"id":"11ba202870934ab0","fromNode":"16e759b88f650990","fromSide":"right","toNode":"31106d3944129a26","toSide":"left"},
+		{"id":"2d369e2a35564d92","fromNode":"00e5ae587db17416","fromSide":"top","toNode":"9526044cad234fe1","toSide":"bottom"},
+		{"id":"3edce8ed54d27305","fromNode":"9526044cad234fe1","fromSide":"right","toNode":"88f2b6810322fee5","toSide":"left"},
+		{"id":"8e82de0a52375e2b","fromNode":"88f2b6810322fee5","fromSide":"top","toNode":"16e759b88f650990","toSide":"bottom"},
+		{"id":"b17b63f5a5e09a7a","fromNode":"6f0b4ce98a610c4b","fromSide":"right","toNode":"40f44fe6694b14d7","toSide":"left"},
+		{"id":"2fb845936d7c9344","fromNode":"40f44fe6694b14d7","fromSide":"right","toNode":"d9d95bbb3d18b60f","toSide":"left"},
+		{"id":"b33ffb63da1b281e","fromNode":"40f44fe6694b14d7","fromSide":"right","toNode":"92e361354036c8d4","toSide":"left"},
+		{"id":"23149018a233d14e","fromNode":"bc6be2676c1178f6","fromSide":"right","toNode":"190639c7abcd0eb1","toSide":"left"},
+		{"id":"7175d47351bfbdf3","fromNode":"20d17f1ae02c3186","fromSide":"top","toNode":"bc6be2676c1178f6","toSide":"bottom"},
+		{"id":"919001a0b1a34419","fromNode":"190639c7abcd0eb1","fromSide":"top","toNode":"92e361354036c8d4","toSide":"bottom"},
+		{"id":"66defc40a7c3ffe8","fromNode":"92e361354036c8d4","fromSide":"right","toNode":"2ef74ffc092357b6","toSide":"left"},
+		{"id":"219f20424de5441e","fromNode":"31106d3944129a26","fromSide":"right","toNode":"15d88cedb559f202","toSide":"left"},
+		{"id":"d0456673d2073032","fromNode":"9c167f3180aa7180","fromSide":"bottom","toNode":"15d88cedb559f202","toSide":"top"},
+		{"id":"49ce681ca08909a3","fromNode":"6372e5ca18a3c177","fromSide":"right","toNode":"2797fa290095a8dc","toSide":"left"}
+	]
+}

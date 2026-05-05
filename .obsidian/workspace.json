@@ -13,26 +13,29 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Projzeus/📚Docs/Tutorials/VScode.md",
+                "file": "Projzeus/🧠Brainstorm/Data-Sync.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "VScode"
+              "title": "Data-Sync"
             }
           },
           {
             "id": "6a020f7ba691a74c",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "canvas",
               "state": {
-                "file": "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
-                "mode": "source",
-                "source": false
+                "file": "Projzeus/🗺RoadMap/Versions/Без названия.canvas",
+                "viewState": {
+                  "x": 203.4753471357874,
+                  "y": -326.4814315619947,
+                  "zoom": -1
+                }
               },
-              "icon": "lucide-file",
-              "title": "Buslog"
+              "icon": "lucide-layout-dashboard",
+              "title": "Без названия"
             }
           }
         ],
@@ -195,9 +198,13 @@
   },
   "active": "6a020f7ba691a74c",
   "lastOpenFiles": [
-    "Projzeus/📚Docs/Tutorials/VScode.md",
-    "Projzeus/🧠Brainstorm/Data-Sync.md",
+    "Projzeus/🌌Star of death.canvas",
+    "Projzeus/🗺RoadMap/Versions/Без названия.canvas",
+    "Projzeus/📚Docs/Setup/Git guide/🛠 Guide git for OBS&VSCODE.md",
+    "Projzeus/🧠Brainstorm/Untitled.canvas",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
+    "Projzeus/🧠Brainstorm/Data-Sync.md",
+    "Projzeus/📚Docs/Tutorials/VScode.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
     "Projzeus/🗺RoadMap/Versions/v0.1/Readme-v0.1.md",
@@ -207,11 +214,9 @@
     "Projzeus/📚Docs/Management/Project-Pitch.md",
     "Projzeus/📚Docs/Management/Boss-Demo-v0.1.md",
     "Projzeus/📚Docs/Setup/Dev-Environment.md",
-    "Projzeus/📚Docs/Setup/Git guide/🛠 Guide git for OBS&VSCODE.md",
     "Projzeus/📥Backlog/Readme.md",
     "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.1/Map.canvas",
-    "Projzeus/🌌Star of death.canvas",
     "Projzeus/🗺RoadMap/Readme.md",
     "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/Readme-v0.2.md",
@@ -224,7 +229,6 @@
     "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
     "Projzeus/Readme.md",
     "Projzeus/Project-Structure.md",
-    "Тест.md",
     "Projzeus/📚Docs/Setup/Git guide",
     "Projzeus/🗺RoadMap/Без названия.base",
     "Projzeus/🧠Readme/Infrastructure",
@@ -249,7 +253,6 @@
     "Pasted image 20251011060509.png",
     "SDLC-stages.png",
     "QA/Pasted image 20251011060437.png",
-    "Системный админ/Без названия.canvas",
     "Системный админ/1.blog-dns-1.png"
   ]
 }
