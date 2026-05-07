@@ -84,6 +84,7 @@ Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md
 Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md
 Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md
 Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Hosting & Domain.md
+Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md
 Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Telegram Bot Logic.md
 Projzeus/🧠Brainstorm/Data-Sync.md
 Projzeus/Dashboard.md
@@ -163,18 +164,14 @@ This section contains the contents of the repository's files.
 llfflflddawdawdaadw
 </file>
 
-<file path="Projzeus/.repomixignore">
-
-</file>
-
 <file path="Projzeus/🌌Star of death.canvas">
 {
 	"nodes":[
+		{"id":"2eb85e60ecde0233","type":"group","x":2120,"y":1400,"width":1121,"height":740,"color":"#0ecfdd","label":"Buslog"},
 		{"id":"5a96eb1d20134eb8","type":"group","x":1716,"y":60,"width":661,"height":924,"color":"4","label":"Front"},
-		{"id":"4e773c7638eba5a9","type":"group","x":3920,"y":-160,"width":896,"height":647,"color":"2","label":"PWAlog"},
-		{"id":"2eb85e60ecde0233","type":"group","x":2120,"y":1400,"width":1121,"height":500,"color":"#0ecfdd","label":"Buslog"},
-		{"id":"8f304402db45d23f","type":"group","x":2510,"y":-555,"width":1087,"height":438,"color":"6","label":"ProjMan"},
 		{"id":"fd2362aed2cf5f7d","type":"group","x":3827,"y":938,"width":653,"height":722,"color":"1","label":"Server"},
+		{"id":"4e773c7638eba5a9","type":"group","x":3920,"y":-160,"width":896,"height":647,"color":"2","label":"PWAlog"},
+		{"id":"8f304402db45d23f","type":"group","x":2510,"y":-555,"width":1087,"height":438,"color":"6","label":"ProjMan"},
 		{"id":"d9995331ecc8d03d","type":"text","text":"# Идеи для приложения","x":-920,"y":460,"width":260,"height":100},
 		{"id":"d858cc7d674feda5","type":"text","text":"## 4. Календарь ухода и Push-уведомления\n\nПрофессиональные сервисы (например, дилерские центры или крупные сети типа _Fit Service_) знают о машине клиента всё.\n\n- **Идея:** Приложение напоминает: «Прошло 3 месяца с последней мойки двигателя/нанесения воска. Пора обновить защиту».\n    \n- **Сервис:** «Завтра обещают дождь, но послезавтра будет солнце 5 дней. Запишитесь на среду заранее со скидкой 10%». Ты буквально управляешь спросом.","x":-220,"y":660,"width":580,"height":280},
 		{"id":"9f1f44f48f8fd8d8","type":"text","text":"## 5. «Счастливые часы» и динамическое ценообразование\n\nУ моек есть проблема: очереди в субботу и пустота в понедельник утром.\n\n- **Механика:** В приложении в будни до 12:00 за мойку дают двойные баллы.\n    \n- **Результат:** Люди, у которых гибкий график, начнут приезжать в «мертвое» время, разгружая выходные для тех, кто готов платить полную цену.","x":-220,"y":1000,"width":580,"height":280},
@@ -182,7 +179,6 @@ llfflflddawdawdaadw
 		{"id":"a228979aaa61dadc","type":"text","text":"## 2. Абонементная модель (Подписка)\n\nЭто то, на чем сейчас сидит весь мир (Netflix, Яндекс Плюс).\n\n- **Идея:** Пользователь платит фиксированную сумму в месяц (например, стоимость 1.5 моек). За это он получает безлимит на «техническую мойку» (сбить грязь водой) и 2 полноценных комплекса.\n    \n- **Почему работает:** Если человек уже заплатил за месяц, он приедет к вам даже из-за небольшого пятна, просто чтобы «окупить» подписку. А приехав, он может заказать химчистку или чернение резины.","x":-220,"y":-60,"width":580,"height":320},
 		{"id":"7e6aeff50623ca3b","type":"text","text":"## 3. Реферальная система «Приведи соседа»\n\nБаллы за свои поездки — это медленно. Дай возможность зарабатывать на друзьях.\n\n- **Механика:** В приложении есть QR-код. Друг приехал по коду — обоим начислили жирные баллы.\n    \n- **Фишка:** Сделай «Семейный аккаунт». Муж и жена моют две разные машины, но баллы копятся на один «бесплатный 8-й раз». Это привязывает к сервису всю семью.","x":-220,"y":320,"width":580,"height":280},
 		{"id":"20259fdd5094673e","type":"text","text":" **Стили и UI:** Общая тема, шрифты, цвета (CSS переменные).","x":1886,"y":80,"width":240,"height":104,"color":"#16c60c"},
-		{"id":"f0c78ccbfef9fbf6","type":"text","text":"**Адаптивность:** Как всё это выглядит на телефоне (это критично для PWA)","x":1886,"y":880,"width":252,"height":84},
 		{"id":"24c883660442a1e2","type":"text","text":"**Компоненты:** Хедер, карточки, формы, модальные окна.","x":1736,"y":430,"width":276,"height":111},
 		{"id":"3f0774ef376df657","type":"text","text":"# Как работает наша звезда смерти\n\n1. Ключевая точка и старт - PWA ZeusAuto\n2. Главные орбиты, от которых будет идти вся связь\n3. Цвета окон, показывают статус задачи\n   🟢 - Готово\n   \n   🔴 - Не готово\n   ","x":1992,"y":-1280,"width":268,"height":480},
 		{"id":"2e767d97606fc558","type":"text","text":"[[0-Inbox|Идеи]]","x":2982,"y":-518,"width":250,"height":60},
@@ -190,22 +186,25 @@ llfflflddawdawdaadw
 		{"id":"66428cf6486e507b","type":"text","text":"### Распределение ролей: Гитхаб — Обсидиан — YouGile\n\nЯ предлагаю схему **«Мозг — Карта — Конвейер»**:\n\n| **Инструмент** | **Роль**               | **Что там лежит**                                                                           |\n| -------------- | ---------------------- | ------------------------------------------------------------------------------------------- |\n| **Obsidian**   | **МОЗГ и АРХИТЕКТУРА** | Схемы (Звезда), инструкции, описание логики, Roadmap (стратегия на версию).                 |\n| **YouGile**    | **КОНВЕЙЕР (ТАСКИ)**   | Мелкие задачи на сегодня-завтра. Те самые «карточки», которые мы перетаскиываем в «Готово». |\n| **GitHub**     | **ХРАНИЛИЩЕ**          | Весь код проекта и бэкап нашего Обсидиана.                                                  |","x":2649,"y":-1300,"width":803,"height":440},
 		{"id":"a69d25a2662d27f4","type":"text","text":"Полезные ссылки","x":3327,"y":-486,"width":250,"height":60},
 		{"id":"868fce75cc7d961c","type":"text","text":"# Project Management\n","x":2930,"y":-280,"width":250,"height":100},
-		{"id":"a1d475de6aa4a212","type":"text","text":"# Progressive Web App\n#ZeusAuto [[PWA]]","x":2840,"y":340,"width":340,"height":120},
 		{"id":"1405ab703af5e197","type":"text","text":"# PWA Logic\n[[PWAlog]]","x":3940,"y":100,"width":250,"height":75},
-		{"id":"47069186044dad5e","type":"text","text":"# Frontend\n[[Front]]","x":2200,"y":460,"width":160,"height":81},
-		{"id":"d53f8437bc2bcdf9","type":"text","text":"# Business Logic (JS) \n[[Buslog]]","x":2539,"y":1420,"width":250,"height":112},
 		{"id":"e0402750946ef370","type":"text","text":"**Manifest:** Иконки, название, цвета темы для Android/iOS.","x":4337,"y":-140,"width":263,"height":87},
 		{"id":"4757d1506a2e0845","type":"text","text":"**Service Worker:** Скрипт, который отвечает за кэш и работу без интернета.","x":4520,"y":145,"width":276,"height":95},
 		{"id":"daada4e59e5f2255","type":"text","text":"**Offline Mode:** Страница-заглушка, если связи нет совсем","x":4544,"y":376,"width":252,"height":91},
-		{"id":"ecfd76047c6f63ff","type":"text","text":"# Server\n[[Instruction]]\n","x":3847,"y":1120,"width":213,"height":160},
 		{"id":"b4d1fbb8d0220534","type":"text","text":"[[Telegram Bot Logic]]","x":4009,"y":1580,"width":214,"height":60},
 		{"id":"22e2d342ae803b32","type":"text","text":"[[Hosting & Domain]]","x":4264,"y":1361,"width":196,"height":50},
 		{"id":"7a662cda292742a7","type":"text","text":"[[Database]]","x":4282,"y":1179,"width":118,"height":60},
 		{"id":"6bf06465d6407de5","type":"text","text":"[[API]]","x":4223,"y":958,"width":97,"height":60},
+		{"id":"a1d475de6aa4a212","type":"text","text":"# Progressive Web App\n#ZeusAuto [[PWA]]","x":2840,"y":340,"width":340,"height":120},
+		{"id":"d53f8437bc2bcdf9","type":"text","text":"# Business Logic (JS) \n[[Buslog]]","x":2539,"y":1420,"width":250,"height":112},
 		{"id":"f518e0d5f0d4e646","type":"text","text":"**State Management:** Как данные передаются между страницами.","x":2160,"y":1507,"width":281,"height":102},
 		{"id":"9747f6de92e17b99","type":"text","text":"**Обработка событий:** Кнопки, фильтры, расчеты.","x":2200,"y":1771,"width":262,"height":55},
-		{"id":"45df5fdc4c25d104","type":"text","text":"**Интеграции:** Если будет Telegram-бот или сторонние API, вешай их сюда.","x":2664,"y":1717,"width":282,"height":109},
-		{"id":"6aaf22d2ebd52deb","x":3040,"y":1609,"width":134,"height":60,"type":"text","text":"Auth Logic"}
+		{"id":"ecfd76047c6f63ff","type":"text","text":"# Server\n[[Instruction]]\n","x":3847,"y":1120,"width":213,"height":160},
+		{"id":"6aaf22d2ebd52deb","type":"text","text":"Auth Logic","x":3060,"y":1447,"width":134,"height":60},
+		{"id":"45df5fdc4c25d104","type":"text","text":"**Интеграции:** Если будет Telegram-бот или сторонние API, вешай их сюда.","x":2880,"y":1609,"width":282,"height":109},
+		{"id":"47069186044dad5e","type":"text","text":"# Frontend\n[[Front]]","x":2200,"y":460,"width":160,"height":81},
+		{"id":"f0c78ccbfef9fbf6","type":"text","text":"**Адаптивность:** Как всё это выглядит на телефоне (это критично для PWA)","x":1886,"y":880,"width":252,"height":84},
+		{"id":"e8a6b5de38f1429d","type":"text","text":"Calculator Logic","x":2840,"y":1872,"width":250,"height":60},
+		{"id":"364de2438aa49c95","x":2414,"y":1902,"width":250,"height":60,"type":"text","text":"Dual-Price Engine"}
 	],
 	"edges":[
 		{"id":"4fbdd3ad5a3ed5bf","fromNode":"d9995331ecc8d03d","fromSide":"right","toNode":"082ec95c554c2859","toSide":"left"},
@@ -236,7 +235,12 @@ llfflflddawdawdaadw
 		{"id":"6dfc00f052fff07f","fromNode":"868fce75cc7d961c","fromSide":"bottom","toNode":"6bf06465d6407de5","toSide":"top"},
 		{"id":"a510b16b02744007","fromNode":"868fce75cc7d961c","fromSide":"left","toNode":"e8ffd424745299ef","toSide":"bottom"},
 		{"id":"6c535f03caa739d1","fromNode":"d53f8437bc2bcdf9","fromSide":"right","toNode":"6aaf22d2ebd52deb","toSide":"left"},
-		{"id":"9f683dd2e7569ae5","fromNode":"6aaf22d2ebd52deb","fromSide":"right","toNode":"6bf06465d6407de5","toSide":"bottom"}
+		{"id":"9f683dd2e7569ae5","fromNode":"6aaf22d2ebd52deb","fromSide":"right","toNode":"6bf06465d6407de5","toSide":"bottom"},
+		{"id":"d982c11e223a124d","fromNode":"d53f8437bc2bcdf9","fromSide":"bottom","toNode":"e8a6b5de38f1429d","toSide":"top"},
+		{"id":"787d4afac8387179","fromNode":"f518e0d5f0d4e646","fromSide":"right","toNode":"e8a6b5de38f1429d","toSide":"left"},
+		{"id":"a4c42a484e4d6193","fromNode":"e8a6b5de38f1429d","fromSide":"right","toNode":"ecfd76047c6f63ff","toSide":"left"},
+		{"id":"b47ed5ace0fe968e","fromNode":"d53f8437bc2bcdf9","fromSide":"bottom","toNode":"364de2438aa49c95","toSide":"top"},
+		{"id":"c7a2998efec1764e","fromNode":"364de2438aa49c95","fromSide":"right","toNode":"e8a6b5de38f1429d","toSide":"left"}
 	]
 }
 </file>
@@ -741,25 +745,50 @@ Roadmap/
 
 Чтобы логика работала, друг должен отдавать нам через API следующий объект:
 
+### 🟢 Сценарий 1: Запрос данных клиента (GET /user)
+
+_Это то, что ты получаешь сразу после сканирования QR-кода._
+
 ```json
 {
-  "userId": 1,
-  "visitCount": 8,
-  "lastVisitDate": "2026-05-04T22:37:23.013Z",
-  "isEligibleForFreeWash": true,
-  "phone": "79123456789",
-  "name": "Иван",
-  "role": "admin",
-  "total_visits": 8,
-  "nextBonusIn": 8,
-  "next_bonus": {
-    "type": "подарка",
-    "remaining": 8
+  "userId": "12345",
+  "status": {
+    "visitCount": 7,
+    "isEligibleForFreeWash": true,
+    "lastVisitDate": "2026-04-20"
+  },
+  "personalInfo": {
+    "phoneNumber": "+79991234567"
   }
 }
 ```
 
-^standard-json
+^4dea8e
+
+**Что изменилось:** Мы сгруппировали данные. Теперь счетчики лежат в `status`, а телефон в `personalInfo`. Это чище. ^a79183
+
+### 🔵 Сценарий 2: Отправка данных калькулятора (POST /order)
+
+_Это то, что бэкэнд присылает в ответ после того, как админ нажал «Подтвердить»._
+
+```json
+{ 
+   "orderId": "abc-987-xyz", 
+   "transaction": { 
+     "serviceId": 2, 
+     "serviceName": "Стандарт (кузов + коврики)", 
+     "grossAmount": 600, 
+     "netAmount": 0, 
+     "appliedBonus": true 
+}, 
+   "newStatus": { 
+     "visitCount": 0, 
+     "isEligibleForFreeWash": false 
+  } 
+}
+```
+
+^order-json
 
 ## Логика сканирования QR
 
@@ -768,6 +797,19 @@ Roadmap/
 2. Админ сканирует ⮕ Открывается «Калькулятор услуг». 
 3. Админ выбирает услугу ⮕ Отправка в БД: `{ userId, serviceId, price }`. 
 4. Итог: У юзера +1 визит, у тебя +1 запись в статистику продаж.
+
+
+## Логика работы калькулятора и расчёта
+
+- **Входные данные:** `visitCount` клиента.
+    
+- **Условие:**
+    
+    - Если `visitCount < 7`: Кассир видит полную цену. После оплаты отправляем запрос на сервер: `visitCount + 1`.
+        
+    - Если `visitCount == 7`: Калькулятор подсвечивает: **«СЛЕДУЮЩАЯ МОЙКА БЕСПЛАТНО»**.
+        
+    - Если `visitCount == 8`: Калькулятор автоматически ставит `finalPrice = 0` и пишет: **«БОНУСНАЯ МОЙКА»**. После «оплаты» (0 руб) счетчик `visitCount` сбрасывается в `0`.
 </file>
 
 <file path="Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/Front.md">
@@ -877,20 +919,68 @@ Roadmap/
 Где будет лежать сервер? Где база? Как настроен SSL-сертификат (PWA **обязательно** требует HTTPS)
 </file>
 
+<file path="Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md">
+[!info] Цель Сбор статистики для понимания реальной выручки, популярности услуг и стоимости программы лояльности (убыток от бесплатных моек).
+
+
+#### 1. Структура данных одного заказа (Transaction)
+
+Каждый раз, когда кассир нажимает «Подтвердить», в PostgreSQL улетает этот пакет:
+
+|**Поле**|**Описание**|**Зачем это Боссу?**|
+|---|---|---|
+|`service_id`|Какая мойка выбрана|Узнать самую популярную услугу.|
+|`gross_amount`|Цена по прайсу (без скидки)|Видеть потенциальный оборот.|
+|`net_amount`|Реально оплачено (0 или полная)|Видеть реальную кассу.|
+|`is_bonus`|Была ли это 8-я мойка|Посчитать, сколько «подарков» выдали.|
+|`timestamp`|Дата и время|Понять часы пик и нагрузку.|
+</file>
+
 <file path="Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Telegram Bot Logic.md">
 Поскольку бот — это серверная история, его логику (команды, обработку сообщений) лучше вынести в этот сектор.
 </file>
 
 <file path="Projzeus/🧠Brainstorm/Data-Sync.md">
-| **Сущность в БД (PostgreSQL)** | **Ключ в JSON (JS)**    | **Тип данных** | **Описание**               |
-| ------------------------------ | ----------------------- | -------------- | -------------------------- |
-| `user_id`                      | `userId`                | String (UUID)  | Уникальный ID пользователя |
-| `visit_count`                  | `visitCount`            | Integer        | Текущее кол-во моек (0-8)  |
-| `last_visit`                   | `lastVisitDate`         | Date (ISO)     | Дата последнего посещения  |
-| `is_free_wash`                 | `isEligibleForFreeWash` | Boolean        | Флаг «Пора мыть бесплатно» |
-| `service_id`                   | `serviceId`             |                | Какая услуга выбрана       |
-| `price`                        | `totalPrice`            |                | Стоимость для метрик       |
-[!abstract] Текущий формат ответа API ![[Buslog#^standard-json]]
+### 1. Группа: User Data (Данные клиента)
+
+Это то, что характеризует самого пользователя и его статус в программе лояльности.
+
+| **Поле в PostgreSQL** | **Ключ в JSON (Frontend)** | **Тип** | **Описание**                  |
+| --------------------- | -------------------------- | ------- | ----------------------------- |
+| `user_id`             | `userId`                   | String  | Уникальный ID (из QR-кода)    |
+| `phone_number`        | `phoneNumber`              | String  | Номер для авторизации         |
+| `visit_count`         | `visitCount`               | Integer | Текущий прогресс (0-8)        |
+| `is_eligible_free`    | `isEligibleForFreeWash`    | Boolean | Флаг готовности 8-й мойки     |
+| `last_visit`          | `lastVisitDate`            | Date    | Когда заезжал в последний раз |
+
+#### 2. Группа: Services Reference (Справочник услуг)
+
+_Константные значения. Бэкендер создаст такую таблицу, чтобы можно было подтягивать цены и названия._
+
+| **Поле в PostgreSQL** | **Ключ в JSON (Frontend)** | **Тип** | **Пример значения**          |
+| --------------------- | -------------------------- | ------- | ---------------------------- |
+| `service_id`          | `serviceId`                | Integer | 2                            |
+| `service_name`        | `serviceName`              | String  | "Стандарт (кузов + коврики)" |
+| `base_price`          | `basePrice`                | Integer | 600                          |
+
+#### 3. Группа: Transactions & Metrics (Сбор данных для Босса)
+
+_Те самые переменные для «Калькулятора», которые улетают на сервер после нажатия кнопки._
+
+|**Поле в PostgreSQL**|**Ключ в JSON (Frontend)**|**Тип**|**Описание**|
+|---|---|---|---|
+|`order_id`|`orderId`|UUID|Уникальный номер чека|
+|`gross_amount`|`grossAmount`|Integer|Полная цена (без скидок)|
+|`net_amount`|`netAmount`|Integer|Итого к оплате (0 или полная)|
+|`applied_bonus`|`appliedBonus`|Boolean|Был ли списан бонус (8-я мойка)|
+|`admin_id`|`adminId`|String|Кто именно из админов провел мойку|
+
+
+
+
+[!abstract] Текущий формат ответа API для клиента ![[Buslog#^4dea8e]]
+
+[!abstract] Текущий формат ответа API для услуги ![[Buslog#^order-json]]
 </file>
 
 <file path=".obsidian/appearance.json">
@@ -2186,6 +2276,10 @@ div:hover > .git-gutter-marker.git-changedelete {
 }
 </file>
 
+<file path="Projzeus/.repomixignore">
+
+</file>
+
 <file path=".obsidian/app.json">
 {
   "promptDelete": false,
@@ -2307,32 +2401,6 @@ div:hover > .git-gutter-marker.git-changedelete {
 }
 </file>
 
-<file path="Projzeus/Dashboard.md">
-# 🏛 PROJECT ZEUS: HUB
-
-## 🎯 СТАТУС: v0.1 (Base Logic)
-- **Прогресс:** [▓▓▓▓▓▓▓▓] 100%
-- **Карта:** [[RoadMap/Versions/v0.1/Map.canvas|🗺 Открыть v0.1]]
-- **Задачи:** [YouGile ↗️] | [GitHub ↗️]
-
----
-
-## 🧠 BRAINSTORM (Мозг)
-- **Функционал:** [[Buslog|⚙️ Logic]] | [[Front|🎨 UI]]
-- **Тех. долг:** [[PWALog|🐞 Bugs]]
-
----
-
-## 📚 СКАМЬЯ ЗАПАСНЫХ
-- **Гайды:** [[Git guide for OBS&VSCODE|Git]] | [[Dev-Environment|Setup]]
-- **Идеи:** [[0-Inbox|📥 Inbox]]
-
----
-
-## 💼 БОССУ
-- **Презентация:** [[Project-Pitch|Pitch]] | [[Boss-Demo-v0.1|Demo]]
-</file>
-
 <file path="Projzeus/Project-Structure.md">
 #### 1. 🌌 Star of Death (Звезда Смерти)
 
@@ -2388,6 +2456,32 @@ div:hover > .git-gutter-marker.git-changedelete {
 - **Интеграция:** Питает новыми задачами `Roadmap` и «Звезду Смерти».
 </file>
 
+<file path="Projzeus/Dashboard.md">
+# 🏛 PROJECT ZEUS: HUB
+
+## 🎯 СТАТУС: v0.1 (Base Logic)
+- **Прогресс:** [▓▓▓▓▓▓▓▓] 100%
+- **Карта:** [[RoadMap/Versions/v0.1/Map.canvas|🗺 Открыть v0.1]]
+- **Задачи:** [YouGile ↗️] | [GitHub ↗️]
+
+---
+
+## 🧠 BRAINSTORM (Мозг)
+- **Функционал:** [[Buslog|⚙️ Logic]] | [[Front|🎨 UI]]
+- **Тех. долг:** [[PWALog|🐞 Bugs]]
+
+---
+
+## 📚 СКАМЬЯ ЗАПАСНЫХ
+- **Гайды:** [[Git guide for OBS&VSCODE|Git]] | [[Dev-Environment|Setup]]
+- **Идеи:** [[0-Inbox|📥 Inbox]]
+
+---
+
+## 💼 БОССУ
+- **Презентация:** [[Project-Pitch|Pitch]] | [[Boss-Demo-v0.1|Demo]]
+</file>
+
 <file path=".obsidian/workspace.json">
 {
   "main": {
@@ -2404,29 +2498,26 @@ div:hover > .git-gutter-marker.git-changedelete {
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Projzeus/🧠Brainstorm/Data-Sync.md",
+                "file": "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Data-Sync"
+              "title": "Buslog"
             }
           },
           {
             "id": "6a020f7ba691a74c",
             "type": "leaf",
             "state": {
-              "type": "canvas",
+              "type": "markdown",
               "state": {
-                "file": "Projzeus/🌌Star of death.canvas",
-                "viewState": {
-                  "x": 4190.912406876547,
-                  "y": 441.22973213223577,
-                  "zoom": -0.6826691853688955
-                }
+                "file": "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-layout-dashboard",
-              "title": "🌌Star of death"
+              "icon": "lucide-file",
+              "title": "Buslog"
             }
           }
         ],
@@ -2589,9 +2680,14 @@ div:hover > .git-gutter-marker.git-changedelete {
   },
   "active": "6a020f7ba691a74c",
   "lastOpenFiles": [
-    "Projzeus/Project-Structure.md",
     "Projzeus/🧠Brainstorm/Data-Sync.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Data-syncs.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
+    "Projzeus/🌌Star of death.canvas",
+    "repomix-output.xml",
+    "Projzeus/Project-Structure.md",
     "Projzeus/🗺RoadMap/Versions/v0.1/Readme-v0.1.md",
     "Projzeus/🗺RoadMap/Versions/v0.1/Map.canvas",
     "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
@@ -2601,11 +2697,9 @@ div:hover > .git-gutter-marker.git-changedelete {
     "Projzeus/🗺RoadMap/Versions/Без названия.canvas",
     "Projzeus/🗺RoadMap/Versions/danila version/Untitled.canvas",
     "Projzeus/🗺RoadMap/Versions/danila version",
-    "Projzeus/🌌Star of death.canvas",
     "Projzeus/📚Docs/Setup/Git guide/🛠 Guide git for OBS&VSCODE.md",
     "Projzeus/📚Docs/Tutorials/VScode.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
     "Projzeus/📚Docs/Instruction.md",
     "Projzeus/📚Docs/How use.md",
     "Projzeus/📚Docs/Environment.md",
@@ -2621,7 +2715,6 @@ div:hover > .git-gutter-marker.git-changedelete {
     "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA.md",
     "Как какать.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
-    "Projzeus/Readme.md",
     "Projzeus/📚Docs/Setup/Git guide",
     "Projzeus/🗺RoadMap/Без названия.base",
     "Projzeus/🧠Readme/Infrastructure",
@@ -2630,7 +2723,6 @@ div:hover > .git-gutter-marker.git-changedelete {
     "Projzeus/🧠Brainstorm",
     "Docs/Setup",
     "Docs",
-    "Readme",
     "Projzeus/how.canvas",
     "statisfactory/Без названия 1 1.canvas",
     "projtur/__Roadmap.canvas",

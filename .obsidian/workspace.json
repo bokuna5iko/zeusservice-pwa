@@ -13,29 +13,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Projzeus/🧠Brainstorm/Data-Sync.md",
+                "file": "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Data-Sync"
+              "title": "Buslog"
             }
           },
           {
             "id": "6a020f7ba691a74c",
             "type": "leaf",
             "state": {
-              "type": "canvas",
+              "type": "markdown",
               "state": {
-                "file": "Projzeus/🌌Star of death.canvas",
-                "viewState": {
-                  "x": 3103.7108692522615,
-                  "y": 1204.6174795503516,
-                  "zoom": -1.0160025187022288
-                }
+                "file": "Projzeus/📚Docs/Setup/Git guide/🛠 Guide git for OBS&VSCODE.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-layout-dashboard",
-              "title": "🌌Star of death"
+              "icon": "lucide-file",
+              "title": "🛠 Guide git for OBS&VSCODE"
             }
           }
         ],
@@ -198,9 +195,16 @@
   },
   "active": "6a020f7ba691a74c",
   "lastOpenFiles": [
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
-    "Projzeus/🧠Brainstorm/Data-Sync.md",
     "Projzeus/🌌Star of death.canvas",
+    "README.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Data-Sync.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Hosting & Domain.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Без названия.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Data-syncs.md",
     "repomix-output.xml",
     "Projzeus/Project-Structure.md",
     "Projzeus/🗺RoadMap/Versions/v0.1/Readme-v0.1.md",
@@ -214,8 +218,6 @@
     "Projzeus/🗺RoadMap/Versions/danila version",
     "Projzeus/📚Docs/Setup/Git guide/🛠 Guide git for OBS&VSCODE.md",
     "Projzeus/📚Docs/Tutorials/VScode.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
     "Projzeus/📚Docs/Instruction.md",
     "Projzeus/📚Docs/How use.md",
     "Projzeus/📚Docs/Environment.md",
@@ -227,11 +229,6 @@
     "Projzeus/🗺RoadMap/Versions/v0.2/Readme-v0.2.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/Front.md",
     "Projzeus/📥Backlog/0-Inbox.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Telegram Bot Logic.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA.md",
-    "Как какать.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
-    "Projzeus/Readme.md",
     "Projzeus/📚Docs/Setup/Git guide",
     "Projzeus/🗺RoadMap/Без названия.base",
     "Projzeus/🧠Readme/Infrastructure",
