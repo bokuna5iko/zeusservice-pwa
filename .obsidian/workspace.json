@@ -1,0 +1,235 @@
+{
+  "main": {
+    "id": "01301b56a0c4a3d0",
+    "type": "split",
+    "children": [
+      {
+        "id": "61420bcacac7e78b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6a020f7ba691a74c",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "Новая вкладка"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "2d6164c153fc17f4",
+    "type": "split",
+    "children": [
+      {
+        "id": "8862956339b9ddc1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2c58408373b07149",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Файловый менеджер"
+            }
+          },
+          {
+            "id": "c43980557ffddc57",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Поиск"
+            }
+          },
+          {
+            "id": "50bd4474d9b45f86",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Закладки"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "1a3aa3a7c0cf7e23",
+    "type": "split",
+    "children": [
+      {
+        "id": "da0359f579081e47",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c373ef4cf7dec9ad",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Без названия.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Обратные ссылки для Без названия"
+            }
+          },
+          {
+            "id": "46d154fc024f3a4b",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Без названия.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Исходящие ссылки из Без названия"
+            }
+          },
+          {
+            "id": "032beaf97d86661c",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Теги"
+            }
+          },
+          {
+            "id": "861120d3a1227ead",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Projzeus/Star of death.canvas",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Структура Star of death"
+            }
+          },
+          {
+            "id": "3992e861fc73d1a6",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "bases:Создать новую базу": false,
+      "obsidian-git:Open Git source control": false
+    }
+  },
+  "active": "3992e861fc73d1a6",
+  "lastOpenFiles": [
+    "readme.md",
+    "repomix-output2.xml",
+    "repomix-output.xml",
+    "repomix1-output.xml",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
+    "node_modules/pg-protocol/src/types/chunky.d.ts",
+    "node_modules/pg-protocol/src/testing/test-buffers.ts",
+    "node_modules/pg-protocol/src/testing/buffer-list.ts",
+    "node_modules/dotenv/skills/dotenvx/SKILL.md",
+    "node_modules/dotenv/skills/dotenv/SKILL.md",
+    "node_modules/pg/lib/native/query.js",
+    "node_modules/pg/lib/native/index.js",
+    "node_modules/pg/lib/native/client.js",
+    "node_modules/pg/lib/crypto/utils.js",
+    "node_modules/postgres-date/readme.md",
+    "node_modules/xtend/README.md",
+    "node_modules/split2/README.md",
+    "node_modules/postgres-array/readme.md",
+    "node_modules/postgres-interval/readme.md",
+    "node_modules/pgpass/README.md",
+    "node_modules/postgres-bytea/readme.md",
+    "node_modules/pg-types/README.md",
+    "node_modules/pg-protocol/README.md",
+    "node_modules/pg-pool/README.md",
+    "node_modules/pg-int8/README.md",
+    "node_modules/pg-connection-string/README.md",
+    "node_modules/pg-cloudflare/README.md",
+    "node_modules/dotenv/SECURITY.md",
+    "node_modules/dotenv/README.md",
+    "node_modules/dotenv/README-es.md",
+    "node_modules/dotenv/CHANGELOG.md",
+    "node_modules/pg/README.md",
+    "frontend/icons/ios/180.png",
+    "frontend/icons/android/zeuslogo-512x512.png",
+    "frontend/icons/android/zeuslogo-192x192.png",
+    "Projzeus/📚Docs/Setup/Git guide/🛠 Guide git for OBS&VSCODE.md",
+    "Projzeus/🌌Star of death.canvas",
+    "README.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
+    "Projzeus/🗺RoadMap/Versions/v0.1/Map.canvas",
+    "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
+    "Projzeus/🧠Brainstorm/Untitled.canvas",
+    "Projzeus/🗺RoadMap/Versions/Без названия.canvas",
+    "Projzeus/🗺RoadMap/Versions/danila version/Untitled.canvas",
+    "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
+    "Projzeus/how.canvas",
+    "statisfactory/Без названия 1 1.canvas",
+    "projtur/__Roadmap.canvas",
+    "SDLC-stages 1.png",
+    "QA/dsd2da223.png",
+    "Pasted image 20251011062228.png",
+    "dsd2das2.png",
+    "dsd2das2 1.png",
+    "dsd2da223 1.png",
+    "Pasted image 20251011060509.png"
+  ]
+}
