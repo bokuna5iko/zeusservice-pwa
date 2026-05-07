@@ -18,6 +18,13 @@ const closeBtn = document.querySelector('.close-btn');
 
 let isRegistrationMode = false;
 
+let currentScanData = {
+    userId: null,
+    visitCount: 0,
+    selectedPrice: 0,
+    selectedService: ''
+};
+
 // Автоформатирование номера (+7)
 phoneInput.addEventListener('focus', () => {
     if (!phoneInput.value.startsWith('+7')) {
@@ -265,7 +272,7 @@ async function addVisitByAdmin(userId) {
     const token = localStorage.getItem('accessToken');
     
     try {
-        const response = await fetch('http://localhost:3000/api/admin/visits/add', {
+        const response = await fetch('http://192.168.0.102:3000/api/admin/visits/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -287,8 +294,149 @@ async function addVisitByAdmin(userId) {
     }
 }
 
+async function openCalculator(userId) {
+    currentScanData.userId = userId;
+    
+    // 1. Запрашиваем инфо о пользователе через существующий API (или создаем быстрый эндпоинт)
+    // Для начала возьмем данные, которые приходят при скане (нужно будет подправить бэкенд чуть позже)
+    // А пока имитируем получение количества визитов:
+    try {
+        const response = await fetch(`http://192.168.0.102:3000/api/admin/user-status/${userId}`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
+        });
+        const data = await response.json();
+        currentScanData.visitCount = data.visitCount + 1; // Текущий визит
+    } catch (e) {
+        console.error("Ошибка получения статуса", e);
+        currentScanData.visitCount = 1; 
+    }
+
+    const modal = document.getElementById('calculator-modal');
+    const container = document.getElementById('calc-container');
+    const visitText = document.getElementById('visit-number-text');
+    
+    visitText.innerText = `Визит №${currentScanData.visitCount}`;
+    
+    // Проверка на "Золотой статус" (8-й визит)
+    if (currentScanData.visitCount % 8 === 0) {
+        container.classList.add('gold-mode');
+    } else {
+        container.classList.remove('gold-mode');
+    }
+
+    modal.style.display = 'block';
+}
+
 // Привязываем запуск к кнопке
 const scanBtn = document.getElementById('btn-scan-qr');
 if (scanBtn) {
     scanBtn.addEventListener('click', startScanner);
 }
+
+// Ждем загрузки DOM, чтобы кнопки калькулятора были доступны
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- Логика выбора услуг в калькуляторе ---
+    const serviceItems = document.querySelectorAll('.service-item');
+    
+    serviceItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // 1. Подсвечиваем выбранную кнопку
+            serviceItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+
+            // 2. Берем базовую цену из атрибута data-price
+            const originalPrice = parseInt(this.dataset.price);
+            currentScanData.selectedPrice = originalPrice;
+            currentScanData.selectedService = this.querySelector('span').innerText;
+
+            // 3. Считаем скидку
+            let finalPrice = originalPrice;
+            
+            // Если 8-й визит (Золотой режим)
+            if (currentScanData.visitCount % 8 === 0) {
+                finalPrice = 0;
+            } 
+            // Если 4-й визит (Скидка 20%)
+            else if (currentScanData.visitCount % 4 === 0) {
+                finalPrice = originalPrice * 0.8;
+            }
+
+            // 4. Обновляем текст в модалке
+            const originalPriceElem = document.getElementById('price-original');
+            const finalPriceElem = document.getElementById('price-final');
+
+            originalPriceElem.innerText = `${originalPrice}₽`;
+            finalPriceElem.innerText = `${finalPrice}₽`;
+            
+            // Если есть любая скидка — зачеркиваем старую цену
+            if (finalPrice !== originalPrice) {
+                originalPriceElem.classList.add('strike-through');
+            } else {
+                originalPriceElem.classList.remove('strike-through');
+            }
+            
+            // --- Кнопка "Подтвердить визит" ---
+const confirmBtn = document.getElementById('btn-confirm-visit');
+if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+        // Проверка: выбрал ли админ услугу?
+        if (!currentScanData.selectedService) {
+            alert("Пожалуйста, выберите услугу перед подтверждением!");
+            return;
+        }
+
+        const finalPrice = parseInt(document.getElementById('price-final').innerText);
+        const token = localStorage.getItem('accessToken');
+
+        try {
+            const response = await fetch('http://192.168.0.102:3000/api/admin/visits/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    userId: currentScanData.userId,
+                    service: currentScanData.selectedService,
+                    amount: finalPrice
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert(`Визит успешно оформлен!\nУслуга: ${currentScanData.selectedService}\nСумма: ${finalPrice}₽`);
+                
+                // Закрываем модалку и сбрасываем данные
+                document.getElementById('calculator-modal').style.display = 'none';
+                resetCalculator(); 
+            } else {
+                alert(`Ошибка: ${result.error || 'Не удалось сохранить визит'}`);
+            }
+        } catch (err) {
+            console.error("Ошибка при отправке:", err);
+            alert("Проблема с сетью или сервером");
+        }
+    });
+}
+
+// Вспомогательная функция для сброса данных
+function resetCalculator() {
+    currentScanData = { userId: null, visitCount: 0, selectedPrice: 0, selectedService: '' };
+    document.querySelectorAll('.service-item').forEach(i => i.classList.remove('active'));
+    document.getElementById('price-original').innerText = '0₽';
+    document.getElementById('price-final').innerText = '0₽';
+}
+
+        });
+    });
+
+    // --- Кнопка закрытия калькулятора ---
+    const closeBtn = document.getElementById('btn-close-calc');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            document.getElementById('calculator-modal').style.display = 'none';
+        });
+    }
+});

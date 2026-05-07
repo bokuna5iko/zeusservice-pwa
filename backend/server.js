@@ -1,4 +1,11 @@
 require('dotenv').config();
+console.log('--- СЕРВЕР ОБНОВЛЕН ---');
+console.log('Время запуска:', new Date().toLocaleTimeString());
+console.log('Пароль базы:', process.env.DB_PASSWORD ? "OK" : "ПУСТО");
+console.log('-----------------------');
+console.log('--- ПРОВЕРКА ENV ---');
+console.log('Пароль из файла:', process.env.DB_PASSWORD); 
+console.log('Имя базы:', process.env.DB_NAME);
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');

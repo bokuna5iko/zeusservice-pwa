@@ -194,6 +194,35 @@
     </div>
 </div>
 
+<div id="calculator-modal" class="modal">
+    <div class="modal-content" id="calc-container">
+        <h3 id="calc-title">Оформление визита</h3>
+        <p id="visit-number-text"></p>
+        
+        <div class="services-list">
+            <button class="service-btn" data-price="500">Стандартная + коврики (500₽)</button>
+            <button class="service-btn" data-price="1000">Комплекс (1300₽)</button>
+            <button class="service-btn" data-price="2500">Детейлинг (2500₽)</button>
+        </div>
+
+        <div class="price-display">
+            <div class="price-item">
+                <span>Без скидки:</span>
+                <span id="price-original">0₽</span>
+            </div>
+            <div class="price-item">
+                <span>К оплате:</span>
+                <span id="price-final">0₽</span>
+            </div>
+        </div>
+
+        <div class="calc-actions">
+            <button id="btn-confirm-visit" class="primary-btn">Подтвердить визит</button>
+            <button id="btn-close-calc" class="secondary-btn">Отмена</button>
+        </div>
+    </div>
+</div>
+
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="js/ui-controller.js"></script>
