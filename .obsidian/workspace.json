@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
+                "file": "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Data-Sync.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "PGAdmin&postgreSQL"
+              "title": "Data-Sync"
             }
           }
         ]
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 339.5
   },
   "right": {
     "id": "1a3aa3a7c0cf7e23",
@@ -180,9 +180,14 @@
   },
   "active": "6a020f7ba691a74c",
   "lastOpenFiles": [
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
+    "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas.canvas",
+    "Projzeus/🗺RoadMap/Versions/v0.2/Readme-v0.2.md",
+    "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
+    "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
+    "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
     "Projzeus/📚Docs/Tutorials/Git guide/🛠 Guide git for OBS&VSCODE.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
-    "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
     "Projzeus/📚Docs/Setup/Dev-Environment.md",
     "Тест.md",
     "Как какать.md",
@@ -192,12 +197,9 @@
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Hosting & Domain.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Data-Sync.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/Front.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
-    "Projzeus/🗺RoadMap/Versions/v0.2/Readme-v0.2.md",
-    "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.1/Readme-v0.1.md",
     "Projzeus/🗺RoadMap/Versions/v0.1/Map.canvas",
     "Projzeus/📚Docs/Tutorials/Git guide/Workflow&Golden Cycle.md",
@@ -208,7 +210,6 @@
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)",
     "Projzeus/🗺RoadMap/Versions/v0.2",
     "Projzeus/🗺RoadMap/Versions/v0.1",
-    "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
     "Projzeus/📚Docs/Tutorials/VScode.md",
     "Projzeus/📚Docs/Tutorials/PWA-Icons.md",
     "Projzeus/📚Docs/Tutorials/Git guide",
@@ -218,7 +219,6 @@
     "Projzeus/🗺RoadMap/Versions",
     "Projzeus/🗺RoadMap/Readme.md",
     "Projzeus/📥Backlog/Readme.md",
-    "Projzeus/📥Backlog/1-Refined.md",
     "Projzeus/🌌Star of death.canvas",
     "frontend/icons/ios/180.png",
     "frontend/icons/android/zeuslogo-512x512.png",
@@ -228,7 +228,6 @@
     "Projzeus/🗺RoadMap/Versions/danila version/Untitled.canvas",
     "Projzeus/how.canvas",
     "statisfactory/Без названия 1 1.canvas",
-    "projtur/__Roadmap.canvas",
     "SDLC-stages 1.png",
     "QA/dsd2da223.png",
     "Pasted image 20251011062228.png",
