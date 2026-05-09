@@ -25,27 +25,42 @@ const ui = {
 
     // 2. Отрисовка данных на главной (Home)
     renderHome(user) {
-        const userInfo = document.querySelector('.user-info');
-        const badge = document.querySelector('.badge');
-        const nextBonus = document.getElementById('next-bonus-info');
-
-        if (userInfo) userInfo.textContent = `Привет, ${user.name || 'Клиент'}! 👋`;
+        // 1. Ищем элементы по тем именам, что у тебя в HTML
+        const userInfo = document.querySelector('.user-info'); // Твой h2 с заголовком
+        const badge = document.querySelector('.badge');       // Твой счетчик 0/8
+        const nextBonus = document.getElementById('next-bonus-info'); // Твой p class="hint"
+        const userIdDisplay = document.getElementById('user-id-display'); // Элемент для ID
+    
+        // 2. Обновляем приветствие
+        if (userInfo) {
+            // Заменяем "Ваши визиты" на приветствие с именем
+            userInfo.textContent = `Привет, ${user.name || 'Клиент'}! 👋`;
+        }
         
-        // Логика счетчика 0/8
-        const currentVisits = user.visitCount || 0;
+        // 3. Обновляем счетчик визитов
+        const currentVisits = parseInt(user.visitCount) || 0;
         const progress = currentVisits % 8;
-        if (badge) badge.textContent = `${progress} / 8`;
-
+        
+        if (badge) {
+            badge.textContent = `${progress} / 8`;
+        }
+    
+        // 4. Обновляем текст подсказки внизу карточки
         if (nextBonus) {
             const left = 8 - progress;
-            nextBonus.textContent = progress === 0 && currentVisits > 0 
-                ? 'Ваша следующая мойка — БЕСПЛАТНО!' 
+            nextBonus.textContent = (progress === 0 && currentVisits > 0) 
+                ? 'Следующая мойка — БЕСПЛАТНО! 🎉' 
                 : `До бесплатной мойки осталось: ${left}`;
         }
-
-        // Генерируем QR-код (функция должна быть в main или отдельном файле)
-        if (window.generateUserQR) {
-            window.generateUserQR(user.userId || user.id);
+    
+        // 5. Выводим ID пользователя текстом
+        if (userIdDisplay) {
+            userIdDisplay.textContent = `ID: ${user.id || user.userId || '---'}`;
+        }
+    
+        // 6. Генерируем QR-код
+        if (window.generateUserQR && (user.id || user.userId)) {
+            window.generateUserQR(user.id || user.userId);
         }
     },
 
@@ -55,10 +70,11 @@ const ui = {
             const el = document.getElementById(id);
             if (el) el.textContent = text || '—';
         };
-
-        set('profile-name', user.name || 'Не указано');
+    
+        set('profile-name', user.name || 'Клиент');
         set('profile-phone', user.phone);
         set('profile-visits', user.visitCount || 0);
+        // Выводим роль текстом в профиле
         set('profile-role', user.role === 'admin' ? 'Администратор' : 'Клиент');
     },
 
@@ -89,7 +105,8 @@ const ui = {
 
     // 5. Выход
     logout() {
-        localStorage.clear();
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('currentUser'); // Чистим кэш профиля
         window.location.reload();
     }
 };

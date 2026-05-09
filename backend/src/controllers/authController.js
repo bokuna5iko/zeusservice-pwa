@@ -1,28 +1,64 @@
 const pool = require('../config/db');
 const jwt = require('jsonwebtoken');
 
+// 1. Вход в систему
 exports.login = async (req, res) => {
-    const { phone } = req.body; // Получаем только номер
+    const { phone } = req.body;
     try {
+        // Выбираем всё (*), включая поле name
         const result = await pool.query('SELECT * FROM users WHERE phone = $1', [phone]);
         const user = result.rows[0];
 
-        // Если пользователя с таким номером нет в базе
         if (!user) {
             return res.status(401).json({ message: 'Пользователь с таким номером не найден' });
         }
 
-        // ПАРОЛЬ БОЛЬШЕ НЕ ПРОВЕРЯЕМ
-        // Генерируем токен, как и раньше
+        // Генерируем токен
         const token = jwt.sign(
             { id: user.id, role: user.role },
             process.env.JWT_SECRET || 'your_jwt_secret_key',
             { expiresIn: '24h' }
         );
 
-        res.json({ token, role: user.role });
+        // Отправляем данные (включая name) сразу при логине
+        res.json({ 
+            token, 
+            role: user.role,
+            name: user.name, // Убедись, что в БД колонка называется именно name
+            userId: user.id
+        });
     } catch (err) {
         console.error('Ошибка при входе:', err);
+        res.status(500).json({ message: 'Ошибка сервера' });
+    }
+};
+
+// 2. ПОЛУЧЕНИЕ ПРОФИЛЯ (ЭТОГО У ТЕБЯ НЕ ХВАТАЛО)
+// Эта функция вызывается фронтендом (api.getProfile) при каждой загрузке страницы
+exports.getMe = async (req, res) => {
+    try {
+        // req.user.id берется из middleware авторизации (который проверяет токен)
+        const result = await pool.query(
+            'SELECT id, phone, name, role, visits_count FROM users WHERE id = $1', 
+            [req.user.id]
+        );
+        
+        const user = result.rows[0];
+
+        if (!user) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
+        }
+
+        // Отправляем полные данные пользователя на фронтенд
+        res.json({
+            id: user.id,
+            phone: user.phone,
+            name: user.name, // КРИТИЧНО: передаем имя
+            role: user.role,
+            visitCount: user.visits_count // Проверь название колонки в БД (visits_count или visit_count)
+        });
+    } catch (err) {
+        console.error('Ошибка получения профиля:', err);
         res.status(500).json({ message: 'Ошибка сервера' });
     }
 };

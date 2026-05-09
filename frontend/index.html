@@ -46,35 +46,34 @@
     </div>
 </section>    
         
-        <section id="home-page" class="page">
-            <div class="card loyalty-card">
-                <div class="card-header">
-                    <h2>Ваши визиты</h2>
-                    <span class="badge">0 / 8</span>
-                </div>
-                
-                <div class="points-grid">
-                    <div class="point">1</div>
-                    <div class="point">2</div>
-                    <div class="point">3</div>
-                    <div class="point">4</div>
-                    <div class="point">5</div>
-                    <div class="point">6</div>
-                    <div class="point">7</div>
-                    <div class="point gift">🎁</div>
-                </div>
-                
-                <p class="hint">Загрузка данных...</p>
-            </div>
+<section id="home-page" class="page">
+    <div class="card loyalty-card">
+        <div class="card-header">
+            <h2 class="user-info">Ваши визиты</h2> 
+            <span class="badge">0 / 8</span>
+        </div>
+        
+        <div class="points-grid">
+            <div class="point">1</div>
+            <div class="point">2</div>
+            <div class="point">3</div>
+            <div class="point">4</div>
+            <div class="point">5</div>
+            <div class="point">6</div>
+            <div class="point">7</div>
+            <div class="point gift">🎁</div>
+        </div>
+        
+        <p class="hint" id="next-bonus-info">Загрузка данных...</p>
+    </div>
 
-            <div class="card qr-section">
-                <p>Покажите код администратору</p>
-                <div class="qr-placeholder" id="qrcode-container">
-                    <!-- Сюда скрипт вставит QR-код -->
-                </div>
-                <div class="user-id">ID: 448-129</div>
+    <div class="card qr-section">
+        <p>Покажите код администратору</p>
+        <div class="qr-placeholder" id="qrcode-container">
             </div>
-        </section>
+        <div class="user-id" id="user-id-display">ID: ---</div>
+    </div>
+</section>
 
         <section id="history-page" class="page">
             <div class="card">

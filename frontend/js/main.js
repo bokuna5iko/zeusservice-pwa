@@ -25,13 +25,20 @@ async function initAppData() {
     try {
         const profile = await api.getProfile();
         if (profile) {
-            localStorage.setItem('currentUser', JSON.stringify(profile));
+            console.log('Данные профиля получены:', profile);
             
+            // Отрисовываем приветствие и данные
             ui.renderHome(profile);
             ui.renderProfile(profile);
             
-            if (profile.role === 'admin') {
-                document.getElementById('nav-admin').style.display = 'flex';
+            // Проверка роли: показываем кнопку админа только если роль 'admin'
+            const navAdmin = document.getElementById('nav-admin');
+            if (navAdmin) {
+                if (profile.role === 'admin') {
+                    navAdmin.style.display = 'flex';
+                } else {
+                    navAdmin.style.display = 'none';
+                }
             }
 
             ui.showPage('home-page');
@@ -53,15 +60,20 @@ function setupNavigation() {
                 if (pageId === 'home') initAppData();
                 if (pageId === 'admin') ui.refreshAdminStats();
                 
-                // ЛОГИКА СКАНЕРА ТУТ (Внутри функции, где pageId определен)
                 if (pageId === 'scan') {
-                    scanner.start();
+                    if (typeof scanner !== 'undefined') scanner.start();
                 } else {
-                    scanner.stop();
+                    if (typeof scanner !== 'undefined') scanner.stop();
                 }
             }
         });
     });
+
+    // Кнопка выхода (Logout)
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => ui.logout());
+    }
 }
 
 // Логика входа
@@ -69,21 +81,26 @@ function setupAuthEvents() {
     const btnLogin = document.getElementById('btn-login');
     const phoneInput = document.getElementById('user-phone-input');
 
-    if (btnLogin) {
+    if (btnLogin && phoneInput) {
         btnLogin.addEventListener('click', async () => {
-            const phone = phoneInput.value.replace(/[^0-9]/g, '');
+            const rawPhone = phoneInput.value;
+            const cleanPhone = rawPhone.replace(/[^0-9]/g, ''); // Теперь переменная внутри
             
-            if (phone.length < 10) {
+            if (cleanPhone.length < 10) {
                 alert('Введите корректный номер телефона');
                 return;
             }
 
-            const result = await api.login(phone); 
-            if (result && result.token) {
-                localStorage.setItem('accessToken', result.token);
-                window.location.reload(); 
-            } else {
-                alert(result.message || 'Ошибка входа');
+            try {
+                const result = await api.login(cleanPhone); 
+                if (result && result.token) {
+                    localStorage.setItem('accessToken', result.token);
+                    window.location.reload(); 
+                } else {
+                    alert(result.message || 'Ошибка входа');
+                }
+            } catch (err) {
+                console.error('Ошибка логина:', err);
             }
         });
     }
@@ -91,22 +108,19 @@ function setupAuthEvents() {
 
 // Глобальная функция генерации QR
 window.generateUserQR = function(userId) {
-    const qrContainer = document.getElementById('qrcode-container'); // ПРОВЕРЬ ЭТОТ ID В INDEX.HTML
-    if (!qrContainer) return;
+    const qrContainer = document.getElementById('qrcode-container');
+    if (!qrContainer || !userId) return;
 
     qrContainer.innerHTML = '';
-
     try {
         new QRCode(qrContainer, {
             text: String(userId),
             width: 150,
             height: 150,
             colorDark: "#1e3c72",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
+            colorLight: "#ffffff"
         });
-        console.log('QR-код сгенерирован для ID:', userId);
     } catch (err) {
-        console.error('Ошибка генерации QR:', err);
+        console.error('QR Error:', err);
     }
 };
