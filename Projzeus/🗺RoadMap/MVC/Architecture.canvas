@@ -1,0 +1,33 @@
+{
+	"nodes":[
+		{"id":"group_backend","type":"group","x":-440,"y":-520,"width":1160,"height":900,"color":"4","label":"BACKEND (Сервер и Логика)"},
+		{"id":"group_frontend","type":"group","x":-1400,"y":-720,"width":680,"height":1000,"color":"1","label":"FRONTEND (Клиентская часть)"},
+		{"id":"routes_group","type":"group","x":-80,"y":-180,"width":240,"height":220,"color":"5","label":"📁 routes/"},
+		{"id":"controllers_group","type":"group","x":360,"y":-290,"width":240,"height":220,"color":"6","label":"📁 controllers/"},
+		{"id":"database","type":"text","text":"🗄️ **MySQL DB**\nХранение юзеров и визитов","x":980,"y":-70,"width":200,"height":100,"color":"2"},
+		{"id":"db_config","type":"text","text":"📁 **config/db.js**\nСвязь с MySQL.","x":410,"y":160,"width":240,"height":80,"color":"6"},
+		{"id":"server_js","type":"text","text":"🚀 **server.js**\nТочка сборки. Запускает Express и подключает роуты.","x":-410,"y":-400,"width":510,"height":60,"color":"4"},
+		{"id":"index_html","type":"text","text":"📂 **index.html**\nГлавная страница PWA. Подключает стили и скрипты.","x":-1225,"y":-640,"width":400,"height":100},
+		{"id":"css_folder","type":"text","text":"📁 **css/**\nЗдесь лежат стили.\n- layout.css (сетка)\n- components.css (кнопки, золотая рамка)","x":-1225,"y":-370,"width":400,"height":150},
+		{"id":"js_ui","type":"text","text":"📜 **ui.js**\nУправляет DOM.\n*Отрисовка цен и статусов*","x":-1315,"y":-115,"width":180,"height":140,"color":"1"},
+		{"id":"js_scanner","type":"text","text":"📜 **scanner.js**\nЛогика QR.\n*Запуск камеры*","x":-935,"y":-115,"width":180,"height":130,"color":"1"},
+		{"id":"js_api","type":"text","text":"📜 **api.js**\nЦентр запросов.\n*Общается с бэкендом*","x":-1075,"y":160,"width":230,"height":80,"color":"1"},
+		{"id":"middleware","type":"text","text":"📁 **middleware/auth.js**\nПроверяет JWT токен.","x":0,"y":240,"width":240,"height":80,"color":"6"},
+		{"id":"route_auth","type":"text","text":"auth.js","x":-60,"y":-130,"width":200,"height":40},
+		{"id":"route_admin","type":"text","text":"admin.js","x":-60,"y":-80,"width":200,"height":40},
+		{"id":"route_visits","type":"text","text":"visits.js","x":-60,"y":-30,"width":200,"height":40},
+		{"id":"ctrl_auth","type":"text","text":"authController.js","x":380,"y":-240,"width":200,"height":40},
+		{"id":"ctrl_admin","type":"text","text":"adminController.js","x":380,"y":-190,"width":200,"height":40},
+		{"id":"ctrl_visit","type":"text","text":"visitController.js","x":380,"y":-140,"width":200,"height":40}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"index_html","fromSide":"bottom","toNode":"css_folder","toSide":"top","label":"берет стили"},
+		{"id":"e2","fromNode":"js_scanner","fromSide":"bottom","toNode":"js_api","toSide":"top","label":"дает ID"},
+		{"id":"e3","fromNode":"js_api","fromSide":"right","toNode":"server_js","toSide":"left","label":"fetch запрос"},
+		{"id":"e4","fromNode":"server_js","fromSide":"bottom","toNode":"route_visits","toSide":"left","label":"направляет"},
+		{"id":"e5","fromNode":"route_visits","fromSide":"bottom","toNode":"middleware","toSide":"top","label":"проверяет права"},
+		{"id":"e6","fromNode":"middleware","fromSide":"right","toNode":"ctrl_visit","toSide":"left","label":"разрешает"},
+		{"id":"e7","fromNode":"ctrl_visit","fromSide":"bottom","toNode":"db_config","toSide":"top","label":"запрос данных"},
+		{"id":"e8","fromNode":"db_config","fromSide":"right","toNode":"database","toSide":"left","label":"SQL"}
+	]
+}
