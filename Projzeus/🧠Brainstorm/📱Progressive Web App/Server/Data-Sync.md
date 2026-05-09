@@ -6,7 +6,7 @@
 | --------------------- | -------------------------- | ------- | ----------------------------- |
 | `user_id`             | `userId`                   | String  | Уникальный ID (из QR-кода)    |
 | `phone_number`        | `phoneNumber`              | String  | Номер для авторизации         |
-| `visit_count`         | `visitCount`               | Integer | Текущий прогресс (0-8)        |
+| `total_visits`        | `total_visits`             | Integer | Текущий прогресс (0-8)        |
 | `is_eligible_free`    | `isEligibleForFreeWash`    | Boolean | Флаг готовности 8-й мойки     |
 | `last_visit`          | `lastVisitDate`            | Date    | Когда заезжал в последний раз |
 
