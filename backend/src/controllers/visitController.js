@@ -56,6 +56,9 @@ exports.getUserMe = async (req, res) => {
 
         res.json({
             userId: user.id,
+	    name: user.name,
+	    phone: user.phone,     // ← тоже полезно
+            visitCount: visitCount,	
             visitCount: visitCount,
             lastVisitDate: visitResult.rows[0].last_visit,
             isEligibleForFreeWash: visitCount > 0 && visitCount % 8 === 0,
