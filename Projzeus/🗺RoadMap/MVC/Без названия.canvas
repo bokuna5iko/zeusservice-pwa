@@ -1,0 +1,9 @@
+{
+	"nodes":[
+		{"id":"6de323508d546162","x":-220,"y":-140,"width":651,"height":240,"type":"group","label":"Client (Frontend)"},
+		{"id":"1b59078e6a07556d","x":-200,"y":-120,"width":250,"height":60,"type":"text","text":"Scanner.js"},
+		{"id":"d4a326c4dec1901e","x":140,"y":-120,"width":250,"height":60,"type":"text","text":"API.js"},
+		{"id":"656f8898feb670f8","x":50,"y":0,"width":93,"height":60,"type":"text","text":"UI.js"}
+	],
+	"edges":[]
+}
