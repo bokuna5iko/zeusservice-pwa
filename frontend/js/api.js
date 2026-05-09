@@ -1,72 +1,58 @@
-const API_BASE = 'http://192.168.0.102:3000/api';
+const API_BASE_URL = 'http://192.168.0.102:3000/api';
 
-export async function authenticate(phone, name) {
-    const res = await fetch(`${API_BASE}/auth`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, name })
-    });
-    if (!res.ok) {
-        const error = await res.json().catch(() => ({}));
-        throw new Error(error.error || 'Ошибка авторизации');
-    }
-    const data = await res.json();
-    localStorage.setItem('accessToken', data.accessToken);
-    localStorage.setItem('refreshToken', data.refreshToken);
-    return data.user;
-}
+const api = {
+    // Общий метод для запросов
+    async request(endpoint, options = {}) {
+        const token = localStorage.getItem('accessToken');
+        const headers = {
+            'Content-Type': 'application/json',
+            ...options.headers,
+        };
 
-export async function checkPhone(phone) {
-    const res = await fetch(`${API_BASE}/auth/check`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone })
-    });
-    if (res.ok) {
-        const data = await res.json();
-        return data.exists;
-    }
-    throw new Error('Ошибка проверки номера');
-}
-
-export async function getProfile() {
-    let token = localStorage.getItem('accessToken');
-    const res = await fetch(`${API_BASE}/user/me`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-
-    if (res.status === 401) {
-        const refreshed = await refreshTokens();
-        if (refreshed) {
-            return await getProfile();
-        } else {
-            throw new Error('Сессия истекла');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
         }
-    }
-    if (!res.ok) throw new Error('Ошибка получения профиля');
-    return await res.json();
-}
 
-async function refreshTokens() {
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (!refreshToken) return false;
-    const res = await fetch(`${API_BASE}/refresh`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken })
-    });
-    if (res.ok) {
-        const data = await res.json();
-        localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
-        return true;
-    }
-    return false;
-}
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            ...options,
+            headers
+        });
 
-export function logout() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('carwash_user');
-    window.location.reload();
-}
+        if (response.status === 401 || response.status === 403) {
+            // Если токен протух — выкидываем на логин
+            localStorage.removeItem('accessToken');
+            window.location.href = '#login'; 
+            return;
+        }
+
+        return response.json();
+    },
+
+    // Авторизация
+    login(phone, password) {
+        return this.request('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ phone, password })
+        });
+    },
+
+    // Данные пользователя
+    getProfile() {
+        return this.request('/user/me');
+    },
+
+    // Статистика для админа
+    getAdminStats() {
+        return this.request('/admin/stats');
+    },
+
+    // Начисление визита
+    addVisit(data) {
+        return this.request('/user/add', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+};
+
+window.api = api; // Делаем доступным глобально
