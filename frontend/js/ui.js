@@ -25,27 +25,41 @@ const ui = {
 
     // 2. Отрисовка данных на главной (Home)
     renderHome(user) {
-        // 1. Ищем элементы по тем именам, что у тебя в HTML
-        const userInfo = document.querySelector('.user-info'); // Твой h2 с заголовком
-        const badge = document.querySelector('.badge');       // Твой счетчик 0/8
-        const nextBonus = document.getElementById('next-bonus-info'); // Твой p class="hint"
-        const userIdDisplay = document.getElementById('user-id-display'); // Элемент для ID
+        const userInfo = document.querySelector('.user-info');
+        const badge = document.querySelector('.badge');
+        const nextBonus = document.getElementById('next-bonus-info');
+        const userIdDisplay = document.getElementById('user-id-display');
     
-        // 2. Обновляем приветствие
-        if (userInfo) {
-            // Заменяем "Ваши визиты" на приветствие с именем
-            userInfo.textContent = `Привет, ${user.name || 'Клиент'}! 👋`;
-        }
+        if (userInfo) userInfo.textContent = `Привет, ${user.name || 'Клиент'}! 👋`;
         
-        // 3. Обновляем счетчик визитов
         const currentVisits = parseInt(user.visitCount) || 0;
-        const progress = currentVisits % 8;
+        const progress = currentVisits % 8; // Остаток от деления на 8
         
-        if (badge) {
-            badge.textContent = `${progress} / 8`;
-        }
+        if (badge) badge.textContent = `${progress} / 8`;
+
+        // --- ВОТ ЭТОТ КУСОК МЫ ВОЗВРАЩАЕМ ИЗ СТАРОГО КОДА ---
+        const points = document.querySelectorAll('.point');
+        points.forEach((point, index) => {
+            point.classList.remove('active', 'next-visit');
+            
+            // Если это 8-й кружок, ставим подарок, иначе номер
+            if (index === 7) {
+                point.textContent = '🎁';
+            } else {
+                point.textContent = index + 1;
+            }
+
+            if (index < progress) {
+                // Визит уже был
+                point.classList.add('active');
+                point.textContent = '✓';
+            } else if (index === progress) {
+                // Следующий визит (пульсирующий)
+                point.classList.add('next-visit'); 
+            }
+        });
+        // --------------------------------------------------
     
-        // 4. Обновляем текст подсказки внизу карточки
         if (nextBonus) {
             const left = 8 - progress;
             nextBonus.textContent = (progress === 0 && currentVisits > 0) 
@@ -53,12 +67,8 @@ const ui = {
                 : `До бесплатной мойки осталось: ${left}`;
         }
     
-        // 5. Выводим ID пользователя текстом
-        if (userIdDisplay) {
-            userIdDisplay.textContent = `ID: ${user.id || user.userId || '---'}`;
-        }
+        if (userIdDisplay) userIdDisplay.textContent = `ID: ${user.id || user.userId || '---'}`;
     
-        // 6. Генерируем QR-код
         if (window.generateUserQR && (user.id || user.userId)) {
             window.generateUserQR(user.id || user.userId);
         }
@@ -103,6 +113,87 @@ const ui = {
         }
     },
 
+    // 5. Отрисовка модального окна админа (Калькулятор услуг)
+    renderAdminPanel(user) {
+        // Проверяем, нет ли уже открытого окна, если есть — удаляем
+        const oldModal = document.getElementById('admin-modal');
+        if (oldModal) oldModal.remove();
+
+        const progress = (user.visitCount || 0) % 8;
+        const isFreeWash = (progress === 7); // Если 7 визитов уже есть, этот — 8-й (бесплатный)
+
+        // Создаем верстку модального окна
+        const modalHtml = `
+            <div id="admin-modal" class="modal-overlay">
+                <div class="modal-content ${isFreeWash ? 'gold-border' : ''}">
+                    <h3>${isFreeWash ? '🎁 БЕСПЛАТНАЯ МОЙКА' : 'Начисление визита'}</h3>
+                    <p>Клиент: <strong>${user.phone}</strong></p>
+                    <p>Визитов: ${user.visitCount || 0}</p>
+                    
+                    <div class="service-selector">
+                        <label>Выберите услугу:</label>
+                        <select id="service-select">
+                            <option value="Кузов">Кузов — 500₽</option>
+                            <option value="Салон">Салон — 500₽</option>
+                            <option value="Комплекс" selected>Комплекс — 1000₽</option>
+                            <option value="Премиум">Премиум — 2500₽</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button id="confirm-visit-btn" class="btn-confirm">
+                            ${isFreeWash ? 'Списать бонус' : 'Подтвердить визит'}
+                        </button>
+                        <button id="close-modal-btn" class="btn-cancel">Отмена</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Добавляем модалку в body
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        // --- ЛОГИКА КНОПОК ---
+
+        // Кнопка отмены
+        document.getElementById('close-modal-btn').onclick = () => {
+            document.getElementById('admin-modal').remove();
+        };
+
+        // Кнопка подтверждения
+        document.getElementById('confirm-visit-btn').onclick = async () => {
+            const serviceType = document.getElementById('service-select').value;
+            const confirmBtn = document.getElementById('confirm-visit-btn');
+            
+            // Блокируем кнопку, чтобы не было двойного нажатия (защита на фронте)
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Обработка...';
+
+            try {
+                // Вызываем метод API, который мы подготовили на предыдущем шаге
+                const result = await api.addVisit(user.id || user.userId, {
+                    type: serviceType,
+                    price: 0 // Цену можно вытягивать из select, если нужно
+                });
+
+                if (result.success) {
+                    alert(result.isFree ? '🎉 Мойка списана как бонус!' : '✅ Визит успешно засчитан');
+                    document.getElementById('admin-modal').remove();
+                    // Обновляем статистику на странице админа, если мы на ней
+                    if (ui.refreshAdminStats) ui.refreshAdminStats();
+                } else {
+                    alert('Ошибка: ' + result.message);
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = 'Попробовать снова';
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Связь с сервером потеряна');
+                confirmBtn.disabled = false;
+            }
+        };
+    },
+
     // 5. Выход
     logout() {
         localStorage.removeItem('accessToken');
@@ -112,7 +203,4 @@ const ui = {
 };
 
 // Делаем объект доступным глобально
-window.ui = ui;
-
-// Делаем ui глобальным
 window.ui = ui;

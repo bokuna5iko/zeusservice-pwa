@@ -31,6 +31,7 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/api/auth', authRoutes);   // Вход
 app.use('/api/admin', adminRoutes); // Статистика
 app.use('/api/user', visitRoutes);  // Визиты и профиль
+app.use('/api/visits', visitRoutes);
 
 /// 5. Обработка всех остальных путей (для SPA)
 ///app.get('/:splat*', (req, res) => {

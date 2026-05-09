@@ -107,10 +107,7 @@
 }
 
 /* Золотая рамка для 8-го визита */
-.gold-mode {
-    border: 3px solid #ffd700 !important;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4) !important;
-}
+.gold-border { border: 4px solid #ffd700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
 
 .gold-mode h3 {
     color: #ffd700;

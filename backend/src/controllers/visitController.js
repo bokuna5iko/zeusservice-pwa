@@ -1,38 +1,61 @@
+const db = require('../config/db'); // Проверь путь, он должен вести к файлу, где прописан pool.query
 const pool = require('../config/db');
 
 // Начисление визита
+const VISITS_FOR_BONUS = 8;
+const ANTI_SPAM_DELAY = 5000; // 5 секунд блокировки повторного нажатия
+
 exports.addVisit = async (req, res) => {
-    const { userId, amount, service } = req.body;
+    const { userId, serviceType, amount } = req.body; // Добавляем serviceType для логов
+
     try {
-        // 1. Записываем визит
-        await pool.query(
-            'INSERT INTO visits (user_id, amount, service) VALUES ($1, $2, $3)',
-            [userId, amount, service]
-        );
+        // 2. Ищем пользователя
+        const user = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+        if (user.rows.length === 0) return res.status(404).json({ message: "Клиент не найден" });
 
-        // 2. Обновляем last_visit в users (БЫЛО ПРОПУЩЕНО!)
-        await pool.query(
-            'UPDATE users SET last_visit = NOW() WHERE id = $1',
+        const userData = user.rows[0];
+
+        // 3. ЗАЩИТА ОТ ДВОЙНОГО НАЧИСЛЕНИЯ
+        // Проверяем, не было ли визита от этого юзера последние 5 секунд
+        const lastVisit = await db.query(
+            'SELECT created_at FROM visits WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1',
             [userId]
         );
 
-        // 3. Считаем визиты для бонуса
-        const result = await pool.query(
-            'SELECT COUNT(*) as count FROM visits WHERE user_id = $1',
-            [userId]
-        );
-        
-        const count = parseInt(result.rows[0].count);
-        const isEligibleForFreeWash = count > 0 && count % 8 === 0;
+        if (lastVisit.rows.length > 0) {
+            const timeDiff = new Date() - new Date(lastVisit.rows[0].created_at);
+            if (timeDiff < ANTI_SPAM_DELAY) {
+                return res.status(429).json({ message: "Слишком быстро! Подождите пару секунд." });
+            }
+        }
 
-        res.json({ 
-            success: true, 
-            visitCount: count, 
-            isEligibleForFreeWash 
+        // 4. ЛОГИРОВАНИЕ (Записываем не только факт, но и ЧТО купили)
+        await db.query(
+            'INSERT INTO visits (user_id, service_type, amount, admin_id) VALUES ($1, $2, $3, $4)',
+            [userId, serviceType || 'Комплекс', amount || 0, req.user.id]
+        );
+
+        // 5. ЛОГИКА БОНУСА (Используем константу вместо "8")
+        let newCount = (userData.visit_count || 0) + 1;
+        let isFree = false;
+
+        if (newCount >= VISITS_FOR_BONUS) {
+            newCount = 0; // Сбрасываем счетчик после бесплатной мойки
+            isFree = true;
+        }
+
+        await db.query('UPDATE users SET visit_count = $1 WHERE id = $2', [newCount, userId]);
+
+        res.json({
+            success: true,
+            newCount,
+            isFree,
+            message: isFree ? "Это была бесплатная мойка!" : "Визит засчитан"
         });
+
     } catch (err) {
-        console.error('Ошибка в addVisit:', err);
-        res.status(500).json({ message: 'Ошибка при начислении визита' });
+        console.error("Ошибка при начислении визита:", err);
+        res.status(500).json({ message: "Ошибка сервера" });
     }
 };
 
