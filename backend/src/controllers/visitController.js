@@ -4,22 +4,25 @@ const pool = require('../config/db');
 exports.addVisit = async (req, res) => {
     const { userId, amount, service } = req.body;
     try {
-        // 1. Записываем визит (используем $1, $2, $3 для Postgres)
+        // 1. Записываем визит
         await pool.query(
             'INSERT INTO visits (user_id, amount, service) VALUES ($1, $2, $3)',
             [userId, amount, service]
         );
 
-        // 2. Считаем общее кол-во визитов для проверки бонуса
+        // 2. Обновляем last_visit в users (БЫЛО ПРОПУЩЕНО!)
+        await pool.query(
+            'UPDATE users SET last_visit = NOW() WHERE id = $1',
+            [userId]
+        );
+
+        // 3. Считаем визиты для бонуса
         const result = await pool.query(
             'SELECT COUNT(*) as count FROM visits WHERE user_id = $1',
             [userId]
         );
         
-        // В pg результат всегда в result.rows. Счётчик возвращается строкой, преобразуем в int.
         const count = parseInt(result.rows[0].count);
-
-        // Бонус за каждую 8-ю мойку
         const isEligibleForFreeWash = count > 0 && count % 8 === 0;
 
         res.json({ 
@@ -33,34 +36,35 @@ exports.addVisit = async (req, res) => {
     }
 };
 
-// Получение профиля пользователя (статистика визитов)
+// Получение профиля пользователя
 exports.getUserMe = async (req, res) => {
     try {
-        // req.user.id берется из токена (middleware)
+        // 1. Данные пользователя (добавил last_visit)
         const userResult = await pool.query(
-            'SELECT id, phone, role FROM users WHERE id = $1', 
+            'SELECT id, phone, name, role, last_visit FROM users WHERE id = $1',
             [req.user.id]
         );
-        
-	const userResult = await pool.query(
-  	    'SELECT id, phone, name, role FROM users WHERE id = $1',  // ✅ добавь name
-  	    [req.user.id]
- 	 );
 
         if (userResult.rows.length === 0) {
             return res.status(404).json({ message: 'Пользователь не найден' });
         }
 
         const user = userResult.rows[0];
+
+        // 2. Статистика визитов (❌ БЫЛО ПРОПУЩЕНО!)
+        const visitResult = await pool.query(
+            'SELECT COUNT(*) as count, MAX(created_at) as last_visit FROM visits WHERE user_id = $1',
+            [req.user.id]
+        );
+
         const visitCount = parseInt(visitResult.rows[0].count);
 
         res.json({
             userId: user.id,
-	    name: user.name,
-	    phone: user.phone,     // ← тоже полезно
-            visitCount: visitCount,	
+            name: user.name,
+            phone: user.phone,
             visitCount: visitCount,
-            lastVisitDate: visitResult.rows[0].last_visit,
+            lastVisitDate: visitResult.rows[0].last_visit || user.last_visit,
             isEligibleForFreeWash: visitCount > 0 && visitCount % 8 === 0,
             nextBonusIn: 8 - (visitCount % 8)
         });
