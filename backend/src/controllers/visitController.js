@@ -42,10 +42,10 @@ exports.getUserMe = async (req, res) => {
             [req.user.id]
         );
         
-        const visitResult = await pool.query(
-            'SELECT COUNT(*) as count, MAX(created_at) as last_visit FROM visits WHERE user_id = $1',
-            [req.user.id]
-        );
+	const userResult = await pool.query(
+  	    'SELECT id, phone, name, role FROM users WHERE id = $1',  // ✅ добавь name
+  	    [req.user.id]
+ 	 );
 
         if (userResult.rows.length === 0) {
             return res.status(404).json({ message: 'Пользователь не найден' });
