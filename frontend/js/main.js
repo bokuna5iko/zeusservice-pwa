@@ -105,7 +105,6 @@ function setupAuthEvents() {
         });
     }
 }
-
 // Глобальная функция генерации QR
 window.generateUserQR = function(userId) {
     const qrContainer = document.getElementById('qrcode-container');
