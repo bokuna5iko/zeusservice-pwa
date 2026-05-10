@@ -1,12 +1,10 @@
 const API_BASE_URL = 'http://localhost:3000/api';
 
 const api = {
-    // 1. Вспомогательный метод для получения токена
     getToken() {
         return localStorage.getItem('accessToken');
     },
 
-    // 2. Универсальный метод для всех запросов (чтобы не дублировать заголовки)
     async request(endpoint, options = {}) {
         const token = this.getToken();
         const headers = {
@@ -23,7 +21,6 @@ const api = {
             headers
         });
 
-        // Если сервер прислал пустой ответ (например, при ошибке 405), не пытаемся парсить JSON
         const contentType = response.headers.get("content-type");
         if (!response.ok || !contentType || !contentType.includes("application/json")) {
             const errorData = await response.text();
@@ -34,7 +31,6 @@ const api = {
         return response.json();
     },
 
-    // 3. Авторизация
     login(phone) {
         return this.request('/auth/login', {
             method: 'POST',
@@ -42,25 +38,31 @@ const api = {
         });
     },
 
-    // 4. Получение профиля
     getProfile() {
         return this.request('/user/me');
     },
 
-    // 5. Начисление визита (исправленный метод)
-    addVisit(userId, serviceData) {
-        // Должно быть /visits/add, потому что в роутах бэкенда прописано /add
+    // НОВЫЙ МЕТОД: Получение справочника услуг
+    getServices() {
+        return this.request('/services');
+    },
+
+    // НОВЫЙ МЕТОД: Получение истории визитов
+    getHistory() {
+        return this.request('/visits/history');
+    },
+
+    // ОБНОВЛЕННЫЙ МЕТОД: Отправляем serviceId вместо текста
+    addVisit(userId, serviceId) {
         return this.request('/visits/add', { 
             method: 'POST',
             body: JSON.stringify({
                 userId: userId,
-                serviceType: serviceData.type,
-                amount: serviceData.price
+                serviceId: serviceId // Теперь передаем ID из базы
             })
         });
     },
 
-    // 6. Статистика для админа
     getStats() {
         return this.request('/admin/stats');
     }

@@ -13,4 +13,21 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-module.exports = { authenticateToken };
+// В файле backend/src/middleware/auth.js
+
+const adminOnly = (req, res, next) => {
+    // После authenticateToken у нас в req.user лежат данные из базы
+    if (req.user && req.user.role === 'admin') {
+        next(); // Всё ок, пропускаем к контроллеру
+    } else {
+        res.status(403).json({ 
+            message: 'Доступ запрещен: у вас нет прав администратора' 
+        });
+    }
+};
+
+// Не забудь добавить её в exports в конце файла
+module.exports = { 
+    authenticateToken, 
+    adminOnly 
+};

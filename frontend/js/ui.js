@@ -83,15 +83,42 @@ const ui = {
         };
         const totalDisplay = document.getElementById('profile-total-visits');
         if (totalDisplay) {
-            totalDisplay.textContent = user.totalVisits || 0;
+            totalDisplay.textContent = user.total_visits || 0;
     }
     
         set('profile-name', user.name || 'Клиент');
         set('profile-phone', user.phone);
-        set('profile-total-visits', user.totalVisits || 0);
+        set('profile-total-visits', user.total_visits || 0);
         set('profile-visits', user.visit_count || 0);
         // Выводим роль текстом в профиле
         set('profile-role', user.role === 'admin' ? 'Администратор' : 'Клиент');
+    },
+    
+    renderHistory(visits) {
+        const historyContainer = document.getElementById('visit-history-list');
+        if (!historyContainer) return;
+    
+        if (!visits || visits.length === 0) {
+            historyContainer.innerHTML = '<p class="empty-msg" style="text-align: center; color: #888; padding: 20px;">У вас пока нет визитов</p>';
+            return;
+        }
+    
+        historyContainer.innerHTML = visits.map(visit => {
+            // Форматируем дату из базы (created_at) в красивый вид
+            const date = new Date(visit.created_at);
+            const formattedDate = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+            const formattedTime = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    
+            return `
+                <div class="history-item" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee;">
+                    <div>
+                        <div style="font-weight: bold;">${visit.service_type || 'Услуга'}</div>
+                        <div style="font-size: 0.8em; color: #888;">${formattedDate}, ${formattedTime}</div>
+                    </div>
+                    <div style="color: #27ae60; font-weight: bold;">+1 балл</div>
+                </div>
+            `;
+        }).join('');
     },
 
     // 4. Обновление админ-панели
@@ -120,32 +147,45 @@ const ui = {
     },
 
     // 5. Отрисовка модального окна админа (Калькулятор услуг)
-    renderAdminPanel(user) {
-        // Проверяем, нет ли уже открытого окна, если есть — удаляем
+    async renderAdminPanel(user) { // Добавили async
         const oldModal = document.getElementById('admin-modal');
         if (oldModal) oldModal.remove();
+    
+        const currentVisitCount = parseInt(user.visit_count) || 0;
+        const isFreeWash = (currentVisitCount % 8 === 7);
+    
+        // 1. Загружаем услуги из базы данных
+        let servicesHTML = '<option disabled>Загрузка услуг...</option>';
+        try {
+            const services = await api.getServices();
+            servicesHTML = services.map(s => `
+                <option value="${s.serviceId}">${s.serviceName} — ${s.basePrice}₽</option>
+            `).join('');
+        } catch (err) {
+            servicesHTML = '<option disabled>Ошибка загрузки меню</option>';
+        }
 
-        const progress = (user.visit_count || 0) % 8;
-        const isFreeWash = (progress === 7); // Если 7 визитов уже есть, этот — 8-й (бесплатный)
-
-        // Создаем верстку модального окна
         const modalHtml = `
             <div id="admin-modal" class="modal-overlay">
                 <div class="modal-content ${isFreeWash ? 'gold-border' : ''}">
                     <h3>${isFreeWash ? '🎁 БЕСПЛАТНАЯ МОЙКА' : 'Начисление визита'}</h3>
-                    <p>Клиент: <strong>${user.phone}</strong></p>
-                    <p>Визитов: ${user.visit_count || 0}</p>
                     
+                    <div class="user-preview">
+                        <p>Клиент: <strong>${user.name || 'Не указано'}</strong></p>
+                        <p>Телефон: <code>${user.phone || '---'}</code></p>
+                        <div class="stats-mini">
+                            <p>Визитов в акции: <b>${currentVisitCount}</b></p>
+                            <p>Всего моек: <b>${user.total_visits || 0}</b></p>
+                        </div>
+                    </div>
+    
                     <div class="service-selector">
                         <label>Выберите услугу:</label>
                         <select id="service-select">
-                            <option value="Кузов">Кузов — 500₽</option>
-                            <option value="Салон">Салон — 500₽</option>
-                            <option value="Комплекс" selected>Комплекс — 1000₽</option>
-                            <option value="Премиум">Премиум — 2500₽</option>
+                            ${servicesHTML}
                         </select>
                     </div>
-
+    
                     <div class="modal-actions">
                         <button id="confirm-visit-btn" class="btn-confirm">
                             ${isFreeWash ? 'Списать бонус' : 'Подтвердить визит'}
@@ -155,37 +195,27 @@ const ui = {
                 </div>
             </div>
         `;
-
-        // Добавляем модалку в body
+    
         document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-        // --- ЛОГИКА КНОПОК ---
-
-        // Кнопка отмены
+    
         document.getElementById('close-modal-btn').onclick = () => {
             document.getElementById('admin-modal').remove();
         };
-
-        // Кнопка подтверждения
+    
         document.getElementById('confirm-visit-btn').onclick = async () => {
-            const serviceType = document.getElementById('service-select').value;
+            const serviceId = document.getElementById('service-select').value;
             const confirmBtn = document.getElementById('confirm-visit-btn');
             
-            // Блокируем кнопку, чтобы не было двойного нажатия (защита на фронте)
             confirmBtn.disabled = true;
             confirmBtn.textContent = 'Обработка...';
-
+    
             try {
-                // Вызываем метод API, который мы подготовили на предыдущем шаге
-                const result = await api.addVisit(user.id || user.userId, {
-                    type: serviceType,
-                    price: 0 // Цену можно вытягивать из select, если нужно
-                });
-
+                // Передаем именно ID услуги
+                const result = await api.addVisit(user.id || user.userId, serviceId);
+    
                 if (result.success) {
-                    alert(result.isFree ? '🎉 Мойка списана как бонус!' : '✅ Визит успешно засчитан');
+                    alert(result.message);
                     document.getElementById('admin-modal').remove();
-                    // Обновляем статистику на странице админа, если мы на ней
                     if (ui.refreshAdminStats) ui.refreshAdminStats();
                 } else {
                     alert('Ошибка: ' + result.message);

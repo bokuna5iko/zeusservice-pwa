@@ -14,6 +14,7 @@ const path = require('path');
 const authRoutes = require('./src/routes/auth');
 const adminRoutes = require('./src/routes/admin');
 const visitRoutes = require('./src/routes/visits');
+const serviceRoutes = require('./src/routes/services');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +33,7 @@ app.use('/api/auth', authRoutes);   // Вход
 app.use('/api/admin', adminRoutes); // Статистика
 app.use('/api/user', visitRoutes);  // Визиты и профиль
 app.use('/api/visits', visitRoutes);
+app.use('/api/services', serviceRoutes);
 
 /// 5. Обработка всех остальных путей (для SPA)
 ///app.get('/:splat*', (req, res) => {

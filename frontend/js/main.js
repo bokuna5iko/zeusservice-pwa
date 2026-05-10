@@ -27,18 +27,16 @@ async function initAppData() {
         if (profile) {
             console.log('Данные профиля получены:', profile);
             
-            // Отрисовываем приветствие и данные
             ui.renderHome(profile);
             ui.renderProfile(profile);
+
+            // НОВОЕ: Загружаем и отрисовываем историю визитов
+            const history = await api.getHistory();
+            ui.renderHistory(history);
             
-            // Проверка роли: показываем кнопку админа только если роль 'admin'
             const navAdmin = document.getElementById('nav-admin');
             if (navAdmin) {
-                if (profile.role === 'admin') {
-                    navAdmin.style.display = 'flex';
-                } else {
-                    navAdmin.style.display = 'none';
-                }
+                navAdmin.style.display = (profile.role === 'admin') ? 'flex' : 'none';
             }
 
             ui.showPage('home-page');
