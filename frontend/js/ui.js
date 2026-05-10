@@ -32,7 +32,8 @@ const ui = {
     
         if (userInfo) userInfo.textContent = `Привет, ${user.name || 'Клиент'}! 👋`;
         
-        const currentVisits = parseInt(user.visitCount) || 0;
+        console.log('Рисуем главную для:', user); // Проверка данных
+        const currentVisits = parseInt(user.visit_count) || 0;
         const progress = currentVisits % 8; // Остаток от деления на 8
         
         if (badge) badge.textContent = `${progress} / 8`;
@@ -80,10 +81,15 @@ const ui = {
             const el = document.getElementById(id);
             if (el) el.textContent = text || '—';
         };
+        const totalDisplay = document.getElementById('profile-total-visits');
+        if (totalDisplay) {
+            totalDisplay.textContent = user.total_visits || 0;
+    }
     
         set('profile-name', user.name || 'Клиент');
         set('profile-phone', user.phone);
-        set('profile-visits', user.visitCount || 0);
+        set('profile-total-visits', user.total_visits || 0);
+        set('profile-visits', user.visit_count || 0);
         // Выводим роль текстом в профиле
         set('profile-role', user.role === 'admin' ? 'Администратор' : 'Клиент');
     },
@@ -119,7 +125,7 @@ const ui = {
         const oldModal = document.getElementById('admin-modal');
         if (oldModal) oldModal.remove();
 
-        const progress = (user.visitCount || 0) % 8;
+        const progress = (user.visit_count || 0) % 8;
         const isFreeWash = (progress === 7); // Если 7 визитов уже есть, этот — 8-й (бесплатный)
 
         // Создаем верстку модального окна
@@ -128,7 +134,7 @@ const ui = {
                 <div class="modal-content ${isFreeWash ? 'gold-border' : ''}">
                     <h3>${isFreeWash ? '🎁 БЕСПЛАТНАЯ МОЙКА' : 'Начисление визита'}</h3>
                     <p>Клиент: <strong>${user.phone}</strong></p>
-                    <p>Визитов: ${user.visitCount || 0}</p>
+                    <p>Визитов: ${user.visit_count || 0}</p>
                     
                     <div class="service-selector">
                         <label>Выберите услугу:</label>

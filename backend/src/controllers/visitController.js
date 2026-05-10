@@ -10,7 +10,8 @@ exports.addVisit = async (req, res) => {
 
     try {
         // 2. Ищем пользователя
-        const user = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+        const user = 
+        await db.query('SELECT * FROM users WHERE id = $1', [userId]);
         if (user.rows.length === 0) return res.status(404).json({ message: "Клиент не найден" });
 
         const userData = user.rows[0];
@@ -44,13 +45,16 @@ exports.addVisit = async (req, res) => {
             isFree = true;
         }
 
-        await db.query('UPDATE users SET visit_count = $1 WHERE id = $2', [newCount, userId]);
+        await db.query(
+            'UPDATE users SET visit_count = $1, total_visits = total_visits + 1 WHERE id = $2',
+            [newCount, userId]
+        );
 
         res.json({
             success: true,
-            newCount,
-            isFree,
-            message: isFree ? "Это была бесплатная мойка!" : "Визит засчитан"
+            visit_count: newCount, // Наш счетчик 0-7
+            total_visits: parseInt(userData.total_visits) + 1, // Общий счетчик
+            message: isFree ? "Бесплатная мойка!" : "Визит засчитан"
         });
 
     } catch (err) {
@@ -86,10 +90,14 @@ exports.getUserMe = async (req, res) => {
             userId: user.id,
             name: user.name,
             phone: user.phone,
-            visitCount: visitCount,
-            lastVisitDate: visitResult.rows[0].last_visit || user.last_visit,
-            isEligibleForFreeWash: visitCount > 0 && visitCount % 8 === 0,
-            nextBonusIn: 8 - (visitCount % 8)
+            // Наш акционный счетчик (0-7), который мы получили после инкремента
+            visit_count: visitCount, 
+            // Наш "вечный" счетчик. 
+            // ВАЖНО: убедись, что ты получил его из БД (userData.total_visits + 1)
+            total_visits: (userData.total_visits || 0) + 1, 
+            lastVisitDate: new Date(), // Текущее время визита
+            isEligibleForFreeWash: visitCount === 0, // Если сбросился в 0 — значит мойка была бесплатной
+            nextBonusIn: visitCount === 0 ? 8 : 8 - visitCount
         });
     } catch (err) {
         console.error('Ошибка в getUserMe:', err);

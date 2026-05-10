@@ -39,7 +39,7 @@ exports.getMe = async (req, res) => {
     try {
         // req.user.id берется из middleware авторизации (который проверяет токен)
         const result = await pool.query(
-            'SELECT id, phone, name, role, total_visits FROM users WHERE id = $1', 
+            'SELECT id, phone, name, role, visit_count, total_visits FROM users WHERE id = $1',
             [req.user.id]
         );
         
@@ -52,10 +52,12 @@ exports.getMe = async (req, res) => {
         // Отправляем полные данные пользователя на фронтенд
         res.json({
             id: user.id,
+            name: user.name,
             phone: user.phone,
-            name: user.name, // КРИТИЧНО: передаем имя
             role: user.role,
-            visitCount: user.total_visits // Проверь название колонки в БД (total_visits)
+            visit_count: user.visit_count,   // Для кружочков (0-7)
+            total_visits: user.total_visits, // Для общей статистики в профиле
+            last_visit: user.last_visit      // Дата последнего заезда
         });
     } catch (err) {
         console.error('Ошибка получения профиля:', err);
