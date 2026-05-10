@@ -6,7 +6,7 @@
 | --------------------- | -------------------------- | ------- | ----------------------------- |
 | `user_id`             | `userId`                   | String  | Уникальный ID (из QR-кода)    |
 | `phone_number`        | `phoneNumber`              | String  | Номер для авторизации         |
-| `total_visits`        | `total_visits`             | Integer | Текущий прогресс (0-8)        |
+| `visits_count`        | `visitCount`               | Integer | Текущий прогресс (0-8)        |
 | `is_eligible_free`    | `isEligibleForFreeWash`    | Boolean | Флаг готовности 8-й мойки     |
 | `last_visit`          | `lastVisitDate`            | Date    | Когда заезжал в последний раз |
 
@@ -24,13 +24,13 @@ _Константные значения. Бэкендер создаст так
 
 _Те самые переменные для «Калькулятора», которые улетают на сервер после нажатия кнопки._
 
-|**Поле в PostgreSQL**|**Ключ в JSON (Frontend)**|**Тип**|**Описание**|
-|---|---|---|---|
-|`order_id`|`orderId`|UUID|Уникальный номер чека|
-|`gross_amount`|`grossAmount`|Integer|Полная цена (без скидок)|
-|`net_amount`|`netAmount`|Integer|Итого к оплате (0 или полная)|
-|`applied_bonus`|`appliedBonus`|Boolean|Был ли списан бонус (8-я мойка)|
-|`admin_id`|`adminId`|String|Кто именно из админов провел мойку|
+| **Поле в PostgreSQL** | **Ключ в JSON (Frontend)** | **Тип** | **Описание**                       |
+| --------------------- | -------------------------- | ------- | ---------------------------------- |
+| `order_id`            | `orderId`                  | UUID    | Уникальный номер чека              |
+| `gross_amount`        | `grossAmount`              | Integer | Полная цена (без скидок)           |
+| `net_amount`          | `netAmount`                | Integer | Итого к оплате (0 или полная)      |
+| `applied_bonus`       | `appliedBonus`             | Boolean | Был ли списан бонус (8-я мойка)    |
+| `admin_id`            | `adminId`                  | String  | Кто именно из админов провел мойку |
 
 
 
