@@ -83,12 +83,12 @@ const ui = {
         };
         const totalDisplay = document.getElementById('profile-total-visits');
         if (totalDisplay) {
-            totalDisplay.textContent = user.total_visits || 0;
+            totalDisplay.textContent = user.totalVisits || 0;
     }
     
         set('profile-name', user.name || 'Клиент');
         set('profile-phone', user.phone);
-        set('profile-total-visits', user.total_visits || 0);
+        set('profile-total-visits', user.totalVisits || 0);
         set('profile-visits', user.visit_count || 0);
         // Выводим роль текстом в профиле
         set('profile-role', user.role === 'admin' ? 'Администратор' : 'Клиент');
