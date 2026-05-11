@@ -107,26 +107,17 @@
                     <span class="badge" style="background: #f39c12;">Демо</span>
                 </div>
         
-                <div class="metrics-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
-                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
-                        <div style="font-size: 0.8em; color: #888;">Всего клиентов</div>
-                        <div style="font-size: 1.8em; font-weight: bold; color: #1e3c72;">1,248</div>
-                        <div style="font-size: 0.8em; color: #27ae60;">+5% за нед.</div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Возвращаемость</span>
+                        <div class="stat-icon-bg" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                            <i class="fas fa-redo"></i>
+                        </div>
                     </div>
-                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
-                        <div style="font-size: 0.8em; color: #888;">Возвращаемость</div>
-                        <div style="font-size: 1.8em; font-weight: bold; color: #1e3c72;">68%</div>
-                        <div style="font-size: 0.8em; color: #27ae60;">Высокая</div>
-                    </div>
-                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
-                        <div style="font-size: 0.8em; color: #888;">Выдано бесплатных</div>
-                        <div style="font-size: 1.8em; font-weight: bold; color: #f39c12;">42</div>
-                        <div style="font-size: 0.8em; color: #888;">за месяц</div>
-                    </div>
-                    <div class="metric-item" style="background: #eef2f3; padding: 15px; border-radius: 10px; text-align: center;">
-                        <div style="font-size: 0.8em; color: #888;">Средний чек</div>
-                        <div style="font-size: 1.8em; font-weight: bold; color: #1e3c72;">1,850 ₽</div>
-                        <div style="font-size: 0.8em; color: #888;">(прогноз)</div>
+                    <div id="stat-retention-value" class="stat-value">0%</div>
+                    <div class="stat-footer">
+                        <span id="stat-retention-count" class="stat-percent" style="color: #2563eb;">0 чел.</span>
+                        <span class="stat-desc">вернулись с прошл. недели</span>
                     </div>
                 </div>
         
@@ -211,6 +202,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script src="js/api.js"></script>
 <script src="js/ui.js"></script>

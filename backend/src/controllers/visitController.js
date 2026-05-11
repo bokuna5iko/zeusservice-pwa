@@ -42,7 +42,7 @@ exports.addVisit = async (req, res) => {
 
         // 4. ЛОГИРОВАНИЕ (Записываем ID услуги и цену из базы)
         await db.query(
-            'INSERT INTO visits (user_id, service_id, service_type, price, admin_id) VALUES ($1, $2, $3, $4, $5)',
+            'INSERT INTO visits (user_id, service_id, service_type, price, admin_id, amount) VALUES ($1, $2, $3, $4, $5, $6)',
             [userId, serviceId, service.service_name, service.base_price, req.user.id]
         );
 

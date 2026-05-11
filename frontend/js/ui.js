@@ -123,26 +123,41 @@ const ui = {
 
     // 4. Обновление админ-панели
     async refreshAdminStats() {
-        const statsContainer = document.getElementById('admin-stats-container');
-        if (!statsContainer) return;
-
         try {
             const stats = await api.getStats();
-            if (stats) {
-                statsContainer.innerHTML = `
-                    <div class="stat-card">
-                        <h3>${stats.totalVisits}</h3>
-                        <p>Всего визитов</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>${stats.avgCheck || 0} ₽</h3>
-                        <p>Средний чек</p>
-                    </div>
+            
+            // 1. Обновляем основное число клиентов
+            const totalUsersEl = document.getElementById('stat-total-users');
+            if (totalUsersEl) {
+                totalUsersEl.textContent = stats.totalUsers;
+            }
+
+            // 2. Обновляем блок процентов
+            const footerEl = document.getElementById('stat-users-footer');
+            if (footerEl) {
+                const isPositive = stats.userChange >= 0;
+                footerEl.innerHTML = `
+                    <span class="stat-percent" style="color: ${isPositive ? '#27ae60' : '#e74c3c'};">
+                        ${isPositive ? '+' : ''}${stats.userChange}%
+                    </span>
+                    <span class="stat-desc">за месяц</span>
                 `;
             }
+
+            // 3. Обновляем Возвращаемость
+            const retentionValEl = document.getElementById('stat-retention-value');
+            if (retentionValEl) {
+                retentionValEl.textContent = `${stats.retentionRate}%`;
+            }
+
+            const retentionCountEl = document.getElementById('stat-retention-count');
+            if (retentionCountEl) {
+                retentionCountEl.textContent = `${stats.returningCount} чел.`;
+            }
+            
+            console.log('Статистика (Блок 1) успешно обновлена');
         } catch (err) {
-            console.error('Ошибка загрузки статистики:', err);
-            statsContainer.innerHTML = '<p>Ошибка загрузки данных</p>';
+            console.error('Ошибка обновления статистики:', err);
         }
     },
 
