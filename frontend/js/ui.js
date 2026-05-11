@@ -126,39 +126,108 @@ const ui = {
         try {
             const stats = await api.getStats();
             
-            // 1. Обновляем основное число клиентов
-            const totalUsersEl = document.getElementById('stat-total-users');
-            if (totalUsersEl) {
-                totalUsersEl.textContent = stats.totalUsers;
-            }
-
-            // 2. Обновляем блок процентов
-            const footerEl = document.getElementById('stat-users-footer');
-            if (footerEl) {
-                const isPositive = stats.userChange >= 0;
-                footerEl.innerHTML = `
-                    <span class="stat-percent" style="color: ${isPositive ? '#27ae60' : '#e74c3c'};">
-                        ${isPositive ? '+' : ''}${stats.userChange}%
-                    </span>
-                    <span class="stat-desc">за месяц</span>
-                `;
-            }
-
-            // 3. Обновляем Возвращаемость
-            const retentionValEl = document.getElementById('stat-retention-value');
-            if (retentionValEl) {
-                retentionValEl.textContent = `${stats.retentionRate}%`;
-            }
-
-            const retentionCountEl = document.getElementById('stat-retention-count');
-            if (retentionCountEl) {
-                retentionCountEl.textContent = `${stats.returningCount} чел.`;
-            }
+            // 1. Клиенты за сегодня
+            const usersValueEl = document.getElementById('stat-users-value');
+            const usersFooterEl = document.getElementById('stat-users-footer');
             
-            console.log('Статистика (Блок 1) успешно обновлена');
+            if (usersValueEl) {
+                usersValueEl.textContent = stats.todayUsers;
+            }
+
+            if (usersFooterEl) {
+                const isPositive = stats.userChange >= 0;
+                const percentEl = usersFooterEl.querySelector('.stat-percent');
+                const descEl = usersFooterEl.querySelector('.stat-desc');
+                
+                percentEl.className = isPositive ? 'stat-percent positive' : 'stat-percent negative';
+                percentEl.textContent = `${isPositive ? '+' : ''}${stats.userChange}%`;
+                descEl.textContent = 'к этому часу вчера';
+            }
+
+            // Обновляем заголовок в HTML (если нужно переименовать)
+                const card = document.getElementById('stat-users-value').closest('.stat-card');
+                const titleEl = card.querySelector('.stat-title');
+            if (titleEl) titleEl.textContent = 'Клиенты сегодня';
+
+            // 2. Возвращаемость
+                const retentionValueEl = document.getElementById('stat-retention-value');
+                const retentionFooterEl = document.getElementById('stat-retention-footer');
+
+            if (retentionValueEl) {
+                // Выводим процент постоянников среди приехавших сегодня
+                retentionValueEl.textContent = `${stats.retentionRate}%`;
+            }
+
+            if (retentionFooterEl) {
+                const isPositive = stats.retentionChange >= 0;
+                const percentEl = retentionFooterEl.querySelector('.stat-percent');
+                const descEl = retentionFooterEl.querySelector('.stat-desc');
+    
+                percentEl.className = isPositive ? 'stat-percent positive' : 'stat-percent negative';
+                percentEl.textContent = `${isPositive ? '+' : ''}${stats.retentionChange}%`;
+                descEl.textContent = 'темп постоянников';
+            }
+
+            // 3. Визиты
+               const newUsersValueEl = document.getElementById('stat-visits-value');
+               const newUsersFooterEl = document.getElementById('stat-visits-footer');
+
+            if (newUsersValueEl) {
+                newUsersValueEl.textContent = stats.totalVisits; // Это наши новые клиенты сегодня
+            }
+
+            if (newUsersFooterEl) {
+               const isPositive = stats.visitsChange >= 0;
+               const percentEl = newUsersFooterEl.querySelector('.stat-percent');
+               const descEl = newUsersFooterEl.querySelector('.stat-desc');
+    
+               percentEl.className = isPositive ? 'stat-percent positive' : 'stat-percent negative';
+               percentEl.textContent = `${isPositive ? '+' : ''}${stats.visitsChange}%`;
+               descEl.textContent = 'к этому часу вчера';
+            }
+
+            // Меняем заголовок карточки программно
+               const card3 = document.getElementById('stat-visits-value').closest('.stat-card');
+               const title3 = card3.querySelector('.stat-title');
+            if (title3) title3.textContent = 'Новые клиенты (визиты)';
+
+            // 4. Выручка
+
+            // Находим элементы четвертого блока
+               const revenueValueEl = document.getElementById('stat-revenue-value');
+               const revenueFooterEl = document.getElementById('stat-revenue-footer');
+
+            if (revenueValueEl) {
+            // Форматируем число: 15000 -> 15 000 ₽
+            revenueValueEl.textContent = stats.totalRevenue.toLocaleString('ru-RU') + ' ₽';
+            }
+
+            if (revenueFooterEl) {
+               const isPositive = stats.revenueChange >= 0;
+               const percentEl = revenueFooterEl.querySelector('.stat-percent');
+               const descEl = revenueFooterEl.querySelector('.stat-desc');
+    
+            percentEl.className = isPositive ? 'stat-percent positive' : 'stat-percent negative';
+            percentEl.textContent = `${isPositive ? '+' : ''}${stats.revenueChange}%`;
+            descEl.textContent = 'к этому часу вчера';
+            }
+
         } catch (err) {
             console.error('Ошибка обновления статистики:', err);
         }
+    },
+
+    // Вспомогательный метод для обновления процентов (красный/зеленый)
+    updateStatFooter(elementId, change) {
+        const footer = document.getElementById(elementId);
+        if (!footer) return;
+        
+        const percentEl = footer.querySelector('.stat-percent');
+        if (!percentEl) return;
+    
+        const isPositive = change >= 0;
+        percentEl.className = isPositive ? 'stat-percent positive' : 'stat-percent negative';
+        percentEl.textContent = (isPositive ? '+' : '') + change + '%';
     },
 
     // 5. Отрисовка модального окна админа (Калькулятор услуг)

@@ -18,6 +18,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 3. Привязка кнопок авторизации
     setupAuthEvents();
+
+    // === ШАГ 3: АВТООБНОВЛЕНИЕ СТАТИСТИКИ ===
+    setInterval(() => {
+        // Находим страницу админа
+        const adminPage = document.getElementById('admin-page');
+        
+        // Проверяем: если страница админа существует и она сейчас активна (видна пользователю)
+        if (adminPage && adminPage.classList.contains('active')) {
+            console.log('⏱ Фоновое обновление статистики админа (раз в 30 мин)...');
+            ui.refreshAdminStats();
+        }
+    }, 30 * 60 * 1000); // Интервал 30 минут
 });
 
 // Загрузка данных при входе
