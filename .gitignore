@@ -1,0 +1,5 @@
+# Frontend (если появятся зависимости в будущем)
+backend/node_modules
+backend/.env
+.obsidian/
+.obsidian/workspace.json

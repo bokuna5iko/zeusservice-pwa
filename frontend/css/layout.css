@@ -1,0 +1,46 @@
+/* Тут живет "каркас": шапка и нижнее меню, которые видны всегда.
+
+/* Шапка */
+.header {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    padding: 30px 20px;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+.logo { font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; }
+.logo span { color: #00d2ff; }
+.user-info { margin-top: 10px; font-size: 0.9rem; opacity: 0.9; }
+
+/* Нижняя навигация */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 400px;
+    height: 70px;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #eee;
+    z-index: 100;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.7rem;
+    color: #888;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-item.active {
+    color: #1e3c72;
+    font-weight: bold;
+    border-top: 2px solid #1e3c72;
+    padding-top: 8px;
+}
