@@ -11,14 +11,17 @@
             "id": "6a020f7ba691a74c",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "canvas",
               "state": {
-                "file": "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Data-Sync.md",
-                "mode": "source",
-                "source": false
+                "file": "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/UI logic.canvas",
+                "viewState": {
+                  "x": 1267.1612726509675,
+                  "y": 782.3457269647602,
+                  "zoom": -0.22892213881118884
+                }
               },
-              "icon": "lucide-file",
-              "title": "Data-Sync"
+              "icon": "lucide-layout-dashboard",
+              "title": "UI logic"
             }
           }
         ]
@@ -78,7 +81,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 339.5
+    "width": 200
   },
   "right": {
     "id": "1a3aa3a7c0cf7e23",
@@ -180,14 +183,22 @@
   },
   "active": "6a020f7ba691a74c",
   "lastOpenFiles": [
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
-    "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas.canvas",
-    "Projzeus/🗺RoadMap/Versions/v0.2/Readme-v0.2.md",
-    "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
-    "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
-    "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
-    "Projzeus/📚Docs/Tutorials/Git guide/🛠 Guide git for OBS&VSCODE.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
+    "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/UI logic.canvas",
+    "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas.canvas",
+    "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas-v2.canvas",
+    "Projzeus/🗺RoadMap/Versions/v0.2/Untitled.canvas",
+    "Projzeus/🗺RoadMap/MVC/pop.canvas",
+    "Projzeus/🗺RoadMap/MVC/Model-View-Controller.md",
+    "Projzeus/🗺RoadMap/MVC/Architecture.canvas",
+    "Projzeus/🗺RoadMap/MVC/1232.canvas",
+    "Projzeus/🗺RoadMap/MVC",
+    "Projzeus/📚Docs/Tutorials/Errors in vscode/node server.js.md",
+    "Projzeus/📚Docs/Tutorials/Errors in vscode",
+    "Projzeus/📚Docs/Tutorials/API Tester/Получение токена через Talend API Tester.md",
+    "Projzeus/📚Docs/Tutorials/API Tester",
+    "Projzeus/📚Docs/Tutorials/Git guide/🛠 Guide git for OBS&VSCODE.md",
     "Projzeus/📚Docs/Setup/Dev-Environment.md",
     "Тест.md",
     "Как какать.md",
@@ -197,9 +208,12 @@
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Hosting & Domain.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Data-Sync.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/Front.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
+    "Projzeus/🗺RoadMap/Versions/v0.2/Readme-v0.2.md",
+    "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.1/Readme-v0.1.md",
     "Projzeus/🗺RoadMap/Versions/v0.1/Map.canvas",
     "Projzeus/📚Docs/Tutorials/Git guide/Workflow&Golden Cycle.md",
@@ -210,24 +224,13 @@
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)",
     "Projzeus/🗺RoadMap/Versions/v0.2",
     "Projzeus/🗺RoadMap/Versions/v0.1",
+    "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
     "Projzeus/📚Docs/Tutorials/VScode.md",
     "Projzeus/📚Docs/Tutorials/PWA-Icons.md",
-    "Projzeus/📚Docs/Tutorials/Git guide",
     "Projzeus/📚Docs/Management/Project-Pitch.md",
-    "Projzeus/📚Docs/Management/Boss-Demo-v0.1.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App",
-    "Projzeus/🗺RoadMap/Versions",
-    "Projzeus/🗺RoadMap/Readme.md",
-    "Projzeus/📥Backlog/Readme.md",
-    "Projzeus/🌌Star of death.canvas",
     "frontend/icons/ios/180.png",
     "frontend/icons/android/zeuslogo-512x512.png",
     "frontend/icons/android/zeuslogo-192x192.png",
-    "Projzeus/🧠Brainstorm/Untitled.canvas",
-    "Projzeus/🗺RoadMap/Versions/Без названия.canvas",
-    "Projzeus/🗺RoadMap/Versions/danila version/Untitled.canvas",
-    "Projzeus/how.canvas",
-    "statisfactory/Без названия 1 1.canvas",
     "SDLC-stages 1.png",
     "QA/dsd2da223.png",
     "Pasted image 20251011062228.png",
