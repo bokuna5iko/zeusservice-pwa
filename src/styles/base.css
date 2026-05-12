@@ -1,0 +1,29 @@
+/*Здесь мы оставляем "фундамент" и общие настройки текста.
+
+/* Обнуление и база */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+body { 
+    background-color: #f0f2f5; 
+    margin: 0;
+    display: flex;
+    justify-content: center; /* Центрируем контейнер по горизонтали */
+    min-height: 100vh;
+    overflow-x: hidden; /* Убираем горизонтальный скролл */
+}
+
+.app-container {
+    width: 100vw; /* На мобилках на весь экран */
+    max-width: 400px; /* На компах ограничиваем */
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
