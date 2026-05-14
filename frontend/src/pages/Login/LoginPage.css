@@ -1,115 +1,95 @@
 .login-page {
-  /* Растягиваем на всё видимое пространство */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  
-  /* Это гарантирует заполнение всего экрана */
-  width: 100vw;
-  min-height: 100vh;
-  margin: 0;
-  padding: 20px;
-  
-  /* Фикс для фона: чтобы он не прерывался при прокрутке */
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  background-attachment: fixed;
-  background-size: cover;
-  
-  position: fixed; /* Чтобы фон "замер" и перекрыл всё */
-  top: 0;
-  left: 0;
-  box-sizing: border-box;
+  /* Заставляем страницу занять 100% высоты app-main */
+  flex: 1; 
+  width: 100%;
+  /* Убеждаемся, что нет лишних отступов сверху */
+  justify-content: center; 
 }
 
 .login-card {
-  background: white;
-  padding: 40px 30px;
-  border-radius: 28px;
-  width: 100%;
-  max-width: 400px; /* На компьютере она останется компактной */
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-  color: #1e293b;
-  z-index: 1; /* Чтобы карточка была точно над фоном */
+  /* Твои существующие стили тени */
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #f1f5f9;
+  padding: 40px 25px !important;
   
-  /* Плавное появление */
-  animation: slideUp 0.5s ease-out;
+  /* Гарантируем, что карточка не прилипнет к краям */
+  margin: auto 0; 
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Убираем лишние отступы у заголовка */
-.login-header h1 {
-  margin: 0;
+.login-logo {
   font-size: 2.2rem;
-  letter-spacing: -1px;
+  font-weight: 900;
+  color: #1e3c72;
+  margin-bottom: 5px;
 }
 
-.login-header span {
+.login-logo span {
+  color: #2a5298;
+  font-weight: 300;
+}
+
+.login-subtitle {
   color: #64748b;
+  margin-bottom: 30px;
   font-size: 0.9rem;
 }
 
 .login-form {
-  margin-top: 30px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.input-group {
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+/* Оформление поля ввода */
+.input-wrapper {
+  position: relative;
+  width: 100%;
 }
 
-.input-group label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #475569;
-  padding-left: 5px;
+.input-wrapper i {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
 }
 
-.login-form input {
-  padding: 16px;
-  border: 2px solid #e2e8f0;
+.input-wrapper input {
+  width: 100%;
+  padding: 18px 18px 18px 50px;
   border-radius: 16px;
+  border: 2px solid #f1f5f9;
+  background: #f8fafc;
   font-size: 1rem;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
-.login-form input:focus {
+.input-wrapper input:focus {
   outline: none;
   border-color: #1e3c72;
-  box-shadow: 0 0 0 4px rgba(30, 60, 114, 0.1);
+  background: white;
 }
 
+/* Оформление кнопки */
 .login-btn {
+  width: 100%;
+  padding: 18px;
+  border-radius: 16px;
+  border: none;
   background: #1e3c72;
   color: white;
-  border: none;
-  padding: 16px;
-  border-radius: 16px;
-  font-size: 1rem;
   font-weight: 700;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: transform 0.2s, background 0.3s;
-  margin-top: 10px;
+  transition: transform 0.1s ease, opacity 0.2s ease;
 }
 
 .login-btn:active {
   transform: scale(0.98);
-}
-
-.error-message {
-  background: #fee2e2;
-  color: #991b1b;
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  margin-bottom: 15px;
+  opacity: 0.9;
 }

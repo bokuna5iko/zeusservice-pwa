@@ -12,6 +12,7 @@ import AdminPage from "./pages/Admin/AdminPage.jsx";
 function App() {
   const { user, activePage } = useContext(AuthContext);
 
+// 1. Условие для неавторизованного пользователя
   if (!user) {
     return (
       <div className="app-shell">
@@ -22,19 +23,24 @@ function App() {
     );
   }
 
+  // 2. Условие для авторизованного пользователя
   return (
   <div className="app-shell">
     {/* Оболочка телефона */}
     <div className="app-main"> 
       
-      <header className="app-header">...</header>
+      <header className="app-header">
+          <div className="header-content">
+            <span className="app-logo">ZEUS <span>AUTO</span></span>
+          </div>
+        </header>
 
-      <div className="page-content" style={{ flex: 1, overflowY: 'auto' }}>
-        {activePage === 'home' && <HomePage />}
-        {activePage === 'history' && <HistoryPage />}
-        {activePage === 'profile' && <ProfilePage />}
-        {activePage === 'admin' && <AdminPage />}
-      </div>
+      <main className="page-content" style={{ flex: 1, overflowY: 'auto' }}>
+          {activePage === 'home' && <HomePage />}
+          {activePage === 'history' && <HistoryPage />}
+          {activePage === 'profile' && <ProfilePage />}
+          {activePage === 'admin' && <AdminPage />}
+        </main>
 
       <footer className="app-footer">
         <Navigation />
