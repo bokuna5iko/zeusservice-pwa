@@ -51,16 +51,14 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* base.css — .app-shell */
+/* 1. Главная оболочка (твой монитор) */
 .app-shell {
   display: flex;
-  flex-direction: column;
-  height: 100vh;
-  min-height: 100vh;     /* ← Добавить запас */
-  max-width: 480px;
-  margin: 0 auto;        /* ← Центрирование здесь */
-  background: var(--bg-color);
-  position: relative;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #0f172a;
+  width: 100%;
 }
 
 /* ВЕРХ: Фиксированная высота */
@@ -85,26 +83,40 @@
 .logo-text { font-weight: 800; font-size: 1.2rem; color: #1e3c72; }
 .logo-text span { color: #2a5298; font-weight: 400; }
 
-/* base.css — .app-main */
-/* Обнови блок .app-main */
+/* 2. Твой "телефон" — здесь фиксируем ширину железно */
 .app-main {
-  flex: 1;
-  width: 100%;
-  padding: 20px;
-  padding-bottom: 90px; /* Место под навигацию */
-  box-sizing: border-box;
-  overflow-y: auto;
+  /* Вместо flex: 1 используем жесткие размеры на десктопе */
+  width: 100vw; 
+  max-width: 430px; /* Фиксируем ширину как у смартфона */
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  background-color: #f8fafc;
+  position: relative;
+  overflow-x: hidden;
 }
 
-/* Принудительный сброс для всех страниц */
-.home-page, .profile-page, .history-page, .admin-page-flow {
+/* 3. Адаптивность для десктопа (чтобы на большом экране это был телефон) */
+@media (min-width: 500px) {
+  .app-main {
+    height: 90vh;
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  }
+}
+
+/* 4. Страницы внутри — они должны просто заполнять 100% родителя */
+.home-page, 
+.profile-page, 
+.history-page, 
+.admin-page-flow {
   width: 100% !important;
+  min-width: 100% !important; /* Не даем сужаться */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  box-sizing: border-box;
 }
 
 .card-section {
@@ -112,15 +124,88 @@
   box-sizing: border-box;
 }
 /* НИЗ: Фиксированная высота */
+/* src/styles/base.css */
+
 .app-footer {
-  height: 70px;
-  min-height: 70px;
+  width: 100%;            /* Занимает всю ширину родителя (430px) */
+  height: 75px;           /* Чуть увеличим высоту для удобства */
   background: white;
   border-top: 1px solid #e2e8f0;
-  flex-shrink: 0;
-  padding-bottom: env(safe-area-inset-bottom);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;         /* Чтобы футер не сплющивался контентом */
   
-  /* Гарантируем, что футер не участвует в reflow main */
-  will-change: transform;     /* ← Промоутим на отдельный слой */
-  transform: translateZ(0);   /* ← Форсируем GPU-слой */
+  /* Важно для мобилок: отступ снизу под "челку" */
+  padding-bottom: env(safe-area-inset-bottom); 
+  z-index: 10;
+}
+
+.nav-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.nav-btn {
+  flex: 1;                /* Каждая кнопка занимает равную долю */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-btn.active {
+  color: #1e3c72;         /* Твой основной синий */
+}
+
+.nav-btn i {
+  font-size: 1.3rem;      /* Иконка покрупнее */
+}
+
+.nav-btn span {
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.nav-btn.active {
+  color: #1e3c72; /* Твой основной синий цвет */
+}
+
+/* Добавь это в base.css */
+
+.page-center-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  width: 100%; 
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* 5. Карточка — теперь она будет занимать место исходя из ширины "телефона" */
+.content-group-box {
+  width: 90%; /* Занимает 90% от ширины в 430px */
+  max-width: 380px;
+  background: white;
+  padding: 30px 20px;
+  border-radius: 28px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.points-grid {
+  width: 100%;
+  display: grid;
+  /* ... остальные стили */
 }

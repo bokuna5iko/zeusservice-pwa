@@ -1,57 +1,40 @@
-import React, { useState, useContext } from "react";
-import api from "../../api/axios";
-import { AuthContext } from "../../context/AuthContext";
-import "./LoginPage.css";
+import React, { useState, useContext } from 'react'; // Добавили useContext
+import { AuthContext } from '../../context/AuthContext'; // Импортировали контекст
+import './LoginPage.css';
 
 const LoginPage = () => {
-  const [phone, setPhone] = useState("");
-  const [error, setError] = useState("");
-  const { login } = useContext(AuthContext);
+  const [phone, setPhone] = useState('');
+  const { login } = useContext(AuthContext); // Достаем функцию входа
 
-  const handleSubmit = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    try {
-      const response = await api.post("/auth/login", { phone });
-      
-      // Смотрим, где именно лежит юзер
-      // Если бэкенд присылает { user: {...}, token: '...' }, берем response.data.user
-      // Если бэкенд присылает сразу объект юзера, берем response.data
-      const userData = response.data.user || response.data; 
-      
-      console.log("Данные для входа:", userData); 
-      
-      if (userData) {
-        login(userData);
-      } else {
-        setError("Ошибка: Данные пользователя не получены");
-      }
-    } catch (err) {
-      console.error("Ошибка при входе:", err);
-      setError("Пользователь не найден");
-    }
+    
+    // Теперь вместо простого console.log вызываем вход из контекста
+    // Передаем объект с телефоном, как ожидает наш AuthContext
+    login({ phone: phone }); 
   };
 
   return (
-    <div className="login-page">
+    <div className="login-container">
       <div className="login-card">
-        <div className="login-header">
-          <h1>ZEUS <span>AUTO</span></h1>
-          <span>Введите номер телефона для входа</span>
-        </div>
-
-        <form className="login-form" onSubmit={handleSubmit}>
-          {error && <div className="error-message">{error}</div>}
+        <h1>ZEUS <span>AUTO</span></h1>
+        <p>Введите номер телефона для входа в систему лояльности</p>
+        
+        <form onSubmit={handleLogin}>
           <div className="input-group">
-            <label>Телефон</label>
-            <input
-              type="tel"
-              placeholder="79001234567"
+            <i className="fas fa-phone"></i>
+            <input 
+              type="tel" 
+              placeholder="7 (999) 000-00-00" 
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              required
+              required 
             />
           </div>
-          <button type="submit" className="login-btn">Войти</button>
+          
+          <button type="submit" className="login-btn">
+            Войти
+          </button>
         </form>
       </div>
     </div>

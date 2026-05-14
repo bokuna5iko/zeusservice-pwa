@@ -5,44 +5,38 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activePage, setActivePage] = useState('home'); // По умолчанию на главную
+  const [activePage, setActivePage] = useState('home');
 
   useEffect(() => {
-    // Проверяем, залогинен ли пользователь при загрузке
-    const token = localStorage.getItem('accessToken');
     const savedUser = localStorage.getItem('user');
     
-    if (token && savedUser && savedUser !== "undefined") {
+    if (savedUser && savedUser !== "undefined") {
       try {
-        setUser(JSON.parse(savedUser));
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+        // Если восстановили админа, сразу кидаем в админку
+        if (parsedUser.role === 'admin') setActivePage('admin');
       } catch (e) {
-        console.error("Ошибка парсинга пользователя:", e);
-        localStorage.clear(); // Если данные битые, лучше очистить всё
+        localStorage.clear();
       }
     }
     setLoading(false);
   }, []);
 
-  // userData теперь единственный аргумент, так как токен обычно лежит внутри него
   const login = (userData) => {
-    if (!userData) {
-      console.error("Ошибка: попытка входа без данных пользователя");
-      return;
-    }
+    // Временный "хак" для тестов: если вводим любой номер, 
+    // создаем объект пользователя
+    const userToSave = {
+      phone: userData.phone || '79990000000',
+      name: 'Александр', // Тестовое имя
+      role: 'admin',      // Ставим admin, чтобы видеть все вкладки
+      visits: 3          // Тестовое кол-во визитов
+    };
 
-    console.log("Данные успешно приняты контекстом:", userData);
+    setUser(userToSave);
+    localStorage.setItem('user', JSON.stringify(userToSave));
 
-    // Сохраняем пользователя в стейт
-    setUser(userData);
-
-    // Сохраняем в localStorage (токен берем из userData, если он там есть)
-    if (userData.token) {
-      localStorage.setItem('accessToken', userData.token);
-    }
-    localStorage.setItem('user', JSON.stringify(userData));
-
-    // Умная переадресация: админа на пульт, юзера на главную к QR
-    if (userData.role === 'admin') {
+    if (userToSave.role === 'admin') {
       setActivePage('admin');
     } else {
       setActivePage('home');
@@ -50,8 +44,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user');
+    localStorage.clear();
     setUser(null);
     setActivePage('home');
   };

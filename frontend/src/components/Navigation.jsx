@@ -1,17 +1,19 @@
-import React, { useContext, memo } from 'react';
+// src/components/Navigation.jsx
+import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
-const Navigation = memo(() => {
-  const { user, activePage, setActivePage } = useContext(AuthContext);
+const Navigation = () => {
+  const { activePage, setActivePage, user } = useContext(AuthContext);
 
   const navItems = [
-    { id: 'home', label: 'Главная', icon: 'fa-home' },
+    { id: 'home', label: 'Главная', icon: 'fa-qrcode' },
     { id: 'history', label: 'История', icon: 'fa-history' },
     { id: 'profile', label: 'Профиль', icon: 'fa-user' },
   ];
 
+  // Если пользователь — админ, добавляем кнопку админки
   if (user?.role === 'admin') {
-    navItems.push({ id: 'admin', label: 'Админ', icon: 'fa-user-shield' });
+    navItems.push({ id: 'admin', label: 'Админ', icon: 'fa-shield-alt' });
   }
 
   return (
@@ -28,6 +30,6 @@ const Navigation = memo(() => {
       ))}
     </nav>
   );
-});
+};
 
 export default Navigation;

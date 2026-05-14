@@ -1,59 +1,105 @@
 /* src/pages/Home/HomePage.css */
-.home-page {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch; /* Важно! */
-    gap: 20px;
-  }
-  
-  .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    justify-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .step-circle {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #f8fafc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    color: #cbd5e1;
-    border: 2px dashed #e2e8f0;
-    transition: all 0.3s ease;
-  }
-  
-  .step-circle.completed {
-    background: #1e3c72;
-    color: white;
-    border: 2px solid #1e3c72;
-    border-style: solid;
-  }
-  
-  .step-circle.gift {
-    background: #fff7ed;
-    color: #f59e0b;
-    border: 2px solid #fde68a;
-    border-style: solid;
-  }
-  
-  .qr-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px 20px;
-  }
-  
-  .qr-wrapper {
-    padding: 15px;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 20px;
-    margin-bottom: 20px;
-  }
+
+.home-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important; /* Тень на контуре */
+  border: 1px solid #f1f5f9;
+  transition: transform 0.2s ease;
+}
+
+/* Контейнер №1: QR */
+.qr-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+}
+
+.qr-wrapper {
+  padding: 15px;
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-display-name {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  color: #1e293b;
+}
+
+/* Контейнер №2: Прогресс */
+.card-title {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #1e293b;
+}
+
+.progress-placeholder {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.visits-count {
+  font-weight: 800;
+  color: #1e3c72;
+  font-size: 1.1rem;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 12px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+  border-radius: 10px;
+  transition: width 0.5s ease-out;
+}
+
+/* Контейнер №3: Баланс */
+.balance-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.balance-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.balance-item .label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.balance-item .value {
+  font-weight: 800;
+  color: #1e293b;
+  font-size: 1.1rem;
+}
+
+.balance-divider {
+  width: 1px;
+  height: 30px;
+  background: #e2e8f0;
+}
+
+.fill-zone {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
