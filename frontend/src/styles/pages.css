@@ -1,0 +1,40 @@
+/* Общие карточки теперь ВСЕГДА на всю ширину */
+.card-section {
+  width: 100% !important;
+  box-sizing: border-box;
+  display: block;
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.card-title { font-weight: 800; font-size: 1.1rem; color: #1e293b; }
+.card-subtitle { font-size: 0.85rem; color: #64748b; }
+
+.section-header {
+  margin-bottom: 5px;
+}
+.section-header h1 { font-size: 1.5rem; font-weight: 800; color: #1e293b; margin: 0; }
+.section-header p { font-size: 0.9rem; color: #64748b; margin: 5px 0 0 0; }
+
+/* Принудительно заставляем каждую страницу занимать всю ширину */
+.page-wrapper {
+  min-height: 100%;         /* Занимает всю высоту .app-main */
+  display: flex;
+  flex-direction: column;
+}
+
+.page-wrapper, 
+.home-page, 
+.profile-page, 
+.history-page, 
+.admin-page-flow {
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20px;
+}

@@ -1,0 +1,42 @@
+/* ProfilePage.css */
+.profile-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* align-items: stretch; */  /* Убрать или оставить */
+  gap: 20px;
+  justify-content: flex-start;  /* ← По умолчанию */
+  min-height: 100%;             /* ← Добавить */
+}
+
+.user-info-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Центрируем только текст и аватар ВНУТРИ карточки */
+  text-align: center;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.user-avatar-large {
+  font-size: 4rem;
+  color: #1e3c72;
+  margin-bottom: 15px;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 16px;
+  background: #fee2e2;
+  color: #991b1b;
+  border: none;
+  border-radius: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  /* УДАЛИТЬ: margin-top: auto; */
+  margin-top: 20px;    /* ← Заменить на фиксированный отступ */
+}

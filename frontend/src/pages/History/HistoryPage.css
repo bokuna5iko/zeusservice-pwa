@@ -1,0 +1,36 @@
+/* src/pages/HistoryPage.css */
+.history-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.history-info h4 { margin: 0; font-size: 0.95rem; color: #1e293b; }
+.history-info span { font-size: 0.75rem; color: #94a3b8; }
+
+.history-points {
+  font-weight: 800;
+  color: #10b981;
+  background: #f0fdf4;
+  padding: 5px 12px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}

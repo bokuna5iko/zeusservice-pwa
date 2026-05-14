@@ -1,0 +1,126 @@
+:root {
+    --primary-color: #1e3c72;
+    --secondary-color: #2a5298;
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --accent-color: #10b981;
+    --danger-color: #ef4444;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background-color: var(--bg-color);
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text-main);
+    line-height: 1.5;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  
+  #root {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .app-container {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    position: relative;
+    padding-bottom: 80px; /* Отступ под навигацию */
+}
+
+.main-content {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* base.css — .app-shell */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 100vh;     /* ← Добавить запас */
+  max-width: 480px;
+  margin: 0 auto;        /* ← Центрирование здесь */
+  background: var(--bg-color);
+  position: relative;
+}
+
+/* ВЕРХ: Фиксированная высота */
+.app-header {
+  height: 60px;
+  min-height: 60px;        /* ← Добавлено */
+  background: white;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.logo-text { font-weight: 800; font-size: 1.2rem; color: #1e3c72; }
+.logo-text span { color: #2a5298; font-weight: 400; }
+
+/* base.css — .app-main */
+/* Обнови блок .app-main */
+.app-main {
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+  padding-bottom: 90px; /* Место под навигацию */
+  box-sizing: border-box;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Принудительный сброс для всех страниц */
+.home-page, .profile-page, .history-page, .admin-page-flow {
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card-section {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+/* НИЗ: Фиксированная высота */
+.app-footer {
+  height: 70px;
+  min-height: 70px;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  
+  /* Гарантируем, что футер не участвует в reflow main */
+  will-change: transform;     /* ← Промоутим на отдельный слой */
+  transform: translateZ(0);   /* ← Форсируем GPU-слой */
+}

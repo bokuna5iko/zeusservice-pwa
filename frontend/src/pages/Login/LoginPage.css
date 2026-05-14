@@ -1,0 +1,115 @@
+.login-page {
+  /* Растягиваем на всё видимое пространство */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  /* Это гарантирует заполнение всего экрана */
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  
+  /* Фикс для фона: чтобы он не прерывался при прокрутке */
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  
+  position: fixed; /* Чтобы фон "замер" и перекрыл всё */
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+}
+
+.login-card {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 28px;
+  width: 100%;
+  max-width: 400px; /* На компьютере она останется компактной */
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  color: #1e293b;
+  z-index: 1; /* Чтобы карточка была точно над фоном */
+  
+  /* Плавное появление */
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Убираем лишние отступы у заголовка */
+.login-header h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  letter-spacing: -1px;
+}
+
+.login-header span {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.login-form {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  padding-left: 5px;
+}
+
+.login-form input {
+  padding: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: #1e3c72;
+  box-shadow: 0 0 0 4px rgba(30, 60, 114, 0.1);
+}
+
+.login-btn {
+  background: #1e3c72;
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+  margin-top: 10px;
+}
+
+.login-btn:active {
+  transform: scale(0.98);
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+}

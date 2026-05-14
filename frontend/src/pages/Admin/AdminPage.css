@@ -1,0 +1,47 @@
+/* src/pages/AdminPage.css */
+.admin-page-flow {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+  }
+  
+  .stats-grid-v2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .stat-card-v2 {
+    background: white;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .stat-icon-circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .stat-icon-circle.blue { background: #e0f2fe; color: #0284c7; }
+  .stat-icon-circle.green { background: #dcfce7; color: #166534; }
+  .stat-icon-circle.purple { background: #f3e8ff; color: #7e22ce; }
+  .stat-icon-circle.orange { background: #ffedd5; color: #9a3412; }
+  
+  .stat-value { font-size: 1.1rem; font-weight: 800; color: #1e293b; }
+  .stat-percent.up { color: #10b981; font-weight: 700; }
+  .stat-percent.down { color: #ef4444; font-weight: 700; }
+  
+  .admin-action-card {
+    border: 2px solid #e2e8f0;
+  }

@@ -1,0 +1,59 @@
+/* src/pages/Home/HomePage.css */
+.home-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Важно! */
+    gap: 20px;
+  }
+  
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    justify-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .step-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #cbd5e1;
+    border: 2px dashed #e2e8f0;
+    transition: all 0.3s ease;
+  }
+  
+  .step-circle.completed {
+    background: #1e3c72;
+    color: white;
+    border: 2px solid #1e3c72;
+    border-style: solid;
+  }
+  
+  .step-circle.gift {
+    background: #fff7ed;
+    color: #f59e0b;
+    border: 2px solid #fde68a;
+    border-style: solid;
+  }
+  
+  .qr-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+  }
+  
+  .qr-wrapper {
+    padding: 15px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
