@@ -1,5 +1,5 @@
 Скрипт для создания и проверки нужных таблиц в posgreSQL
-```json
+```
 -- 1. Таблица users
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
