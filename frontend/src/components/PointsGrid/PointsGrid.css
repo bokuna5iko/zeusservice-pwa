@@ -1,0 +1,61 @@
+/* src/components/PointsGrid/PointsGrid.css */
+
+.points-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 колонки */
+  grid-template-rows: repeat(2, 1fr);    /* 2 ряда */
+  gap: 12px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.point-item {
+  aspect-ratio: 1 / 1; /* Делаем квадраты идеально ровными */
+  background: #f1f5f9;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  color: #94a3b8;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+/* Активный (пройденный) визит */
+.point-item.active {
+  background: #1e3c72;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(30, 60, 114, 0.2);
+}
+
+/* 4-й визит (Скидка 20%) */
+.point-item.discount-step {
+  border: 2px dashed #1e3c72;
+  color: #1e3c72;
+  background: #eff6ff;
+}
+
+.point-item.discount-step.active {
+  border-style: solid;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+
+/* 8-й визит (Бесплатная мойка) */
+.point-item.free-step {
+  background: #fff7ed;
+  border: 2px solid #f97316;
+  color: #f97316;
+}
+
+.point-item.free-step.active {
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+  color: white;
+  border: none;
+}
+
+.point-content i {
+  font-size: 1.2rem;
+}

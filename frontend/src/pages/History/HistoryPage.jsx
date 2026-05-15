@@ -5,9 +5,7 @@ import './HistoryPage.css'; // Шаг 4: Подключаем стили
 const HistoryPage = () => {
   return (
     <div className="history-page">
-      <div className="section-header" style={{ textAlign: 'center', marginTop: '20px' }}>
-        <h1>История</h1>
-      </div>
+    
 
       <div className="page-center-container">
         

@@ -8,9 +8,6 @@ const ProfilePage = () => {
 
   return (
     <div className="profile-page">
-      <div className="section-header" style={{ textAlign: 'center', marginTop: '20px' }}>
-        <h1>Профиль</h1>
-      </div>
 
       <div className="page-center-container">
         
