@@ -208,7 +208,7 @@
   font-weight: 700;
 }
 
-/*3 контейнер, 3 подконтейнер (Настройки, прейскурант, выход)
+/*3 контейнер, 3 подконтейнер (Настройки, прейскурант, выход)*/
 
 /* Элементы меню */
 .action-item {
@@ -312,3 +312,41 @@
 
 input:checked + .slider { background-color: #1e3c72; }
 input:checked + .slider:before { transform: translateX(26px); }
+
+
+/* dark-theme */
+/* Переменные для удобства (в начале CSS файла или внутри .dark-theme) */
+.dark-theme {
+  background-color: #020617 !important; /* Глубокий черный/синий */
+  color: #f8fafc !important;
+}
+
+/* Перекрашиваем карточки в темной теме */
+.dark-theme .content-group-box {
+  background: #0f172a !important; /* Темно-синий фон карточек */
+  border: 1px solid #1e293b;
+  box-shadow: none;
+}
+
+/* Текст в темной теме */
+.dark-theme .profile-value, 
+.dark-theme .stat-value,
+.dark-theme label,
+.dark-theme .section-title {
+  color: #e2e8f0 !important;
+}
+
+/* Иконки в меню действий */
+.dark-theme .action-item {
+  border-bottom-color: #1e293b;
+}
+
+.dark-theme .action-item span {
+  color: #cbd5e1;
+}
+
+/* Номер телефона (disabled) */
+.dark-theme .profile-value.disabled {
+  background: #1e293b;
+  color: #64748b;
+}

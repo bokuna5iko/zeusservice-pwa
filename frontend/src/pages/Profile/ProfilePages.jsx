@@ -1,14 +1,20 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect} from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import './ProfilePages.css';
-
+import PriceListModal from "../../components/PriceList/PriceListModal";
 const ProfilePage = () => {
-  const { user, logout, setUser } = useContext(AuthContext); // Достаем юзера и функцию обновления
+  const { user, setUser } = useContext(AuthContext); // Достаем юзера и функцию обновления
   const [isEditingName, setIsEditingName] = useState(false);
-  const [newName, setNewName] = useState(user?.name || '');
+  const [newName, setNewName]= useState('');
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [activeModal, setActiveModal] = useState(null); // 'prices' или 'settings' или null
   const [isDarkMode, setIsDarkMode] = useState(false); // Для темы
+
+  useEffect(() => {
+    if (user?.name) {
+      setNewName(user.name);
+    }
+  }, [user]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -42,7 +48,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="profile-page">
+    <div className={`profile-page ${isDarkMode ? 'dark-theme' : ''}`}>
       <div className="page-center-container">
         
         {/* КОНТЕЙНЕР №1: Личные данные */}
@@ -149,7 +155,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-{/* КОНТЕЙНЕР №3: Меню действий */}
+          {/* КОНТЕЙНЕР №3: Меню действий */}
         <div className="profile-card actions-box content-group-box">
           <div className="fill-zone">
             
@@ -183,40 +189,37 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* МОДАЛЬНОЕ ОКНО (Универсальное) */}
-      {activeModal && (
+      {/* 1. ПРЕЙСКУРАНТ (Новый отдельный компонент) */}
+      <PriceListModal 
+        isOpen={activeModal === 'prices'} 
+        onClose={() => setActiveModal(null)} 
+      />
+
+      {/* 2. НАСТРОЙКИ (Оставляем в универсальном оверлее, пока не вынесли в отдельный файл) */}
+      {activeModal === 'settings' && (
         <div className="modal-overlay" onClick={() => setActiveModal(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="close-modal" onClick={() => setActiveModal(null)}>&times;</button>
             
-            {activeModal === 'prices' && (
-              <div className="modal-body">
-                <h2>Прейскурант</h2>
-                <p>Тут будет список услуг (ждем ТЗ)...</p>
+            <div className="modal-body">
+              <h2>Настройки</h2>
+              <div className="setting-row">
+                <span>Тёмная тема</span>
+                <label className="switch">
+                  <input 
+                    type="checkbox" 
+                    checked={isDarkMode} 
+                    onChange={() => setIsDarkMode(!isDarkMode)} 
+                  />
+                  <span className="slider round"></span>
+                </label>
               </div>
-            )}
-
-            {activeModal === 'settings' && (
-              <div className="modal-body">
-                <h2>Настройки</h2>
-                <div className="setting-row">
-                  <span>Тёмная тема</span>
-                  <label className="switch">
-                    <input 
-                      type="checkbox" 
-                      checked={isDarkMode} 
-                      onChange={() => setIsDarkMode(!isDarkMode)} 
-                    />
-                    <span className="slider round"></span>
-                  </label>
-                </div>
-              </div>
-            )}
+            </div>
           </div>
+          
         </div>
       )}
-    </div>
-  );
-};
-
+</div>
+  )
+}
 export default ProfilePage;
