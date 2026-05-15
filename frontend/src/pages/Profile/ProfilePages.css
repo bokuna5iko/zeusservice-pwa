@@ -33,14 +33,50 @@
 }
 
 /* Контейнер №2: Стили статуса */
-.status-badge {
-  background: #e0f2fe;
-  color: #0369a1;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-weight: 700;
+.section-title {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #1e3c72;
+  font-weight: 800;
+  text-align: center;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* В столбик на мобилках */
+  gap: 15px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
   font-size: 0.85rem;
-  margin: 10px 0;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e3c72;
+}
+
+.status-badge {
+  color: #10b981; /* Зеленый цвет для статуса */
+  background: #f0fdf4;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
 }
 
 /* Контейнер №3: Стили кнопок */
@@ -76,3 +112,203 @@
   flex-direction: column;
   align-items: center;
 }
+
+.profile-header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+}
+
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid #1e3c72;
+  object-fit: cover;
+}
+
+.avatar-edit-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #1e3c72;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+}
+
+.avatar-picker {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  background: #f1f5f9;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+.picker-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.picker-img:hover { transform: scale(1.2); }
+
+.profile-info-row {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.profile-info-row label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.profile-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e3c72;
+}
+
+.profile-value.disabled { color: #64748b; }
+
+.input-with-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.car-brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #eff6ff;
+  padding: 10px 15px;
+  border-radius: 10px;
+  color: #1e3c72;
+  font-weight: 700;
+}
+
+/*3 контейнер, 3 подконтейнер (Настройки, прейскурант, выход)
+
+/* Элементы меню */
+.action-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.action-item:active { opacity: 0.6; }
+.action-item.logout { color: #ef4444; border-bottom: none; }
+
+.action-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 600;
+}
+
+.action-left i { width: 20px; color: #1e3c72; }
+.action-item.logout i { color: #ef4444; }
+
+/* Модальное окно */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px); /* Тот самый эффект размытия */
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* Модалка выезжает снизу */
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 25px 25px 0 0;
+  padding: 30px 20px;
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: #94a3b8;
+}
+
+/* Переключатель (Toggle Switch) */
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px; width: 18px;
+  left: 3px; bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider { background-color: #1e3c72; }
+input:checked + .slider:before { transform: translateX(26px); }

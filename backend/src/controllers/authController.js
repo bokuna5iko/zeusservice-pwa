@@ -26,9 +26,9 @@ exports.login = async (req, res) => {
                 phone: user.phone,
                 role: user.role,
                 bonus_points: user.bonus_points,
-                // ДОБАВЛЯЕМ ЭТИ ПОЛЯ:
                 visit_count: user.visit_count, 
-                total_visits: user.total_visits
+                total_visits: user.total_visits,
+                created_at: user.created_at
             }
         });
     } catch (err) {
@@ -37,13 +37,13 @@ exports.login = async (req, res) => {
     }
 };;
 
-// 2. ПОЛУЧЕНИЕ ПРОФИЛЯ (ЭТОГО У ТЕБЯ НЕ ХВАТАЛО)
+// 2. ПОЛУЧЕНИЕ ПРОФИЛЯ
 // Эта функция вызывается фронтендом (api.getProfile) при каждой загрузке страницы
 exports.getMe = async (req, res) => {
     try {
         // req.user.id берется из middleware авторизации (который проверяет токен)
         const result = await db.query(
-            'SELECT id, phone, name, role, visit_count, total_visits FROM users WHERE id = $1',
+            'SELECT id, phone, name, role, visit_count, total_visits, created_at FROM users WHERE id = $1',
             [req.user.id]
         );
         
@@ -61,7 +61,8 @@ exports.getMe = async (req, res) => {
             role: user.role,
             visit_count: user.visit_count,   // Для кружочков (0-7)
             total_visits: user.total_visits, // Для общей статистики в профиле
-            last_visit: user.last_visit      // Дата последнего заезда
+            last_visit: user.last_visit,      // Дата последнего заезда
+            created_at: user.created_at
         });
     } catch (err) {
         console.error('Ошибка получения профиля:', err);

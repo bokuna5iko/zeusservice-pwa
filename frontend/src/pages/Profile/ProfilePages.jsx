@@ -1,52 +1,220 @@
-// src/pages/Profile/ProfilePage.jsx
-import React, { useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import './ProfilePages.css'; // Шаг 4: Подключаем стили
+import './ProfilePages.css';
 
 const ProfilePage = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, setUser } = useContext(AuthContext); // Достаем юзера и функцию обновления
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [newName, setNewName] = useState(user?.name || '');
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
+  const [activeModal, setActiveModal] = useState(null); // 'prices' или 'settings' или null
+  const [isDarkMode, setIsDarkMode] = useState(false); // Для темы
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login'; // Простой редирект на выход
+  };
+
+  const avatars = ['1.png'];
+
+  // Функция сохранения (Имя или Аватар)
+  const updateProfile = async (field, value) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:3000/api/user/update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ [field]: value })
+      });
+
+      if (response.ok) {
+        // Обновляем данные в контексте, чтобы изменения применились везде
+        setUser({ ...user, [field]: value });
+        if (field === 'name') setIsEditingName(false);
+        if (field === 'avatar_url') setShowAvatarPicker(false);
+      }
+    } catch (error) {
+      console.error('Ошибка обновления:', error);
+    }
+  };
 
   return (
     <div className="profile-page">
-
       <div className="page-center-container">
         
-        {/* КОНТЕЙНЕР №1: Личные данные (ID и телефон) */}
-        <div className="profile-card profile-identity-box content-group-box">
-          <div className="fill-zone">
-            <div className="avatar-placeholder">
-              <i className="fas fa-user fa-2x"></i>
+        {/* КОНТЕЙНЕР №1: Личные данные */}
+        <div className="profile-card main-info-box content-group-box">
+          <div className="fill-zone profile-header-content">
+            
+            {/* 1. Аватар */}
+            <div className="avatar-section">
+              <div className="avatar-wrapper" onClick={() => setShowAvatarPicker(!showAvatarPicker)}>
+                <img 
+                  src={`/avatars/${user?.avatar_url || '1.png'}`} 
+                  alt="Avatar" 
+                  className="profile-avatar" 
+                />
+                <div className="avatar-edit-badge"><i className="fas fa-camera"></i></div>
+              </div>
+              
+              {showAvatarPicker && (
+                <div className="avatar-picker">
+                  {avatars.map(img => (
+                    <img 
+                      key={img} 
+                      src={`/avatars/${img}`} 
+                      className="picker-img" 
+                      onClick={() => updateProfile('avatar_url', img)}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-            {/* Сюда будем рендерить имя и телефон из БД */}
-            <h2 className="user-name">{user?.name || 'Клиент'}</h2>
-            <p className="user-phone">{user?.phone || '+7 (---) --- -- --'}</p>
+
+            {/* 2. Имя */}
+            <div className="profile-info-row">
+              <label>Ваше имя</label>
+              <div className="input-with-action">
+                {isEditingName ? (
+                  <>
+                    <input 
+                      value={newName} 
+                      onChange={(e) => setNewName(e.target.value)}
+                      className="profile-input"
+                    />
+                    <button className="save-btn" onClick={() => updateProfile('name', newName)}>
+                      <i className="fas fa-check"></i>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <span className="profile-value">{user?.name}</span>
+                    <button className="edit-btn" onClick={() => setIsEditingName(true)}>
+                      <i className="fas fa-pen"></i>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* 3. Телефон */}
+            <div className="profile-info-row">
+              <label>Номер телефона</label>
+              <div className="profile-value disabled">{user?.phone}</div>
+            </div>
+
+            {/* 4. Марка машины */}
+            <div className="profile-info-row">
+              <label>Автомобиль</label>
+              <div className="car-brand-badge">
+                 <i className="fas fa-car"></i>
+                 <span>{user?.car_brand || 'Добавить авто'}</span>
+              </div>
+            </div>
+
           </div>
         </div>
 
-        {/* КОНТЕЙНЕР №2: Статус и Бонусы */}
-        <div className="profile-card profile-loyalty-box content-group-box">
+         {/* КОНТЕЙНЕР №2: Статистика и Статус */}
+        <div className="profile-card stats-box content-group-box">
           <div className="fill-zone">
-            {/* Сюда пойдут данные о ранге (напр. "Бронза") и дата регистрации */}
-            <h3 className="stats-title">Мой статус</h3>
-            <div className="status-badge">Постоянный клиент</div>
-            <p className="visit-counter">Визитов: {user?.visits || 0}</p>
+            <h3 className="section-title">Ваша активность</h3>
+            
+            <div className="stats-grid">
+              {/* 1. Мой статус */}
+              <div className="stat-item">
+                <div className="stat-label">Мой статус</div>
+                <div className="stat-value status-badge">Постоянный клиент</div>
+              </div>
+
+              {/* 2. Общее количество визитов */}
+              <div className="stat-item">
+                <div className="stat-label">Всего визитов</div>
+                <div className="stat-value">{user?.total_visits || 0}</div>
+              </div>
+
+              {/* 3. Дата регистрации */}
+              <div className="stat-item">
+                <div className="stat-label">В клубе с</div>
+                <div className="stat-value">
+                  {user?.created_at 
+                    ? new Date(user.created_at).toLocaleDateString('ru-RU') 
+                    : '—'}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* КОНТЕЙНЕР №3: Настройки и Выход */}
-        <div className="profile-card profile-actions-box content-group-box">
+{/* КОНТЕЙНЕР №3: Меню действий */}
+        <div className="profile-card actions-box content-group-box">
           <div className="fill-zone">
-            {/* Кнопки управления аккаунтом */}
-            <button className="action-btn settings-btn">
-              <i className="fas fa-cog"></i> Настройки
-            </button>
-            <button onClick={logout} className="action-btn logout-btn-red">
-              <i className="fas fa-sign-out-alt"></i> Выйти из аккаунта
-            </button>
+            
+            {/* 1. Прейскурант */}
+            <div className="action-item" onClick={() => setActiveModal('prices')}>
+              <div className="action-left">
+                <i className="fas fa-list-alt"></i>
+                <span>Прейскурант</span>
+              </div>
+              <i className="fas fa-chevron-right"></i>
+            </div>
+
+            {/* 2. Настройки */}
+            <div className="action-item" onClick={() => setActiveModal('settings')}>
+              <div className="action-left">
+                <i className="fas fa-cog"></i>
+                <span>Настройки</span>
+              </div>
+              <i className="fas fa-chevron-right"></i>
+            </div>
+
+            {/* 3. Выход */}
+            <div className="action-item logout" onClick={handleLogout}>
+              <div className="action-left">
+                <i className="fas fa-sign-out-alt"></i>
+                <span>Выйти из аккаунта</span>
+              </div>
+            </div>
+
           </div>
         </div>
-
       </div>
+
+      {/* МОДАЛЬНОЕ ОКНО (Универсальное) */}
+      {activeModal && (
+        <div className="modal-overlay" onClick={() => setActiveModal(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-modal" onClick={() => setActiveModal(null)}>&times;</button>
+            
+            {activeModal === 'prices' && (
+              <div className="modal-body">
+                <h2>Прейскурант</h2>
+                <p>Тут будет список услуг (ждем ТЗ)...</p>
+              </div>
+            )}
+
+            {activeModal === 'settings' && (
+              <div className="modal-body">
+                <h2>Настройки</h2>
+                <div className="setting-row">
+                  <span>Тёмная тема</span>
+                  <label className="switch">
+                    <input 
+                      type="checkbox" 
+                      checked={isDarkMode} 
+                      onChange={() => setIsDarkMode(!isDarkMode)} 
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
