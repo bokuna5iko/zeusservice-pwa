@@ -93,3 +93,16 @@
   transform: scale(0.98);
   opacity: 0.9;
 }
+
+.login-error-msg {
+  background: #fee2e2;
+  color: #ef4444;
+  padding: 10px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #fecaca;
+}
