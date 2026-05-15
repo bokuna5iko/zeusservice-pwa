@@ -1,0 +1,68 @@
+/* src/components/History/VisitItem.css */
+
+.visit-card {
+  background: white;
+  border-radius: 15px;
+  margin-bottom: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #f0f0f0;
+}
+
+.visit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e3c72;
+}
+
+.visit-date { color: #64748b; font-weight: 400; min-width: 90px; }
+.visit-service { flex: 1; margin-left: 10px; }
+.visit-price-simple { font-weight: 800; color: #1e3c72; }
+
+.arrow {
+  margin-left: 10px;
+  transition: transform 0.3s ease;
+  color: #cbd5e1;
+}
+
+.arrow.rotate { transform: rotate(180deg); }
+
+/* Выезжающая панель */
+.visit-details {
+  max-height: 0;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.visit-card.open {
+  background: #f8fafc;
+  border-color: #1e3c72;
+}
+
+.visit-card.open .visit-details {
+  max-height: 150px; /* Достаточно для контента */
+  opacity: 1;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed #cbd5e1;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+
+.detail-label { color: #64748b; }
+.detail-value { font-weight: 700; color: #334155; }
+
+.old-price { text-decoration: line-through; color: #94a3b8; font-size: 0.8rem; }
+.new-price { color: #10b981; }
+.discount-tag { color: #f59e0b; font-size: 0.75rem; }

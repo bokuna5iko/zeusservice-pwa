@@ -120,7 +120,7 @@ exports.getUserHistory = async (req, res) => {
         const userId = req.user.id;
         // Заменяем visit_date на created_at, так как в твоей БД колонка называется именно так
         const result = await db.query(
-            'SELECT service_type, price, created_at FROM visits WHERE user_id = $1 ORDER BY created_at DESC',
+            'SELECT service_type AS service_name, price AS base_price, created_at, visit_number FROM visits WHERE user_id = $1 ORDER BY created_at DESC',
             [userId]
         );
         
