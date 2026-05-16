@@ -123,3 +123,10 @@
     ```
     SELECT sum(amount) FROM visits;
     ```
+
+
+Проверка всех колонок по именам в таблице visits
+
+SELECT column_name, data_type 
+FROM information_schema.columns 
+WHERE table_name = 'visits';
