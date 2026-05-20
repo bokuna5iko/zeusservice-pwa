@@ -9,6 +9,7 @@ import HomePage from "./pages/Home/HomePage.jsx";
 import HistoryPage from "./pages/History/HistoryPage.jsx";
 import ProfilePage from "./pages/Profile/ProfilePages.jsx";
 import AdminPage from "./pages/Admin/AdminPage.jsx";
+import AdminHome from "./pages/AdminHome/AdminHome.jsx";
 function App() {
   const { user, activePage } = useContext(AuthContext);
 
@@ -23,32 +24,36 @@ function App() {
     );
   }
 
-  // 2. Условие для авторизованного пользователя
+// 2. Условие для авторизованного пользователя
   return (
-  <div className="app-shell">
-    {/* Оболочка телефона */}
-    <div className="app-main"> 
-      
-      <header className="app-header">
+    <div className="app-shell">
+      {/* Оболочка телефона */}
+      <div className="app-main"> 
+        
+        <header className="app-header">
           <div className="header-content">
             <span className="app-logo">ZEUS <span>AUTO</span></span>
           </div>
         </header>
 
-      <main className="page-content" style={{ flex: 1, overflowY: 'auto' }}>
-          {activePage === 'home' && <HomePage />}
+        <main className="page-content" style={{ flex: 1, overflowY: 'auto' }}>
+          {/* Динамически подменяем Главную страницу в зависимости от роли */}
+          {activePage === 'home' && (
+            user.role === 'admin' ? <AdminHome /> : <HomePage />
+          )}
+          
           {activePage === 'history' && <HistoryPage />}
           {activePage === 'profile' && <ProfilePage />}
           {activePage === 'admin' && <AdminPage />}
         </main>
 
-      <footer className="app-footer">
-        <Navigation />
-      </footer>
+        <footer className="app-footer">
+          <Navigation />
+        </footer>
 
+      </div>
     </div>
-  </div>
-);
+  );
 }
 
 export default App;

@@ -1,91 +1,134 @@
 const db = require('../config/db');
 
-exports.getStats = async (req, res) => {
+// 1. Получение количества визитов за СЕГОДНЯ (для Прогресс-бара)
+exports.getTodayCount = async (req, res) => {
     try {
-        // ОПРЕДЕЛЯЕМ ВРЕМЕННЫЕ ТОЧКИ
-        const now = 'NOW()'; 
-        const yesterdaySameTime = "NOW() - interval '1 day'";
-        const startOfToday = "date_trunc('day', NOW())";
-        const startOfYesterday = "date_trunc('day', NOW() - interval '1 day')";
-        const startOfMonth = "date_trunc('month', NOW())";
+        // Считаем записи в visits, созданные с 00:00 текущего дня
+        const result = await db.query(
+            `SELECT COUNT(*)::int AS today_count 
+             FROM visits 
+             WHERE created_at >= CURRENT_DATE`
+        );
+        
+        // Отдаем число (если записей нет, вернет 0)
+        res.json({ today_count: result.rows[0].today_count || 0 });
+    } catch (err) {
+        console.error('Ошибка в getTodayCount:', err);
+        res.status(500).json({ message: 'Ошибка сервера при получении статистики' });
+    }
+};
 
-        // 1. БЛОК: КЛИЕНТЫ И ВЫРУЧКА (Сегодня vs Вчера до этого же часа)
-        const mainStatsQuery = `
-            SELECT 
-                -- Сегодня
-                COUNT(DISTINCT CASE WHEN created_at >= ${startOfToday} THEN user_id END) as today_users,
-                COALESCE(SUM(CASE WHEN created_at >= ${startOfToday} THEN price END), 0) as today_revenue,
-                
-                -- Вчера до текущего часа
-                COUNT(DISTINCT CASE WHEN created_at >= ${startOfYesterday} AND created_at <= ${yesterdaySameTime} THEN user_id END) as yesterday_users,
-                COALESCE(SUM(CASE WHEN created_at >= ${startOfYesterday} AND created_at <= ${yesterdaySameTime} THEN price END), 0) as yesterday_revenue
-            FROM visits;
-        `;
-        const mainStats = await db.query(mainStatsQuery);
-        const { today_users, today_revenue, yesterday_users, yesterday_revenue } = mainStats.rows[0];
+// 2. Получение 3-х последних действий админа (для Мини-ленты)
+exports.getLastVisits = async (req, res) => {
+    try {
+        // Достаем последние 3 визита, подтягивая имя услуги и класс машины из таблицы services
+        // Если визит гостевой (user_id IS NULL), имя клиента будет "Гость"
+        const result = await db.query(
+            `SELECT 
+                v.id,
+                v.service_type AS service_name,
+                v.price AS base_price,
+                v.created_at,
+                v.visit_number,
+                COALESCE(u.name, 'Гость') AS client_name
+             FROM visits v
+             LEFT JOIN users u ON v.user_id = u.id
+             ORDER BY v.created_at DESC
+             LIMIT 3`
+        );
+        
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Ошибка в getLastVisits:', err);
+        res.status(500).json({ message: 'Ошибка сервера при получении ленты действий' });
+    }
+};
 
-        // 2. БЛОК: НОВЫЕ КЛИЕНТЫ (Первый визит сегодня vs Первый визит вчера до этого часа)
-        const newUsersQuery = `
-            WITH first_visits AS (
-                SELECT user_id, MIN(created_at) as first_time
-                FROM visits
-                GROUP BY user_id
-            )
-            SELECT 
-                COUNT(CASE WHEN first_time >= ${startOfToday} THEN 1 END) as today_new,
-                COUNT(CASE WHEN first_time >= ${startOfYesterday} AND first_time <= ${yesterdaySameTime} THEN 1 END) as yesterday_new
-            FROM first_visits;
-        `;
-        const newUsersStats = await db.query(newUsersQuery);
-        const { today_new, yesterday_new } = newUsersStats.rows[0];
+// 3. Получение списка всех услуг (для выпадающего списка в Калькуляторе)
+exports.getAllServices = async (req, res) => {
+    try {
+        const result = await db.query(
+            'SELECT id, service_name, car_class, base_price FROM services ORDER BY id ASC'
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Ошибка в getAllServices:', err);
+        res.status(500).json({ message: 'Ошибка сервера при получении списка услуг' });
+    }
+};
 
-        // 3. БЛОК: ВОЗВРАЩАЕМОСТЬ (Постоянники сегодня vs Вчера)
-        // Считаем тех, у кого > 4 визитов в этом месяце на текущий момент
-        const retentionQuery = `
-            WITH monthly_counts AS (
-                SELECT user_id, COUNT(*) as cnt 
-                FROM visits 
-                WHERE created_at >= ${startOfMonth}
-                GROUP BY user_id
-            )
-            SELECT 
-                COUNT(DISTINCT v.user_id) as regulars_today
-            FROM visits v
-            JOIN monthly_counts mc ON v.user_id = mc.user_id
-            WHERE v.created_at >= ${startOfToday} AND mc.cnt > 4;
-        `;
-        // Для упрощения примера возьмем regulars_yesterday как 0 или добавим аналогичную логику
-        const retentionStats = await db.query(retentionQuery);
-        const regularsToday = parseInt(retentionStats.rows[0].regulars_today);
+// 4. Зачисление визита (для Калькулятора)
+exports.createVisit = async (req, res) => {
+    // Начинаем транзакцию, чтобы если один запрос упадет, вся операция откатилась
+    const client = await db.connect();
+    
+    try {
+        const { phone, service_name, price, payment_type, is_guest } = req.body;
 
-        // ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ %
-        const calcChange = (current, previous) => {
-            if (parseInt(previous) === 0) return parseInt(current) > 0 ? 100 : 0;
-            return Math.round(((current - previous) / previous) * 100);
-        };
+        await client.query('BEGIN');
 
-        // ФОРМИРУЕМ ФИНАЛЬНЫЙ JSON
-        res.json({
-            // Блок 1: Клиенты сегодня
-            todayUsers: parseInt(today_users),
-            userChange: calcChange(today_users, yesterday_users),
+        let userId = null;
+        let currentVisitNumber = null;
 
-            // Блок 2: Возвращаемость (Лояльность)
-            // % лояльных от всех приехавших сегодня
-            retentionRate: today_users > 0 ? Math.round((regularsToday / today_users) * 100) : 0,
-            retentionChange: calcChange(regularsToday, 0), // Здесь можно докрутить сравнение со вчера
+        // СЦЕНАРИЙ 1: Полноценный клиент (НЕ ГОСТЬ)
+        if (!is_guest) {
+            // Ищем пользователя по телефону
+            const userResult = await client.query('SELECT id, visit_count, total_visits FROM users WHERE phone = $1', [phone]);
+            
+            if (userResult.rows.length === 0) {
+                await client.query('ROLLBACK');
+                return res.status(444).json({ message: 'Пользователь с таким номером не найден' });
+            }
 
-            // Блок 3: Новые клиенты
-            totalVisits: parseInt(today_new), 
-            visitsChange: calcChange(today_new, yesterday_new),
+            const user = userResult.rows[0];
+            userId = user.id;
 
-            // Блок 4: Выручка
-            totalRevenue: parseInt(today_revenue),
-            revenueChange: calcChange(today_revenue, yesterday_revenue)
-        });
+            // Рассчитываем номер текущего визита для лояльности
+            // Если в базе visit_count = 3, то текущий визит — 4-й (скидочный)
+            // Если visit_count = 7, то текущий визит — 8-й (бесплатный)
+            currentVisitNumber = user.visit_count + 1;
+
+            let nextVisitCount = currentVisitNumber;
+            // Если это был 8-й визит, сбрасываем счетчик круга лояльности в 0
+            if (currentVisitNumber === 8) {
+                nextVisitCount = 0;
+            }
+
+            // Обновляем счетчики пользователя
+            await client.query(
+                `UPDATE users 
+                 SET visit_count = $1, total_visits = total_visits + 1 
+                 WHERE id = $2`,
+                [nextVisitCount, userId]
+            );
+        }
+
+        // СЦЕНАРИЙ 2: Гость (is_guest = true) -> userId и currentVisitNumber остаются NULL
+
+        // Вставляем запись в таблицу визитов
+        await client.query(
+            `INSERT INTO visits (user_id, service_type, price, visit_number, payment_type, created_at) 
+             VALUES ($1, $2, $3, $4, $5, NOW())`,
+            [userId, service_name, price, currentVisitNumber, payment_type]
+        );
+
+        await client.query('COMMIT');
+        res.status(201).json({ success: true, message: 'Визит успешно зачислен' });
 
     } catch (err) {
-        console.error('Статистика БД ошибка:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        await client.query('ROLLBACK');
+        console.error('Ошибка в createVisit:', err);
+        res.status(500).json({ message: 'Ошибка сервера при зачислении визита' });
+    } finally {
+        client.release();
+    }
+};
+
+// Заглушка для общего роута статистики
+exports.getStats = async (req, res) => {
+    try {
+        res.json({ message: "Тут будет общая статистика" });
+    } catch (err) {
+        res.status(500).json({ message: "Ошибка сервера" });
     }
 };

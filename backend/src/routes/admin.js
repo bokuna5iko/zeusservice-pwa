@@ -12,6 +12,12 @@ const isAdmin = (req, res, next) => {
     }
 };
 
+router.get('/stats/today-count', adminController.getTodayCount);
+router.get('/stats/last-visits', adminController.getLastVisits);
+router.get('/services', adminController.getAllServices);
+// Зачисление визита из калькулятора
+router.post('/visits/add', adminController.createVisit);
+
 // Защищенный путь статистики
 router.get('/stats', authenticateToken, isAdmin, adminController.getStats);
 
