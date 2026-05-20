@@ -4,16 +4,18 @@ import { AuthContext } from './context/AuthContext';
 import Navigation from './components/Navigation';
 import LoginPage from './pages/Login/LoginPage';
 
-// Твои новые страницы
+// Твои страницы
 import HomePage from "./pages/Home/HomePage.jsx"; 
 import HistoryPage from "./pages/History/HistoryPage.jsx";
 import ProfilePage from "./pages/Profile/ProfilePages.jsx";
 import AdminPage from "./pages/Admin/AdminPage.jsx";
 import AdminHome from "./pages/AdminHome/AdminHome.jsx";
+import AdminHistory from "./pages/AdminHistory/AdminHistory.jsx";
+
 function App() {
   const { user, activePage } = useContext(AuthContext);
 
-// 1. Условие для неавторизованного пользователя
+  // 1. Условие для неавторизованного пользователя
   if (!user) {
     return (
       <div className="app-shell">
@@ -24,7 +26,7 @@ function App() {
     );
   }
 
-// 2. Условие для авторизованного пользователя
+  // 2. Условие для авторизованного пользователя
   return (
     <div className="app-shell">
       {/* Оболочка телефона */}
@@ -42,7 +44,11 @@ function App() {
             user.role === 'admin' ? <AdminHome /> : <HomePage />
           )}
           
-          {activePage === 'history' && <HistoryPage />}
+          {/* Динамически подменяем Историю в зависимости от роли */}
+          {activePage === 'history' && (
+            user.role === 'admin' ? <AdminHistory /> : <HistoryPage />
+          )}
+
           {activePage === 'profile' && <ProfilePage />}
           {activePage === 'admin' && <AdminPage />}
         </main>

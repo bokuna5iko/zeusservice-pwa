@@ -124,6 +124,40 @@ exports.createVisit = async (req, res) => {
     }
 };
 
+// 5. Получение полной истории визитов за последние 7 дней (для экрана История)
+exports.getAdminHistory = async (req, res) => {
+    try {
+        const queryText = `
+            SELECT 
+                v.id AS visit_id, 
+                v.created_at, 
+                v.service_type AS service_name, 
+                v.price, 
+                v.payment_type,
+                v.visit_number,
+                u.id AS user_id, 
+                u.name, 
+                u.phone, 
+                u.car_brand, 
+                u.role, 
+                u.total_visits, 
+                u.visit_count
+            FROM visits v
+            LEFT JOIN users u ON v.user_id = u.id
+            WHERE v.created_at >= NOW() - INTERVAL '7 days'
+            ORDER BY v.created_at DESC;
+        `;
+
+        const result = await db.query(queryText);
+        
+        // Возвращаем массив полученных строк
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Ошибка в getAdminHistory:', err);
+        res.status(500).json({ message: 'Ошибка сервера при получении истории визитов' });
+    }
+};
+
 // Заглушка для общего роута статистики
 exports.getStats = async (req, res) => {
     try {

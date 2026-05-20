@@ -1,0 +1,334 @@
+/* ==========================================================================
+   1. ОБЩАЯ СТРУКТУРА СТРАНИЦЫ И ОСНОВНЫЕ КОНТЕЙНЕРЫ
+   ========================================================================== */
+
+.admin-history-page {
+  background-color: #020617;
+  min-height: 100vh;
+  color: #f8fafc;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Общая коробка для контента (используется для фильтра и списка) */
+.filter-container {
+  background: #0f172a !important;
+  border: 1px solid #1e293b;
+  padding: 14px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.admin-history-list-box {
+  background: #0f172a !important;
+  border: 1px solid #1e293b;
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.section-title-history {
+  margin: 0 0 16px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+/* Состояния загрузки и пустых результатов */
+.admin-data-placeholder {
+  color: #64748b;
+  text-align: center;
+  font-size: 0.9rem;
+  padding: 24px 0;
+  font-style: italic;
+}
+
+
+/* ==========================================================================
+   2. ПОИСКОВАЯ СТРОКА И ФИЛЬТРЫ
+   ========================================================================== */
+
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.admin-search-input {
+  width: 100%;
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: white;
+  padding: 12px 35px 12px 40px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.admin-search-input:focus {
+  border-color: #38bdf8;
+}
+
+/* Кнопка очистки поиска (крестик) */
+.clear-search-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+
+/* ==========================================================================
+   3. ЛЕНТА КАРТОЧЕК И ДВУХСТРОЧНАЯ ШАПКА (НОВАЯ АРХИТЕКТУРА)
+   ========================================================================== */
+
+.admin-visits-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-visit-accordion-card {
+  background: #1e293b;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  overflow: hidden;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Подсветка открытой карточки */
+.admin-visit-accordion-card.open {
+  border-color: #38bdf8;
+}
+
+/* Главный контейнер шапки карточки */
+.admin-visit-header {
+  padding: 14px 40px 14px 14px; /* 40px справа зарезервировано под независимую стрелку */
+  position: relative;           /* Обязательно для абсолютного позиционирования стрелки */
+  display: flex;
+  flex-direction: column;       /* Выстраиваем строки друг под другом */
+  gap: 10px;                    /* Красивый отступ между верхней и нижней строкой */
+  cursor: pointer;
+  user-select: none;
+}
+
+.admin-visit-header:active {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Общий каркас для строк внутри шапки */
+.admin-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Верхняя строка (Название услуги и Цена) */
+.main-row {
+  align-items: flex-start; /* Если название перенесется, цена останется прижата к верху */
+}
+
+.admin-visit-service-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #f1f5f9;
+  white-space: normal;       /* Разрешаем перенос строк на узких экранах */
+  word-break: break-word;   /* Защита от вылетов длинных слов */
+  line-height: 1.3;
+  padding-right: 12px;       /* Защитный отступ, чтобы текст не слипался с ценой */
+  flex: 1;
+}
+
+.admin-visit-price {
+  font-weight: 700;
+  color: #10b981;
+  font-size: 1.05rem;
+  white-space: nowrap;       /* Цена всегда пишется в одну строку */
+}
+
+/* Нижняя строка (Время/Дата и Бэйджи) */
+.sub-row {
+  align-items: center;
+}
+
+/* Левая часть нижней строки: Группа Времени и Даты */
+.admin-visit-meta-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;                  /* Расстояние между часами и датой */
+}
+
+.admin-visit-time {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.admin-visit-date-sub {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* Правая часть нижней строки: Зона бэйджей */
+.admin-visit-badge-zone {
+  display: flex;
+  align-items: center;
+}
+
+.car-brand-pill, 
+.guest-badge-pill {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.car-brand-pill {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+}
+
+.guest-badge-pill {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+
+/* ==========================================================================
+   4. НЕЗАВИСИМАЯ СТРЕЛКА-ИНДИКАТОР (АККОРДЕОН)
+   ========================================================================== */
+
+.admin-accordion-arrow {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%); /* Идеальное центрирование по вертикали */
+  font-size: 0.85rem;
+  color: #64748b;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* Анимация переворота стрелки при открытии */
+.admin-visit-accordion-card.open .admin-accordion-arrow {
+  transform: translateY(-50%) rotate(180deg);
+  color: #38bdf8;
+}
+
+
+/* ==========================================================================
+   5. ВНУТРЕННИЙ БЛОК ДЕТАЛИЗАЦИИ (РАСКРЫВАЮЩИЙСЯ СПИСОК)
+   ========================================================================== */
+
+.admin-visit-details {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Состояние раскрытого контейнера */
+.admin-visit-accordion-card.open .admin-visit-details {
+  max-height: 350px; /* Запас высоты под внутренний контент */
+  opacity: 1;
+  border-top: 1px dashed #334155;
+}
+
+.admin-details-content {
+  padding: 14px;
+}
+
+/* Заглушка, если заехал Гость */
+.guest-info-notice {
+  background: rgba(245, 158, 11, 0.03);
+  border: 1px dashed rgba(245, 158, 11, 0.2);
+  color: #94a3b8;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Вертикальный список параметров клиента (ФИО, Телефон, Номер визита) */
+.client-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-row-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+  padding-bottom: 6px;
+}
+
+.detail-row-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.detail-item-label {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.detail-item-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.detail-item-value.highlight {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+/* Бэйджи внутри выпадающего списка */
+.role-badge, 
+.loop-badge {
+  display: inline-block;
+  background: #334155;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+}
+
+.loop-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  font-weight: bold;
+}
+
+/* Подвал карточки со способом оплаты */
+.visit-payment-footer {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid #1e293b;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.payment-method i {
+  margin-right: 6px;
+  color: #64748b;
+}

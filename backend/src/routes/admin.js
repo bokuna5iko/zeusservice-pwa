@@ -15,8 +15,8 @@ const isAdmin = (req, res, next) => {
 router.get('/stats/today-count', adminController.getTodayCount);
 router.get('/stats/last-visits', adminController.getLastVisits);
 router.get('/services', adminController.getAllServices);
-// Зачисление визита из калькулятора
-router.post('/visits/add', adminController.createVisit);
+router.get('/history', adminController.getAdminHistory); // Получение истории за 7 дней для админа
+router.post('/visits/add', adminController.createVisit);// Зачисление визита из калькулятора
 
 // Защищенный путь статистики
 router.get('/stats', authenticateToken, isAdmin, adminController.getStats);
