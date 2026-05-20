@@ -20,7 +20,7 @@ const authRoutes = require('./src/routes/auth');
 const adminRoutes = require('./src/routes/admin');
 const visitRoutes = require('./src/routes/visits');
 
-// 2. Маршруты API
+// 2. Маршруты API или же регистрации эндпоинтов
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', visitRoutes);

@@ -10,6 +10,7 @@ const Navigation = () => {
     ? [
         { id: 'home', label: 'Главная', icon: 'fa-th-large' }, // Иконка дашборда для админа
         { id: 'history', label: 'История', icon: 'fa-history' },
+        { id: 'stats', label: 'Статистика', icon: 'fa-chart-line' }, // Наша новая вкладка аналитики
         { id: 'profile', label: 'Профиль', icon: 'fa-user' },
       ]
     : [
@@ -17,11 +18,6 @@ const Navigation = () => {
         { id: 'history', label: 'История', icon: 'fa-history' },
         { id: 'profile', label: 'Профиль', icon: 'fa-user' },
       ];
-
-  // Если у тебя остаётся старая страница управления "Админ", пушим её для роли admin
-  //if (user?.role === 'admin') {
-  //navItems.push({ id: 'admin', label: 'Админ', icon: 'fa-shield-alt' });
-  //}
 
   return (
     <nav className="nav-container">

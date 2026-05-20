@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 import Navigation from './components/Navigation';
@@ -12,10 +11,13 @@ import AdminProfile from "./pages/AdminProfile/AdminProfile.jsx";
 import AdminHome from "./pages/AdminHome/AdminHome.jsx";
 import AdminHistory from "./pages/AdminHistory/AdminHistory.jsx";
 
+// 1. Импортируем новую страницу статистики
+import AdminStatistics from "./pages/AdminStatistics/AdminStatistics.jsx";
+
 function App() {
   const { user, activePage } = useContext(AuthContext);
 
-  // 1. Условие для неавторизованного пользователя
+  // Условие для неавторизованного пользователя
   if (!user) {
     return (
       <div className="app-shell">
@@ -26,7 +28,7 @@ function App() {
     );
   }
 
-  // 2. Условие для авторизованного пользователя
+  // Условие для авторизованного пользователя
   return (
     <div className="app-shell">
       {/* Оболочка телефона */}
@@ -49,13 +51,18 @@ function App() {
             user.role === 'admin' ? <AdminHistory /> : <HistoryPage />
           )}
 
-          {/* Динамически подменяем Профиль в зависимости от роли (Исправлено + Добавлено) */}
+          {/* Динамически подменяем Профиль в зависимости от роли */}
           {activePage === 'profile' && (
             user.role === 'admin' ? <AdminProfile /> : <ProfilePage />
           )}
 
-          {/* Оставляем на случай, если вкладка id: 'admin' из Navigation.jsx всё ещё используется */}
-          {activePage === 'admin' && <AdminProfile />}
+          {/* 2. ПОДКЛЮЧАЕМ ЭКРАН СТАТИСТИКИ АДМИНИСТРАТОРА
+            Проверяем оба id ('stats' или старый 'admin'), чтобы страница точно 
+            открылась, смотря какое имя вкладки прописано у тебя в Navigation.jsx
+          */}
+          {(activePage === 'stats' || activePage === 'admin') && user.role === 'admin' && (
+            <AdminStatistics />
+          )}
         </main>
 
         <footer className="app-footer">
