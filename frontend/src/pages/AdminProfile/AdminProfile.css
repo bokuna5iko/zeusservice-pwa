@@ -1,0 +1,298 @@
+/* ==========================================================================
+   1. СТРУКТУРА СТРАНИЦЫ И БАЗОВЫЕ КАРТОЧКИ
+   ========================================================================== */
+
+.admin-profile-page {
+  background-color: #020617;
+  min-height: 100vh;
+  color: #f8fafc;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.admin-profile-card {
+  background: #0f172a !important;
+  border: 1px solid #1e293b;
+  padding: 20px 16px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+
+/* ==========================================================================
+   2. КОНТЕЙНЕР №1: ЛИЧНЫЕ ДАННЫЕ (АВАТАР И ПОЛЯ)
+   ========================================================================== */
+
+.admin-avatar-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.admin-avatar-wrapper {
+  width: 74px;
+  height: 74px;
+  background: #1e293b;
+  border: 2px solid #334155;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-default-avatar {
+  font-size: 2.1rem;
+  color: #38bdf8; /* Наш акцентный голубой */
+}
+
+.admin-info-rows-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-profile-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+  padding-bottom: 8px;
+}
+
+.admin-profile-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.admin-row-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-row-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+/* Компактный бэйдж роли */
+.admin-role-badge {
+  align-self: flex-start;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+
+/* ==========================================================================
+   3. КОНТЕЙНЕР №2: РАБОЧЕЕ МЕНЮ КНОПОК
+   ========================================================================== */
+
+.admin-menu-box {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.admin-menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 4px;
+  border-bottom: 1px solid #1e293b;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.admin-menu-item:last-child {
+  border-bottom: none;
+}
+
+.admin-menu-item:active {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.admin-menu-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #f1f5f9;
+}
+
+.admin-menu-icon {
+  font-size: 1.1rem;
+  color: #64748b;
+  width: 20px;
+  text-align: center;
+}
+
+.admin-menu-arrow {
+  font-size: 0.8rem;
+  color: #334155;
+}
+
+
+/* ==========================================================================
+   4. КОНТЕЙНЕР №3: СИСТЕМНАЯ КНОПКА (ВЫХОД)
+   ========================================================================== */
+
+.admin-logout-btn {
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid rgba(239, 68, 68, 0.2); /* Тонкая красная рамка */
+  color: #ef4444; /* Наш системный красный */
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+}
+
+.admin-logout-btn:active {
+  background: rgba(239, 68, 68, 0.05);
+}
+
+
+/* ==========================================================================
+   5. АДМИНСКИЕ МОДАЛЬНЫЕ ОКНА (OVERLAYS & CONTENT)
+   ========================================================================== */
+
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(2, 6, 23, 0.85); /* Затемнение */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 999;
+}
+
+.admin-modal-content {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 450px;
+  position: relative;
+  box-sizing: border-box;
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.admin-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.admin-modal-header {
+  padding: 18px 16px 10px 16px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.admin-modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-modal-body {
+  padding: 16px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Стилизация текста Базы Знаний */
+.text-instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.kb-step-card {
+  background: #1e293b;
+  padding: 12px;
+  border-radius: 10px;
+  border-left: 3px solid #38bdf8; /* Синий маркер шага */
+}
+
+.kb-step-card h4 {
+  margin: 0 0 6px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.kb-step-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.kb-step-card strong {
+  color: #e2e8f0;
+}
+
+/* Пустой каркас выбора тем */
+.empty-shell {
+  padding: 30px 16px !important;
+}
+
+.shell-placeholder-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.shell-placeholder-notice i {
+  font-size: 1.8rem;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.shell-placeholder-notice p {
+  margin: 0 0 6px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.shell-placeholder-notice span {
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.3;
+}

@@ -19,9 +19,9 @@ const Navigation = () => {
       ];
 
   // Если у тебя остаётся старая страница управления "Админ", пушим её для роли admin
-  if (user?.role === 'admin') {
-    navItems.push({ id: 'admin', label: 'Админ', icon: 'fa-shield-alt' });
-  }
+  //if (user?.role === 'admin') {
+  //navItems.push({ id: 'admin', label: 'Админ', icon: 'fa-shield-alt' });
+  //}
 
   return (
     <nav className="nav-container">

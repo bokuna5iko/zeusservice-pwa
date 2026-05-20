@@ -8,7 +8,7 @@ import LoginPage from './pages/Login/LoginPage';
 import HomePage from "./pages/Home/HomePage.jsx"; 
 import HistoryPage from "./pages/History/HistoryPage.jsx";
 import ProfilePage from "./pages/Profile/ProfilePages.jsx";
-import AdminPage from "./pages/Admin/AdminPage.jsx";
+import AdminProfile from "./pages/AdminProfile/AdminProfile.jsx";
 import AdminHome from "./pages/AdminHome/AdminHome.jsx";
 import AdminHistory from "./pages/AdminHistory/AdminHistory.jsx";
 
@@ -43,14 +43,19 @@ function App() {
           {activePage === 'home' && (
             user.role === 'admin' ? <AdminHome /> : <HomePage />
           )}
-          
+  
           {/* Динамически подменяем Историю в зависимости от роли */}
           {activePage === 'history' && (
             user.role === 'admin' ? <AdminHistory /> : <HistoryPage />
           )}
 
-          {activePage === 'profile' && <ProfilePage />}
-          {activePage === 'admin' && <AdminPage />}
+          {/* Динамически подменяем Профиль в зависимости от роли (Исправлено + Добавлено) */}
+          {activePage === 'profile' && (
+            user.role === 'admin' ? <AdminProfile /> : <ProfilePage />
+          )}
+
+          {/* Оставляем на случай, если вкладка id: 'admin' из Navigation.jsx всё ещё используется */}
+          {activePage === 'admin' && <AdminProfile />}
         </main>
 
         <footer className="app-footer">
