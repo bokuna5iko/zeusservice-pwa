@@ -1,5 +1,5 @@
-// src/context/AuthContext.jsx
 import React, { createContext, useState, useEffect } from 'react';
+import { api } from '../api/apiService';
 
 export const AuthContext = createContext();
 
@@ -12,36 +12,34 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setLoading(false);
-        return;
-      }
+useEffect(() => {
+  const checkAuth = async () => {
+    // 1. Читаем ПРАВИЛЬНЫЙ токен, который ждет твой apiService и друг в Docker
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
-      try {
-        const response = await fetch(`${API_URL}/me`, {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+    try {
+      // 2. Вызываем метод из apiService. Наш интерцептор сам прикрепит токен!
+      const response = await api.getProfile();
+      
+      // В Axios данные ответа всегда лежат в поле .data
+      setUser(response.data);
+    } catch (err) {
+      console.error('Ошибка сессии:', err);
+      // Если токен протух или бэк вернул ошибку — чистим токен
+      localStorage.removeItem('accessToken');
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+  checkAuth();
+}, []);
 
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-        } else {
-          localStorage.removeItem('token');
-        }
-      } catch (err) {
-        console.error('Ошибка сессии:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    checkAuth();
-  }, []);
-
-  const login = async (credentials) => {
+const login = async (credentials) => {
     setLoading(true);
     setError(null);
 
@@ -55,12 +53,14 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        // Здесь мы ловим ту самую 404 и выводим сообщение из бэкенда
         throw new Error(data.message || 'Ошибка входа');
       }
 
-      localStorage.setItem('token', data.accessToken);
-      setUser(data.user); // Данные из твоего контроллера лежат в data.user
+      // ❌ БЫЛО: localStorage.setItem('token', data.accessToken);
+      //  СТАЛО (пишем под правильным ключом):
+      localStorage.setItem('accessToken', data.accessToken);
+      
+      setUser(data.user); 
       setActivePage('home');
     } catch (err) {
       setError(err.message);
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
     setUser(null);
     setActivePage('home');
   };

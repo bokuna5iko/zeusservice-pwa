@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import VisitItem from '../../components/HistoryVisits/VisitItem'; // Твой новый путь
 import './HistoryPage.css';
+import { api } from '../../api/apiService';
 
 const HistoryPage = () => {
   const { user } = useContext(AuthContext);
@@ -9,29 +10,21 @@ const HistoryPage = () => {
   const [loading, setLoading] = useState(true);
 
   // Загружаем историю при монтировании компонента
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await fetch('/api/user/history', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+useEffect(() => {
+  const fetchHistory = async () => {
+    try {
+      // Теперь 'api' объявлен благодаря импорту выше и отработает как надо
+      const response = await api.getUserHistory();
+      setHistory(response.data);
+    } catch (error) {
+      console.error('Ошибка загрузки истории:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        if (response.ok) {
-          const data = await response.json();
-          setHistory(data);
-        }
-      } catch (error) {
-        console.error('Ошибка загрузки истории:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHistory();
-  }, []);
+  fetchHistory();
+}, []);
 
   return (
     <div className="history-page">

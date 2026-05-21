@@ -61,12 +61,16 @@ exports.getTodayDashboardStats = async (req, res) => {
     // Отправляем все собранные данные одним пакетом на фронт
     res.json({
       metrics: {
-        totalVisitsToday,
-        registeredToday,
-        totalRevenueToday,
-        loyaltyPercentage
+        totalVisitsToday: Number(totalVisitsToday || 0),
+        registeredToday: Number(registeredToday || 0),
+        totalRevenueToday: Number(totalRevenueToday || 0),
+        loyaltyPercentage: Number(loyaltyPercentage || 0)
       },
-      hourlyGraph
+      // Для графика тоже гарантируем, что cars — это число
+      hourlyGraph: hourlyGraph.map(item => ({
+        ...item,
+        cars: Number(item.cars)
+      }))
     });
 
   } catch (err) {

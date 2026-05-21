@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { api } from '../../api/apiService';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './AdminStatistics.css';
 
@@ -13,42 +14,36 @@ const AdminStatistics = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [archiveLoading, setArchiveLoading] = useState(false);
 
-  // 1. Загрузка метрик и данных графика (за сегодня)
-  const fetchTodayStats = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/admin/stats/today', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setStats(data);
-      }
-    } catch (error) {
-      console.error('Ошибка загрузки статистики за сегодня:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+// 1. Загрузка метрик и данных графика (за сегодня) через apiService
+const fetchTodayStats = async () => {
+  try {
+    // Вызываем метод из apiService. Наш интерцептор сам подставит accessToken!
+    const response = await api.getStats();
+    
+    console.log("ДАННЫЕ СТАТИСТИКИ С БЭКА:", response.data);
 
-  // 2. Загрузка архива клиентов с бэкенда (с лимитом 50 и поиском)
-  const fetchClientArchive = async (query = '') => {
-    setArchiveLoading(true);
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/admin/clients/archive?search=${encodeURIComponent(query)}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setClients(data);
-      }
-    } catch (error) {
-      console.error('Ошибка загрузки архива клиентов:', error);
-    } finally {
-      setArchiveLoading(false);
-    }
-  };
+    setStats(response.data);
+  } catch (error) {
+    console.error('Ошибка загрузки статистики за сегодня:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// 2. Загрузка архива клиентов через apiService
+const fetchClientArchive = async (query = '') => {
+  setArchiveLoading(true);
+  try {
+    // Передаем строку поиска в метод
+    const response = await api.getClientArchive(query);
+    
+    setClients(response.data);
+  } catch (error) {
+    console.error('Ошибка загрузки архива клиентов:', error);
+  } finally {
+    setArchiveLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchTodayStats();
@@ -67,10 +62,9 @@ const AdminStatistics = () => {
     }
   }, [searchQuery, isArchiveOpen]);
 
-  if (loading) {
-    return <div className="admin-stats-loading">Загрузка аналитики...</div>;
-  }
-
+if (loading || !stats) {
+  return <div className="admin-stats-loading">Загрузка аналитики...</div>;
+}
   // Подготовка данных для графика Recharts (заполнение дефолтных рабочих часов, если на бэке пусто)
   const chartData = stats?.hourlyGraph || [];
 

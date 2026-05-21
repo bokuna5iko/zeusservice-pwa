@@ -37,7 +37,15 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
-    allowedHosts: true,  // ← ИСПРАВЛЕНО: true вместо 'all'
-    cors: true
+    allowedHosts: true,
+    cors: true,
+    // 👇 ДОБАВЛЯЕМ ЭТОТ БЛОК ДЛЯ ЛОКАЛЬНОЙ РАЗРАБОТКИ
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000', // Адрес твоего локального бэкенда
+        changeOrigin: true,
+        secure: false,
+      }
+    }
   }
 })

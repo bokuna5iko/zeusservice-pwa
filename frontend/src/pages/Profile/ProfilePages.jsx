@@ -9,17 +9,18 @@ const ProfilePage = () => {
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [activeModal, setActiveModal] = useState(null); // 'prices' или 'settings' или null
   const [isDarkMode, setIsDarkMode] = useState(false); // Для темы
-
+  const { logout } = useContext(AuthContext)
   useEffect(() => {
     if (user?.name) {
       setNewName(user.name);
     }
   }, [user]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/login'; // Простой редирект на выход
-  };
+ const handleLogout = () => {
+  // Вызываем глобальный метод из контекста, который очистит правильный accessToken
+  // и красиво переключит экран приложения без жесткой перезагрузки страницы
+  logout(); 
+};
 
   const avatars = ['1.png'];
 

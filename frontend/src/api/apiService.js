@@ -40,9 +40,11 @@ export const api = {
     login: (phone) => apiService.post('/auth/login', { phone }),
     getProfile: () => apiService.get('/user/me'),
     getServices: () => apiService.get('/services'),
-    getHistory: () => apiService.get('/visits/history'),
+    getUserHistory: () => apiService.get('/user/history'),
     addVisit: (userId, serviceId) => apiService.post('/visits/add', { userId, serviceId }),
-    getStats: () => apiService.get('/admin/stats'),
+    // Изменяем / добавляем точные пути для админки:
+    getStats: () => apiService.get('/admin/stats/today'), // ← Направляем точно на /today
+    getClientArchive: (query) => apiService.get(`/admin/clients/archive?search=${encodeURIComponent(query)}`), // ← Добавили метод архива
 };
 
 export default apiService;
