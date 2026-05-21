@@ -44,6 +44,44 @@ exports.getLastVisits = async (req, res) => {
     }
 };
 
+// Полный путь: GET /api/admin/users/verify/:id
+exports.verifyUserById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // 1. Ищем пользователя в базе
+        const userRes = await db.query(
+            "SELECT id, name, phone FROM users WHERE id = $1 AND role != 'admin'",
+            [id]
+        );
+
+        if (userRes.rows.length === 0) {
+            return res.status(404).json({ message: 'Клиент не найден или QR-код недействителен' });
+        }
+
+        const user = userRes.rows[0];
+
+        // 2. Считаем общее количество его прошлых визитов для калькулятора лояльности
+        const visitsRes = await db.query(
+            "SELECT COUNT(*)::int AS count FROM visits WHERE user_id = $1",
+            [id]
+        );
+        const visitCount = visitsRes.rows[0].count;
+
+        // 3. Отдаем объект в точном формате, который ждет CalculatorModal
+        res.json({
+            id: user.id,
+            name: user.name,
+            phone: user.phone,
+            visit_count: visitCount
+        });
+
+    } catch (err) {
+        console.error('Ошибка при верификации QR-кода:', err);
+        res.status(500).json({ message: 'Ошибка сервера при проверке QR-кода' });
+    }
+};
+
 // 3. Получение списка всех услуг (для выпадающего списка в Калькуляторе)
 exports.getAllServices = async (req, res) => {
     try {

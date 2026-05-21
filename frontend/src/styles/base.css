@@ -9,6 +9,7 @@
     --danger-color: #ef4444;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     
+    
   }
   
   * {
@@ -16,16 +17,41 @@
     margin: 0;
     padding: 0;
   }
+
+  /* Отключаем полосу прокрутки ВООБЩЕ для всех элементов в приложении */
+  *, *::before, *::after, html, body, #root, .app-main, .app-shell, [class*="-page"] {
+  scrollbar-width: none !important; /* Для Firefox */
+  -ms-overflow-style: none !important; /* Для IE/Edge */
+}
+
+/* Отключаем полосу прокрутки для браузеров на движке WebKit (Chrome, Safari, Opera, Edge) */
+::-webkit-scrollbar,
+*::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.app-main::-webkit-scrollbar,
+#root::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
   
-  body {
-    background-color: var(--bg-color);
-    font-family: 'Inter', -apple-system, sans-serif;
-    color: var(--text-main);
-    line-height: 1.5;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-  }
+/* Настройки для плавного тач-скролла пальцем */
+body, .app-main, .admin-home-page {
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-y: none !important; /* Убираем дергание экрана */
+}
+
+body {
+  background-color: var(--bg-color);
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--text-main);
+  line-height: 1.5;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
   
   #root {
     width: 100%;
@@ -64,24 +90,46 @@
 /* ВЕРХ: Фиксированная высота */
 .app-header {
   height: 60px;
-  min-height: 60px;        /* ← Добавлено */
-  background: white;
+  min-height: 60px;
+  background: #0f172a; /* Глубокий темный slate в тон плашек */
   padding: 0 20px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #e2e8f0;
+  justify-content: center; /* Центрируем всё содержимое шапки */
+  border-bottom: 1px solid #1e293b;
   flex-shrink: 0;
+  position: relative; /* Чтобы дочерние элементы могли позиционироваться относительно шапки */
 }
 
 .header-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* Выравниваем сам логотип строго по центру */
   align-items: center;
   width: 100%;
 }
 
-.logo-text { font-weight: 800; font-size: 1.2rem; color: #1e3c72; }
-.logo-text span { color: #2a5298; font-weight: 400; }
+.app-logo { 
+  font-weight: 800; 
+  font-size: 1.3rem; /* Чуть-чуть увеличили масштаб для солидности */
+  color: #38bdf8; /* Твой фирменный голубой/светло-синий */
+  letter-spacing: 1.5px; /* Немного раздвинули буквы для стиля */
+  
+  /* 🌟 То самое неоновое свечение (мягкий сине-голубой фильтр) */
+  text-shadow: 
+    0 0 4px rgba(56, 189, 248, 0.4),
+    0 0 12px rgba(56, 189, 248, 0.6),
+    0 0 20px rgba(14, 165, 233, 0.4);
+    
+  transition: all 0.3s ease;
+}
+.app-logo span { 
+  color: #f8fafc; /* Чистый белый для слова AUTO */
+  font-weight: 400; 
+  letter-spacing: 0.5px;
+  
+  /* Легкий белый отблеск, чтобы слово AUTO не терялось на фоне неонового ЗЕВСА */
+  text-shadow: 0 0 8px rgba(248, 250, 252, 0.3);
+}
 
 /* 2. Твой "телефон" — здесь фиксируем ширину железно */
 .app-main {
@@ -127,14 +175,14 @@
 /* src/styles/base.css */
 
 .app-footer {
-  width: 100%;            /* Занимает всю ширину родителя (430px) */
-  height: 75px;           /* Чуть увеличим высоту для удобства */
-  background: white;
-  border-top: 1px solid #e2e8f0;
+  width: 100%;            
+  height: 75px;           
+  background: #0f172a; /* Такой же темный фон, как и у шапки */
+  border-top: 1px solid #1e293b; /* Темная граница */
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;         /* Чтобы футер не сплющивался контентом */
+  flex-shrink: 0;         
   
   /* Важно для мобилок: отступ снизу под "челку" */
   padding-bottom: env(safe-area-inset-bottom); 
@@ -149,8 +197,9 @@
   align-items: center;
 }
 
+/* Кнопки меню в обычном (неактивном) состоянии */
 .nav-btn {
-  flex: 1;                /* Каждая кнопка занимает равную долю */
+  flex: 1;                
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -159,17 +208,18 @@
   gap: 4px;
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #64748b; /* Приглушенный серый для неактивных вкладок */
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.nav-btn.active {
-  color: #1e3c72;         /* Твой основной синий */
+/* Эффект при клике на мобилке */
+.nav-btn:active {
+  background: rgba(56, 189, 248, 0.05);
 }
 
 .nav-btn i {
-  font-size: 1.3rem;      /* Иконка покрупнее */
+  font-size: 1.3rem;      
 }
 
 .nav-btn span {
@@ -177,11 +227,12 @@
   font-weight: 600;
 }
 
+/* Яркая активная вкладка, на которой сейчас находится админ */
 .nav-btn.active {
-  color: #1e3c72; /* Твой основной синий цвет */
+  color: #38bdf8 !important; /* Наш сочный голубой акцент */
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.3); /* Легкое неоновое свечение */
 }
 
-/* Добавь это в base.css */
 
 .page-center-container {
   display: flex;
@@ -203,3 +254,4 @@
   border-radius: 28px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
+

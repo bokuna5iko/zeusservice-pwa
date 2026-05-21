@@ -1,0 +1,169 @@
+/* ==========================================================================
+   1. ОВЕРЛЕЙ И КОНТЕЙНЕР МОДАЛКИ (ФИКСАЦИЯ ПО ЦЕНТРУ)
+   ========================================================================== */
+.scanner-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(2, 6, 23, 0.85) !important; /* Твой глубокий темный фон */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 9999 !important; /* Чтобы точно перекрыть всё */
+  backdrop-filter: blur(4px);
+}
+
+.scanner-modal-content {
+  background: #0f172a !important; /* Цвет плашек админки */
+  border: 1px solid #1e293b !important;
+  color: #f8fafc !important;
+  width: 100% !important;
+  max-width: 420px !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
+  box-sizing: border-box !important;
+}
+
+/* ==========================================================================
+   2. ШАПКА И ТЕКСТЫ
+   ========================================================================== */
+.scanner-modal-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 16px 20px !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+.scanner-modal-header h2 {
+  font-size: 1.1rem !important;
+  margin: 0 !important;
+  font-weight: 600 !important;
+  color: #f1f5f9 !important;
+}
+
+.scanner-close-btn {
+  background: none !important;
+  border: none !important;
+  color: #94a3b8 !important;
+  font-size: 2rem !important;
+  cursor: pointer !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  transition: color 0.2s !important;
+}
+
+.scanner-close-btn:hover {
+  color: #38bdf8 !important;
+}
+
+.scanner-modal-body {
+  padding: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+}
+
+.scanner-subtitle {
+  color: #94a3b8 !important;
+  font-size: 0.9rem !important;
+  text-align: center !important;
+  margin-top: 0 !important;
+  margin-bottom: 16px !important;
+}
+
+/* ==========================================================================
+   3. УБИВАЕМ ДЕФОЛТНЫЙ СТИЛЬ HTML5-QRCODE И КРАСИМ ВНУТРЕННОСТИ
+   ========================================================================== */
+/* Наш контейнер-обертка */
+.qr-reader-box {
+  width: 100% !important;
+  background: #020617 !important; /* Черный фон под камеру */
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  border: none !important;
+}
+
+/* Сбрасываем внутреннюю рамку, которую библиотека вешает на id="qr-reader" */
+#qr-reader {
+  border: none !important;
+  background: #020617 !important;
+}
+
+/* Уничтожаем дефолтный текст и мусорные ссылки плагина внутри */
+#qr-reader__dashboard,
+#qr-reader img[alt="Info icon"],
+#qr-reader img[alt="Camera navigation"] {
+  display: none !important;
+}
+
+/* Перекрашиваем КНОПКИ библиотеки (Выбор камеры, Разрешить доступ) */
+#qr-reader button, 
+#qr-reader__camera_permission_button,
+#qr-reader__dashboard_section_csr button {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #cbd5e1 !important;
+  padding: 10px 16px !important;
+  border-radius: 8px !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  margin: 12px auto !important;
+  display: inline-block !important;
+  transition: all 0.2s ease !important;
+}
+
+#qr-reader button:active {
+  background: #0f172a !important;
+  border-color: #38bdf8 !important;
+  color: #fff !important;
+}
+
+/* Делаем само видео с камеры скругленным и адаптивным */
+#qr-reader video {
+  border-radius: 12px !important;
+  object-fit: cover !important;
+  width: 100% !important;
+}
+
+/* Выпадающий список выбора камер (если их несколько) */
+#qr-reader select {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+  padding: 8px !important;
+  border-radius: 6px !important;
+  margin-bottom: 10px !important;
+  outline: none !important;
+}
+
+/* ==========================================================================
+   4. ИНДИКАТОРЫ СТАТУСА (ЛОАДЕР И ОШИБКА)
+   ========================================================================== */
+.scanner-status {
+  margin-top: 16px !important;
+  padding: 12px !important;
+  border-radius: 10px !important;
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  box-sizing: border-box !important;
+}
+
+.scanner-status.loading {
+  background: rgba(56, 189, 248, 0.1) !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+}
+
+.scanner-status.error {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+}

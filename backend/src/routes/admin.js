@@ -17,13 +17,13 @@ const isAdmin = (req, res, next) => {
     }
 };
 
-// Твои старые роуты
 router.get('/stats/today-count', adminController.getTodayCount);
 router.get('/stats/last-visits', adminController.getLastVisits);
 router.get('/services', adminController.getAllServices);
 router.get('/history', adminController.getAdminHistory); 
 router.post('/visits/add', adminController.createVisit);
 router.get('/stats', authenticateToken, isAdmin, adminController.getStats);
+router.get('/users/verify/:id', authenticateToken, isAdmin, adminController.verifyUserById);
 
 // ==========================================================================
 // НАШИ НОВЫЕ РОУТЫ (Защищаем их теми же мидлварами)

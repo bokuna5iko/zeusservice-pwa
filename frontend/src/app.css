@@ -19,6 +19,19 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Тень для объема на десктопе */
   display: flex;
   flex-direction: column;
+
+  /* 👇 Скрываем скроллбар прямо здесь, чтобы overflow-y не создавал полосу */
+  scrollbar-width: none !important; /* Для Firefox */
+  -ms-overflow-style: none !important; /* Для IE/Edge */
+  -webkit-overflow-scrolling: touch !important; /* Плавный скролл пальцем на iOS */
+  overscroll-behavior-y: none; /* Предотвращаем рефреш страницы на Android при натягивании */
+}
+
+/* 👇 Дополнительно дублируем для браузеров на движке Chromium (Chrome, Opera, Сафари) */
+.app-main::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Адаптивность для десктопа: скругляем углы, если экран большой */
@@ -28,3 +41,4 @@
     border-radius: 24px;
   }
 }
+

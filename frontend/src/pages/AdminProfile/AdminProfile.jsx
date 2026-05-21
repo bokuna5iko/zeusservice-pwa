@@ -6,11 +6,13 @@ import PriceListModal from "../../components/PriceList/PriceListModal";
 const AdminProfile = () => {
   const { user } = useContext(AuthContext); // Достаем текущего администратора из контекста
   const [activeModal, setActiveModal] = useState(null); // Состояния: 'prices' | 'kb' | 'theme' | null
-
+  const { logout } = useContext(AuthContext)
+  
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/login'; // Жесткий редирект на страницу авторизации
-  };
+  // Вызываем глобальный метод из контекста, который очистит правильный accessToken
+  // и красиво переключит экран приложения без жесткой перезагрузки страницы
+  logout(); 
+};
 
   return (
     <div className="admin-profile-page">

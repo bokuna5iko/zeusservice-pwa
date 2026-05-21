@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './AdminHome.css';
 import CalculatorModal from '../../components/CalculatorModal/CalculatorModal';
+// 👇 1. ИМПОРТИРУЕМ НАШ НАСТОЯЩИЙ СКАНЕР (Тут всё верно)
+import AdminScanner from "../../components/AdminScanner/AdminScanner";
 
 const AdminHome = () => {
   const [todayCount, setTodayCount] = useState(0);
   const [lastActions, setLastActions] = useState([]);
   
-  // Состояния для модалки калькулятора
+  // Состояния для модалок
   const [isCalcOpen, setIsCalcOpen] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false); 
   const [isGuestMode, setIsGuestMode] = useState(false);
-  const [mockClient, setMockClient] = useState(null);
+  const [selectedClient, setSelectedClient] = useState(null); 
 
   // Константы плана (План Артема = 60)
   const milestones = [30, 60, 75, 90];
@@ -34,23 +37,25 @@ const AdminHome = () => {
     fetchAdminData();
   }, []);
 
-  // Расчет процента заполнения шкалы (ВАЖНО: объявлено ДО рендеринга и кнопок)
   const progressPercent = Math.min((todayCount / 90) * 100, 100);
 
-  // Клик по кнопке QR-сканирования (Заглушка со скидкой 4-го визита)
-  const handleQrScanMock = () => {
-    setMockClient({
-      name: 'Алексей (Тест QR)',
-      phone: '79245975867', 
-      visit_count: 3 // 3 визита в базе означает, что текущий будет 4-м
-    });
+  // 👇 2. МЕНЯЕМ КЛИК: Теперь кнопка открывает сканер, а не калькулятор с фейком
+  const handleQrButtonClick = () => {
+    setSelectedClient(null);
     setIsGuestMode(false);
-    setIsCalcOpen(true);
+    setIsScannerOpen(true); // Открываем сканер!
+  };
+
+  // 👇 3. СРАБОТАЕТ ПРИ УСПЕШНОМ СКАНИРОВАНИИ:
+  const handleScanSuccess = (clientFromBackend) => {
+    setIsScannerOpen(false);          // Закрываем сканер
+    setSelectedClient(clientFromBackend); // Кладим реальные данные (name, phone, visit_count)
+    setIsCalcOpen(true);              // Мгновенно открываем калькулятор для этого юзера!
   };
 
   // Клик по кнопке Гость
   const handleGuestClick = () => {
-    setMockClient(null);
+    setSelectedClient(null);
     setIsGuestMode(true);
     setIsCalcOpen(true);
   };
@@ -78,7 +83,6 @@ const AdminHome = () => {
               </div>
             </div>
             
-            {/* Метки на шкале */}
             <div className="milestones-labels">
               {milestones.map((m) => {
                 const position = (m / 90) * 100;
@@ -106,7 +110,8 @@ const AdminHome = () => {
 
         {/* КОНТЕЙНЕР №2 & №3: Кнопки управления */}
         <div className="admin-actions-holder">
-          <button className="qr-scan-btn-big" onClick={handleQrScanMock}>
+          {/* Привязали функцию открытия сканера */}
+          <button className="qr-scan-btn-big" onClick={handleQrButtonClick}>
             <div className="qr-icon-inside">
               <i className="fas fa-qrcode"></i>
             </div>
@@ -148,11 +153,18 @@ const AdminHome = () => {
 
       </div>
 
+      {/* 👇 4. ИСПРАВЛЕНО: Теперь вызывается правильный AdminScanner и проп onClientScanned */}
+      <AdminScanner 
+        isOpen={isScannerOpen}
+        onClose={() => setIsScannerOpen(false)}
+        onClientScanned={handleScanSuccess}
+      />
+
       {/* КОНТЕЙНЕР №5: Модалка калькулятора */}
       <CalculatorModal 
         isOpen={isCalcOpen}
         onClose={() => setIsCalcOpen(false)}
-        clientData={mockClient}
+        clientData={selectedClient} // Передаем данные отсканированного юзера
         isGuest={isGuestMode}
         onSuccess={fetchAdminData}
       />
