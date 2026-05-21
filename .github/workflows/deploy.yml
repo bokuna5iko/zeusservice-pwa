@@ -19,13 +19,13 @@ jobs:
         working-directory: /opt/zeusservice-pwa
         run: |
           echo "=== Building and starting services ==="
-          docker compose up --build -d
+          docker-compose up --build -d
           
           echo "=== Waiting for services (15s) ==="
           sleep 15
           
           echo "=== Service status ==="
-          docker compose ps
+          docker-compose ps
 
       - name: 🧹 Cleanup old Docker images
         run: |
