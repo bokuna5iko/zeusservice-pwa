@@ -1,4 +1,26 @@
-node_modules/
+# Secrets
+backend/.env
 .env
-dist/
+.env.local
+.env.production
+
+# SSL private keys
+ssl/*.pem
+ssl-status/*.pem
+
+# Database dumps
+dump.sql
+dump_fixed.sql
+*.sql
+
+# Node modules
+node_modules/
+*/node_modules/
+
+# Docker volumes
+postgres_data/
+nezha/data/
+
+# IDE
 .vscode/
+.idea/

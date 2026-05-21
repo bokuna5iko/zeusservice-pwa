@@ -18,11 +18,11 @@ const AdminHome = () => {
   // Функция сбора данных с бэкенда
   const fetchAdminData = async () => {
     try {
-      const statsRes = await fetch('http://localhost:3000/api/admin/stats/today-count');
+      const statsRes = await fetch('/api/admin/stats/today-count');
       const statsData = await statsRes.json();
       setTodayCount(statsData.today_count);
 
-      const actionsRes = await fetch('http://localhost:3000/api/admin/stats/last-visits');
+      const actionsRes = await fetch('/api/admin/stats/last-visits');
       const actionsData = await actionsRes.json();
       setLastActions(actionsData);
     } catch (err) {

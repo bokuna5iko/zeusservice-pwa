@@ -4,7 +4,7 @@ import React, { createContext, useState, useEffect } from 'react';
 export const AuthContext = createContext();
 
 // Вынесем базовый URL, чтобы менять его в одном месте
-const API_URL = 'http://localhost:3000/api/auth';
+const API_URL = '/api/auth';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
