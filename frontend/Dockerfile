@@ -1,21 +1,22 @@
-# frontend/Dockerfile
-
-
-FROM node:20-alpine
+# ==================== STAGE 1: BUILD ====================
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
-
 RUN npm install
 
-#Копируем весь код гыггы
-
 COPY . .
+RUN npm run build
 
-# Открываем порт Vite dev server
+# ==================== STAGE 2: SERVE ====================
+FROM nginx:alpine
 
-EXPOSE 5173
+# Копируем собранную статику из Stage 1
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Запускаем dev сервер с hot reload
-CMD ["npm", "run", "dev"]
+# Копируем кастомный nginx.conf для frontend (опционально, если нужен)
+# COPY nginx-frontend.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

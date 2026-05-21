@@ -52,11 +52,11 @@ services:
     restart: unless-stopped
     environment:
       VITE_API_BASE_URL: /api
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+#    ports:
+#      - "5173:5173"
+#    volumes:
+#      - ./frontend:/app
+#      - /app/node_modules
     depends_on:
       - backend
     healthcheck:
@@ -76,7 +76,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./ssl:/ssl:ro
       - ./ssl-status:/ssl-status:ro
-    extra_hosts:
+      - ./frontend/dist:/usr/share/nginx/html:ro 
+   extra_hosts:
       - "host.docker.internal:172.17.0.1"
     depends_on:
       backend:

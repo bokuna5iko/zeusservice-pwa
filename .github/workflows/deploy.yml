@@ -15,6 +15,18 @@ jobs:
           git status
           git pull origin main
 
+      - name: 📦 Build frontend static files
+        working-directory: /opt/zeusservice-pwa/frontend
+        run: |
+          echo "=== Installing dependencies ==="
+          npm install
+          
+          echo "=== Building production bundle ==="
+          npm run build
+          
+          echo "=== Build complete ==="
+          ls -la /opt/zeusservice-pwa/frontend/dist/
+
       - name: 🐳 Build & Deploy Docker stack
         working-directory: /opt/zeusservice-pwa
         run: |
@@ -22,10 +34,13 @@ jobs:
           docker-compose up --build -d
           
           echo "=== Waiting for services (15s) ==="
-          sleep 15
+          sleep 10
           
           echo "=== Service status ==="
           docker-compose ps
+
+          echo "=== Checking Nginx static files ==="
+          ls -la /opt/zeusservice-pwa/frontend/dist/ | head -5
 
       - name: 🧹 Cleanup old Docker images
         run: |
