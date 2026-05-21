@@ -1,0 +1,33 @@
+name: 🚀 Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, zeus-prod]
+    
+    steps:
+      - name: 📥 Pull latest code
+        working-directory: /opt/zeusservice-pwa
+        run: |
+          git status
+          git pull origin main
+
+      - name: 🐳 Build & Deploy Docker stack
+        working-directory: /opt/zeusservice-pwa
+        run: |
+          echo "=== Building and starting services ==="
+          docker compose up --build -d
+          
+          echo "=== Waiting for services (15s) ==="
+          sleep 15
+          
+          echo "=== Service status ==="
+          docker compose ps
+
+      - name: 🧹 Cleanup old Docker images
+        run: |
+          echo "=== Pruning unused images ==="
+          docker system prune -f
