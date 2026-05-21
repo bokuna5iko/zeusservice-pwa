@@ -49,3 +49,7 @@ CREATE TABLE IF NOT EXISTS visits (
     CONSTRAINT fk_service_visits FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL
 );
 
+21.05
+Админка: Починили роутинг, авторизацию (401/404) и вывели честные, очищенные от строк данные из PostgreSQL прямо на графики и карточки.
+
+Клиентская часть: Избавились от ручных fetch, перевели историю визитов на Axios-интерцептор (убрали 403) и связали handleLogout с единым контекстом авторизации, чтобы сессия сбрасывалась без жестких перезагрузок.
