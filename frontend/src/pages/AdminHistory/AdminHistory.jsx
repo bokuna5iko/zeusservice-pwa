@@ -11,7 +11,7 @@ const AdminHistory = () => {
     const fetchHistory = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/admin/history', {
+        const response = await fetch('/api/admin/history', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

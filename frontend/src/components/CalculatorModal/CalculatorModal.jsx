@@ -27,7 +27,7 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
     // Подтягиваем услуги из БД
     const fetchServices = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/admin/services');
+        const res = await fetch('/api/admin/services');
         const data = await res.json();
         setAllServices(data);
       } catch (err) {
@@ -76,7 +76,7 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:3000/api/admin/visits/add', {
+      const res = await fetch('/api/admin/visits/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

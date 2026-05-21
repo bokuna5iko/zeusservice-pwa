@@ -27,7 +27,7 @@ const ProfilePage = () => {
   const updateProfile = async (field, value) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/user/update', {
+      const response = await fetch('/api/user/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

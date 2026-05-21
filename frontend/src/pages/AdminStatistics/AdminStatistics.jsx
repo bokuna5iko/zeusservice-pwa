@@ -17,7 +17,7 @@ const AdminStatistics = () => {
   const fetchTodayStats = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/admin/stats/today', {
+      const response = await fetch('/api/admin/stats/today', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -36,7 +36,7 @@ const AdminStatistics = () => {
     setArchiveLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3000/api/admin/clients/archive?search=${encodeURIComponent(query)}`, {
+      const response = await fetch(`/api/admin/clients/archive?search=${encodeURIComponent(query)}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
