@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: zeus_user
-      POSTGRES_PASSWORD: bbUJK0dSEcmZQBHWXoJgioIZHqpU04Ml
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: zeus_auto_db
     ports:
       - "5432:5432"
@@ -27,10 +27,10 @@ services:
     container_name: zeus_backend
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgres://zeus_user:bbUJK0dSEcmZQBHWXoJgioIZHqpU04Ml@db:5432/zeus_auto_db
+      DATABASE_URL: postgres://zeus_user:${DB_PASSWORD}@db:5432/zeus_auto_db
       PORT: 3000
-      JWT_SECRET: 9SkNuaZhQG6YdYKOjgJjx7tOakDgjg25ON6SECccnG8=
-      REFRESH_SECRET: Si1VmENY3WBguS34hQuA9KqbRWVyUEaOvAgySe/dNA8=
+      JWT_SECRET: ${JWT_SECRET}
+      REFRESH_SECRET: ${REFRESH_SECRET}
     ports:
       - "3000:3000"
     volumes:
