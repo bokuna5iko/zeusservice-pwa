@@ -10,6 +10,7 @@ import ProfilePage from "./pages/Profile/ProfilePages.jsx";
 import AdminProfile from "./pages/AdminProfile/AdminProfile.jsx";
 import AdminHome from "./pages/AdminHome/AdminHome.jsx";
 import AdminHistory from "./pages/AdminHistory/AdminHistory.jsx";
+import EmployShifts from "./pages/EmployShifrts/EmployShifts.jsx";
 
 // 1. Импортируем новую страницу статистики
 import AdminStatistics from "./pages/AdminStatistics/AdminStatistics.jsx";
@@ -36,11 +37,18 @@ function App() {
         
         <header className="app-header">
           <div className="header-content">
+            {/* css */}
             <span className="app-logo">ZEUS <span>AUTO</span></span>
           </div>
         </header>
 
-        <main className="page-content" style={{ flex: 1, overflowY: 'auto' }}>
+        <main 
+          className={`page-content ${(activePage === 'home' && user.role !== 'admin') || activePage === 'profile' ? 'no-scroll' : ''}`} 
+          style={{ 
+            flex: 1, 
+            overflowY: (activePage === 'home' && user.role !== 'admin') || activePage === 'profile' ? 'hidden' : 'auto' 
+          }}
+         >
           {/* Динамически подменяем Главную страницу в зависимости от роли */}
           {activePage === 'home' && (
             user.role === 'admin' ? <AdminHome /> : <HomePage />
@@ -56,12 +64,15 @@ function App() {
             user.role === 'admin' ? <AdminProfile /> : <ProfilePage />
           )}
 
-          {/* 2. ПОДКЛЮЧАЕМ ЭКРАН СТАТИСТИКИ АДМИНИСТРАТОРА
-            Проверяем оба id ('stats' или старый 'admin'), чтобы страница точно 
-            открылась, смотря какое имя вкладки прописано у тебя в Navigation.jsx
-          */}
+          {/* 2. ПОДКЛЮЧАЕМ ЭКРАН СТАТИСТИКИ АДМИНИСТРАТОРА */}
           {(activePage === 'stats' || activePage === 'admin') && user.role === 'admin' && (
             <AdminStatistics />
+          )}
+
+          {/* 🌟 3. ПОДКЛЮЧАЕМ ЭКРАН СМЕН ДЛЯ РАБОТНИКА
+              Проверяем, что выбрана страница 'shifts' и у пользователя роль 'worker' */}
+          {activePage === 'shifts' && user.role === 'worker' && (
+            <EmployShifts />
           )}
         </main>
 

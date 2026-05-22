@@ -69,3 +69,52 @@ exports.getMe = async (req, res) => {
         res.status(500).json({ message: 'Ошибка сервера' });
     }
 };
+
+// 3. РЕГИСТРАЦИЯ НОВОГО ПОЛЬЗОВАТЕЛЯ (Исправленная версия)
+exports.register = async (req, res) => {
+    try {
+        const { name, phone } = req.body;
+
+        if (!name || !phone) {
+            return res.status(400).json({ message: 'Имя и номер телефона обязательны' });
+        }
+
+        const candidate = await db.query('SELECT * FROM users WHERE phone = $1', [phone]);
+        if (candidate.rows[0]) {
+            return res.status(400).json({ message: 'Пользователь с таким номером уже существует' });
+        }
+
+        // 🌟 ИСПРАВЛЕНИЕ: Убрали bonus_points из структуры INSERT, так как столбца нет в БД
+        const result = await db.query(
+            `INSERT INTO users (name, phone, role, visit_count, total_visits) 
+             VALUES ($1, $2, $3, $4, $5) 
+             RETURNING *`,
+            [name, phone, 'user', 0, 0]
+        );
+        const newUser = result.rows[0];
+
+        const token = jwt.sign(
+            { id: newUser.id, role: newUser.role },
+            process.env.JWT_SECRET || 'secret123',
+            { expiresIn: '24h' }
+        );
+
+        res.status(201).json({
+            accessToken: token,
+            user: {
+                id: newUser.id,
+                name: newUser.name,
+                phone: newUser.phone,
+                role: newUser.role,
+                bonus_points: 0, // 🌟 Возвращаем просто 0 фронтенду, чтобы не было undefined
+                visit_count: newUser.visit_count, 
+                total_visits: newUser.total_visits,
+                created_at: newUser.created_at
+            }
+        });
+
+    } catch (err) {
+        console.error('Ошибка в authController (register):', err);
+        res.status(500).json({ message: 'Ошибка сервера при регистрации' });
+    }
+};

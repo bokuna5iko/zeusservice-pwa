@@ -9,51 +9,61 @@
   margin-top: 15px;
 }
 
+/* Базовый (еще не посещенный) квадрат визита */
 .point-item {
   aspect-ratio: 1 / 1; /* Делаем квадраты идеально ровными */
-  background: #f1f5f9;
+  background: #020617; /* Ультра-темный фон подложки */
   border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: all 0.3s ease;
-  border: 2px solid transparent;
-  color: #94a3b8;
+  border: 1px solid #1e293b; /* Аккуратная темная граница */
+  color: #475569; /* Приглушенный серый цвет цифры */
   font-weight: 800;
   font-size: 1.1rem;
 }
 
-/* Активный (пройденный) визит */
+/* Активный (уже пройденный) обычный визит */
 .point-item.active {
-  background: #1e3c72;
-  color: white;
+  background: #0ea5e9; /* Наш фирменный синий */
+  color: #ffffff;
+  border-color: #38bdf8;
   transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(30, 60, 114, 0.2);
+  /* Эффект неонового свечения вокруг закрытого визита */
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.4); 
 }
 
-/* 4-й визит (Скидка 20%) */
+/* 4-й визит (Скидка 20%) — Ожидание */
 .point-item.discount-step {
-  border: 2px dashed #1e3c72;
-  color: #1e3c72;
-  background: #eff6ff;
+  border: 2px dashed #0ea5e9; /* Пунктир в цвет неона */
+  color: #38bdf8;
+  background: rgba(14, 165, 233, 0.05); /* Легкий-легкий синеватый оттенок */
 }
 
+/* 4-й визит (Скидка 20%) — Выполнен */
 .point-item.discount-step.active {
   border-style: solid;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  border-color: #38bdf8;
+  background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
 }
 
-/* 8-й визит (Бесплатная мойка) */
+/* 8-й визит (Подарок / Бесплатная мойка) — Ожидание */
 .point-item.free-step {
-  background: #fff7ed;
-  border: 2px solid #f97316;
-  color: #f97316;
+  background: rgba(249, 115, 22, 0.05); /* Едва заметный оранжевый отблеск */
+  border: 2px solid #ea580c; /* Оранжевый контур */
+  color: #f97316; /* Яркая иконка подарка */
 }
 
+/* 8-й визит (Подарок / Бесплатная мойка) — ДОСТИГНУТ! */
 .point-item.free-step.active {
-  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
-  color: white;
-  border: none;
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  color: #ffffff;
+  border: 1px solid #fdba74;
+  transform: scale(1.08); /* Чуть больше обычного, так как это главный приз */
+  /* Мощное «золотое» свечение подарка */
+  box-shadow: 0 0 18px rgba(249, 115, 22, 0.6); 
 }
 
 .point-content i {

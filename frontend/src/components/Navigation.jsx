@@ -6,18 +6,34 @@ const Navigation = () => {
   const { activePage, setActivePage, user } = useContext(AuthContext);
 
   // Динамически формируем меню в зависимости от роли пользователя
-  const navItems = user?.role === 'admin'
-    ? [
-        { id: 'home', label: 'Главная', icon: 'fa-th-large' }, // Иконка дашборда для админа
+  const getNavItems = () => {
+    if (user?.role === 'admin') {
+      return [
+        { id: 'home', label: 'Главная', icon: 'fa-th-large' },
         { id: 'history', label: 'История', icon: 'fa-history' },
-        { id: 'stats', label: 'Статистика', icon: 'fa-chart-line' }, // Наша новая вкладка аналитики
+        { id: 'stats', label: 'Статистика', icon: 'fa-chart-line' },
         { id: 'profile', label: 'Профиль', icon: 'fa-user' },
-      ]
-    : [
-        { id: 'home', label: 'Моя карта', icon: 'fa-qrcode' }, // Иконка QR для клиента
+      ];
+    }
+    
+    if (user?.role === 'worker') {
+      return [
+        { id: 'home', label: 'Моя карта', icon: 'fa-qrcode' },
+        { id: 'shifts', label: 'Смены', icon: 'fa-calendar-alt' }, // Наша новая вкладка для работников!
         { id: 'history', label: 'История', icon: 'fa-history' },
         { id: 'profile', label: 'Профиль', icon: 'fa-user' },
       ];
+    }
+
+    // Дефолтное меню для обычного клиента
+    return [
+      { id: 'home', label: 'Моя карта', icon: 'fa-qrcode' },
+      { id: 'history', label: 'История', icon: 'fa-history' },
+      { id: 'profile', label: 'Профиль', icon: 'fa-user' },
+    ];
+  };
+
+  const navItems = getNavItems();
 
   return (
     <nav className="nav-container">

@@ -1,41 +1,111 @@
 /* src/pages/Home/HomePage.css */
 
+/* Глобальный фон страницы "Главная" для клиента */
+.home-page {
+  background-color: #020617; /* Наш ультра-темный deep dark */
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Наша карточка контента (QR, Прогресс, Баланс) */
 .home-card {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important; /* Тень на контуре */
-  border: 1px solid #f1f5f9;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6); /* Мощная темная тень */
+  border: 1px solid #1e293b; /* Граница в цвет темы */
+  background: #0f172a; /* Deep dark плашка */
+  border-radius: 24px;
+  margin-bottom: 16px;
+  padding: 20px;
+  box-sizing: border-box;
   transition: transform 0.2s ease;
+}
+
+.home-card .card-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase; /* Переводим в верхний регистр для спортивного/IT стиля */
+  letter-spacing: 1.5px;      /* Раздвигаем буквы в тон нашему логотипу */
+  color: #64748b;            /* Делаем благородный приглушенный стальной цвет */
+  margin-bottom: 20px;       /* Чуть больше отступ до сетки */
+  text-align: left;
+}
+
+/* 🌟 СТИЛИЗОВАННАЯ ПОДСКАЗКА СНИЗУ */
+.loyalty-footer-hint {
+  margin-top: 18px;
+  padding: 8px 14px;
+  background: rgba(56, 189, 248, 0.06); /* Мягкая неоново-синяя подложка */
+  border: 1px solid rgba(56, 189, 248, 0.15); /* Едва заметный контур */
+  border-radius: 20px;                 /* Округлый аккуратный бабл */
+  color: #38bdf8;                      /* Фирменный светящийся голубой цвет */
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-align: center;
+  display: inline-block;               /* Чтобы плашка подстраивалась под размер текста */
+  align-self: center;                  /* Центрируем её внутри fill-zone */
+  
+  /* Легкий неоновый отблеск для текста, как у лого */
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.2); 
 }
 
 /* Контейнер №1: QR */
 .qr-label {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: #64748b; /* Приглушенный текст */
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 15px;
+  text-align: center;
 }
 
+/* Обертка вокруг белого квадрата QR */
 .qr-wrapper {
-  padding: 15px;
-  background: white;
-  border-radius: 20px;
-  border: 1px solid #f1f5f9;
+  padding: 16px;
+  background: #020617; /* Глубокий черный фон внутри плашки */
+  border-radius: 24px;
+  border: 1px solid #1e293b;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  margin: 0 auto 15px auto;
+  max-width: 250px; /* Ограничим ширину */
+}
+
+/* Сама библиотека генерации QR выдает белый квадрат, 
+   сделаем ему легкое скругление, чтобы он вписывался в интерфейс */
+.qr-wrapper canvas, 
+.qr-wrapper svg,
+.qr-wrapper img {
+  background: white !important; /* Убедимся, что фон под QR белый */
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.qr-wrapper:active {
+  transform: scale(0.95);
 }
 
 .user-display-name {
   margin-top: 15px;
-  font-size: 1.2rem;
-  color: #1e293b;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f8fafc; /* Белый текст для имени */
+  letter-spacing: 0.5px;
+  text-align: center;
 }
 
 /* Контейнер №2: Прогресс */
 .card-title {
   font-size: 1rem;
+  font-weight: 600;
   margin-bottom: 15px;
-  color: #1e293b;
+  color: #f8fafc; /* Белый заголовок блока */
+  text-align: left;
 }
 
 .progress-placeholder {
@@ -47,23 +117,35 @@
 
 .visits-count {
   font-weight: 800;
-  color: #1e3c72;
+  color: #38bdf8; /* Наш неоновый акцентный цвет */
   font-size: 1.1rem;
 }
 
+/* Подложка полосы прогресса */
 .progress-bar-bg {
   width: 100%;
   height: 12px;
-  background: #f1f5f9;
+  background: #020617; /* Черный ровный фон */
   border-radius: 10px;
+  border: 1px solid #1e293b;
   overflow: hidden;
 }
 
+/* Бегунок прогресса с неоновым градиентом */
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+  background: linear-gradient(90deg, #0ea5e9 0%, #38bdf8 100%);
   border-radius: 10px;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4); /* Свечение полосы */
   transition: width 0.5s ease-out;
+}
+
+/* Текст "Осталось визитов до подарка" */
+.progress-placeholder + p {
+  color: #94a3b8; /* Приглушенный серый */
+  font-size: 0.85rem;
+  margin-top: 10px;
+  text-align: center;
 }
 
 /* Контейнер №3: Баланс */
@@ -82,19 +164,20 @@
 
 .balance-item .label {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #64748b; /* Сероватый второстепенный текст */
 }
 
 .balance-item .value {
   font-weight: 800;
-  color: #1e293b;
-  font-size: 1.1rem;
+  color: #f8fafc; /* Яркий белый цвет для цифр бонусов */
+  font-size: 1.2rem;
 }
 
+/* Разделительная полоса между Бонусами и Рангом */
 .balance-divider {
   width: 1px;
   height: 30px;
-  background: #e2e8f0;
+  background: #1e293b; /* Темная аккуратная линия */
 }
 
 .fill-zone {
@@ -106,56 +189,58 @@
 
 /*---------------------------------------------------------------------------------*/
 
-/* Стили для маленького QR в карточке */
-.qr-wrapper {
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  position: relative;
-}
-
-.qr-wrapper:active {
-  transform: scale(0.95);
-}
-
-/* Модальное окно на весь экран */
+/* Модальное окно открытия QR на весь экран */
 .qr-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.85); /* Затемнение фона */
+  background: rgba(2, 6, 23, 0.9); /* Полноценный темный бэк */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* Поверх всего */
-  backdrop-filter: blur(5px); /* Размытие заднего плана */
+  z-index: 9999;
+  backdrop-filter: blur(8px); /* Красивое размытие заднего плана */
   animation: fadeIn 0.3s ease;
 }
 
+/* Карточка внутри модалки */
 .qr-modal-content {
-  background: white;
+  background: #0f172a;
+  border: 1px solid #1e293b;
   padding: 30px;
-  border-radius: 30px;
+  border-radius: 32px;
   text-align: center;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
   animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Обеспечиваем белый фон самому QR внутри модалки для сканера */
+.qr-modal-content canvas,
+.qr-modal-content svg,
+.qr-modal-content img {
+  background: white !important;
+  padding: 12px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
 .qr-modal-content p {
   margin-top: 20px;
-  color: #1e3c72;
+  color: #38bdf8; /* Неоновый текст */
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
 }
 
-/* Анимации */
+/* Анимации появления */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
 @keyframes scaleUp {
-  from { transform: scale(0.7); opacity: 0; }
+  from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }

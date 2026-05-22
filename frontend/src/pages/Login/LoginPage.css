@@ -1,108 +1,183 @@
+/* Добавь это в самое начало LoginPage.css для проверки */
+.auth-toggle-tabs {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+}
+
+.toggle-tab {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Фоновая подложка во весь экран */
 .login-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #020617; /* Наш глубокий темный цвет */
+  box-sizing: border-box;
+}
+
+/* Наша карточка на базе твоего content-group-box */
+.login-card.content-group-box {
+  width: 90%;
+  max-width: 360px;
+  background: #0f172a !important; /* Цвет плашек из админки */
+  border: 1px solid #1e293b !important;
+  border-radius: 24px;
+  padding: 30px 24px !important;
+  box-sizing: border-box;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.fill-zone {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  /* Заставляем страницу занять 100% высоты app-main */
-  flex: 1; 
-  width: 100%;
-  /* Убеждаемся, что нет лишних отступов сверху */
-  justify-content: center; 
 }
 
-.login-card {
-  /* Твои существующие стили тени */
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1) !important;
-  border: 1px solid #f1f5f9;
-  padding: 40px 25px !important;
-  
-  /* Гарантируем, что карточка не прилипнет к краям */
-  margin: auto 0; 
-}
-
+/* Логотип */
 .login-logo {
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: #1e3c72;
-  margin-bottom: 5px;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #38bdf8;
+  letter-spacing: 1.5px;
+  margin: 0 0 20px 0;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
 }
 
 .login-logo span {
-  color: #2a5298;
-  font-weight: 300;
+  color: #f8fafc;
+  font-weight: 400;
+}
+
+/* 🌟 КНОПКИ ПЕРЕКЛЮЧЕНИЯ РЕЖИМОВ (Вход / Регистрация) */
+.auth-toggle-tabs {
+  display: flex;
+  background: #020617;
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #1e293b;
+}
+
+.toggle-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  padding: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Эффект при клике на вкладку регистрации/входа */
+.toggle-tab.active {
+  background: #1e293b;
+  color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
 }
 
 .login-subtitle {
-  color: #64748b;
-  margin-bottom: 30px;
-  font-size: 0.9rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin: 0 0 20px 0;
+}
+
+/* Ошибки */
+.login-error-msg {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  color: #f87171;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
 }
 
 .login-form {
-  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
-/* Оформление поля ввода */
+/* Контейнеры для инпутов и иконок */
 .input-wrapper {
   position: relative;
+  display: flex;
+  align-items: center;
   width: 100%;
 }
 
+/* Выравниваем иконки внутри полей */
 .input-wrapper i {
   position: absolute;
-  left: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #94a3b8;
+  left: 16px;
+  color: #64748b;
+  font-size: 0.95rem;
+  pointer-events: none;
 }
 
 .input-wrapper input {
   width: 100%;
-  padding: 18px 18px 18px 50px;
-  border-radius: 16px;
-  border: 2px solid #f1f5f9;
-  background: #f8fafc;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 14px 16px 14px 44px;
+  color: #f8fafc;
+  font-size: 0.95rem;
   box-sizing: border-box;
+  outline: none;
+  transition: all 0.2s ease;
 }
 
 .input-wrapper input:focus {
-  outline: none;
-  border-color: #1e3c72;
-  background: white;
+  border-color: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
 }
 
-/* Оформление кнопки */
+.input-wrapper input::placeholder {
+  color: #475569;
+}
+
+.input-wrapper input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Главная синяя неоновая кнопка отправки */
 .login-btn {
   width: 100%;
-  padding: 18px;
-  border-radius: 16px;
+  background: #38bdf8;
+  color: #020617;
   border: none;
-  background: #1e3c72;
-  color: white;
-  font-weight: 700;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: transform 0.1s ease, opacity 0.2s ease;
-}
-
-.login-btn:active {
-  transform: scale(0.98);
-  opacity: 0.9;
-}
-
-.login-error-msg {
-  background: #fee2e2;
-  color: #ef4444;
-  padding: 10px;
   border-radius: 12px;
-  margin-bottom: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #fecaca;
+  padding: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+}
+
+.login-btn:active:not(:disabled) {
+  transform: scale(0.98);
+  background: #0ea5e9;
+}
+
+.login-btn:disabled {
+  background: #1e293b;
+  color: #64748b;
+  box-shadow: none;
+  cursor: not-allowed;
 }
