@@ -1,70 +1,70 @@
 import React, { useEffect, useState } from 'react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
-import { api } from '../../api/apiService'; // Твой правильный Axios сервис
+import { Html5Qrcode } from 'html5-qrcode'; // 👈 Меняем Scanner на чистый Html5Qrcode
+import { api } from '../../api/apiService'; 
 import './AdminScanner.css'; 
 
-// 👇 1. Добавляем пропсы isOpen и onClose для управления модалкой
 const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
   const [scanError, setScanError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // 👇 2. Если модалка закрыта — камеру не инициализируем
     if (!isOpen) return; 
 
     setScanError(null);
     setLoading(false);
 
-    // Конфигурация сканера
-    const scanner = new Html5QrcodeScanner('qr-reader', {
-      fps: 10,             // Скорость сканирования (кадры в сек)
-      qrbox: { width: 250, height: 250 }, // Рамка прицела
-      rememberLastUsedCamera: true
-    });
+    // 1. Создаем экземпляр чистого сканера, привязанного к ID
+    const html5Qrcode = new Html5Qrcode("qr-reader");
+
+    // 2. Конфигурация камеры
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
     const onScanSuccess = async (decodedText) => {
       if (!decodedText) return;
       
-      // Останавливаем сканер, чтобы избежать дублирующих запросов
-      scanner.clear();
       setLoading(true);
       setScanError(null);
 
       try {
-        // Твоя отличная проверка на метод
+        // Останавливаем камеру ПЕРЕД запросом к бэку, чтобы освободить устройство
+        await html5Qrcode.stop();
+
         const response = await api.getUserByQr 
           ? await api.getUserByQr(decodedText) 
           : await api.get(`/admin/users/verify/${decodedText}`);
         
-        // Передаем данные клиента в родительский компонент, который откроет калькулятор
         onClientScanned(response.data);
       } catch (err) {
         console.error(err);
         setScanError(err.response?.data?.message || 'Ошибка проверки QR-кода');
         
-        // 👇 Вместо window.location.reload() закрываем модалку через 3 секунды,
-        // чтобы админ мог нажать кнопку снова, не ломая стейт всей страницы
-        setTimeout(() => {
-          onClose();
-        }, 3000);
+        // Если ошибка — выключаем камеру и закрываем окно через 3 сек
+        html5Qrcode.stop().catch(() => {});
+        setTimeout(() => { onClose(); }, 3000);
       } finally {
         setLoading(false);
       }
     };
 
-    const onScanFailure = (error) => {
-      // Камера сканирует непрерывно, ошибки фокуса нормальны
-    };
+    // 3. Запускаем заднюю камеру автоматически без лишних кнопок выборщика
+    html5Qrcode.start(
+      { facingMode: "environment" }, // Использовать заднюю камеру смартфона
+      config,
+      onScanSuccess,
+      () => { /* фоновые ошибки сканирования игнорируем */ }
+    ).catch(err => {
+      console.error("Не удалось запустить камеру:", err);
+      setScanError("Камера недоступна или заблокирована");
+    });
 
-    scanner.render(onScanSuccess, onScanFailure);
-
-    // 👇 3. Обязательно глушим камеру при закрытии модалки (размонтировании)
+    // 4. Глушим камеру при закрытии модалки крестиком
     return () => {
-      scanner.clear().catch(err => console.error('Ошибка остановки сканера', err));
+      if (html5Qrcode.isScanning) {
+        html5Qrcode.stop().catch(err => console.error('Ошибка остановки камеры', err));
+      }
     };
   }, [isOpen, onClientScanned, onClose]);
 
-  // 👇 4. Если закрыто — ничего не рендерим
   if (!isOpen) return null; 
 
   return (
@@ -79,7 +79,7 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
         <div className="scanner-modal-body">
           <p className="scanner-subtitle">Наведите камеру на QR-код в приложении клиента</p>
           
-          {/* Твой контейнер для видеопотока */}
+          {/* Контейнер для видеопотока */}
           <div id="qr-reader" className="qr-reader-box"></div>
 
           {loading && <div className="scanner-status loading">Проверка клиента в базе...</div>}
