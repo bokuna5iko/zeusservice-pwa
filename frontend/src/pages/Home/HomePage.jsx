@@ -86,9 +86,9 @@ const HomePage = () => {
           <div className="qr-modal-content">
              <QRCodeCanvas 
                 value={qrValue} 
-                size={280} 
+                size={180} // в модалке поставь 280
                 bgColor={"#ffffff"}
-                fgColor={"#1e3c72"}
+                fgColor={"#000000"} // 🌟 ИСПРАВЛЕНО: Черный цвет для идеального сканирования
                 level={"H"}
                 includeMargin={true}
               />

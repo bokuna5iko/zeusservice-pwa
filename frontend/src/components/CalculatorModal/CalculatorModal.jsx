@@ -1,3 +1,4 @@
+// src/components/CalculatorModal/CalculatorModal.jsx
 import React, { useState, useEffect } from 'react';
 import './CalculatorModal.css';
 
@@ -5,7 +6,7 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
   const [allServices, setAllServices] = useState([]); // Все услуги из БД
   const [carClass, setCarClass] = useState(1); // Выбранный класс (1-5)
   const [selectedServiceId, setSelectedServiceId] = useState(''); // Выбранная услуга
-  const [finalPrice, setFinalPrice] = useState(0); // Итоговая цена для отправки
+  const [finalPrice, setFinalPrice] = useState(0); // Итоговая цена для отображения
   const [isManualPrice, setIsManualPrice] = useState(false); // Флаг ручного ввода цены
   const [paymentType, setPaymentType] = useState('Наличные'); // Тип оплаты
   const [loading, setLoading] = useState(false);
@@ -37,12 +38,12 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
     fetchServices();
   }, [isOpen, clientData]);
 
-  // Фильтруем услуги под выбранный класс машины (или фиксированные, где car_class === null)
+  // Фильтруем услуги под выбранный класс машины
   const filteredServices = allServices.filter(
     (s) => s.car_class === null || s.car_class === parseInt(carClass)
   );
 
-  // Калькуляция цены при смене услуги или класса авто
+  // Калькуляция цены при смене услуги или класса авто (для отображения администратору)
   useEffect(() => {
     if (isManualPrice || !selectedServiceId) return;
 
@@ -51,7 +52,7 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
 
     let calculated = currentService.base_price;
 
-    // Логика лояльности (только для зарегистрированных клиентов)
+    // Логика лояльности (визуальный просчет для админа)
     if (!isGuest) {
       if (nextVisitNum === 4) {
         calculated = Math.round(calculated * 0.8); // Скидка 20%
@@ -64,32 +65,34 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
   }, [selectedServiceId, carClass, allServices, isManualPrice, isGuest, nextVisitNum]);
 
   const handleSubmit = async () => {
-    if (!isGuest && !clientData?.phone) return;
+    // Проверка авторизованного клиента: теперь проверяем по id, полученному из QR/профиля
+    if (!isGuest && !clientData?.id) {
+      alert('Ошибка: Данные клиента не загружены (отсутствует ID)');
+      return;
+    }
     if (!selectedServiceId && !isManualPrice) {
       alert('Выберите услугу или введите цену вручную');
       return;
     }
 
-    const chosenService = allServices.find((s) => s.id === parseInt(selectedServiceId));
-    const serviceNameText = chosenService ? chosenService.service_name : 'Нестандартная услуга';
-
     setLoading(true);
 
     try {
+      // Идеальная синхронизация с visitController.js
       const res = await fetch('/api/admin/visits/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          phone: isGuest ? null : clientData.phone,
-          service_name: serviceNameText,
-          price: finalPrice,
+          userId: isGuest ? null : clientData.id, // 🌟 ПЕРЕДАЕМ ИМЕННО ID (извлеченный из QR)
+          serviceId: selectedServiceId ? parseInt(selectedServiceId) : null, // 🌟 ПЕРЕДАЕМ ID УСЛУГИ
           payment_type: paymentType,
-          is_guest: isGuest
+          is_guest: isGuest,
+          manual_price: isManualPrice ? finalPrice : null // Если ручная цена — передаем её
         })
       });
 
       if (res.ok) {
-        setSuccessChecked(true); // Включаем зеленую галочку
+        setSuccessChecked(true); // Включаем микро-отклик (зеленую галочку)
         setTimeout(() => {
           onSuccess(); // Обновляем инфу на главной админа
           onClose();   // Закрываем модалку
@@ -113,15 +116,14 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
       <div className="calc-modal-content" onClick={(e) => e.stopPropagation()}>
         
         {successChecked ? (
-          /* МИКРО-ОТКЛИК: Анимация успешного чекапа */
           <div className="calc-success-screen">
             <div className="success-checkmark-circle">
               <i className="fas fa-check"></i>
             </div>
             <h3>Визит зачислен!</h3>
+            <p>{isGuest ? 'Гость оформлен' : `Счетчик лояльности: ${nextVisitNum === 8 ? 0 : nextVisitNum}/8`}</p>
           </div>
         ) : (
-          /* ОСНОВНОЙ ИНТЕРФЕЙС КАЛЬКУЛЯТОРА */
           <>
             <div className="calc-modal-header">
               <h2>
@@ -151,7 +153,7 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
                       className={`calc-class-tab ${carClass === cls ? 'active' : ''}`}
                       onClick={() => {
                         setCarClass(cls);
-                        if(!isManualPrice) setSelectedServiceId(''); // Сбрасываем выбранную услугу, чтобы избежать конфликта старых цен
+                        if(!isManualPrice) setSelectedServiceId('');
                       }}
                     >
                       {cls}
@@ -217,7 +219,7 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
                 )}
               </div>
 
-              {/* Вычет оплаты (Радио-кнопки) */}
+              {/* Выбор оплаты */}
               <div className="calc-field-group">
                 <label>Тип оплаты</label>
                 <div className="calc-radio-group">
@@ -244,7 +246,6 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
                 </div>
               </div>
 
-              {/* Кнопка действия */}
               <button 
                 className="calc-submit-btn" 
                 onClick={handleSubmit}

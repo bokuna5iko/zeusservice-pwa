@@ -1,16 +1,15 @@
-const db = require('../config/db'); // Проверь путь, он должен вести к файлу, где прописан pool.query
+// src/controllers/visitController.js
+const db = require('../config/db'); // Используем db везде
 
-
-// Начисление визита
 const VISITS_FOR_BONUS = 8;
 const ANTI_SPAM_DELAY = 5000; // 5 секунд блокировки повторного нажатия
 
+// Начисление визита через калькулятор
 exports.addVisit = async (req, res) => {
-    // Теперь получаем serviceId (из выпадающего списка) и userId
     const { userId, serviceId } = req.body; 
 
     try {
-        // 1. Сначала ищем услугу в справочнике, чтобы взять актуальную цену
+        // 1. Ищем услугу в справочнике
         const serviceRes = await db.query(
             'SELECT service_name, base_price FROM services WHERE id = $1', 
             [serviceId]
@@ -40,10 +39,10 @@ exports.addVisit = async (req, res) => {
             }
         }
 
-        // 4. ЛОГИРОВАНИЕ (Записываем ID услуги и цену из базы)
+        // 4. ЛОГИРОВАНИЕ (Исправлено: теперь передаем ровно 6 параметров!)
         await db.query(
             'INSERT INTO visits (user_id, service_id, service_type, price, admin_id, amount) VALUES ($1, $2, $3, $4, $5, $6)',
-            [userId, serviceId, service.service_name, service.base_price, req.user.id]
+            [userId, serviceId, service.service_name, service.base_price, req.user.id, service.base_price]
         );
 
         // 5. ЛОГИКА БОНУСА
@@ -63,7 +62,7 @@ exports.addVisit = async (req, res) => {
         res.json({
             success: true,
             visit_count: newCount,
-            total_visits: parseInt(userData.total_visits) + 1,
+            total_visits: parseInt(userData.total_visits || 0) + 1,
             message: isFree ? "Бесплатная мойка!" : "Визит засчитан"
         });
 
@@ -73,12 +72,12 @@ exports.addVisit = async (req, res) => {
     }
 };
 
-// Получение профиля пользователя
+// Получение профиля текущего пользователя
 exports.getUserMe = async (req, res) => {
     try {
-        // 1. Данные пользователя (добавил last_visit)
-        const userResult = await pool.query(
-            'SELECT id, phone, name, role, last_visit FROM users WHERE id = $1',
+        // 1. Данные пользователя (Используем db вместо не объявленного pool)
+        const userResult = await db.query(
+            'SELECT id, phone, name, role, visit_count, total_visits, bonus_points FROM users WHERE id = $1',
             [req.user.id]
         );
 
@@ -88,26 +87,15 @@ exports.getUserMe = async (req, res) => {
 
         const user = userResult.rows[0];
 
-        // 2. Статистика визитов (❌ БЫЛО ПРОПУЩЕНО!)
-        const visitResult = await pool.query(
-            'SELECT COUNT(*) as count, MAX(created_at) as last_visit FROM visits WHERE user_id = $1',
-            [req.user.id]
-        );
-
-        const visitCount = parseInt(visitResult.rows[0].count);
-
         res.json({
             userId: user.id,
             name: user.name,
             phone: user.phone,
-            // Наш акционный счетчик (0-7), который мы получили после инкремента
-            visit_count: visitCount, 
-            // Наш "вечный" счетчик. 
-            // ВАЖНО: убедись, что ты получил его из БД (userData.total_visits + 1)
-            total_visits: (userData.total_visits || 0) + 1, 
-            lastVisitDate: new Date(), // Текущее время визита
-            isEligibleForFreeWash: visitCount === 0, // Если сбросился в 0 — значит мойка была бесплатной
-            nextBonusIn: visitCount === 0 ? 8 : 8 - visitCount
+            role: user.role,
+            visit_count: parseInt(user.visit_count || 0), 
+            total_visits: parseInt(user.total_visits || 0), 
+            bonus_points: parseInt(user.bonus_points || 0),
+            nextBonusIn: user.visit_count >= 8 ? 0 : 8 - user.visit_count
         });
     } catch (err) {
         console.error('Ошибка в getUserMe:', err);
@@ -115,12 +103,12 @@ exports.getUserMe = async (req, res) => {
     }
 };
 
+// История визитов
 exports.getUserHistory = async (req, res) => {
     try {
         const userId = req.user.id;
-        // Заменяем visit_date на created_at, так как в твоей БД колонка называется именно так
         const result = await db.query(
-            'SELECT service_type AS service_name, price AS base_price, created_at, visit_number FROM visits WHERE user_id = $1 ORDER BY created_at DESC',
+            'SELECT service_type AS service_name, price AS base_price, created_at FROM visits WHERE user_id = $1 ORDER BY created_at DESC',
             [userId]
         );
         
