@@ -24,3 +24,4 @@ nezha/data/
 # IDE
 .vscode/
 .idea/
+.env
