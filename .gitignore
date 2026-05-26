@@ -25,3 +25,7 @@ nezha/data/
 .vscode/
 .idea/
 .env
+
+frontend/dist
+frontend/package.json
+fronrend/package-lock.json
