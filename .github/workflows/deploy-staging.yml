@@ -25,9 +25,9 @@ jobs:
       - name: 🐳 Deploy Docker stack
         working-directory: /opt/zeusservice-pwa
         run: |
-          docker-compose up --build -d
+          docker compose up --build -d
           sleep 10
-          docker-compose ps
+          docker compose ps
 
       - name: 🧹 Cleanup
         run: docker system prune -f
