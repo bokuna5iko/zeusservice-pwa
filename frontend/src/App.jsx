@@ -43,10 +43,10 @@ function App() {
         </header>
 
         <main 
-          className={`page-content ${(activePage === 'home' && user.role !== 'admin') || activePage === 'profile' ? 'no-scroll' : ''}`} 
+           className={`page-content ${activePage === 'home' && user.role !== 'admin' ? 'no-scroll' : ''}`}
           style={{ 
             flex: 1, 
-            overflowY: (activePage === 'home' && user.role !== 'admin') || activePage === 'profile' ? 'hidden' : 'auto' 
+            overflowY: activePage === 'home' && user.role !== 'admin' ? 'hidden' : 'auto'
           }}
          >
           {/* Динамически подменяем Главную страницу в зависимости от роли */}

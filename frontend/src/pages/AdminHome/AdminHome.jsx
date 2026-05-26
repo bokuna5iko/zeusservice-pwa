@@ -1,7 +1,8 @@
+// src/pages/AdminHome/AdminHome.jsx
 import React, { useState, useEffect } from 'react';
 import './AdminHome.css';
 import CalculatorModal from '../../components/CalculatorModal/CalculatorModal';
-// 👇 1. ИМПОРТИРУЕМ НАШ НАСТОЯЩИЙ СКАНЕР (Тут всё верно)
+// 1. ИМПОРТИРУЕМ НАШ НАСТОЯЩИЙ СКАНЕР
 import AdminScanner from "../../components/AdminScanner/AdminScanner";
 
 const AdminHome = () => {
@@ -39,18 +40,30 @@ const AdminHome = () => {
 
   const progressPercent = Math.min((todayCount / 90) * 100, 100);
 
-  // 👇 2. МЕНЯЕМ КЛИК: Теперь кнопка открывает сканер, а не калькулятор с фейком
+  // 2. КЛИК ПО КНОПКЕ СКАНИРОВАНИЯ: Жестко зачищаем старые стейты клиента
   const handleQrButtonClick = () => {
     setSelectedClient(null);
     setIsGuestMode(false);
     setIsScannerOpen(true); // Открываем сканер!
   };
 
-  // 👇 3. СРАБОТАЕТ ПРИ УСПЕШНОМ СКАНИРОВАНИИ:
+  // 3. СРАБОТАЕТ ПРИ УСПЕШНОМ СКАНИРОВАНИИ (Решение проблемы повторного открытия)
   const handleScanSuccess = (clientFromBackend) => {
-    setIsScannerOpen(false);          // Закрываем сканер
-    setSelectedClient(clientFromBackend); // Кладим реальные данные (name, phone, visit_count)
-    setIsCalcOpen(true);              // Мгновенно открываем калькулятор для этого юзера!
+    setIsScannerOpen(false); // Закрываем сканер
+    
+    // Сбрасываем стейт в null, чтобы React гарантированно зафиксировал изменение объекта
+    setSelectedClient(null); 
+    setTimeout(() => {
+      setSelectedClient(clientFromBackend); // Записываем новые данные клиента
+      setIsCalcOpen(true);                  // Мгновенно открываем калькулятор!
+    }, 50);
+  };
+
+  // 4. ФУНКЦИЯ ДЛЯ ПРАВИЛЬНОГО ЗАКРЫТИЯ КАЛЬКУЛЯТОРА И ОЧИСТКИ ПАМЯТИ
+  const handleCloseCalculator = () => {
+    setIsCalcOpen(false);
+    setSelectedClient(null); // Полностью стираем клиента, чтобы следующее сканирование сработало стабильно
+    setIsGuestMode(false);
   };
 
   // Клик по кнопке Гость
@@ -110,7 +123,6 @@ const AdminHome = () => {
 
         {/* КОНТЕЙНЕР №2 & №3: Кнопки управления */}
         <div className="admin-actions-holder">
-          {/* Привязали функцию открытия сканера */}
           <button className="qr-scan-btn-big" onClick={handleQrButtonClick}>
             <div className="qr-icon-inside">
               <i className="fas fa-qrcode"></i>
@@ -153,20 +165,23 @@ const AdminHome = () => {
 
       </div>
 
-      {/* 👇 4. ИСПРАВЛЕНО: Теперь вызывается правильный AdminScanner и проп onClientScanned */}
+      {/* Вызываем AdminScanner и передаем колбэк */}
       <AdminScanner 
         isOpen={isScannerOpen}
         onClose={() => setIsScannerOpen(false)}
         onClientScanned={handleScanSuccess}
       />
 
-      {/* КОНТЕЙНЕР №5: Модалка калькулятора */}
+      {/* МОДАТАЛЬНОЕ ОКНО КАЛЬКУЛЯТОРА */}
       <CalculatorModal 
         isOpen={isCalcOpen}
-        onClose={() => setIsCalcOpen(false)}
-        clientData={selectedClient} // Передаем данные отсканированного юзера
+        onClose={handleCloseCalculator} // Используем правильную функцию закрытия и сброса
+        clientData={selectedClient} 
         isGuest={isGuestMode}
-        onSuccess={fetchAdminData}
+        onSuccess={() => {
+          fetchAdminData();
+          handleCloseCalculator(); // Очищаем стейты при успешном зачислении
+        }}
       />
     </div>
   );
