@@ -51,11 +51,13 @@ services:
     image: nginx:alpine
     container_name: zeus_nginx
     restart: unless-stopped
+    environment:
+      - SERVER_NAME=${SERVER_NAME}
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/nginx.conf.template:/etc/nginx/conf.d/default.conf.template:ro  # ← ИЗМЕНЕНО!
       - ./ssl:/ssl:ro
       - ./ssl-status:/ssl-status:ro
       - ./frontend/dist:/usr/share/nginx/html:ro
@@ -65,7 +67,7 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-
+    command: /bin/sh -c "envsubst '$$SERVER_NAME' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"  # ← ДОБАВЛЕНО!
 
 volumes:
   postgres_data:
