@@ -1,31 +1,26 @@
-# Secrets
+
 backend/.env
+# Database dumps
+# Docker volumes
+dump_fixed.sql
+dump.sql
 .env
 .env.local
 .env.production
-
-# SSL private keys
-ssl/*.pem
-ssl-status/*.pem
-
-# Database dumps
-dump.sql
-dump_fixed.sql
-*.sql
-
-# Node modules
-node_modules/
-*/node_modules/
-
-# Docker volumes
-postgres_data/
-nezha/data/
-
-# IDE
-.vscode/
-.idea/
-.env
-
+fronrend/package-lock.json
 frontend/dist
 frontend/package.json
-fronrend/package-lock.json
+# IDE
+.idea/
+nezha/data/
+nginx/nginx.conf
+*/node_modules/
+node_modules/
+# Node modules
+postgres_data/
+# Secrets
+*.sql
+ssl/*.pem
+# SSL private keys
+ssl-status/*.pem
+.vscode/
