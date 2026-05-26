@@ -31,13 +31,13 @@ jobs:
         working-directory: /opt/zeusservice-pwa
         run: |
           echo "=== Building and starting services ==="
-          docker-compose up --build -d
+          docker compose up --build -d
           
           echo "=== Waiting for services (15s) ==="
           sleep 10
           
           echo "=== Service status ==="
-          docker-compose ps
+          docker compose ps
 
           echo "=== Checking Nginx static files ==="
           ls -la /opt/zeusservice-pwa/frontend/dist/ | head -5
