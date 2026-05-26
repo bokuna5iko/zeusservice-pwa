@@ -1,7 +1,7 @@
 // src/components/AdminScanner/AdminScanner.jsx
 import React, { useEffect, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { api } from '../../api/apiService'; 
+import { api } from '../../api/apiService'; // Используем наш проверенный apiService
 import './AdminScanner.css'; 
 
 const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
@@ -12,23 +12,23 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
     if (!isOpen) return; 
 
     setScanError(null);
-    loading && setLoading(false);
+    setLoading(false);
 
     const html5Qrcode = new Html5Qrcode("qr-reader");
     const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+    let isStopping = false; // Защита от двойной остановки камеры
 
     const onScanSuccess = async (decodedText) => {
-      if (!decodedText) return;
+      if (!decodedText || isStopping) return;
       
       setLoading(true);
       setScanError(null);
 
-      // 1. ПАРСИНГ СТРОКИ QR-КОДА (Ожидаем формат "ID:YYYY-MM-DD")
+      // 1. ПАРСИНГ СТРОКИ QR-КОДА ("ID:YYYY-MM-DD")
       const qrParts = decodedText.split(':');
       const clientId = qrParts[0];
       const qrDateSeed = qrParts[1];
 
-      // Получаем сегодняшнюю дату для сверки (в том же формате, что у клиента)
       const todayDate = new Date().toISOString().split('T')[0];
 
       // 2. ВАЛИДАЦИЯ ДАТЫ (Защита от скриншотов)
@@ -39,39 +39,42 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
       }
 
       try {
-        // Останавливаем камеру ПЕРЕД запросом к бэку, чтобы освободить устройство
+        // Устанавливаем флаг и тушим камеру до запроса к серверу
+        isStopping = true;
         await html5Qrcode.stop();
 
-        // 3. ЗАПРОС НА БЭКЕНД: Передаем только ЧИСТЫЙ проверенный ID клиента
-        const response = await api.get(`/admin/users/verify/${clientId}`);
+        // 3. ОТПРАВКА ЗАПРОСА ЧЕРЕЗ ОБНОВЛЕННЫЙ API SERVICE
+        const response = await api.verifyUserByQr(clientId);
         
-        // Передаем данные клиента дальше в AdminHome -> CalculatorModal
+        // Передаем чистые данные (.data из axios) наверх в AdminHome
         onClientScanned(response.data);
+
       } catch (err) {
-        console.error(err);
+        console.error("Ошибка при проверке QR:", err);
+        // Вытаскиваем ошибку из axios или берем дефолтную
         setScanError(err.response?.data?.message || 'Пользователь не найден или ошибка сервера');
         
-        // Если ошибка бэкенда — глушим камеру и закрываем окно через 3 сек
-        html5Qrcode.stop().catch(() => {});
+        // Окно закроется через 3 секунды, чтобы админ успел прочитать ошибку
         setTimeout(() => { onClose(); }, 3000);
       } finally {
         setLoading(false);
       }
     };
 
-    // Запускаем заднюю камеру автоматически
+    // Запускаем заднюю камеру
     html5Qrcode.start(
       { facingMode: "environment" }, 
       config,
       onScanSuccess,
-      () => { /* фоновые ошибки сканирования игнорируем */ }
+      () => { /* Игнорируем фоновые промахи камеры */ }
     ).catch(err => {
       console.error("Не удалось запустить камеру:", err);
       setScanError("Камера недоступна или заблокирована");
     });
 
+    // Деструктор при закрытии крестиком
     return () => {
-      if (html5Qrcode.isScanning) {
+      if (html5Qrcode.isScanning && !isStopping) {
         html5Qrcode.stop().catch(err => console.error('Ошибка остановки камеры', err));
       }
     };
@@ -90,7 +93,7 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
           <p className="scanner-subtitle">Наведите камеру на QR-код в приложении клиента</p>
           <div id="qr-reader" className="qr-reader-box"></div>
           {loading && <div className="scanner-status loading">Проверка клиента в базе...</div>}
-          {scanError && <div className="scanner-status error"> {scanError}</div>}
+          {scanError && <div className="scanner-status error">❌ {scanError}</div>}
         </div>
       </div>
     </div>

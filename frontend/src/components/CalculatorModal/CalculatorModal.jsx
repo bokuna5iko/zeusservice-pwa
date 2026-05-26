@@ -36,7 +36,7 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
       }
     };
     fetchServices();
-  }, [isOpen, clientData]);
+  }, [isOpen]);
 
   // Фильтруем услуги под выбранный класс машины
   const filteredServices = allServices.filter(
