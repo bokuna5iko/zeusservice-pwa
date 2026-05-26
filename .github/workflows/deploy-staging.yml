@@ -1,0 +1,33 @@
+name: 🧪 Deploy to Staging
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  deploy-staging:
+    runs-on: [self-hosted, zeus-staging]
+    
+    steps:
+      - name: 📥 Pull latest code
+        working-directory: /opt/zeusservice-pwa
+        run: |
+          git fetch origin develop
+          git checkout develop
+          git pull origin develop
+
+      - name: 📦 Build frontend
+        working-directory: /opt/zeusservice-pwa/frontend
+        run: |
+          npm install
+          npm run build
+
+      - name: 🐳 Deploy Docker stack
+        working-directory: /opt/zeusservice-pwa
+        run: |
+          docker-compose up --build -d
+          sleep 10
+          docker-compose ps
+
+      - name: 🧹 Cleanup
+        run: docker system prune -f
