@@ -195,7 +195,7 @@
   font-weight: bold;
   border-radius: 12px;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 20px;
   transition: opacity 0.2s;
 }
 .calc-submit-btn:disabled {

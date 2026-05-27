@@ -63,6 +63,25 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
 
     setFinalPrice(calculated);
   }, [selectedServiceId, carClass, allServices, isManualPrice, isGuest, nextVisitNum]);
+  
+  useEffect(() => {
+    // Находим главный контейнер контента страницы (или можно использовать document.body)
+    const pageContent = document.querySelector('.page-content');
+    if (!pageContent) return;
+
+    if (isOpen) {
+      // Когда модалка открыта — жестко отключаем скролл заднего фона
+      pageContent.style.overflowY = 'hidden';
+    } else {
+      // Когда модалка закрывается — возвращаем стандартный скролл
+      pageContent.style.overflowY = 'auto';
+    }
+
+    // Подстраховка: если компонент размонтируется (удалится из DOM), возвращаем скролл
+    return () => {
+      if (pageContent) pageContent.style.overflowY = 'auto';
+    };
+  }, [isOpen]);
 
   const handleSubmit = async () => {
     // Проверка авторизованного клиента: теперь проверяем по id, полученному из QR/профиля

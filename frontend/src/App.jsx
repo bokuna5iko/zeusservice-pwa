@@ -43,10 +43,10 @@ function App() {
         </header>
 
         <main 
-           className={`page-content ${activePage === 'home' && user.role !== 'admin' ? 'no-scroll' : ''}`}
+           className="page-content" // Убрали динамическое навешивание класса no-scroll
           style={{ 
             flex: 1, 
-            overflowY: activePage === 'home' && user.role !== 'admin' ? 'hidden' : 'auto'
+            overflowY: 'auto' // 🌟 ИСПРАВЛЕНО: Теперь скролл по вертикали разрешен ВСЕГДА!
           }}
          >
           {/* Динамически подменяем Главную страницу в зависимости от роли */}
