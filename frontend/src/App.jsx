@@ -18,7 +18,7 @@ import AdminStatistics from "./pages/AdminStatistics/AdminStatistics.jsx";
 function App() {
   const { user, activePage } = useContext(AuthContext);
 
-  // Условие для неавторизованного пользователя
+  // Условие для неавторизованного пользователя ()
   if (!user) {
     return (
       <div className="app-shell">

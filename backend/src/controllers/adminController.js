@@ -96,69 +96,109 @@ exports.getAllServices = async (req, res) => {
 };
 
 // 4. Зачисление визита (для Калькулятора)
+// src/controllers/adminController.js
+
 exports.createVisit = async (req, res) => {
-    // Начинаем транзакцию, чтобы если один запрос упадет, вся операция откатилась
-    const client = await db.connect();
-    
     try {
-        const { phone, service_name, price, payment_type, is_guest } = req.body;
+        // 1. Принимаем параметры, которые РЕАЛЬНО отправляет калькулятор
+        const { userId, serviceId, payment_type, is_guest, manual_price } = req.body;
 
-        await client.query('BEGIN');
+        // Начинаем транзакцию через прямой db.query
+        await db.query('BEGIN');
 
-        let userId = null;
+        let finalUserId = null;
         let currentVisitNumber = null;
+        let serviceName = 'Нестандартная услуга';
+        let finalPrice = manual_price || 0;
 
-        // СЦЕНАРИЙ 1: Полноценный клиент (НЕ ГОСТЬ)
+        // 2. Если передан serviceId — подтягиваем название и цену услуги из справочника
+        if (serviceId) {
+            const serviceResult = await db.query(
+                'SELECT service_name, base_price FROM services WHERE id = $1',
+                [serviceId]
+            );
+            if (serviceResult.rows.length === 0) {
+                await db.query('ROLLBACK');
+                return res.status(400).json({ message: 'Выбранная услуга не найдена в справочнике' });
+            }
+            serviceName = serviceResult.rows[0].service_name;
+            
+            // Если ручная цена не была введена, берем базовую стоимость услуги
+            if (!manual_price) {
+                finalPrice = serviceResult.rows[0].base_price;
+            }
+        }
+
+        // 3. СЦЕНАРИЙ 1: Полноценный клиент (НЕ ГОСТЬ)
         if (!is_guest) {
-            // Ищем пользователя по телефону
-            const userResult = await client.query('SELECT id, visit_count, total_visits FROM users WHERE phone = $1', [phone]);
+            // ИСПРАВЛЕНО: Теперь ищем пользователя строго по чистокровному ID из QR-кода!
+            const userResult = await db.query(
+                'SELECT id, visit_count, total_visits FROM users WHERE id = $1', 
+                [userId]
+            );
             
             if (userResult.rows.length === 0) {
-                await client.query('ROLLBACK');
-                return res.status(444).json({ message: 'Пользователь с таким номером не найден' });
+                await db.query('ROLLBACK');
+                return res.status(444).json({ message: 'Пользователь не найден в базе данных' });
             }
 
             const user = userResult.rows[0];
-            userId = user.id;
+            finalUserId = user.id;
 
-            // Рассчитываем номер текущего визита для лояльности
-            // Если в базе visit_count = 3, то текущий визит — 4-й (скидочный)
-            // Если visit_count = 7, то текущий визит — 8-й (бесплатный)
-            currentVisitNumber = user.visit_count + 1;
+            // Считаем номер текущего визита (с подстраховкой от NULL)
+            const currentVisitCount = parseInt(user.visit_count || 0);
+            currentVisitNumber = currentVisitCount + 1;
+
+            // Логика скидок (синхронизируем цену с лояльностью, если это не ручной ввод)
+            if (!manual_price) {
+                if (currentVisitNumber === 4) {
+                    finalPrice = Math.round(finalPrice * 0.8); // Скидка 20%
+                } else if (currentVisitNumber === 8) {
+                    finalPrice = 0; // Бесплатно
+                }
+            }
 
             let nextVisitCount = currentVisitNumber;
-            // Если это был 8-й визит, сбрасываем счетчик круга лояльности в 0
+            // Если круг замкнулся на 8, сбрасываем счетчик в 0 для нового круга
             if (currentVisitNumber === 8) {
                 nextVisitCount = 0;
             }
 
-            // Обновляем счетчики пользователя
-            await client.query(
+            // Обновляем счетчики пользователя (с подстраховкой COALESCE для total_visits)
+            await db.query(
                 `UPDATE users 
-                 SET visit_count = $1, total_visits = total_visits + 1 
+                 SET visit_count = $1, 
+                     total_visits = COALESCE(total_visits, 0) + 1 
                  WHERE id = $2`,
-                [nextVisitCount, userId]
+                [nextVisitCount, finalUserId]
             );
         }
 
-        // СЦЕНАРИЙ 2: Гость (is_guest = true) -> userId и currentVisitNumber остаются NULL
+        // 4. СЦЕНАРИЙ 2: Гость (is_guest = true) -> finalUserId и currentVisitNumber останутся NULL
 
-        // Вставляем запись в таблицу визитов
-        await client.query(
-            `INSERT INTO visits (user_id, service_type, price, visit_number, payment_type, created_at) 
-             VALUES ($1, $2, $3, $4, $5, NOW())`,
-            [userId, service_name, price, currentVisitNumber, payment_type]
+        // Вставляем запись в таблицу визитов визитов (6 параметров на 6 колонок!)
+        await db.query(
+            `INSERT INTO visits (user_id, service_id, service_type, price, visit_number, payment_type, admin_id, amount, created_at) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())`,
+            [
+                finalUserId, 
+                serviceId || null, 
+                serviceName, 
+                finalPrice, 
+                currentVisitNumber, 
+                payment_type, 
+                req.user.id, // ID админа, который зачислил визит
+                finalPrice
+            ]
         );
 
-        await client.query('COMMIT');
-        res.status(201).json({ success: true, message: 'Визит успешно зачислен' });
+        await db.query('COMMIT');
+        res.status(201).json({ success: true, message: 'Visits successfully added' });
 
     } catch (err) {
-        await client.query('ROLLBACK');
-        console.error('Ошибка в createVisit:', err);
+        await db.query('ROLLBACK');
+        console.error('Ошибка в createVisit (adminController):', err);
         res.status(500).json({ message: 'Ошибка сервера при зачислении визита' });
-    } finally {
-        client.release();
     }
 };
 
