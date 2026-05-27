@@ -78,13 +78,20 @@ const CalculatorModal = ({ isOpen, onClose, clientData, isGuest, onSuccess }) =>
     setLoading(true);
 
     try {
-      // Идеальная синхронизация с visitController.js
+      // 🌟 ДОСТАЕМ АДМИНСКИЙ ТОКЕН ИЗ ЛОКАЛСТОРИДЖА
+      const token = localStorage.getItem('accessToken');
+
+      // Синхронизация с защищенным роутом на бэкенде
       const res = await fetch('/api/admin/visits/add', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          // 🌟 ИСПРАВЛЕНО: Передаем токен в заголовке, чтобы пройти authenticateToken
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify({
-          userId: isGuest ? null : clientData.id, // 🌟 ПЕРЕДАЕМ ИМЕННО ID (извлеченный из QR)
-          serviceId: selectedServiceId ? parseInt(selectedServiceId) : null, // 🌟 ПЕРЕДАЕМ ID УСЛУГИ
+          userId: isGuest ? null : clientData.id, // ПЕРЕДАЕМ ИМЕННО ID (извлеченный из QR)
+          serviceId: selectedServiceId ? parseInt(selectedServiceId) : null, // ПЕРЕДАЕМ ID УСЛУГИ
           payment_type: paymentType,
           is_guest: isGuest,
           manual_price: isManualPrice ? finalPrice : null // Если ручная цена — передаем её
