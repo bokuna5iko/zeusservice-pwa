@@ -45,6 +45,8 @@ export const api = {
     // Изменяем / добавляем точные пути для админки:
     getStats: () => apiService.get('/admin/stats/today'), // ← Направляем точно на /today
     getClientArchive: (query) => apiService.get(`/admin/clients/archive?search=${encodeURIComponent(query)}`), // ← Добавили метод архива
+    // 🌟 ДОБАВЛЯЕМ СЮДА НАШ МЕТОД ДЛЯ СКАНЕРА
+    verifyUserByQr: (clientId) => apiService.get(`/admin/users/verify/${clientId}`)
 };
 
 export default apiService;
