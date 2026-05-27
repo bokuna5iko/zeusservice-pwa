@@ -13,7 +13,8 @@ server {
 
 # === HTTPS: основной сайт ===
 server {
-    listen 443 ssl http2;
+    listen 443 ssl;
+    http2 on;
     server_name ${SERVER_NAME};
 
     # SSL сертификаты
@@ -49,3 +50,7 @@ server {
         try_files $uri $uri/ /index.html;
     }
 }
+
+# === Дополнительные конфиги (Metabase и т.д.) ===
+
+include /etc/nginx/conf.d/extra/*.conf;
