@@ -73,6 +73,7 @@ services:
     image: metabase/metabase:latest
     container_name: zeus_metabase
     restart: unless-stopped
+    profiles: ["metabase"]
     ports:
       - "3001:3000"
     environment:
