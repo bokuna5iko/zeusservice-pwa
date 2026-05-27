@@ -69,6 +69,27 @@ services:
         condition: service_healthy
     command: /bin/sh -c "envsubst '$$SERVER_NAME' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"  # ← ДОБАВЛЕНО!
 
+  metabase:
+    image: metabase/metabase:latest
+    container_name: zeus_metabase
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase_db
+      MB_DB_PORT: 5432
+      MB_DB_USER: zeus_user
+      MB_DB_PASS: ${DB_PASSWORD}
+      MB_DB_HOST: db
+      MB_ENCRYPTION_SECRET_KEY: ${METABASE_SECRET}
+    depends_on:
+      - db
+    volumes:
+      - metabase_data:/metabase-data
+
 volumes:
   postgres_data:
   metabase_data:
+
+
