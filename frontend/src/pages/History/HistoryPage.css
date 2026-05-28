@@ -1,38 +1,55 @@
 /* src/pages/History/HistoryPage.css */
 
 .history-card {
-  /* Тень на контуре для глубины */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 1px solid #f1f5f9; /* Тонкая рамка для четкости контура */
+  /* Глубокий темный фон в тон профиля и калькулятора */
+  background: #0f172a; 
+  border-radius: 16px;
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+
+  /* 🌟 ТЕМНАЯ ТЕНЬ: Мягкое свечение без грязных серых пятен */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  
+  /* 🌟 ИСПРАВЛЕНО: Тонкая темно-синяя рамка вместо светлой, чтобы контур не резал глаз */
+  border: 1px solid #1e293b; 
 }
 
-/* Эффект при клике или наведении (для интерактивности) */
+/* Эффект при клике на карточку истории (нативный мобильный отклик) */
 .history-card:active {
   transform: scale(0.98);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+  border-color: #0ea5e9; /* Короткая вспышка фирменного неона при нажатии */
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2) !important;
 }
 
-/* Зона для будущего наполнения данными */
+/* Зона наполнения данными */
 .fill-zone {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start; /* Выравнивание текста истории по левому краю */
 }
 
 .data-placeholder {
   padding: 20px;
-  color: #cbd5e1;
+  background: #1e293b;
+  color: #64748b; /* Приглушенный текст */
   font-style: italic;
   font-size: 0.9rem;
-  border: 1px dashed #e2e8f0;
+  border: 1px dashed #334155; /* Темный пунктир */
   border-radius: 12px;
   width: 100%;
+  text-align: center;
+  box-sizing: border-box;
 }
 
-/* Дополнительный отступ для нижнего контейнера, чтобы не лип к меню */
+/* Отступ снизу для всей страницы, чтобы контент не перекрывался нижним меню */
 .page-center-container {
-  padding-bottom: 40px;
-  gap: 15px; /* Расстояние между нашими тремя блоками */
+  display: flex;
+  flex-direction: column;
+  /* 🌟 ИСПРАВЛЕНО: Увеличиваем отступ до 95px под мобильную навигацию */
+  padding-bottom: 95px !important; 
+  gap: 15px; /* Расстояние между карточками */
+  box-sizing: border-box;
 }
