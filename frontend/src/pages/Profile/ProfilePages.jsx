@@ -14,7 +14,7 @@ const ProfilePage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false); // Для темы
   const { logout } = useContext(AuthContext);
 
-  // 2. ИНИЦИАЛИЗИРУЕМ СИСТЕМУ ОБНОВЛЕНИЯ PWA
+  // 2. ИНИЦИАЛИЗИРУЕМ СИСТЕМУ ОБНОВЛЕНИЯ PWA С АКТИВНЫМ ПОИСКОМ
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
@@ -38,6 +38,22 @@ const ProfilePage = () => {
       setNewName(user.name);
     }
   }, [user]);
+
+  // 🌟 НАШ НОВЫЙ БРОНЕБОЙНЫЙ ОБРАБОТЧИК ДЛЯ iOS / IPHONE
+  const handlePwaUpdate = async () => {
+    try {
+      // Посылаем сигнал сервис-воркеру пропустить ожидание и активироваться
+      await updateServiceWorker(true);
+      
+      // Даем Safari 400мс на замену потоков и принудительно обновляем вкладку, сбрасывая кэш страницы
+      setTimeout(() => {
+        window.location.reload();
+      }, 400);
+    } catch (err) {
+      // В случае любого сбоя — просто перезагружаем интерфейс жестким методом
+      window.location.reload();
+    }
+  };
 
   const handleLogout = () => {
     logout(); 
@@ -144,7 +160,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* 🌟 ВСТАВИЛИ СЮДА: Динамический баннер обновления приложения */}
+        {/* 🌟 ИСПРАВЛЕНО: Теперь кнопка вызывает handlePwaUpdate с подстраховкой для iOS */}
         {needRefresh && (
           <div className="pwa-update-banner">
             <div className="pwa-update-text">
@@ -153,7 +169,7 @@ const ProfilePage = () => {
             </div>
             <button 
               className="pwa-update-btn" 
-              onClick={() => updateServiceWorker(true)} // Очищает кэш PWA и перезагружает страницу
+              onClick={handlePwaUpdate} 
             >
               Обновить приложение
             </button>
