@@ -1,8 +1,10 @@
 import React, { useState, useContext, useEffect} from 'react';
+// 1. Изменяем импорт для правильной работы хука в React
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { AuthContext } from '../../context/AuthContext';
 import './ProfilePages.css';
 import PriceListModal from "../../components/PriceList/PriceListModal";
+
 const ProfilePage = () => {
   const { user, setUser } = useContext(AuthContext); // Достаем юзера и функцию обновления
   const [isEditingName, setIsEditingName] = useState(false);
@@ -10,22 +12,31 @@ const ProfilePage = () => {
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [activeModal, setActiveModal] = useState(null); // 'prices' или 'settings' или null
   const [isDarkMode, setIsDarkMode] = useState(false); // Для темы
-  const { logout } = useContext(AuthContext)
+  const { logout } = useContext(AuthContext);
+
+  // 2. ИНИЦИАЛИЗИРУЕМ СИСТЕМУ ОБНОВЛЕНИЯ PWA
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegistered(r) {
+      // Каждые 15 минут скрытно опрашиваем сервер на наличие новой сборки Vite
+      r && setInterval(() => { r.update() }, 15 * 60 * 1000);
+    },
+  });
+
   useEffect(() => {
     if (user?.name) {
       setNewName(user.name);
     }
   }, [user]);
 
- const handleLogout = () => {
-  // Вызываем глобальный метод из контекста, который очистит правильный accessToken
-  // и красиво переключит экран приложения без жесткой перезагрузки страницы
-  logout(); 
-};
+  const handleLogout = () => {
+    logout(); 
+  };
 
   const avatars = ['1.png'];
 
-  // Функция сохранения (Имя или Аватар)
   const updateProfile = async (field, value) => {
     try {
       const token = localStorage.getItem('token');
@@ -39,7 +50,6 @@ const ProfilePage = () => {
       });
 
       if (response.ok) {
-        // Обновляем данные в контексте, чтобы изменения применились везде
         setUser({ ...user, [field]: value });
         if (field === 'name') setIsEditingName(false);
         if (field === 'avatar_url') setShowAvatarPicker(false);
@@ -126,7 +136,23 @@ const ProfilePage = () => {
           </div>
         </div>
 
-         {/* КОНТЕЙНЕР №2: Статистика и Статус */}
+        {/* 🌟 ВСТАВИЛИ СЮДА: Динамический баннер обновления приложения */}
+        {needRefresh && (
+          <div className="pwa-update-banner">
+            <div className="pwa-update-text">
+              <i className="fas fa-sync-alt fa-spin"></i>
+              <span>Доступна новая версия Zeus Auto!</span>
+            </div>
+            <button 
+              className="pwa-update-btn" 
+              onClick={() => updateServiceWorker(true)} // Очищает кэш PWA и перезагружает страницу
+            >
+              Обновить приложение
+            </button>
+          </div>
+        )}
+
+        {/* КОНТЕЙНЕР №2: Статистика и Статус */}
         <div className="profile-card stats-box content-group-box">
           <div className="fill-zone">
             <h3 className="section-title">Ваша активность</h3>
@@ -157,7 +183,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-          {/* КОНТЕЙНЕР №3: Меню действий */}
+        {/* КОНТЕЙНЕР №3: Меню действий */}
         <div className="profile-card actions-box content-group-box">
           <div className="fill-zone">
             
@@ -191,13 +217,13 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* 1. ПРЕЙСКУРАНТ (Новый отдельный компонент) */}
+      {/* 1. ПРЕЙСКУРАНТ */}
       <PriceListModal 
         isOpen={activeModal === 'prices'} 
         onClose={() => setActiveModal(null)} 
       />
 
-      {/* 2. НАСТРОЙКИ (Оставляем в универсальном оверлее, пока не вынесли в отдельный файл) */}
+      {/* 2. НАСТРОЙКИ */}
       {activeModal === 'settings' && (
         <div className="modal-overlay" onClick={() => setActiveModal(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -218,10 +244,10 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
-          
         </div>
       )}
-</div>
-  )
-}
+    </div>
+  );
+};
+
 export default ProfilePage;
