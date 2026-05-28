@@ -19,9 +19,17 @@ const ProfilePage = () => {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW({
-    onRegistered(r) {
-      // Каждые 15 минут скрытно опрашиваем сервер на наличие новой сборки Vite
-      r && setInterval(() => { r.update() }, 15 * 60 * 1000);
+    onRegisteredSW(swUrl, r) {
+      if (r) {
+        // Как только админ или клиент заходит в профиль, 
+        // мы принудительно пинаем браузер проверить свежую сборку на сервере
+        r.update();
+
+        // Дополнительно проверяем наличие обновлений каждые 10 секунд, пока открыт профиль
+        setInterval(() => {
+          r.update();
+        }, 10000);
+      }
     },
   });
 
