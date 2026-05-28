@@ -18,7 +18,7 @@ const Navigation = () => {
     
     if (user?.role === 'worker') {
       return [
-        { id: 'home', label: 'Моя карта', icon: 'fa-qrcode' },
+        { id: 'home', label: 'Главная', icon: 'fa-qrcode' },
         { id: 'shifts', label: 'Смены', icon: 'fa-calendar-alt' }, // Наша новая вкладка для работников!
         { id: 'history', label: 'История', icon: 'fa-history' },
         { id: 'profile', label: 'Профиль', icon: 'fa-user' },
@@ -27,9 +27,9 @@ const Navigation = () => {
 
     // Дефолтное меню для обычного клиента
     return [
-      { id: 'home', label: 'Дом', icon: 'fa-qrcode' },
+      { id: 'home', label: 'Главная', icon: 'fa-qrcode' },
       { id: 'history', label: 'История', icon: 'fa-history' },
-      { id: 'profile', label: 'Карта', icon: 'fa-user' },
+      { id: 'profile', label: 'Профиль', icon: 'fa-user' },
     ];
   };
 
