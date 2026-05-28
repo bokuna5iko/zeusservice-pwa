@@ -27,7 +27,7 @@ const Navigation = () => {
 
     // Дефолтное меню для обычного клиента
     return [
-      { id: 'home', label: 'Моя карта', icon: 'fa-qrcode' },
+      { id: 'home', label: 'Дом', icon: 'fa-qrcode' },
       { id: 'history', label: 'История', icon: 'fa-history' },
       { id: 'profile', label: 'Карта', icon: 'fa-user' },
     ];
