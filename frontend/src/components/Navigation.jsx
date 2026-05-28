@@ -29,7 +29,7 @@ const Navigation = () => {
     return [
       { id: 'home', label: 'Главная', icon: 'fa-qrcode' },
       { id: 'history', label: 'История', icon: 'fa-history' },
-      { id: 'profile', label: 'Победа', icon: 'fa-user' },
+      { id: 'profile', label: 'Поражение', icon: 'fa-user' },
     ];
   };
 
