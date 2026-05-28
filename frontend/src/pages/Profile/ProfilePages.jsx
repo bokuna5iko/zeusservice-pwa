@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect} from 'react';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 import { AuthContext } from '../../context/AuthContext';
 import './ProfilePages.css';
 import PriceListModal from "../../components/PriceList/PriceListModal";

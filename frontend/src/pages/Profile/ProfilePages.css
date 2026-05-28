@@ -350,3 +350,49 @@ input:checked + .slider:before { transform: translateX(26px); }
   background: #1e293b;
   color: #64748b;
 }
+
+/* Баннер уведомления об обновлении PWA */
+.pwa-update-banner {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid #0ea5e9; /* Фирменный голубой неон */
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.25);
+  padding: 18px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: 15px 0;
+  box-sizing: border-box;
+}
+
+.pwa-update-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f1f5f9;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.pwa-update-text i {
+  color: #0ea5e9;
+}
+
+/* Кнопка мгновенной очистки сервис-воркера */
+.pwa-update-btn {
+  background: #0ea5e9;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.pwa-update-btn:hover {
+  background: #0284c7;
+}

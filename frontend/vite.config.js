@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate', // Автоматически обновляет приложение у пользователя при деплое новой версии
+      registerType: 'promptForUpdate', // 🌟 ИСПРАВЛЕНО: Теперь React будет знать, когда вышло обновление, и позволит нам управлять им!
       includeAssets: ['favicon.ico', 'robots.txt', 'icons/**/*'], // Какие статические ресурсы кэшировать сразу
       
       manifest: {
