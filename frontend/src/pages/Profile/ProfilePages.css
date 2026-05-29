@@ -1,129 +1,49 @@
 /* src/pages/Profile/ProfilePages.css */
 
+/* Базовая изоляция страницы */
+.client-profile-page {
+  background-color: #020617;
+  min-height: 100vh;
+  color: #f8fafc;
+  box-sizing: border-box;
+}
+
+/* КОРНЕВЫЕ КАРТОЧКИ-КОНТЕЙНЕРЫ */
 .profile-card {
-  /* Тень на контуре согласно задаче */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07) !important;
-  border: 1px solid #f1f5f9;
-  transition: transform 0.2s ease;
-}
-
-/* Контейнер №1: Стили аватара */
-.avatar-placeholder {
-  width: 70px;
-  height: 70px;
-  background: #f1f5f9;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 15px;
-  color: #94a3b8;
-}
-
-.user-name {
-  margin: 0;
-  font-size: 1.4rem;
-  color: #1e293b;
-}
-
-.user-phone {
-  color: #64748b;
-  font-size: 0.95rem;
-  margin-top: 5px;
-}
-
-/* Контейнер №2: Стили статуса */
-.section-title {
-  font-size: 1rem;
-  margin-bottom: 15px;
-  color: #1e3c72;
-  font-weight: 800;
-  text-align: center;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1fr; /* В столбик на мобилках */
-  gap: 15px;
-}
-
-.stat-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.stat-item:last-child {
-  border-bottom: none;
-}
-
-.stat-label {
-  font-size: 0.85rem;
-  color: #64748b;
-  font-weight: 500;
-}
-
-.stat-value {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #1e3c72;
-}
-
-.status-badge {
-  color: #10b981; /* Зеленый цвет для статуса */
-  background: #f0fdf4;
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 0.8rem;
-}
-
-/* Контейнер №3: Стили кнопок */
-.action-btn {
+  background: #0f172a !important;
+  border-radius: 16px;
+  padding: 16px;
   width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid #1e293b;
 }
 
-.settings-btn {
-  background: #f8fafc;
-  color: #475569;
+/* Растягивание контента по краям (фикс Vite-бандла) */
+.client-profile-page .fill-zone {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
 }
 
-.logout-btn-red {
-  background: #fee2e2;
-  color: #ef4444;
-  margin-bottom: 0; /* У последней кнопки убираем отступ */
+.client-profile-page .profile-header-content {
+  align-items: center !important;
+  gap: 16px;
 }
 
-/* Общая зона наполнения */
-.fill-zone {
-  width: 100%;
+/* АВАТАР И НЕОНОВОЕ КОЛЬЦО */
+.avatar-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.profile-header-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+  position: relative;
 }
 
 .avatar-wrapper {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   cursor: pointer;
 }
 
@@ -131,32 +51,35 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 3px solid #1e3c72;
+  border: 3px solid #0ea5e9;
   object-fit: cover;
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.3);
 }
 
 .avatar-edit-badge {
   position: absolute;
   bottom: 0;
   right: 0;
-  background: #1e3c72;
+  background: #0ea5e9;
   color: white;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .avatar-picker {
   display: flex;
   gap: 10px;
-  margin-top: 15px;
-  background: #f1f5f9;
-  padding: 10px;
-  border-radius: 15px;
+  margin-top: 12px;
+  background: #1e293b;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid #334155;
 }
 
 .picker-img {
@@ -164,197 +87,328 @@
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease;
+}
+.picker-img:hover {
+  transform: scale(1.15);
 }
 
-.picker-img:hover { transform: scale(1.2); }
-
+/* ПОЛЯ И ИНПУТЫ */
 .profile-info-row {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
+  margin-top: 12px;
 }
 
-.profile-info-row label {
+.profile-info-row:first-of-type {
+  margin-top: 4px;
+}
+
+.profile-field-label {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #64748b;
   font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input-with-action {
+  width: 100%;
+}
+
+.display-value-wrapper,
+.edit-input-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .profile-value {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #1e3c72;
+  color: #f1f5f9;
 }
 
-.profile-value.disabled { color: #64748b; }
-
-.input-with-action {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.car-brand-badge {
+.profile-value.disabled {
+  background: #1e293b;
+  color: #94a3b8;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 1px solid #334155;
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #eff6ff;
-  padding: 10px 15px;
-  border-radius: 10px;
-  color: #1e3c72;
-  font-weight: 700;
+  box-sizing: border-box;
+}
+.profile-value.disabled i {
+  color: #64748b;
 }
 
-/*3 контейнер, 3 подконтейнер (Настройки, прейскурант, выход)*/
+.profile-input {
+  flex: 1;
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  outline: none;
+}
+.profile-input:focus {
+  border-color: #0ea5e9;
+}
 
-/* Элементы меню */
-.action-item {
+.profile-edit-btn,
+.profile-save-btn {
+  background: none;
+  border: none;
+  color: #38bdf8;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.profile-save-btn {
+  color: #10b981;
+  margin-left: 8px;
+}
+
+.profile-car-brand-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: #38bdf8;
+  font-weight: 700;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* СТАТИСТИКА */
+.profile-section-title {
+  font-size: 1.05rem;
+  margin: 0 0 16px 0;
+  color: #f1f5f9;
+  font-weight: 600;
+}
+
+.stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.profile-stat-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid #f1f5f9;
-  cursor: pointer;
-  transition: opacity 0.2s;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #1e293b;
+  width: 100%;
+}
+.profile-stat-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
-.action-item:active { opacity: 0.6; }
-.action-item.logout { color: #ef4444; border-bottom: none; }
+.stat-label {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.stat-value-highlight {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.stat-value-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.profile-status-badge {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* ЛЕНТА ДЕЙСТВИЙ (МЕНЮ) */
+.profile-action-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #1e293b;
+  cursor: pointer;
+  width: 100%;
+}
+.profile-action-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.profile-action-item:first-child {
+  padding-top: 0;
+}
+.profile-action-item:active {
+  opacity: 0.7;
+}
+
+/* Изоляция строки-акра для 2ГИС, чтобы вел себя как стандартная flex-строка */
+.navigation-link {
+  text-decoration: none !important;
+  color: inherit !important;
+}
 
 .action-left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 14px;
   font-weight: 600;
+  font-size: 0.95rem;
+  color: #cbd5e1;
+}
+.action-left i {
+  width: 20px;
+  font-size: 1.05rem;
 }
 
-.action-left i { width: 20px; color: #1e3c72; }
-.action-item.logout i { color: #ef4444; }
+.text-blue {
+  color: #38bdf8;
+}
+.text-red {
+  color: #ef4444;
+}
+.arrow-gray {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+.profile-action-item.logout-row {
+  color: #ef4444;
+}
 
-/* Модальное окно */
-.modal-overlay {
+/* СОВЕРШЕННО ТЁМНАЯ МОДАЛКА БАЗЫ ЗНАНИЙ КЛИЕНТА */
+.profile-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(5px); /* Тот самый эффект размытия */
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* Модалка выезжает снизу */
+  align-items: flex-end;
   z-index: 1000;
 }
 
-.modal-content {
-  background: white;
+.profile-modal-content {
+  background: #0f172a;
+  border-top: 2px solid #0ea5e9;
   width: 100%;
   max-width: 500px;
-  border-radius: 25px 25px 0 0;
-  padding: 30px 20px;
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px 40px 20px;
   position: relative;
-  animation: slideUp 0.3s ease-out;
+  box-sizing: border-box;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.5);
+  animation: slideProfileUp 0.28s cubic-bezier(0.32, 0.94, 0.6, 1);
 }
 
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+@keyframes slideProfileUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
-.close-modal {
+.profile-close-modal {
   position: absolute;
-  top: 15px;
+  top: 16px;
   right: 20px;
-  font-size: 2rem;
+  font-size: 1.8rem;
   background: none;
   border: none;
-  color: #94a3b8;
-}
-
-/* Переключатель (Toggle Switch) */
-.setting-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
-}
-
-.switch input { opacity: 0; width: 0; height: 0; }
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 34px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px; width: 18px;
-  left: 3px; bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider { background-color: #1e3c72; }
-input:checked + .slider:before { transform: translateX(26px); }
-
-
-/* dark-theme */
-/* Переменные для удобства (в начале CSS файла или внутри .dark-theme) */
-.dark-theme {
-  background-color: #020617 !important; /* Глубокий черный/синий */
-  color: #f8fafc !important;
-}
-
-/* Перекрашиваем карточки в темной теме */
-.dark-theme .content-group-box {
-  background: #0f172a !important; /* Темно-синий фон карточек */
-  border: 1px solid #1e293b;
-  box-shadow: none;
-}
-
-/* Текст в темной теме */
-.dark-theme .profile-value, 
-.dark-theme .stat-value,
-.dark-theme label,
-.dark-theme .section-title {
-  color: #e2e8f0 !important;
-}
-
-/* Иконки в меню действий */
-.dark-theme .action-item {
-  border-bottom-color: #1e293b;
-}
-
-.dark-theme .action-item span {
-  color: #cbd5e1;
-}
-
-/* Номер телефона (disabled) */
-.dark-theme .profile-value.disabled {
-  background: #1e293b;
   color: #64748b;
+  cursor: pointer;
 }
 
-/* Баннер уведомления об обновлении PWA */
+.modal-body {
+  width: 100%;
+}
+.modal-title-text {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 20px 0;
+}
+
+/* 🌟 СТИЛИ КАРТОЧЕК ДЛЯ КЛИЕНТСКИХ ИНСТРУКЦИЙ */
+.text-instructions {
+  max-height: 65vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.text-instructions::-webkit-scrollbar {
+  width: 4px;
+}
+.text-instructions::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.kb-step-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  text-align: left;
+}
+.kb-step-card:last-child {
+  margin-bottom: 0;
+}
+
+.kb-step-card h4 {
+  margin: 0 0 8px 0;
+  color: #38bdf8;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.kb-step-card p {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.kb-step-card strong {
+  color: #f1f5f9;
+}
+
+/* БАННЕР ОБНОВЛЕНИЯ PWA */
 .pwa-update-banner {
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  border: 1px solid #0ea5e9; /* Фирменный голубой неон */
+  border: 1px solid #0ea5e9;
   box-shadow: 0 0 15px rgba(14, 165, 233, 0.25);
   padding: 18px;
   border-radius: 16px;
@@ -374,12 +428,10 @@ input:checked + .slider:before { transform: translateX(26px); }
   font-size: 0.95rem;
   font-weight: 600;
 }
-
 .pwa-update-text i {
   color: #0ea5e9;
 }
 
-/* Кнопка мгновенной очистки сервис-воркера */
 .pwa-update-btn {
   background: #0ea5e9;
   color: white;
@@ -390,9 +442,12 @@ input:checked + .slider:before { transform: translateX(26px); }
   font-size: 0.9rem;
   cursor: pointer;
   width: 100%;
-  transition: background 0.2s;
 }
 
-.pwa-update-btn:hover {
-  background: #0284c7;
+.page-center-container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 95px !important;
+  gap: 15px;
+  box-sizing: border-box;
 }
