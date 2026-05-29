@@ -9,6 +9,11 @@ const ProfilePage = () => {
   const { user, setUser, logout } = useContext(AuthContext);
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState("");
+
+  // 🌟 ШАГ 1: Новые стейты для интерактивного редактирования авто
+  const [isEditingCar, setIsEditingCar] = useState(false);
+  const [newCarBrand, setNewCarBrand] = useState("");
+
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [activeModal, setActiveModal] = useState(null); // 'prices' или 'kb' или null
 
@@ -27,9 +32,13 @@ const ProfilePage = () => {
     },
   });
 
+  // Синхронизация полей с данными из базы данных
   useEffect(() => {
     if (user?.name) {
       setNewName(user.name);
+    }
+    if (user?.car_brand) {
+      setNewCarBrand(user.car_brand);
     }
   }, [user]);
 
@@ -61,13 +70,14 @@ const ProfilePage = () => {
         setUser({ ...user, [field]: value });
         if (field === "name") setIsEditingName(false);
         if (field === "avatar_url") setShowAvatarPicker(false);
+        // 🌟 ШАГ 2: Закрываем режим редактирования машины при успешном ответе бэка
+        if (field === "car_brand") setIsEditingCar(false);
       }
     } catch (error) {
       console.error("Ошибка обновления профиля:", error);
     }
   };
 
-  // 🌟 ИСПРАВЛЕНО: Теперь здесь прописаны все доступные аватарки!
   const avatars = ["1.png", "2.png", "3.png"];
 
   return (
@@ -76,7 +86,7 @@ const ProfilePage = () => {
         {/* КОНТЕЙНЕР №1: Личные данные пользователя */}
         <div className="profile-card main-info-box content-group-box">
           <div className="fill-zone profile-header-content">
-            {/* Аватарка с динамическим выводом */}
+            {/* Аватарка */}
             <div className="avatar-section">
               <div
                 className="avatar-wrapper"
@@ -150,12 +160,40 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Автомобиль */}
+            {/* 🌟 ШАГ 3: Новая интерактивная зона автомобиля */}
             <div className="profile-info-row">
               <label className="profile-field-label">Основной автомобиль</label>
-              <div className="profile-car-brand-pill">
-                <i className="fas fa-car"></i>
-                <span>{user?.car_brand || "Добавить авто"}</span>
+              <div className="input-with-action">
+                {isEditingCar ? (
+                  <div className="edit-input-wrapper">
+                    <input
+                      value={newCarBrand}
+                      onChange={(e) => setNewCarBrand(e.target.value)}
+                      className="profile-input"
+                      placeholder="Марка или госномер"
+                      maxLength={40}
+                    />
+                    <button
+                      className="profile-save-btn"
+                      onClick={() => updateProfile("car_brand", newCarBrand)}
+                    >
+                      <i className="fas fa-check"></i>
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    className="display-value-wrapper profile-car-brand-pill"
+                    onClick={() => setIsEditingCar(true)}
+                  >
+                    <div className="car-pill-left">
+                      <i className="fas fa-car"></i>
+                      <span>{user?.car_brand || "Добавить авто"}</span>
+                    </div>
+                    <button className="profile-edit-btn-car">
+                      <i className="fas fa-pen"></i>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

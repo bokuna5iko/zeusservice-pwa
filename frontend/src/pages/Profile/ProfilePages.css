@@ -451,3 +451,25 @@
   gap: 15px;
   box-sizing: border-box;
 }
+
+/* Дополнительные микро-стили для кликабельной плашки машины */
+.profile-car-brand-pill {
+  justify-content: space-between !important;
+  cursor: pointer;
+  width: 100%;
+}
+
+.car-pill-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-edit-btn-car {
+  background: none;
+  border: none;
+  color: #38bdf8;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px;
+}
