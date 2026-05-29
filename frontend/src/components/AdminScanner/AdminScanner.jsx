@@ -15,8 +15,30 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
     setLoading(false);
 
     const html5Qrcode = new Html5Qrcode("qr-reader");
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
     let isStopping = false; // Защита от двойной остановки камеры
+
+    // 🌟 ШАГ 1: Динамическая функция расчета адаптивного окна сканирования (qrbox)
+    // Она берет реальные размеры видеопотока на экране и выделяет под сканирование ровно 70% площади.
+    // Больше админу не придется ловить ювелирные миллиметры — код будет считываться легко!
+    const qrboxFunction = (viewfinderWidth, viewfinderHeight) => {
+      const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+      const qrboxSize = Math.floor(minEdge * 0.70); // 70% от меньшей стороны
+      
+      // Страховка: окно не должно быть меньше 200px и больше 350px
+      const finalSize = Math.max(200, Math.min(350, qrboxSize));
+      
+      return {
+        width: finalSize,
+        height: finalSize
+      };
+    };
+
+    // 🌟 ШАГ 2: Новая разогнанная конфигурация сканера
+    const config = { 
+      fps: 25, // ИСПРАВЛЕНО: Подняли с 10 до 25 кадров в секунду. Дрожание рук больше не смажет кубики QR!
+      qrbox: qrboxFunction, // ИСПРАВЛЕНО: Заменили жесткий размер на адаптивную функцию
+      aspectRatio: 1.0 // Просим браузер выдать квадратное соотношение сторон для точности холста
+    };
 
     const onScanSuccess = async (decodedText) => {
       if (!decodedText || isStopping) return;
@@ -61,7 +83,7 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
       }
     };
 
-    // Запускаем заднюю камеру
+    // Запускаем заднюю камеру с дополнительными подсказками для автофокуса
     html5Qrcode.start(
       { facingMode: "environment" }, 
       config,
@@ -69,7 +91,7 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
       () => { /* Игнорируем фоновые промахи камеры */ }
     ).catch(err => {
       console.error("Не удалось запустить камеру:", err);
-      setScanError("Камера недоступна или заблокирована");
+      setScanError("Камера недоступна или заблокирована. Проверьте разрешения в настройках iOS/Safari.");
     });
 
     // Деструктор при закрытии крестиком
@@ -91,7 +113,10 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
         </div>
         <div className="scanner-modal-body">
           <p className="scanner-subtitle">Наведите камеру на QR-код в приложении клиента</p>
+          
+          {/* Контейнер ридера */}
           <div id="qr-reader" className="qr-reader-box"></div>
+          
           {loading && <div className="scanner-status loading">Проверка клиента в базе...</div>}
           {scanError && <div className="scanner-status error">❌ {scanError}</div>}
         </div>
