@@ -95,25 +95,20 @@ const HistoryPage = () => {
                 </div>
               ) : history.length > 0 ? (
                 history.map((visit, index) => {
-                  // 🌟 НАША НОВАЯ ЛОГИКА СЧЕТЧИКА НА ОСНОВЕ ГЛАВНОЙ СТРАНИЦЫ
-                  // Берем текущийvisit_count пользователя из контекста (например, 3)
+                  // Наша логика счетчика на основе главной страницы
                   const currentCount =
                     user?.visit_count !== undefined
                       ? Number(user.visit_count)
                       : 0;
 
-                  // Для первой (самой верхней и свежей) карточки номер равен текущему visit_count.
-                  // Если текущий счетчик равен 0, это значит, что круг только что замкнулся на 8-м визите,
-                  // поэтому верхняя карточка — это визит №8. Для всех остальных карточек просто вычитаем индекс.
                   let visitNum =
                     currentCount === 0 ? 8 - index : currentCount - index;
 
-                  // Защитный шаг: если кругов было много или индекс ушел в минус/ноль, зацикливаем в рамках 1-8
                   if (visitNum <= 0) {
                     visitNum = ((((visitNum - 1) % 8) + 8) % 8) + 1;
                   }
 
-                  // Сбор остальных параметров, пришедших из Response
+                  // Сбор параметров из Response
                   const serviceTitle =
                     visit.service_name || "Комплексная мойка";
                   const basePrice =
@@ -121,8 +116,20 @@ const HistoryPage = () => {
                       ? visit.base_price
                       : 0;
                   const dateRaw = visit.created_at;
-                  const paymentMethod = visit.payment_type || "card";
                   const carName = visit.car_name || "Не указан";
+
+                  // 🌟 ИСПРАВЛЕНО: Бронебойное определение способа оплаты ( cash / Наличные )
+                  const rawPayment = visit.payment_type || "";
+                  const isCash =
+                    rawPayment === "cash" || rawPayment === "Наличные";
+
+                  // Динамически подставляем текст и иконку в зависимости от ответа бэка
+                  const paymentDisplayText = isCash
+                    ? " Наличные"
+                    : rawPayment || " Карта / СБП";
+                  const paymentIconClass = isCash
+                    ? "fa-money-bill-wave"
+                    : "fa-credit-card";
 
                   // Рассчитываем цену со скидками 20% / 100%
                   const finalPrice = calculateDiscountedPrice(
@@ -223,17 +230,14 @@ const HistoryPage = () => {
                             </span>
                           </div>
 
+                          {/* 🌟 МОДЕРНИЗИРОВАНО: Корректный вывод иконки и типа оплаты */}
                           <div className="client-detail-row-item">
                             <span className="client-detail-item-label">
                               Способ расчета
                             </span>
                             <span className="client-detail-item-value">
-                              <i
-                                className={`fas ${paymentMethod === "cash" ? "fa-money-bill-wave" : "fa-credit-card"}`}
-                              ></i>
-                              {paymentMethod === "cash"
-                                ? " Наличные"
-                                : " Карта / СБП"}
+                              <i className={`fas ${paymentIconClass}`}></i>
+                              {paymentDisplayText}
                             </span>
                           </div>
 
