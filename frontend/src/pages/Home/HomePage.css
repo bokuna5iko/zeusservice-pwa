@@ -25,9 +25,9 @@
   font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase; /* Переводим в верхний регистр для спортивного/IT стиля */
-  letter-spacing: 1.5px;      /* Раздвигаем буквы в тон нашему логотипу */
-  color: #64748b;            /* Делаем благородный приглушенный стальной цвет */
-  margin-bottom: 20px;       /* Чуть больше отступ до сетки */
+  letter-spacing: 1.5px; /* Раздвигаем буквы в тон нашему логотипу */
+  color: #64748b; /* Делаем благородный приглушенный стальной цвет */
+  margin-bottom: 20px; /* Чуть больше отступ до сетки */
   text-align: left;
 }
 
@@ -37,17 +37,17 @@
   padding: 8px 14px;
   background: rgba(56, 189, 248, 0.06); /* Мягкая неоново-синяя подложка */
   border: 1px solid rgba(56, 189, 248, 0.15); /* Едва заметный контур */
-  border-radius: 20px;                 /* Округлый аккуратный бабл */
-  color: #38bdf8;                      /* Фирменный светящийся голубой цвет */
+  border-radius: 20px; /* Округлый аккуратный бабл */
+  color: #38bdf8; /* Фирменный светящийся голубой цвет */
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.5px;
   text-align: center;
-  display: inline-block;               /* Чтобы плашка подстраивалась под размер текста */
-  align-self: center;                  /* Центрируем её внутри fill-zone */
-  
+  display: inline-block; /* Чтобы плашка подстраивалась под размер текста */
+  align-self: center; /* Центрируем её внутри fill-zone */
+
   /* Легкий неоновый отблеск для текста, как у лого */
-  text-shadow: 0 0 8px rgba(56, 189, 248, 0.2); 
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
 }
 
 /* Контейнер №1: QR */
@@ -60,6 +60,20 @@
   text-align: center;
 }
 
+.qr-loading-placeholder {
+  width: 180px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #1e293b;
+  border-radius: 12px;
+  color: #0ea5e9;
+  font-size: 0.9rem;
+}
+
 /* Обертка вокруг белого квадрата QR */
 .qr-wrapper {
   padding: 16px;
@@ -70,7 +84,9 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   position: relative;
   margin: 0 auto 15px auto;
   max-width: 250px; /* Ограничим ширину */
@@ -78,7 +94,7 @@
 
 /* Сама библиотека генерации QR выдает белый квадрат, 
    сделаем ему легкое скругление, чтобы он вписывался в интерфейс */
-.qr-wrapper canvas, 
+.qr-wrapper canvas,
 .qr-wrapper svg,
 .qr-wrapper img {
   background: white !important; /* Убедимся, что фон под QR белый */
@@ -236,11 +252,21 @@
 
 /* Анимации появления */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleUp {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
