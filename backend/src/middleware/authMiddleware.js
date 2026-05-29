@@ -13,8 +13,6 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-// В файле backend/src/middleware/auth.js
-
 const adminOnly = (req, res, next) => {
     // После authenticateToken у нас в req.user лежат данные из базы
     if (req.user && req.user.role === 'admin') {

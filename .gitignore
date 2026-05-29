@@ -16,6 +16,7 @@ nezha/data/
 nginx/nginx.conf
 */node_modules/
 node_modules/
+project-code.txt
 # Node modules
 postgres_data/
 # Secrets
