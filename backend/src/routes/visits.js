@@ -17,5 +17,7 @@ router.post('/add', authenticateToken, adminOnly, visitController.addVisit);
 // Обновление профиля (PUT)
 router.put('/update', authenticateToken, userController.updateProfile);
 
-module.exports = router;
+// 🌟 ДОБАВЛЕНО: Генерация безопасной динамической строки для QR-кода (Доступно всем залогиненным)
+router.get('/generate', authenticateToken, userController.generateQrString);
 
+module.exports = router;

@@ -18,8 +18,6 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
     let isStopping = false; // Защита от двойной остановки камеры
 
     // 🌟 ШАГ 1: Динамическая функция расчета адаптивного окна сканирования (qrbox)
-    // Она берет реальные размеры видеопотока на экране и выделяет под сканирование ровно 70% площади.
-    // Больше админу не придется ловить ювелирные миллиметры — код будет считываться легко!
     const qrboxFunction = (viewfinderWidth, viewfinderHeight) => {
       const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
       const qrboxSize = Math.floor(minEdge * 0.70); // 70% от меньшей стороны
@@ -35,8 +33,8 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
 
     // 🌟 ШАГ 2: Новая разогнанная конфигурация сканера
     const config = { 
-      fps: 25, // ИСПРАВЛЕНО: Подняли с 10 до 25 кадров в секунду. Дрожание рук больше не смажет кубики QR!
-      qrbox: qrboxFunction, // ИСПРАВЛЕНО: Заменили жесткий размер на адаптивную функцию
+      fps: 25, // Подняли с 10 до 25 кадров в секунду. Дрожание рук больше не смажет кубики QR!
+      qrbox: qrboxFunction, // Заменили жесткий размер на адаптивную функцию
       aspectRatio: 1.0 // Просим браузер выдать квадратное соотношение сторон для точности холста
     };
 
@@ -46,34 +44,21 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
       setLoading(true);
       setScanError(null);
 
-      // 1. ПАРСИНГ СТРОКИ QR-КОДА ("ID:YYYY-MM-DD")
-      const qrParts = decodedText.split(':');
-      const clientId = qrParts[0];
-      const qrDateSeed = qrParts[1];
-
-      const todayDate = new Date().toISOString().split('T')[0];
-
-      // 2. ВАЛИДАЦИЯ ДАТЫ (Защита от скриншотов)
-      if (!clientId || !qrDateSeed || qrDateSeed !== todayDate) {
-        setScanError('Срок действия QR-кода истек. Попросите клиента обновить экран.');
-        setLoading(false);
-        return; 
-      }
-
       try {
         // Устанавливаем флаг и тушим камеру до запроса к серверу
         isStopping = true;
         await html5Qrcode.stop();
 
-        // 3. ОТПРАВКА ЗАПРОСА ЧЕРЕЗ ОБНОВЛЕННЫЙ API SERVICE
-        const response = await api.verifyUserByQr(clientId);
+        // 🌟 МОДЕРНИЗИРОВАНО ПО ТЗ: Отправляем считанную крипто-строку ЦЕЛИКОМ на бэкенд
+        // Передается строка формата "clientId:timestamp:hash", бэк сам её распарсит и проверит подлинность
+        const response = await api.verifyUserByQr(decodedText);
         
         // Передаем чистые данные (.data из axios) наверх в AdminHome
         onClientScanned(response.data);
 
       } catch (err) {
         console.error("Ошибка при проверке QR:", err);
-        // Вытаскиваем ошибку из axios или берем дефолтную
+        // Вытаскиваем ошибку безопасности или времени из axios или берем дефолтную
         setScanError(err.response?.data?.message || 'Пользователь не найден или ошибка сервера');
         
         // Окно закроется через 3 секунды, чтобы админ успел прочитать ошибку
@@ -117,7 +102,7 @@ const AdminScanner = ({ isOpen, onClose, onClientScanned }) => {
           {/* Контейнер ридера */}
           <div id="qr-reader" className="qr-reader-box"></div>
           
-          {loading && <div className="scanner-status loading">Проверка клиента в базе...</div>}
+          {loading && <div className="scanner-status loading">Проверка крипто-подписи и лимита времени...</div>}
           {scanError && <div className="scanner-status error">❌ {scanError}</div>}
         </div>
       </div>

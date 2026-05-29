@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const crypto = require('crypto'); // 🌟 ДОБАВЛЕНО: Нативный модуль для сверки хэшей SHA-256
 
 // 1. Получение количества визитов за СЕГОДНЯ (для Прогресс-бара)
 exports.getTodayCount = async (req, res) => {
@@ -44,31 +45,62 @@ exports.getLastVisits = async (req, res) => {
     }
 };
 
-// Полный путь: GET /api/admin/users/verify/:id
+// 🌟 МОДЕРНИЗИРОВАНО ПО ТЗ: Полный путь: GET /api/admin/users/verify/:id
+// Теперь в :id прилетает вся отсканированная строка целиком: "clientId:timestamp:hash"
 exports.verifyUserById = async (req, res) => {
-    const { id } = req.params;
+    const scrambledString = req.params.id;
 
     try {
-        // 1. Ищем пользователя в базе
+        // 1. ПАРСИНГ СЧИТАННОЙ СТРОКИ
+        const qrParts = scrambledString.split(':');
+        const clientId = qrParts[0];
+        const qrTimestampStr = qrParts[1];
+        const incomingHash = qrParts[2];
+
+        if (!clientId || !qrTimestampStr || !incomingHash) {
+            return res.status(400).json({ message: 'Критическая ошибка: Некорректный формат QR-кода' });
+        }
+
+        // 2. ПРОВЕРКА ВРЕМЕНИ (Таймаут 3 минуты / 180 секунд)
+        const qrTimestamp = parseInt(qrTimestampStr, 10);
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        const timeDifference = Math.abs(currentTimestamp - qrTimestamp);
+
+        if (timeDifference > 180) {
+            return res.status(400).json({ message: 'QR-код устарел. Попросите клиента обновить Главную страницу.' });
+        }
+
+        // 3. ПРОВЕРКА ПОДЛИННОСТИ ХЭША (SHA-256)
+        const secretKey = process.env.QR_SECRET_KEY || "zeus_auto_super_secret_salt_2026";
+        const serverHash = crypto
+            .createHash('sha256')
+            .update(clientId + qrTimestampStr + secretKey)
+            .digest('hex');
+
+        if (serverHash !== incomingHash) {
+            return res.status(403).json({ message: 'Критическая ошибка безопасности: Невалидный QR-код' });
+        }
+
+        // 4. ЕСЛИ ВСЁ ОТЛИЧНО — ИЩЕМ ПОЛЬЗОВАТЕЛЯ В БАЗЕ
         const userRes = await db.query(
             "SELECT id, name, phone FROM users WHERE id = $1 AND role != 'admin'",
-            [id]
+            [clientId]
         );
 
         if (userRes.rows.length === 0) {
-            return res.status(404).json({ message: 'Клиент не найден или QR-код недействителен' });
+            return res.status(404).json({ message: 'Клиент не найден в системе лояльности' });
         }
 
         const user = userRes.rows[0];
 
-        // 2. Считаем общее количество его прошлых визитов для калькулятора лояльности
+        // 5. Считаем общее количество прошлых визитов
         const visitsRes = await db.query(
             "SELECT COUNT(*)::int AS count FROM visits WHERE user_id = $1",
-            [id]
+            [clientId]
         );
         const visitCount = visitsRes.rows[0].count;
 
-        // 3. Отдаем объект в точном формате, который ждет CalculatorModal
+        // 6. Отдаем чистые данные в CalculatorModal
         res.json({
             id: user.id,
             name: user.name,
@@ -77,8 +109,8 @@ exports.verifyUserById = async (req, res) => {
         });
 
     } catch (err) {
-        console.error('Ошибка при верификации QR-кода:', err);
-        res.status(500).json({ message: 'Ошибка сервера при проверке QR-кода' });
+        console.error('Ошибка при верификации безопасного QR-кода:', err);
+        res.status(500).json({ message: 'Ошибка сервера при проверке подлинности кода' });
     }
 };
 
@@ -96,8 +128,6 @@ exports.getAllServices = async (req, res) => {
 };
 
 // 4. Зачисление визита (для Калькулятора)
-// src/controllers/adminController.js
-
 exports.createVisit = async (req, res) => {
     try {
         // 1. Принимаем параметры, которые РЕАЛЬНО отправляет калькулятор
@@ -131,7 +161,6 @@ exports.createVisit = async (req, res) => {
 
         // 3. СЦЕНАРИЙ 1: Полноценный клиент (НЕ ГОСТЬ)
         if (!is_guest) {
-            // ИСПРАВЛЕНО: Теперь ищем пользователя строго по чистокровному ID из QR-кода!
             const userResult = await db.query(
                 'SELECT id, visit_count, total_visits FROM users WHERE id = $1', 
                 [userId]
@@ -145,11 +174,11 @@ exports.createVisit = async (req, res) => {
             const user = userResult.rows[0];
             finalUserId = user.id;
 
-            // Считаем номер текущего визита (с подстраховкой от NULL)
+            // Считаем номер текущего визита
             const currentVisitCount = parseInt(user.visit_count || 0);
             currentVisitNumber = currentVisitCount + 1;
 
-            // Логика скидок (синхронизируем цену с лояльностью, если это не ручной ввод)
+            // Логика скидок
             if (!manual_price) {
                 if (currentVisitNumber === 4) {
                     finalPrice = Math.round(finalPrice * 0.8); // Скидка 20%
@@ -159,12 +188,11 @@ exports.createVisit = async (req, res) => {
             }
 
             let nextVisitCount = currentVisitNumber;
-            // Если круг замкнулся на 8, сбрасываем счетчик в 0 для нового круга
             if (currentVisitNumber === 8) {
                 nextVisitCount = 0;
             }
 
-            // Обновляем счетчики пользователя (с подстраховкой COALESCE для total_visits)
+            // Обновляем счетчики пользователя
             await db.query(
                 `UPDATE users 
                  SET visit_count = $1, 
@@ -174,9 +202,9 @@ exports.createVisit = async (req, res) => {
             );
         }
 
-        // 4. СЦЕНАРИЙ 2: Гость (is_guest = true) -> finalUserId и currentVisitNumber останутся NULL
+        // 4. СЦЕНАРИЙ 2: Гость (is_guest = true)
 
-        // Вставляем запись в таблицу визитов визитов (6 параметров на 6 колонок!)
+        // Вставляем запись в таблицу визитов
         await db.query(
             `INSERT INTO visits (user_id, service_id, service_type, price, visit_number, payment_type, admin_id, amount, created_at) 
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())`,
@@ -227,11 +255,9 @@ exports.getAdminHistory = async (req, res) => {
         `;
 
         const result = await db.query(queryText);
-        
-        // Возвращаем массив полученных строк
         res.json(result.rows);
     } catch (err) {
-        console.error('Ошибка в getAdminHistory:', err);
+        console.error('Ошибка in getAdminHistory:', err);
         res.status(500).json({ message: 'Ошибка сервера при получении истории визитов' });
     }
 };
