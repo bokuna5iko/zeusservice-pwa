@@ -20,7 +20,7 @@ const HomePage = () => {
         // Достаем токен авторизации клиента (из ProfilePages мы знаем, что он лежит в 'token')
         const token = localStorage.getItem('token');
         
-        const res = await fetch('/api/qr/generate', {
+        const res = await fetch('/api/user/generate', {
           method: 'GET',
           headers: {
             'Authorization': token ? `Bearer ${token}` : ''

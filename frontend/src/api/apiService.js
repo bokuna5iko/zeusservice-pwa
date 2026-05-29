@@ -46,7 +46,7 @@ export const api = {
     getStats: () => apiService.get('/admin/stats/today'), // ← Направляем точно на /today
     getClientArchive: (query) => apiService.get(`/admin/clients/archive?search=${encodeURIComponent(query)}`), // ← Добавили метод архива
     // 🌟 ДОБАВЛЯЕМ СЮДА НАШ МЕТОД ДЛЯ СКАНЕРА
-    verifyUserByQr: (clientId) => apiService.get(`/admin/users/verify/${clientId}`)
+    verifyUserByQr: (qrString) => apiService.get(`/admin/users/verify/${encodeURIComponent(qrString)}`)
 };
 
 export default apiService;
