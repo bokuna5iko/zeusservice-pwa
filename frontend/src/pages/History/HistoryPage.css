@@ -1,55 +1,316 @@
 /* src/pages/History/HistoryPage.css */
 
-.history-card {
-  /* Глубокий темный фон в тон профиля и калькулятора */
-  background: #0f172a; 
+/* Базовый сброс и изоляция страницы */
+.client-history-page {
+  background-color: #020617;
+  min-height: 100vh;
+  color: #f8fafc;
+  box-sizing: border-box;
+}
+
+/* 🌟 БАЗОВАЯ СТРУКТУРА КАРТОЧЕК-КОНТЕЙНЕРОВ */
+.client-history-card {
+  background: #0f172a !important;
   border-radius: 16px;
   padding: 16px;
   width: 100%;
   box-sizing: border-box;
-
-  /* 🌟 ТЕМНАЯ ТЕНЬ: Мягкое свечение без грязных серых пятен */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  
-  /* 🌟 ИСПРАВЛЕНО: Тонкая темно-синяя рамка вместо светлой, чтобы контур не резал глаз */
-  border: 1px solid #1e293b; 
+  border: 1px solid #1e293b;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-/* Эффект при клике на карточку истории (нативный мобильный отклик) */
-.history-card:active {
-  transform: scale(0.98);
-  border-color: #0ea5e9; /* Короткая вспышка фирменного неона при нажатии */
-  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2) !important;
-}
-
-/* Зона наполнения данными */
 .fill-zone {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Выравнивание текста истории по левому краю */
+  align-items: flex-start;
 }
 
-.data-placeholder {
-  padding: 20px;
-  background: #1e293b;
-  color: #64748b; /* Приглушенный текст */
-  font-style: italic;
-  font-size: 0.9rem;
-  border: 1px dashed #334155; /* Темный пунктир */
-  border-radius: 12px;
+/* Заголовки блоков */
+.history-section-title,
+.history-list-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.history-section-subtitle {
+  margin: 4px 0 0 0;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.history-list-title {
+  margin-bottom: 16px;
+}
+
+/* Счётчик общего количества заездов */
+.client-summary-counter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  background: rgba(14, 165, 233, 0.05);
+  border: 1px dashed rgba(14, 165, 233, 0.2);
   width: 100%;
-  text-align: center;
+  padding: 12px;
+  border-radius: 10px;
   box-sizing: border-box;
+  color: #e2e8f0;
+  font-size: 0.95rem;
 }
 
-/* Отступ снизу для всей страницы, чтобы контент не перекрывался нижним меню */
+.client-summary-counter i {
+  color: #0ea5e9;
+  font-size: 1.1rem;
+}
+
+.neon-count {
+  color: #38bdf8;
+  font-weight: 800;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+}
+
+/* ==========================================================================
+   🌟 ЛЕНТА КАРТОЧЕК-АККОРДЕОНОВ (УНИФИКАЦИЯ С АДМИНКОЙ)
+   ========================================================================== */
+
+.client-visits-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.client-visit-accordion-card {
+  background: #1e293b;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+/* Подсветка неоном при раскрытии */
+.client-visit-accordion-card.open {
+  border-color: #0ea5e9;
+  background: #1e293b;
+}
+
+/* Кликабельный заголовок аккордеона */
+.client-visit-header {
+  padding: 14px 40px 14px 14px; /* 40px справа зарезервировано под стрелку */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.client-visit-header:active {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Каркас строк */
+.client-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.main-row {
+  align-items: flex-start;
+}
+
+/* Название услуги */
+.client-visit-service-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #f1f5f9;
+  line-height: 1.3;
+  padding-right: 12px;
+  flex: 1;
+}
+
+/* Зелёная сочная стоимость */
+.client-visit-price {
+  font-weight: 700;
+  color: #10b981;
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
+
+/* Нижняя строка мета-данных */
+.client-visit-meta-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.client-visit-time {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.client-visit-date-sub {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* Бэйдж номера визита */
+.visit-number-pill {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+}
+
+/* Независимая стрелка-индикатор */
+.client-accordion-arrow {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+  color: #64748b;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Анимация разворота стрелки */
+.client-visit-accordion-card.open .client-accordion-arrow {
+  transform: translateY(-50%) rotate(180deg);
+  color: #38bdf8;
+}
+
+/* ==========================================================================
+   🌟 ВНУТРЕННИЙ БЛОК ДЕТАЛИЗАЦИИ С ПЛАВНОЙ АНИМАЦИЕЙ
+   ========================================================================== */
+
+.client-visit-details {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Раскрытое состояние */
+.client-visit-accordion-card.open .client-visit-details {
+  max-height: 250px; /* С запасом под параметры */
+  opacity: 1;
+  border-top: 1px dashed #334155;
+}
+
+.client-details-content {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.client-detail-row-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+  padding-bottom: 6px;
+}
+
+.client-detail-row-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.client-detail-item-label {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.client-detail-item-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.success-text {
+  color: #10b981;
+}
+
+.client-detail-item-value i {
+  color: #64748b;
+  margin-right: 4px;
+}
+
+.highlight-cycle {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+/* Заглушки и лоадеры */
+.client-data-placeholder {
+  color: #64748b;
+  text-align: center;
+  font-size: 0.9rem;
+  padding: 24px 0;
+  font-style: italic;
+  width: 100%;
+}
+
+.client-data-placeholder i {
+  margin-right: 6px;
+  color: #0ea5e9;
+}
+
+/* ==========================================================================
+   ПОДВАЛ ПОДДЕРЖКИ КЛИЕНТОВ
+   ========================================================================== */
+.footer-center {
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  gap: 8px;
+}
+
+.client-history-card.history-footer-info {
+  background: linear-gradient(135deg, #0f172a 0%, #020617 100%) !important;
+}
+
+.history-footer-info i {
+  color: #64748b;
+  font-size: 1.1rem;
+}
+
+.footer-notice-text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+/* Наш глобальный безопасный мобильный отступ */
 .page-center-container {
   display: flex;
   flex-direction: column;
-  /* 🌟 ИСПРАВЛЕНО: Увеличиваем отступ до 95px под мобильную навигацию */
-  padding-bottom: 95px !important; 
-  gap: 15px; /* Расстояние между карточками */
+  padding-bottom: 95px !important;
+  gap: 15px;
   box-sizing: border-box;
 }
