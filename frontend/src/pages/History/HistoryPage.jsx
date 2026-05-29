@@ -32,24 +32,10 @@ const HistoryPage = () => {
     setOpenCardId(openCardId === id ? null : id);
   };
 
-  // 🌟 ИСПРАВЛЕНО: Безопасный парсер времени, который не спотыкается о точку в ISO-строках
+  // Безопасный парсер времени
   const formatVisitTime = (dateString) => {
     if (!dateString) return { time: "—:—", date: "—" };
 
-    // Если бэк прислал кастомную уже отформатированную строку с пробелом (например "29.05.2026 15:30")
-    if (
-      typeof dateString === "string" &&
-      dateString.includes(".") &&
-      dateString.includes(" ")
-    ) {
-      const parts = dateString.split(" ");
-      return {
-        date: parts[0] || "—",
-        time: parts[1] || "—:—",
-      };
-    }
-
-    // Для стандартных ISO-строк из PostgreSQL и объектов Date
     const d = new Date(dateString);
     if (isNaN(d.getTime())) return { time: "—:—", date: "—" };
 
@@ -64,6 +50,14 @@ const HistoryPage = () => {
     });
 
     return { time, date };
+  };
+
+  // Логика расчета скидок на фронте
+  const calculateDiscountedPrice = (price, visitNum) => {
+    const num = Number(visitNum);
+    if (num === 8) return 0;
+    if (num === 4) return price * 0.8;
+    return price;
   };
 
   return (
@@ -101,48 +95,42 @@ const HistoryPage = () => {
                 </div>
               ) : history.length > 0 ? (
                 history.map((visit, index) => {
-                  // 🌟 АВТОМАТИЧЕСКИЙ ДИАГНОСТИЧЕСКИЙ ЛОГ
-                  // Открой F12 в браузере и посмотри на этот лог — увидишь реальные ключи твоего бэка!
-                  console.log("=== ZEUS DATA DEBUG ===", visit);
+                  // 🌟 НАША НОВАЯ ЛОГИКА СЧЕТЧИКА НА ОСНОВЕ ГЛАВНОЙ СТРАНИЦЫ
+                  // Берем текущийvisit_count пользователя из контекста (например, 3)
+                  const currentCount =
+                    user?.visit_count !== undefined
+                      ? Number(user.visit_count)
+                      : 0;
 
-                  // 🌟 ШАГ 1: БРОНЕБОЙНЫЙ СБОР ПЕРЕМЕННЫХ ИЗ ЛЮБЫХ ВОЗМОЖНЫХ АЛИАСОВ И РЕГИСТРОВ БЭКЕНДА
+                  // Для первой (самой верхней и свежей) карточки номер равен текущему visit_count.
+                  // Если текущий счетчик равен 0, это значит, что круг только что замкнулся на 8-м визите,
+                  // поэтому верхняя карточка — это визит №8. Для всех остальных карточек просто вычитаем индекс.
+                  let visitNum =
+                    currentCount === 0 ? 8 - index : currentCount - index;
+
+                  // Защитный шаг: если кругов было много или индекс ушел в минус/ноль, зацикливаем в рамках 1-8
+                  if (visitNum <= 0) {
+                    visitNum = ((((visitNum - 1) % 8) + 8) % 8) + 1;
+                  }
+
+                  // Сбор остальных параметров, пришедших из Response
                   const serviceTitle =
-                    visit.service_type ||
-                    visit.serviceType ||
-                    visit.service_name ||
-                    visit.serviceName ||
-                    visit.service ||
-                    visit.name ||
-                    "Комплексная мойка";
-                  const priceVal =
-                    visit.price !== undefined
-                      ? visit.price
-                      : visit.amount !== undefined
-                        ? visit.amount
-                        : visit.base_price !== undefined
-                          ? visit.base_price
-                          : "—";
-                  const visitNum =
-                    visit.visit_number ||
-                    visit.visitNumber ||
-                    visit.visit_count ||
-                    visit.visitCount ||
-                    visit.num ||
-                    "—";
-                  const paymentMethod =
-                    visit.payment_type ||
-                    visit.paymentType ||
-                    visit.payment_method ||
-                    visit.paymentMethod ||
-                    "card";
-                  const dateRaw =
-                    visit.created_at ||
-                    visit.createdAt ||
-                    visit.date ||
-                    visit.visit_date ||
-                    visit.visitDate;
+                    visit.service_name || "Комплексная мойка";
+                  const basePrice =
+                    visit.base_price !== undefined && visit.base_price !== null
+                      ? visit.base_price
+                      : 0;
+                  const dateRaw = visit.created_at;
+                  const paymentMethod = visit.payment_type || "card";
+                  const carName = visit.car_name || "Не указан";
 
-                  const cardId = visit.id || visit.visit_id || index;
+                  // Рассчитываем цену со скидками 20% / 100%
+                  const finalPrice = calculateDiscountedPrice(
+                    basePrice,
+                    visitNum,
+                  );
+
+                  const cardId = visit.id || index;
                   const isOpen = openCardId === cardId;
                   const { time, date } = formatVisitTime(dateRaw);
 
@@ -151,7 +139,7 @@ const HistoryPage = () => {
                       key={cardId}
                       className={`client-visit-accordion-card ${isOpen ? "open" : ""}`}
                     >
-                      {/* Шапка карточки (Кликабельная зона) */}
+                      {/* Шапка карточки */}
                       <div
                         className="client-visit-header"
                         onClick={() => toggleAccordion(cardId)}
@@ -162,11 +150,10 @@ const HistoryPage = () => {
                             {serviceTitle}
                           </span>
                           <span className="client-visit-price">
-                            {priceVal === "—"
-                              ? "—"
-                              : parseInt(priceVal) === 0
-                                ? "БЕСПЛАТНО"
-                                : `${priceVal} ₽`}
+                            {parseInt(basePrice) === 0 ||
+                            Number(finalPrice) === 0
+                              ? "БЕСПЛАТНО"
+                              : `${finalPrice} ₽`}
                           </span>
                         </div>
 
@@ -179,7 +166,6 @@ const HistoryPage = () => {
                             </span>
                           </div>
 
-                          {/* Номер визита в текущем цикле */}
                           <div className="client-visit-badge-zone">
                             <span className="visit-number-pill">
                               Визит №{visitNum}
@@ -196,10 +182,44 @@ const HistoryPage = () => {
                         <div className="client-details-content">
                           <div className="client-detail-row-item">
                             <span className="client-detail-item-label">
-                              Статус оплаты
+                              Стоимость заезда
                             </span>
-                            <span className="client-detail-item-value success-text">
-                              Выполнено успешно
+                            <span className="client-detail-item-value">
+                              {Number(visitNum) === 4 ||
+                              Number(visitNum) === 8 ? (
+                                <>
+                                  <span
+                                    style={{
+                                      textDecoration: "line-through",
+                                      color: "#64748b",
+                                      marginRight: "6px",
+                                    }}
+                                  >
+                                    {basePrice} ₽
+                                  </span>
+                                  <span
+                                    className="success-text"
+                                    style={{ fontWeight: "bold" }}
+                                  >
+                                    {finalPrice} ₽
+                                  </span>
+                                  <span
+                                    style={{
+                                      color: "#f59e0b",
+                                      fontSize: "0.8rem",
+                                      marginLeft: "6px",
+                                    }}
+                                  >
+                                    (
+                                    {Number(visitNum) === 8
+                                      ? "100% подарок"
+                                      : "20% скидка"}
+                                    )
+                                  </span>
+                                </>
+                              ) : (
+                                `${basePrice} ₽`
+                              )}
                             </span>
                           </div>
 
@@ -219,12 +239,25 @@ const HistoryPage = () => {
 
                           <div className="client-detail-row-item">
                             <span className="client-detail-item-label">
+                              Автомобиль
+                            </span>
+                            <span
+                              className="client-detail-item-value highlight-cycle"
+                              style={{
+                                background: "rgba(56, 189, 248, 0.1)",
+                                color: "#38bdf8",
+                              }}
+                            >
+                              {carName}
+                            </span>
+                          </div>
+
+                          <div className="client-detail-row-item">
+                            <span className="client-detail-item-label">
                               Позиция в цикле
                             </span>
                             <span className="client-detail-item-value highlight-cycle">
-                              {visitNum !== "—"
-                                ? `${visitNum} из 8 заездов`
-                                : "Вне программы лояльности"}
+                              {visitNum} из 8 визитов
                             </span>
                           </div>
                         </div>
@@ -241,7 +274,7 @@ const HistoryPage = () => {
           </div>
         </div>
 
-        {/* КОНТЕЙНЕР №3: Профессиональный подвал поддержки */}
+        {/* КОНТЕЙНЕР №3: Подвал поддержки */}
         <div className="client-history-card history-footer-info content-group-box">
           <div className="fill-zone footer-center">
             <i className="fas fa-info-circle"></i>
