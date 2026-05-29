@@ -268,7 +268,7 @@ const ProfilePage = () => {
             </div>
 
             <a
-              href="https://2gis.ru"
+              href="https://2gis.ru/yakutsk/geo/70000001111507207/129.723198,62.047054"
               target="_blank"
               rel="noopener noreferrer"
               className="profile-action-item navigation-link"
