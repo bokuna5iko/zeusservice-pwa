@@ -69,7 +69,7 @@ function App() {
           {/* 🌟 3. ПОДКЛЮЧАЕМ ЭКРАН СМЕН ДЛЯ РАБОТНИКА
               Проверяем, что выбрана страница 'shifts' и у пользователя роль 'worker' */}
           {activePage === "shifts" && user.role === "worker" && (
-            <EmployShifts />
+            <WorkerShiftsPage />
           )}
         </main>
 
