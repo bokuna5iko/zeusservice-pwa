@@ -1,0 +1,59 @@
+/* src/pages/AdminShifts/AdminShiftsPage.css */
+.admin-shifts-page {
+  background-color: #020617;
+  min-height: 100vh;
+  color: #f8fafc;
+  box-sizing: border-box;
+}
+
+.admin-calendar-box {
+  width: 100%;
+}
+
+.admin-calendar-title {
+  margin: 0 0 12px 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+/* ФИКСИРОВАННАЯ КНОПКА ПАКЕТНОГО СОХРАНЕНИЯ */
+.batch-publish-wrapper {
+  position: fixed;
+  bottom: 80px; /* Над нижней панелью навигации PWA */
+  left: 0;
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+  z-index: 99;
+}
+
+.batch-publish-btn {
+  width: 100%;
+  background: #0ea5e9;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+  transition: all 0.2s ease;
+}
+
+.batch-publish-btn:active {
+  transform: scale(0.98);
+}
+
+.batch-publish-btn:disabled {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #64748b !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}

@@ -1,0 +1,228 @@
+/* src/pages/WorkerShifts/WorkerShiftsPage.css */
+.worker-shifts-page {
+  background-color: #020617;
+  min-height: 100vh;
+  color: #f8fafc;
+  box-sizing: border-box;
+}
+
+/* Информационный хелпер */
+.shifts-helper-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.helper-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.helper-left i {
+  font-size: 1.25rem;
+  color: #38bdf8;
+}
+
+.helper-text-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.helper-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.helper-subtitle {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.arrow-muted {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+/* Календарный блок-бокс */
+.calendar-section-box {
+  width: 100%;
+}
+
+.calendar-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.calendar-box-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.archive-shifts-btn {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Стиль пульсации */
+.animate-pulse-blue {
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+/* МНОГОРАЗОВАЯ ТЁМНАЯ МОДАЛКА СМЕН */
+.shifts-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 1000;
+}
+
+.shifts-modal-content {
+  background: #0f172a;
+  border-top: 2px solid #0ea5e9;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px 40px 20px;
+  position: relative;
+  box-sizing: border-box;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.5);
+  animation: slideShiftsUp 0.25s ease-out;
+}
+
+@keyframes slideShiftsUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.shifts-close-modal {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.shifts-modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shifts-modal-hint {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  line-height: 1.4;
+  margin: 0 0 16px 0;
+}
+
+/* Таблица тарифов */
+.rates-table-grid {
+  display: flex;
+  flex-direction: column;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.rate-row-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid #334155;
+}
+
+.rate-row-item:last-child {
+  border-bottom: none;
+}
+
+.rate-label {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  font-weight: 500;
+}
+.rate-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.text-gray-neon {
+  color: #94a3b8;
+}
+.text-green-neon {
+  color: #10b981;
+  text-shadow: 0 0 6px rgba(16, 185, 129, 0.2);
+}
+
+.rules-sub-title {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+  color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rules-list-items {
+  margin: 0;
+  padding-left: 18px;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  line-height: 1.4;
+}
+
+/* Глобальный контейнер страниц */
+.page-center-container {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 95px 16px;
+  gap: 15px;
+  box-sizing: border-box;
+}
