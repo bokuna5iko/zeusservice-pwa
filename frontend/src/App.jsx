@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
-import { AuthContext } from './context/AuthContext';
-import Navigation from './components/Navigation';
-import LoginPage from './pages/Login/LoginPage';
+import React, { useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
+import Navigation from "./components/Navigation";
+import LoginPage from "./pages/Login/LoginPage";
 
 // Твои страницы
-import HomePage from "./pages/Home/HomePage.jsx"; 
+import HomePage from "./pages/Home/HomePage.jsx";
 import HistoryPage from "./pages/History/HistoryPage.jsx";
 import ProfilePage from "./pages/Profile/ProfilePages.jsx";
 import AdminProfile from "./pages/AdminProfile/AdminProfile.jsx";
 import AdminHome from "./pages/AdminHome/AdminHome.jsx";
 import AdminHistory from "./pages/AdminHistory/AdminHistory.jsx";
-import EmployShifts from "./pages/EmployShifrts/EmployShifts.jsx";
+import WorkerShiftsPage from "./pages/WorkerShifts/WorkerShiftsPage.jsx";
 
 // 1. Импортируем новую страницу статистики
 import AdminStatistics from "./pages/AdminStatistics/AdminStatistics.jsx";
@@ -33,45 +33,42 @@ function App() {
   return (
     <div className="app-shell">
       {/* Оболочка телефона */}
-      <div className="app-main"> 
-        
+      <div className="app-main">
         <header className="app-header">
           <div className="header-content">
             {/* css */}
-            <span className="app-logo">ZEUS <span>AUTO</span></span>
+            <span className="app-logo">
+              ZEUS <span>AUTO</span>
+            </span>
           </div>
         </header>
 
-        <main 
-           className="page-content" // Убрали динамическое навешивание класса no-scroll
-          style={{ 
-            flex: 1, 
-            overflowY: 'auto' // 🌟 ИСПРАВЛЕНО: Теперь скролл по вертикали разрешен ВСЕГДА!
+        <main
+          className="page-content" // Убрали динамическое навешивание класса no-scroll
+          style={{
+            flex: 1,
+            overflowY: "auto", // 🌟 ИСПРАВЛЕНО: Теперь скролл по вертикали разрешен ВСЕГДА!
           }}
-         >
+        >
           {/* Динамически подменяем Главную страницу в зависимости от роли */}
-          {activePage === 'home' && (
-            user.role === 'admin' ? <AdminHome /> : <HomePage />
-          )}
-  
+          {activePage === "home" &&
+            (user.role === "admin" ? <AdminHome /> : <HomePage />)}
+
           {/* Динамически подменяем Историю в зависимости от роли */}
-          {activePage === 'history' && (
-            user.role === 'admin' ? <AdminHistory /> : <HistoryPage />
-          )}
+          {activePage === "history" &&
+            (user.role === "admin" ? <AdminHistory /> : <HistoryPage />)}
 
           {/* Динамически подменяем Профиль в зависимости от роли */}
-          {activePage === 'profile' && (
-            user.role === 'admin' ? <AdminProfile /> : <ProfilePage />
-          )}
+          {activePage === "profile" &&
+            (user.role === "admin" ? <AdminProfile /> : <ProfilePage />)}
 
           {/* 2. ПОДКЛЮЧАЕМ ЭКРАН СТАТИСТИКИ АДМИНИСТРАТОРА */}
-          {(activePage === 'stats' || activePage === 'admin') && user.role === 'admin' && (
-            <AdminStatistics />
-          )}
+          {(activePage === "stats" || activePage === "admin") &&
+            user.role === "admin" && <AdminStatistics />}
 
           {/* 🌟 3. ПОДКЛЮЧАЕМ ЭКРАН СМЕН ДЛЯ РАБОТНИКА
               Проверяем, что выбрана страница 'shifts' и у пользователя роль 'worker' */}
-          {activePage === 'shifts' && user.role === 'worker' && (
+          {activePage === "shifts" && user.role === "worker" && (
             <EmployShifts />
           )}
         </main>
@@ -79,7 +76,6 @@ function App() {
         <footer className="app-footer">
           <Navigation />
         </footer>
-
       </div>
     </div>
   );
