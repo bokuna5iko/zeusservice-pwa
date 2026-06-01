@@ -11,17 +11,14 @@
             "id": "6a020f7ba691a74c",
             "type": "leaf",
             "state": {
-              "type": "canvas",
+              "type": "markdown",
               "state": {
-                "file": "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/UI logic.canvas",
-                "viewState": {
-                  "x": 4233.584091187531,
-                  "y": -966.854937581497,
-                  "zoom": -0.22892213881118884
-                }
+                "file": "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-layout-dashboard",
-              "title": "UI logic"
+              "icon": "lucide-file",
+              "title": "Metrics-Definition"
             }
           }
         ]
@@ -81,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 431.5
   },
   "right": {
     "id": "1a3aa3a7c0cf7e23",
@@ -183,20 +180,33 @@
   },
   "active": "6a020f7ba691a74c",
   "lastOpenFiles": [
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Data-Sync.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/Design&Logic ТЗ.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/CSS design.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Telegram Bot Logic.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Hosting & Domain.md",
+    "Projzeus/🗺RoadMap/Migratiom on react + vite/Step 2.md",
+    "Projzeus/🗺RoadMap/Migratiom on react + vite/Step 1.md",
+    "Projzeus/📚Docs/React + Vite Pwa PLAN.md",
+    "Projzeus/📚Docs/Instruction.md",
+    "Projzeus/📚Docs/How use.md",
+    "Projzeus/Project-Structure.md",
+    "Projzeus/Dashboard.md",
+    "Projzeus/🌌Star of death.canvas",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/UI logic.canvas",
     "Projzeus/📚Docs/Tutorials/AI/How take task.md",
     "Projzeus/📚Docs/Tutorials/AI/How speak.md",
     "Projzeus/📚Docs/Tutorials/AI",
     "Projzeus/📚Docs/Tutorials/porj react arh/Без названия.md",
     "Projzeus/📚Docs/Tutorials/porj react arh",
-    "Projzeus/🗺RoadMap/Migratiom on react + vite/Step 2.md",
-    "Projzeus/🗺RoadMap/Migratiom on react + vite/Step 1.md",
     "Projzeus/🗺RoadMap/Migratiom on react + vite",
     "Projzeus/🧠Brainstorm/AI/MIGRATION_PLAN.md",
     "Projzeus/🧠Brainstorm/AI",
-    "Projzeus/📚Docs/React + Vite Pwa PLAN.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
     "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/UI logic.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas-v2.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/Untitled.canvas",
@@ -211,24 +221,11 @@
     "Projzeus/📚Docs/Tutorials/API Tester",
     "Projzeus/📚Docs/Tutorials/Git guide/🛠 Guide git for OBS&VSCODE.md",
     "Projzeus/📚Docs/Setup/Dev-Environment.md",
-    "Тест.md",
-    "Как какать.md",
     "repomix-output.xml",
-    "README.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Telegram Bot Logic.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Hosting & Domain.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Data-Sync.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/Front.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
-    "Projzeus/🗺RoadMap/Versions/v0.2/Readme-v0.2.md",
     "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.1/Map.canvas",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend",
-    "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
     "frontend/icons/ios/180.png",
     "frontend/icons/android/zeuslogo-512x512.png",
     "frontend/icons/android/zeuslogo-192x192.png",
