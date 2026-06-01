@@ -1,0 +1,11 @@
+{
+	"nodes":[
+		{"id":"275328371712dff7","type":"text","text":"# Stagging Server\n\n#### hostname: dev.zeus-auto-service.ru\n\n#### ip addres 82.202.131.188\n#### 2 CPU / 2 GB RAM / 30 GB NVME\n#### Ubuntu + Docker + fail2ban\n\n#### Swap: 2GB\n\n#### monitoring agent: Beszel\n\n### Price : 27 rub/day (810 rub/month)","x":160,"y":-40,"width":420,"height":360,"color":"2"},
+		{"id":"54057828a58a69c5","type":"text","text":"# [[Prod server]]\n\n#### hostname: zeus-auto-service.ru\n#### ip addres 46.173.29.23\n#### 2 CPU / 4 GB RAM / 40 GB NVME\n#### Ubuntu + Docker + fail2ban\n\n#### Swap: 2GB\n\n#### monitoring agent: Beszel\n\n### Price : 33 rub/day (990 rub/month)","x":-480,"y":-40,"width":420,"height":360,"color":"4"},
+		{"id":"b8d2d2060d5f50e0","type":"text","text":"# Status\n\n#### hostname: status.zeus-auto-service.ru\n#### ip addres 159.194.214.134\n#### 1 CPU / 1 GB RAM / 10 GB NVME\n#### Ubuntu + Docker + fail2ban \n\n#### Swap: 2GB\n\n#### monitoring agent: Beszel\n\n### Price : 11 rub/day (330 rub/month)","x":-180,"y":-600,"width":430,"height":380,"color":"6"}
+	],
+	"edges":[
+		{"id":"7f9338d347fbb720","fromNode":"b8d2d2060d5f50e0","fromSide":"bottom","toNode":"54057828a58a69c5","toSide":"top"},
+		{"id":"180641089f68de7f","fromNode":"b8d2d2060d5f50e0","fromSide":"bottom","toNode":"275328371712dff7","toSide":"top"}
+	]
+}

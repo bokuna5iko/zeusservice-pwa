@@ -11,10 +11,14 @@
             "id": "6a020f7ba691a74c",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Граф"
+              "type": "markdown",
+              "state": {
+                "file": "Projzeus/🧠Brainstorm/Server logic/Technology/Prod server.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Prod server"
             }
           }
         ]
@@ -174,12 +178,16 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "2c58408373b07149",
+  "active": "6a020f7ba691a74c",
   "lastOpenFiles": [
+    "Projzeus/🧠Brainstorm/Server logic/Hardware/Hardware.canvas",
+    "Projzeus/🧠Brainstorm/Server logic/Technology/Prod server.md",
+    "Projzeus/🧠Brainstorm/Server logic/Technology/Prod server 1.md",
+    "Projzeus/🧠Brainstorm/Server logic/Technology/Prod server.md",
+    "Projzeus/🌌Star of death.canvas",
+    "Projzeus/🧠Brainstorm/Server logic/Technology",
     "Без названия 1.canvas",
     "Без названия.canvas",
-    "Projzeus/🧠Brainstorm/Server logic/Hardware/Без названия.canvas",
-    "Prod server.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
     "Projzeus/🧠Brainstorm/Server logic/Hardware",
     "Projzeus/🧠Brainstorm/Server logic",
@@ -198,7 +206,6 @@
     "Projzeus/📚Docs/How use.md",
     "Projzeus/Project-Structure.md",
     "Projzeus/Dashboard.md",
-    "Projzeus/🌌Star of death.canvas",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/UI logic.canvas",
     "Projzeus/📚Docs/Tutorials/AI/How take task.md",
     "Projzeus/📚Docs/Tutorials/AI/How speak.md",
@@ -214,14 +221,10 @@
     "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas-v2.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/Untitled.canvas",
     "Projzeus/🗺RoadMap/MVC/pop.canvas",
-    "Projzeus/🗺RoadMap/MVC/Model-View-Controller.md",
     "Projzeus/🗺RoadMap/MVC/Architecture.canvas",
-    "Projzeus/🗺RoadMap/MVC/1232.canvas",
     "Projzeus/🗺RoadMap/MVC",
-    "Projzeus/📚Docs/Tutorials/Errors in vscode/node server.js.md",
     "Projzeus/📚Docs/Tutorials/Errors in vscode",
     "Projzeus/📚Docs/Tutorials/API Tester",
-    "repomix-output.xml",
     "frontend/icons/ios/180.png",
     "frontend/icons/android/zeuslogo-512x512.png",
     "frontend/icons/android/zeuslogo-192x192.png",
