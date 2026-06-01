@@ -1,4 +1,4 @@
-## внутри Docker Compose (6 узлов)
+## внутри Docker Compose (5 узлов)
 
 
 ## Nginx
@@ -56,3 +56,7 @@
 	  self-hosted, label: zeus-prod
 	 Делает: git pull → npm install 
 	 → npm run build → docker compose  up --build -d  
+
+
+## Teletgram bot
+	Прикрасный телеграм бот, который шлет отчеты (3 раза в день и раз в месяц)
