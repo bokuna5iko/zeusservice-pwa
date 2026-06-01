@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
+                "file": "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Metrics-Definition"
+              "title": "PWAlog"
             }
           }
         ]
@@ -182,11 +182,11 @@
   "lastOpenFiles": [
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Data-Sync.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/Design&Logic ТЗ.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/CSS design.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Telegram Bot Logic.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Hosting & Domain.md",
     "Projzeus/🗺RoadMap/Migratiom on react + vite/Step 2.md",
     "Projzeus/🗺RoadMap/Migratiom on react + vite/Step 1.md",
