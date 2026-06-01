@@ -1,0 +1,6 @@
+{
+	"nodes":[
+		{"id":"54057828a58a69c5","x":-480,"y":-40,"width":420,"height":300,"type":"text","text":"# Prod server\n\n#### hostname: zeus-auto-service.ru\n#### 2 CPU / 4 GB RAM / 40 GB NVME\n#### Ubuntu + Docker + fail2ban\n\n#### Swap: 2GB"}
+	],
+	"edges":[]
+}
