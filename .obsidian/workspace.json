@@ -11,17 +11,10 @@
             "id": "6a020f7ba691a74c",
             "type": "leaf",
             "state": {
-              "type": "canvas",
-              "state": {
-                "file": "Projzeus/🧠Brainstorm/Server logic/Hardware/Без названия.canvas",
-                "viewState": {
-                  "x": 0,
-                  "y": 0,
-                  "zoom": -0.4
-                }
-              },
-              "icon": "lucide-layout-dashboard",
-              "title": "Без названия"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Граф"
             }
           }
         ]
@@ -56,7 +49,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#Prod",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -77,8 +70,7 @@
               "title": "Закладки"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -182,10 +174,13 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "6a020f7ba691a74c",
+  "active": "2c58408373b07149",
   "lastOpenFiles": [
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
+    "Без названия 1.canvas",
+    "Без названия.canvas",
     "Projzeus/🧠Brainstorm/Server logic/Hardware/Без названия.canvas",
+    "Prod server.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
     "Projzeus/🧠Brainstorm/Server logic/Hardware",
     "Projzeus/🧠Brainstorm/Server logic",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
@@ -225,11 +220,8 @@
     "Projzeus/🗺RoadMap/MVC",
     "Projzeus/📚Docs/Tutorials/Errors in vscode/node server.js.md",
     "Projzeus/📚Docs/Tutorials/Errors in vscode",
-    "Projzeus/📚Docs/Tutorials/API Tester/Получение токена через Talend API Tester.md",
     "Projzeus/📚Docs/Tutorials/API Tester",
-    "Projzeus/📚Docs/Tutorials/Git guide/🛠 Guide git for OBS&VSCODE.md",
     "repomix-output.xml",
-    "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
     "frontend/icons/ios/180.png",
     "frontend/icons/android/zeuslogo-512x512.png",
     "frontend/icons/android/zeuslogo-192x192.png",
