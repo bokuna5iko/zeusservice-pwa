@@ -39,8 +39,20 @@
 
 	image: metabase:latest             
 	port: 127.0.0.1:3001             
-	 DB: metabase_db (в той же Postgres)
+	DB: metabase_db (в той же Postgres)
 	volume: metabase_data              
-	 JAVA_OPTS: не заданы               
+	JAVA_OPTS: не заданы               
 	profile: metabase                  
+## Frontend Dist
+**** Не контейнер, а папка на хосте****
+	./frontend/dist                   
+	Монтируется в nginx как ro 
+	Собирается через npm run build 
+	на сервере (в CI runner)       
 
+
+## GitHub Runner
+****Не в Docker! Работает на хосте****
+	  self-hosted, label: zeus-prod
+	 Делает: git pull → npm install 
+	 → npm run build → docker compose  up --build -d  
