@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Projzeus/🧠Brainstorm/Server logic/Technology/Stagging Server.md",
+                "file": "Projzeus/🧠Brainstorm/Server logic/Technology/Status.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Stagging Server"
+              "title": "Status"
             }
           }
         ]
@@ -178,13 +178,14 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "3992e861fc73d1a6",
+  "active": "6a020f7ba691a74c",
   "lastOpenFiles": [
+    "Projzeus/🧠Brainstorm/Server logic/Technology/Stagging Server.md",
     "Projzeus/🧠Brainstorm/Server logic/Technology/Prod server.md",
+    "Projzeus/🧠Brainstorm/Server logic/Technology/Status.md",
+    "Projzeus/🧠Brainstorm/Server logic/Hardware/Hardware.canvas",
     "Projzeus/🧠Brainstorm/AI/MIGRATION_PLAN.md",
     "Projzeus/🌌Star of death.canvas",
-    "Projzeus/🧠Brainstorm/Server logic/Technology/Stagging Server.md",
-    "Projzeus/🧠Brainstorm/Server logic/Hardware/Hardware.canvas",
     "Projzeus/🧠Brainstorm/Server logic/Technology/Prod server 1.md",
     "Projzeus/🧠Brainstorm/Server logic/Technology",
     "Без названия 1.canvas",
@@ -216,7 +217,6 @@
     "Projzeus/🗺RoadMap/Migratiom on react + vite",
     "Projzeus/🧠Brainstorm/AI",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
-    "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
     "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas-v2.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/Untitled.canvas",
