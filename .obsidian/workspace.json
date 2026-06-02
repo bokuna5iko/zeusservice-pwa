@@ -11,14 +11,17 @@
             "id": "6a020f7ba691a74c",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "canvas",
               "state": {
-                "file": "Projzeus/🧠Brainstorm/Server logic/Technology/Status.md",
-                "mode": "source",
-                "source": false
+                "file": "Projzeus/🧠Brainstorm/Server logic/TODO/Без названия.canvas",
+                "viewState": {
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 0
+                }
               },
-              "icon": "lucide-file",
-              "title": "Status"
+              "icon": "lucide-layout-dashboard",
+              "title": "Без названия"
             }
           }
         ]
@@ -180,9 +183,11 @@
   },
   "active": "6a020f7ba691a74c",
   "lastOpenFiles": [
+    "Projzeus/🧠Brainstorm/Server logic/Technology/Status.md",
+    "Projzeus/🧠Brainstorm/Server logic/TODO/Без названия.canvas",
+    "Projzeus/🧠Brainstorm/Server logic/TODO",
     "Projzeus/🌌Star of death.canvas",
     "Projzeus/🧠Brainstorm/Server logic/Technology/Stagging Server.md",
-    "Projzeus/🧠Brainstorm/Server logic/Technology/Status.md",
     "Projzeus/🧠Brainstorm/Server logic/Technology/Prod server.md",
     "Projzeus/🧠Brainstorm/Server logic/Hardware/Hardware.canvas",
     "Projzeus/🧠Brainstorm/AI/MIGRATION_PLAN.md",
@@ -221,10 +226,8 @@
     "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas-v2.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/Untitled.canvas",
     "Projzeus/🗺RoadMap/MVC/pop.canvas",
-    "Projzeus/🗺RoadMap/MVC/Architecture.canvas",
     "Projzeus/🗺RoadMap/MVC",
     "Projzeus/📚Docs/Tutorials/Errors in vscode",
-    "Projzeus/📚Docs/Tutorials/API Tester",
     "frontend/icons/ios/180.png",
     "frontend/icons/android/zeuslogo-512x512.png",
     "frontend/icons/android/zeuslogo-192x192.png",
