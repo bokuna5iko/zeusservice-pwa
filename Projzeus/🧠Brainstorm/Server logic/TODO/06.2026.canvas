@@ -1,0 +1,39 @@
+{
+	"nodes":[
+		{"id":"4790e54f9dde88c1","x":-253,"y":-191,"width":333,"height":171,"color":"1","type":"text","text":"# 🐳 Dockerfile.prod\n│node server.js вместо nodemon  (сейчас backend собирается с dev)"},
+		{"id":"5623f5e1ca546ad8","x":-273,"y":160,"width":373,"height":216,"color":"3","type":"text","text":"# Зачем\n\nНа Prod-сервере код меняется только через деплой. `nodemon` бесполезен, но занимает ~100-150 MB RAM и постоянно сканирует диск. Вместо него должен быть просто `node server.js` — один процесс, минимум ресурсов."},
+		{"id":"c4b5fc9951f9926a","x":262,"y":-191,"width":292,"height":171,"color":"1","type":"text","text":"# 📝 nginx.conf.template \n envsubst для staging/prod\n (сейчас хардкод в prod nginx.conf)"},
+		{"id":"814eb19f3cc1376e","x":800,"y":-191,"width":329,"height":171,"color":"1","type":"text","text":"##  🏥 `/api/health` — Health check с `SELECT 1`"},
+		{"id":"f1b3bbe0c8bf39fa","x":800,"y":160,"width":327,"height":216,"color":"3","type":"text","text":"# Зачем\nНастоящий health check должен проверить цепочку: backend → PostgreSQL. `SELECT 1` — это самый дешёвый SQL-запрос. Если он проходит, значит и backend жив, и БД доступна, и пул соединений работает."},
+		{"id":"6647e615f280f41e","x":262,"y":160,"width":376,"height":216,"color":"3","type":"text","text":"# Зачем\nШаблон (`nginx.conf.template`) содержит переменные: `${SERVER_NAME}`, `${SSL_CERT_PATH}`. При старте контейнера `envsubst` заменяет их на реальные значения из `.env` файла на сервере. В Git лежит один шаблон для всех окружений, а различия живут только на сервере."},
+		{"id":"85f573e69d3a4b4f","x":1478,"y":-191,"width":362,"height":171,"color":"1","type":"text","text":"## 4. 🧱 Resource Limits — `memory` / `cpu` limits в docker-compose"},
+		{"id":"f541fb6e22628147","x":1478,"y":160,"width":362,"height":216,"color":"3","type":"text","text":"# Зачем\nСейчас Docker-контейнеры могут съесть всю RAM и все CPU хоста. Metabase (Java) при построении тяжёлого отчёта может всплескнуть до 2+ GB. Postgres тоже растёт под кэш. Они начинают бороться за ресурсы."},
+		{"id":"0499fbd0dac66802","x":2017,"y":-191,"width":343,"height":171,"color":"1","type":"text","text":"## 📜 Log Rotation — `/etc/docker/daemon.json`"},
+		{"id":"ad4cd406ed8d01a9","x":2017,"y":143,"width":343,"height":233,"color":"3","type":"text","text":"# Зачем\nНастройка `max-size: 10m, max-file: 3` означает: каждый контейнер хранит максимум 3 файла по 10 MB. Старые логи автоматически удаляются. Это предотвращает заполнение диска."},
+		{"id":"f9e245421ab47fcb","x":2532,"y":-191,"width":308,"height":171,"color":"1","type":"text","text":"## 🗃️ WAL Archive — `/opt/wal_archive`"},
+		{"id":"e35988a18804f094","x":2532,"y":147,"width":308,"height":229,"color":"3","type":"text","text":"# Зачем\n\nWAL-архивы позволяют восстановить базу на **любой момент времени** (Point-in-Time Recovery). Ты берёшь ночной бэкап и «накатываешь» WAL-логи до нужной минуты."},
+		{"id":"46bc35871554f4cf","x":3120,"y":-191,"width":240,"height":86,"color":"1","type":"text","text":"## ☁️ External Backup "},
+		{"id":"eef3686414c0cbc7","x":3082,"y":147,"width":317,"height":229,"color":"3","type":"text","text":"# Зачем\nВторое хранилище вне сервера — это правило 3-2-1:\n\n- 3 копии данных\n    \n- 2 разных носителя\n    \n- 1 вне площадки"},
+		{"id":"052c3c6905b6d5b7","x":3541,"y":-180,"width":379,"height":75,"color":"1","type":"text","text":"# Проверка безопастности"},
+		{"id":"8c225311a6c929a3","x":3611,"y":142,"width":250,"height":178,"type":"text","text":"# Зачем\nБля ну так надо..."},
+		{"id":"9f03778fb5f7cc78","x":848,"y":-540,"width":250,"height":211,"color":"5","type":"text","text":"# Кое что нужно от Вани \n\nДобавить endpoint в `server.js`, который делает `await db.query('SELECT 1')`"}
+	],
+	"edges":[
+		{"id":"1fb07637bac1cc3d","fromNode":"4790e54f9dde88c1","fromSide":"bottom","toNode":"5623f5e1ca546ad8","toSide":"top"},
+		{"id":"025cf91d1221eda3","fromNode":"4790e54f9dde88c1","fromSide":"right","toNode":"c4b5fc9951f9926a","toSide":"left"},
+		{"id":"43469c2b03709e24","fromNode":"c4b5fc9951f9926a","fromSide":"bottom","toNode":"6647e615f280f41e","toSide":"top"},
+		{"id":"f98e5fcaf6aa59e5","fromNode":"c4b5fc9951f9926a","fromSide":"right","toNode":"814eb19f3cc1376e","toSide":"left"},
+		{"id":"b4d96fa72e990dc2","fromNode":"814eb19f3cc1376e","fromSide":"bottom","toNode":"f1b3bbe0c8bf39fa","toSide":"top"},
+		{"id":"4137ad07e9daf4bd","fromNode":"814eb19f3cc1376e","fromSide":"right","toNode":"85f573e69d3a4b4f","toSide":"left"},
+		{"id":"ecdb7936b8147ec7","fromNode":"85f573e69d3a4b4f","fromSide":"bottom","toNode":"f541fb6e22628147","toSide":"top"},
+		{"id":"e8d9c9dde5980ac8","fromNode":"85f573e69d3a4b4f","fromSide":"right","toNode":"0499fbd0dac66802","toSide":"left"},
+		{"id":"e677e97ee2b046f3","fromNode":"0499fbd0dac66802","fromSide":"bottom","toNode":"ad4cd406ed8d01a9","toSide":"top"},
+		{"id":"6296d11c39510e5b","fromNode":"0499fbd0dac66802","fromSide":"right","toNode":"f9e245421ab47fcb","toSide":"left"},
+		{"id":"6bb8456f7ba9ca7d","fromNode":"f9e245421ab47fcb","fromSide":"bottom","toNode":"e35988a18804f094","toSide":"top"},
+		{"id":"491b038fc61252b9","fromNode":"f9e245421ab47fcb","fromSide":"right","toNode":"46bc35871554f4cf","toSide":"left"},
+		{"id":"4abdb8b4b388be56","fromNode":"46bc35871554f4cf","fromSide":"bottom","toNode":"eef3686414c0cbc7","toSide":"top"},
+		{"id":"fcc7eec7cf42631d","fromNode":"46bc35871554f4cf","fromSide":"right","toNode":"052c3c6905b6d5b7","toSide":"left"},
+		{"id":"bef4357658a363df","fromNode":"052c3c6905b6d5b7","fromSide":"bottom","toNode":"8c225311a6c929a3","toSide":"top"},
+		{"id":"e9cf209dd4b2cbb7","fromNode":"814eb19f3cc1376e","fromSide":"top","toNode":"9f03778fb5f7cc78","toSide":"bottom"}
+	]
+}
