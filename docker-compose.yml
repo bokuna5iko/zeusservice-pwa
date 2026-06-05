@@ -1,6 +1,11 @@
 
 services:
   db:
+    deploy:
+      resources:
+        limits:
+          memory: 1536M
+          cpus: '1.0'
     image: postgres:15-alpine
     container_name: zeus_db
     restart: unless-stopped
@@ -8,8 +13,8 @@ services:
       POSTGRES_USER: zeus_user
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: zeus_auto_db
-    ports:
-      - "127.0.0.1:5432:5432"
+   # ports:
+    #  - "127.0.0.1:5432:5432"
 
 
     volumes:
@@ -24,6 +29,11 @@ services:
   backend:
     build:
       context: ./backend
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+          cpus: '0.25'
     container_name: zeus_backend
     restart: unless-stopped
     env_file:
@@ -50,6 +60,11 @@ services:
 
   nginx:
     image: nginx:alpine
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
     container_name: zeus_nginx
     restart: unless-stopped
     ports:
@@ -75,6 +90,11 @@ services:
       retries: 3
       start_period: 5s
   metabase:
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+          cpus: '0.5'
     image: metabase/metabase:latest
     container_name: zeus_metabase
     restart: unless-stopped
