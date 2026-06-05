@@ -57,7 +57,7 @@ const HomePage = () => {
           className={`home-card qr-container-box content-group-box ${isZoomed ? "zoomed" : ""}`}
         >
           <div className="fill-zone">
-            <p className="qr-label">Ваш идентификатор</p>
+            <p className="qr-label">Ваш QR</p>
 
             {/* Обертка для клика */}
             <div className="qr-wrapper" onClick={qrValue ? toggleZoom : null}>
