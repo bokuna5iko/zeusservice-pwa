@@ -16,8 +16,8 @@
 		{"id":"eef3686414c0cbc7","type":"text","text":"# Зачем\nВторое хранилище вне сервера — это правило 3-2-1:\n\n- 3 копии данных\n    \n- 2 разных носителя\n    \n- 1 вне площадки","x":3082,"y":147,"width":317,"height":229,"color":"3"},
 		{"id":"052c3c6905b6d5b7","type":"text","text":"# Проверка безопастности","x":3541,"y":-180,"width":379,"height":75,"color":"1"},
 		{"id":"8c225311a6c929a3","type":"text","text":"# Зачем\nБля ну так надо...","x":3611,"y":142,"width":250,"height":178},
-		{"id":"9f03778fb5f7cc78","type":"text","text":"# Кое что нужно от Вани \n\nДобавить endpoint в `server.js`, который делает `await db.query('SELECT 1')`","x":848,"y":-540,"width":250,"height":211,"color":"5"},
-		{"id":"0c76cac681ab9f6f","x":1507,"y":-500,"width":305,"height":180,"color":"4","type":"text","text":"# Сделано\nНа dev сервке так чисто поглядеть"}
+		{"id":"9f03778fb5f7cc78","type":"text","text":"# Кое что нужно от Вани \n\nДобавить endpoint в `server.js`, который делает `await db.query('SELECT 1')`","x":848,"y":-540,"width":250,"height":260,"color":"5"},
+		{"id":"0c76cac681ab9f6f","type":"text","text":"# Сделано\nНа dev сервке так чисто поглядеть","x":1507,"y":-500,"width":305,"height":180,"color":"4"}
 	],
 	"edges":[
 		{"id":"1fb07637bac1cc3d","fromNode":"4790e54f9dde88c1","fromSide":"bottom","toNode":"5623f5e1ca546ad8","toSide":"top"},
