@@ -1,24 +1,87 @@
-zeus-app/
+# Архитектура проекта zeus-auto-app
+
+Полная структура каталогов монорепозитория, включающая бэкенд, фронтенд и конфигурационные файлы инфраструктуры.
+
+```text
+zeus-auto-app/
 ├── backend/
+│   ├── node_modules/
 │   ├── src/
 │   │   ├── config/
-│   │   │   └── db.js           # Настройка подключения к MySQL
-│   │   ├── middleware/
-│   │   │   └── auth.js         # Проверка JWT-токена (Middleware)
-│   │   ├── routes/
-│   │   │   ├── auth.js         # Пути для логина/регистрации
-│   │   │   ├── admin.js        # Пути для админ-панели
-│   │   │   └── visits.js       # Пути для начисления посещений
+│   │   │   └── db.js
 │   │   ├── controllers/
-│   │   │   ├── authController.js
 │   │   │   ├── adminController.js
+│   │   │   ├── ArchiveController.js
+│   │   │   ├── authController.js
+│   │   │   ├── serviceController.js
+│   │   │   ├── StatisticsController.js
+│   │   │   ├── userController.js
 │   │   │   └── visitController.js
-│   │   └── server.js           # Точка сборки (чистый и короткий)
+│   │   ├── middleware/
+│   │   │   └── authMiddleware.js
+│   │   └── routes/
+│   │       ├── admin.js
+│   │       ├── auth.js
+│   │       ├── services.js
+│   │       └── visits.js
+│   ├── .env
+│   ├── Dockerfile
+│   ├── package-lock.json
+│   ├── package.json
+│   └── server.js
 ├── frontend/
-│   ├── css/                    # Твои стили (уже разделены)
-│   ├── js/
-│   │   ├── api.js              # Все fetch-запросы в одном месте
-│   │   ├── scanner.js          # Логика QR-сканера
-│   │   └── ui.js               # Работа с DOM (отрисовка элементов)
-│   └── index.html
-└── .gitignore                  # Твой щит от лишних файлов
+│   ├── node_modules/
+│   ├── public/
+│   ├── src/
+│   │   ├── api/
+│   │   │   ├── apiService.js
+│   │   │   └── axios.js
+│   │   ├── assets/
+│   │   │   └── hero.png
+│   │   ├── components/
+│   │   │   ├── CalculatorModal├── 
+│   │   │   ├── HistoryVisits├── 
+│   │   │   ├── PointsGrid/
+│   │   │   ├── PriceList/
+│   │   │   ├── Navigation.jsx
+│   │   │   └── StatCard.jsx
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx
+│   │   ├── pages/
+│   │   │   ├── AdminHistory/
+│   │   │   │   ├── AdminHistory.css
+│   │   │   │   └── AdminHistory.jsx
+│   │   │   ├── AdminHome/
+│   │   │   │   ├── AdminHome.css
+│   │   │   │   └── AdminHome.jsx
+│   │   │   ├── AdminProfile/
+│   │   │   │   ├── AdminProfile.css
+│   │   │   │   └── AdminProfile.jsx
+│   │   │   ├── AdminStatistics/
+│   │   │   │   ├── AdminStatistics.css
+│   │   │   │   └── AdminStatistics.jsx
+│   │   │   ├── History/
+│   │   │   │   ├── HistoryPage.css
+│   │   │   │   └── HistoryPage.jsx
+│   │   │   ├── Home/
+│   │   │   │   ├── HomePage.css
+│   │   │   │   └── HomePage.jsx
+│   │   │   ├── Login/
+│   │   │   │   ├── LoginPage.css
+│   │   │   │   └── LoginPage.jsx
+│   │   │   └── Profile/
+│   │   │       ├── ProfilePages.css
+│   │   │       └── ProfilePages.jsx
+│   │   ├── styles/
+│   │   │   ├── base.css
+│   │   │   └── app.css
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── Dockerfile
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   └── vite.config.js
+└── nginx/
+    └── ... (конфигурация веб-сервера / reverse-proxy)
