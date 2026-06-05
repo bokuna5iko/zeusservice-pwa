@@ -10,6 +10,7 @@
 | `is_eligible_free`    | `isEligibleForFreeWash`    | Boolean | Флаг готовности 8-й мойки                                       |
 | `last_visit`          | `lastVisitDate`            | Date    | Когда заезжал в последний раз                                   |
 | `total_visits`        | `total_visits`             | Integer | Общее количество посещений за всё время. Никогда не обнуляется. |
+|                       |                            |         |                                                                 |
 
 #### 2. Группа: Services Reference (Справочник услуг)
 
