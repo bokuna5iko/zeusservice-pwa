@@ -2,14 +2,14 @@
 
 :root {
   /* 🌟 ПЕРЕВЕЛИ НА ФИРМЕННЫЙ DEEP DARK СЕТАП */
-  --primary-color: #38bdf8;   /* Наш сочный неоновый синий */
+  --primary-color: #38bdf8; /* Наш сочный неоновый синий */
   --secondary-color: #0ea5e9; /* Глубокий синий для градиентов */
-  --bg-color: #020617;        /* Ультра-тёмный фон (черный космос) */
-  --card-bg: #0f172a;         /* Deep dark плашка для карточек */
-  --text-main: #f8fafc;       /* Практически белый основной текст */
-  --text-muted: #64748b;      /* Приглушенный серый */
-  --accent-color: #10b981;    /* Зеленый для успешных штук */
-  --danger-color: #ef4444;    /* Красный для ошибок */
+  --bg-color: #020617; /* Ультра-тёмный фон (черный космос) */
+  --card-bg: #0f172a; /* Deep dark плашка для карточек */
+  --text-main: #f8fafc; /* Практически белый основной текст */
+  --text-muted: #64748b; /* Приглушенный серый */
+  --accent-color: #10b981; /* Зеленый для успешных штук */
+  --danger-color: #ef4444; /* Красный для ошибок */
   --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
 }
 
@@ -20,7 +20,15 @@
 }
 
 /* Отключаем полосу прокрутки ВООБЩЕ для всех элементов в приложении */
-*, *::before, *::after, html, body, #root, .app-main, .app-shell, [class*="-page"] {
+*,
+*::before,
+*::after,
+html,
+body,
+#root,
+.app-main,
+.app-shell,
+[class*="-page"] {
   scrollbar-width: none !important; /* Для Firefox */
   -ms-overflow-style: none !important; /* Для IE/Edge */
 }
@@ -37,29 +45,34 @@ body::-webkit-scrollbar,
   height: 0 !important;
   background: transparent !important;
 }
-  
+
 /* Настройки для плавного тач-скролла пальцем */
-body, .app-main, .admin-home-page {
+body,
+.app-main,
+.admin-home-page {
   -webkit-overflow-scrolling: touch !important;
   overscroll-behavior-y: none !important; /* Убираем дергание экрана */
 }
 
 body {
   background-color: var(--bg-color);
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    sans-serif;
   color: var(--text-main);
   line-height: 1.5;
   display: flex;
   justify-content: center;
   min-height: 100vh;
 }
-  
+
 #root {
   width: 100%;
   display: flex;
   justify-content: center;
 }
-  
+
 .app-container {
   max-width: 480px;
   margin: 0 auto;
@@ -74,8 +87,14 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 1. Главная оболочка (твой монитор) */
@@ -96,44 +115,44 @@ body {
   padding: 0 20px;
   display: flex;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
   border-bottom: 1px solid #1e293b;
   flex-shrink: 0;
-  position: relative; 
+  position: relative;
 }
 
 .header-content {
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
   width: 100%;
 }
 
-.app-logo { 
-  font-weight: 800; 
-  font-size: 1.3rem; 
+.app-logo {
+  font-weight: 800;
+  font-size: 1.3rem;
   color: #38bdf8; /* Фирменный голубой */
-  letter-spacing: 1.5px; 
-  
+  letter-spacing: 1.5px;
+
   /* Наш сочный неоновый фильтр */
-  text-shadow: 
+  text-shadow:
     0 0 4px rgba(56, 189, 248, 0.4),
     0 0 12px rgba(56, 189, 248, 0.6),
     0 0 20px rgba(14, 165, 233, 0.4);
-    
+
   transition: all 0.3s ease;
 }
 
-.app-logo span { 
+.app-logo span {
   color: #f8fafc; /* Чистый белый для слова AUTO */
-  font-weight: 400; 
+  font-weight: 400;
   letter-spacing: 0.5px;
   text-shadow: 0 0 8px rgba(248, 250, 252, 0.3);
 }
 
 /* 2. Твой "телефон" — ЖЕСТКО ЗАКРАСИЛИ В ТЁМНЫЙ */
 .app-main {
-  width: 100vw; 
+  width: 100vw;
   max-width: 430px; /* Фиксируем ширину как у смартфона */
   height: 100vh;
   display: flex;
@@ -155,12 +174,12 @@ body {
 }
 
 /* 4. Страницы внутри — они должны просто заполнять 100% родителя */
-.home-page, 
-.profile-page, 
-.history-page, 
+.home-page,
+.profile-page,
+.history-page,
 .admin-page-flow {
   width: 100% !important;
-  min-width: 100% !important; 
+  min-width: 100% !important;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -175,15 +194,15 @@ body {
 
 /* НИЗ: Фиксированная высота */
 .app-footer {
-  width: 100%;            
-  height: 75px;           
+  width: 100%;
+  height: 75px;
   background: #0f172a; /* Такой же темный фон, как и у шапки */
-  border-top: 1px solid #1e293b; 
+  border-top: 1px solid #1e293b;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;         
-  padding-bottom: env(safe-area-inset-bottom); 
+  flex-shrink: 0;
+  padding-bottom: env(safe-area-inset-bottom);
   z-index: 10;
 }
 
@@ -197,7 +216,7 @@ body {
 
 /* Кнопки меню в обычном (неактивном) состоянии */
 .nav-btn {
-  flex: 1;                
+  flex: 1;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -206,7 +225,7 @@ body {
   gap: 4px;
   background: none;
   border: none;
-  color: #64748b; 
+  color: #64748b;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -217,7 +236,7 @@ body {
 }
 
 .nav-btn i {
-  font-size: 1.3rem;      
+  font-size: 1.3rem;
 }
 
 .nav-btn span {
@@ -227,8 +246,8 @@ body {
 
 /* Активная вкладка */
 .nav-btn.active {
-  color: #38bdf8 !important; 
-  text-shadow: 0 0 10px rgba(56, 189, 248, 0.3); 
+  color: #38bdf8 !important;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
 }
 
 .page-center-container {
@@ -237,14 +256,14 @@ body {
   justify-content: center;
   align-items: center;
   flex: 1;
-  width: 100%; 
+  width: 100%;
   padding: 20px;
   box-sizing: border-box;
 }
 
 /* 5. Карточка — Перевели на тёмную сторону */
 .content-group-box {
-  width: 90%; 
+  width: 90%;
   max-width: 380px;
   background: #0f172a; /* 🌟 ИСПРАВЛЕНО: Теперь карточки по умолчанию тёмные */
   border: 1px solid #1e293b;
@@ -256,5 +275,145 @@ body {
 /* Отключает прокрутку и убирает любые дергания экрана */
 .no-scroll {
   overflow-y: hidden !important;
-  touch-action: none; 
+  touch-action: none;
+}
+
+/* ==========================================================================
+   🌟 ТЕМНЫЙ НЕОНОВЫЙ ГЛОБАЛЬНЫЙ ИНДИКАТОР ОБНОВЛЕНИЙ В ШАПКЕ
+   ========================================================================== */
+
+/* 1. Базовое состояние: Обновлений нет (Режим покоя) */
+.global-smart-update-btn {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #0f172a; /* Сливается с фоном темной шапки */
+  border: 1px solid #1e293b;
+  color: #334155; /* Тусклый темно-серый цвет */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: not-allowed;
+  outline: none;
+  padding: 0;
+  transition: all 0.3s ease;
+  pointer-events: none; /* Заблокирована для нажатий и наведения */
+}
+
+.global-smart-update-btn i {
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+/* 2. Состояние: Доступно обновление (Режим внимания) */
+.global-smart-update-btn.update-available {
+  background: #1e293b;
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #f1f5f9; /* Иконка загорается ярким белым цветом */
+  cursor: pointer;
+  pointer-events: auto; /* Разблокируем клики */
+  /* Эффект плавно пульсирующего "дыхания" неоновой тени */
+  animation: neonUpdateBreath 2.5s ease-in-out infinite;
+}
+
+.global-smart-update-btn.update-available:active {
+  transform: scale(0.95);
+}
+
+/* Пульсирующая точка уведомления (Notification Dot) в углу кнопки */
+.notification-pulsing-dot {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f59e0b; /* Яркая неоново-оранжевая точка */
+  animation: pulseNotificationDot 1.6s infinite;
+}
+
+/* 3. Состояние: Логика работы при нажатии (Процесс пошел) */
+.global-smart-update-btn.rapid-spinning i {
+  animation: rapidSpinAxial 0.4s linear infinite !important;
+}
+
+/* 4. Всплывающая UX-подсказка: выезжающая плашка под шапкой */
+.pwa-smart-hint-banner {
+  position: absolute;
+  top: -50px; /* Скрыта выше области видимости шапки */
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow:
+    0 4px 20px rgba(245, 158, 11, 0.15),
+    0 0 10px rgba(0, 0, 0, 0.5);
+  color: #f59e0b; /* Фирменный оранжевый текст подсказки */
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 999;
+  transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Класс активации плавного выезда плашки */
+.pwa-smart-hint-banner.slide-down {
+  top: 66px; /* Выезжает ровно под нижнюю границу шапки */
+}
+
+.pwa-smart-hint-banner i {
+  font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   🔑 АНИМАЦИИ (KEYFRAMES)
+   ========================================================================== */
+
+/* Анимация "Дыхания" неонового свечения кнопки */
+@keyframes neonUpdateBreath {
+  0% {
+    box-shadow: 0 0 4px rgba(14, 165, 233, 0.1);
+    border-color: rgba(14, 165, 233, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(14, 165, 233, 0.5);
+    border-color: rgba(14, 165, 233, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 4px rgba(14, 165, 233, 0.1);
+    border-color: rgba(14, 165, 233, 0.3);
+  }
+}
+
+/* Анимация пульсации и расширения тени красной точки уведомлений */
+@keyframes pulseNotificationDot {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0);
+  }
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+  }
+}
+
+/* Анимация бешеного непрерывного вращения вокруг своей оси при клике */
+@keyframes rapidSpinAxial {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -1,6 +1,5 @@
 // src/pages/Profile/ProfilePage.jsx
 import React, { useState, useContext, useEffect } from "react";
-import { useRegisterSW } from "virtual:pwa-register/react";
 import { AuthContext } from "../../context/AuthContext";
 import "./ProfilePages.css";
 import PriceListModal from "../../components/PriceList/PriceListModal";
@@ -16,21 +15,6 @@ const ProfilePage = () => {
 
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [activeModal, setActiveModal] = useState(null); // 'prices' или 'kb' или null
-
-  // ИНИЦИАЛИЗИРУЕМ СИСТЕМУ ОБНОВЛЕНИЯ PWA
-  const {
-    needRefresh: [needRefresh],
-    updateServiceWorker,
-  } = useRegisterSW({
-    onRegisteredSW(swUrl, r) {
-      if (r) {
-        r.update();
-        setInterval(() => {
-          r.update();
-        }, 10000);
-      }
-    },
-  });
 
   // Синхронизация полей с данными из базы данных
   useEffect(() => {
@@ -198,19 +182,6 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
-
-        {/* ПЛАШКА ОБНОВЛЕНИЯ PWA */}
-        {needRefresh && (
-          <div className="pwa-update-banner">
-            <div className="pwa-update-text">
-              <i className="fas fa-sync-alt fa-spin"></i>
-              <span>Доступна новая версия Zeus Auto!</span>
-            </div>
-            <button className="pwa-update-btn" onClick={handlePwaUpdate}>
-              Обновить приложение
-            </button>
-          </div>
-        )}
 
         {/* КОНТЕЙНЕР №2: Статистика активности */}
         <div className="profile-card stats-box content-group-box">

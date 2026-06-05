@@ -1,8 +1,11 @@
 // src/App.jsx
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
 import Navigation from "./components/Navigation";
 import LoginPage from "./pages/Login/LoginPage";
+
+// Хук сервис-воркера из плагина vite-plugin-pwa
+import { useRegisterSW } from "virtual:pwa-register/react";
 
 // Твои страницы пользователей
 import HomePage from "./pages/Home/HomePage.jsx";
@@ -15,12 +18,54 @@ import AdminHistory from "./pages/AdminHistory/AdminHistory.jsx";
 import AdminProfile from "./pages/AdminProfile/AdminProfile.jsx";
 import AdminStatistics from "./pages/AdminStatistics/AdminStatistics.jsx";
 
-// 🌟 ИСПРАВЛЕНО: Импортируем ОБЕ страницы смен
+// Страницы смен
 import WorkerShiftsPage from "./pages/WorkerShifts/WorkerShiftsPage.jsx";
 import AdminShiftsPage from "./pages/AdminShifts/AdminShiftsPage.jsx";
 
 function App() {
   const { user, activePage } = useContext(AuthContext);
+
+  // 🌟 СМАРТ-ОБНОВЛЕНИЯ: Инициализируем хуки плагина PWA с автопроверкой каждые 10 секунд
+  const {
+    needRefresh: [needRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegisteredSW(swUrl, r) {
+      if (r) {
+        r.update();
+        setInterval(() => {
+          r.update();
+        }, 10000);
+      }
+    },
+  });
+
+  // Локальные стейты для UX-сценариев
+  const [showHintBanner, setShowHintBanner] = useState(false); // Выезжающая плашка
+  const [isSpinning, setIsSpinning] = useState(false); // Бешеное вращение при клике
+
+  // Эффект отслеживания появления новой версии (UX-подсказка на 5 секунд)
+  useEffect(() => {
+    if (needRefresh) {
+      setShowHintBanner(true);
+      const timer = setTimeout(() => {
+        setShowHintBanner(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [needRefresh]);
+
+  // Логика нажатия на светящуюся кнопку
+  const handlePwaUpdate = () => {
+    if (!needRefresh || isSpinning) return;
+
+    setIsSpinning(true); // Включаем непрерывное быстрое вращение иконки
+
+    // Небольшая задержка перед перезагрузкой для сочного визуального отклика
+    setTimeout(() => {
+      updateServiceWorker(true); // Очистка старого кэша и жесткий перезапуск страницы воркером
+    }, 600);
+  };
 
   // Условие для неавторизованного пользователя
   if (!user) {
@@ -37,12 +82,46 @@ function App() {
   return (
     <div className="app-shell">
       {/* Оболочка телефона */}
-      <div className="app-main">
+      <div className="app-main" style={{ position: "relative" }}>
+        {/* 🌟 ВСПЛЫВАЮЩАЯ UX-ПОДСКАЗКА: Выезжает из-под шапки при фиксации новой версии */}
+        <div
+          className={`pwa-smart-hint-banner ${showHintBanner ? "slide-down" : ""}`}
+        >
+          <i className="fas fa-info-circle"></i>
+          <span>Доступна новая версия. Пожалуйста, обновитесь!</span>
+        </div>
+
         <header className="app-header">
-          <div className="header-content">
+          <div
+            className="header-content"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
             <span className="app-logo">
               ZEUS <span>AUTO</span>
             </span>
+
+            {/* 🌟 ГЛОБАЛЬНЫЙ СМАРТ-ИНДИКАТОР ОБНОВЛЕНИЙ В ШАПКЕ */}
+            <button
+              className={`global-smart-update-btn ${needRefresh ? "update-available" : ""} ${isSpinning ? "rapid-spinning" : ""}`}
+              disabled={!needRefresh || isSpinning}
+              onClick={handlePwaUpdate}
+              title={
+                needRefresh
+                  ? "Доступно свежее обновление!"
+                  : "Приложение актуальной версии"
+              }
+            >
+              <i className="fas fa-sync-alt"></i>
+              {/* Пульсирующая оранжево-красная точка в углу кнопки */}
+              {needRefresh && (
+                <span className="notification-pulsing-dot"></span>
+              )}
+            </button>
           </div>
         </header>
 
@@ -50,7 +129,7 @@ function App() {
           className="page-content"
           style={{
             flex: 1,
-            overflowY: "auto", // Скролл разрешен ВСЕГДА
+            overflowY: "auto",
           }}
         >
           {/* Динамически подменяем Главную страницу в зависимости от роли */}
@@ -69,7 +148,7 @@ function App() {
           {(activePage === "stats" || activePage === "admin") &&
             user.role === "admin" && <AdminStatistics />}
 
-          {/* 🌟 ИСПРАВЛЕНО: Динамически переключаем экран Смен в зависимости от роли */}
+          {/* Динамически переключаем экран Смен в зависимости от роли */}
           {activePage === "shifts" &&
             (user.role === "admin" ? (
               <AdminShiftsPage />
