@@ -1,11 +1,14 @@
 // src/components/Shifts/AdminShiftAccordion.jsx
 import React, { useState, useEffect } from "react";
-import { api } from "../../api/apiService"; // 🌟 Наш мост запросов
+import { api } from "../../api/apiService";
+import "./AdminShiftAccordion.css";
 
 const AdminShiftAccordion = ({
   setPendingCount,
   stagedChanges,
   setStagedChanges,
+  isCooldown,
+  refreshTrigger, // 🌟 Принимаем триггер из пропсов
 }) => {
   const [rawShifts, setRawShifts] = useState([]);
   const [openCardDate, setOpenCardDate] = useState(null);
@@ -13,7 +16,6 @@ const AdminShiftAccordion = ({
 
   const loadCalendarData = async () => {
     try {
-      // 🌟 ЧИТАЕМ ДАННЫЕ ЧЕРЕЗ AXIOS СЕРВИС
       const response = await api.getAdminCalendar();
       setRawShifts(response.data);
 
@@ -28,7 +30,7 @@ const AdminShiftAccordion = ({
 
   useEffect(() => {
     loadCalendarData();
-  }, [stagedChanges]);
+  }, [refreshTrigger]);
 
   const generateAdminWeeks = () => {
     const weeks = [];
@@ -82,7 +84,6 @@ const AdminShiftAccordion = ({
       label: "Текущая рабочая неделя",
       days: buildWeek(currentSunday),
     });
-
     const nextSunday = new Date(currentSunday);
     nextSunday.setDate(currentSunday.getDate() + 7);
     weeks.push({
@@ -136,6 +137,11 @@ const AdminShiftAccordion = ({
                 return staged ? false : s.status === "pending";
               }).length;
 
+              // Проверяем, есть ли измененные черновики в рамках этого дня
+              const isDayModified = dayShifts.some((s) =>
+                stagedChanges.some((c) => c.shiftId === s.id),
+              );
+
               const isOpen = openCardDate === day.dateStr;
 
               return (
@@ -154,10 +160,14 @@ const AdminShiftAccordion = ({
                       </span>
                     </div>
                     <div className="preview-right-indicators">
+                      {/* 🌟 Если день изменен локально, добавляем маркер непубликации */}
                       <span
                         className={`fill-counter-badge ${getLimitColorClass(approvedCount)}`}
                       >
-                        {approvedCount} / 6
+                        {approvedCount} / 6{" "}
+                        {isDayModified && (
+                          <span className="staged-marker-dot">*</span>
+                        )}
                       </span>
                       {newRequestsCount > 0 && (
                         <span className="new-requests-dot">
@@ -173,11 +183,18 @@ const AdminShiftAccordion = ({
                       <div className="expand-body-padding">
                         <div className="limit-indicator-row">
                           <span>Заполнено мест в боксах:</span>
-                          <strong
-                            className={`limit-text-bold ${getLimitColorClass(approvedCount)}`}
-                          >
-                            {approvedCount} из 6 сотрудников зафиксировано
-                          </strong>
+                          <div className="limit-right-status">
+                            <strong
+                              className={`limit-text-bold ${getLimitColorClass(approvedCount)}`}
+                            >
+                              {approvedCount} из 6 зафиксировано
+                            </strong>
+                            {isDayModified && (
+                              <span className="unsaved-day-label">
+                                (есть изменения)
+                              </span>
+                            )}
+                          </div>
                         </div>
 
                         <div className="moderation-workers-list">
@@ -193,7 +210,7 @@ const AdminShiftAccordion = ({
                               return (
                                 <div
                                   key={shift.id}
-                                  className="moderation-worker-item"
+                                  className={`moderation-worker-item ${staged ? "staged-row-highlight" : ""}`}
                                 >
                                   <div className="worker-item-left">
                                     <img
@@ -201,9 +218,17 @@ const AdminShiftAccordion = ({
                                       alt="av"
                                       className="mod-worker-avatar"
                                     />
-                                    <span className="mod-worker-name">
-                                      {shift.worker_name}
-                                    </span>
+                                    <div className="worker-name-block">
+                                      <span className="mod-worker-name">
+                                        {shift.worker_name}
+                                      </span>
+                                      {/* 🌟 ВЫВОДИМ БЭЙДЖ ЧЕРНОВИКА, ЕСЛИ СТАТУС СМЕНИЛИ ЛОКАЛЬНО */}
+                                      {staged && (
+                                        <span className="staged-draft-pill">
+                                          Черновик
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
 
                                   <div className="moderation-control-buttons">
@@ -217,9 +242,9 @@ const AdminShiftAccordion = ({
                                           )
                                         }
                                       >
-                                        Oтозвать
+                                        Отозвать
                                       </button>
-                                    ) : currentStatus === "rejected" ? (
+                                    ) : (
                                       <button
                                         className="mod-btn approve-btn"
                                         onClick={() =>
@@ -231,31 +256,6 @@ const AdminShiftAccordion = ({
                                       >
                                         Одобрить
                                       </button>
-                                    ) : (
-                                      <>
-                                        <button
-                                          className="mod-btn approve-btn"
-                                          onClick={() =>
-                                            handleStageAction(
-                                              shift.id,
-                                              "approved",
-                                            )
-                                          }
-                                        >
-                                          Одобрить
-                                        </button>
-                                        <button
-                                          className="mod-btn reject-btn"
-                                          onClick={() =>
-                                            handleStageAction(
-                                              shift.id,
-                                              "rejected",
-                                            )
-                                          }
-                                        >
-                                          Отказать
-                                        </button>
-                                      </>
                                     )}
                                   </div>
                                 </div>
@@ -276,217 +276,6 @@ const AdminShiftAccordion = ({
           </div>
         </div>
       ))}
-
-      <style jsx="true">{`
-        .admin-accordion-wrapper {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          width: 100%;
-          margin-top: 14px;
-        }
-        .admin-week-group {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-        .admin-week-label {
-          font-size: 0.8rem;
-          color: #64748b;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.03em;
-        }
-        .admin-accordion-feed {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          width: 100%;
-        }
-        .admin-shift-accordion-card {
-          background: #1e293b;
-          border-radius: 12px;
-          border: 1px solid transparent;
-          overflow: hidden;
-          transition: border-color 0.2s ease;
-        }
-        .admin-shift-accordion-card.open {
-          border-color: #0ea5e9;
-        }
-        .accordion-preview-header {
-          padding: 14px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          cursor: pointer;
-          user-select: none;
-        }
-        .preview-left-meta {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-        }
-        .preview-day-title {
-          font-size: 0.95rem;
-          font-weight: 600;
-          color: #f1f5f9;
-        }
-        .preview-date-sub {
-          font-size: 0.8rem;
-          color: #64748b;
-        }
-        .preview-right-indicators {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        .fill-counter-badge {
-          font-size: 0.85rem;
-          font-weight: 700;
-          background: rgba(15, 23, 42, 0.4);
-          padding: 4px 10px;
-          border-radius: 6px;
-        }
-        .text-danger-red {
-          color: #ef4444;
-        }
-        .text-warning-yellow {
-          color: #f59e0b;
-        }
-        .text-success-green {
-          color: #10b981;
-        }
-        .new-requests-dot {
-          background: #f59e0b;
-          color: white;
-          font-size: 0.75rem;
-          font-weight: 700;
-          padding: 2px 6px;
-          border-radius: 10px;
-          box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
-        }
-        .accordion-arrow-icon {
-          color: #64748b;
-          font-size: 0.85rem;
-          transition: transform 0.25s ease;
-        }
-        .admin-shift-accordion-card.open .accordion-arrow-icon {
-          transform: rotate(180deg);
-          color: #0ea5e9;
-        }
-        .accordion-expandable-content {
-          border-top: 1px dashed #334155;
-          background: #0f172a;
-          animation: fadeAccordion 0.2s ease;
-        }
-        @keyframes fadeAccordion {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        .expand-body-padding {
-          padding: 14px;
-        }
-        .limit-indicator-row {
-          display: flex;
-          justify-content: space-between;
-          font-size: 0.85rem;
-          color: #94a3b8;
-          margin-bottom: 14px;
-          border-bottom: 1px solid #1e293b;
-          padding-bottom: 8px;
-        }
-        .limit-text-bold {
-          font-weight: 700;
-          font-size: 0.85rem;
-        }
-        .moderation-workers-list {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-        .moderation-worker-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 100%;
-          border-bottom: 1px solid rgba(51, 65, 85, 0.2);
-          padding-bottom: 8px;
-        }
-        .moderation-worker-item:last-child {
-          border-bottom: none;
-          padding-bottom: 0;
-        }
-        .worker-item-left {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        .mod-worker-avatar {
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          object-fit: cover;
-          border: 1px solid #334155;
-        }
-        .mod-worker-name {
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: #e2e8f0;
-        }
-        .moderation-control-buttons {
-          display: flex;
-          gap: 6px;
-        }
-        .mod-btn {
-          border: none;
-          padding: 6px 12px;
-          border-radius: 6px;
-          font-size: 0.75rem;
-          font-weight: 700;
-          cursor: pointer;
-          transition: opacity 0.15s;
-        }
-        .mod-btn:active {
-          opacity: 0.6;
-        }
-        .approve-btn {
-          background: rgba(16, 185, 129, 0.12);
-          color: #10b981;
-          border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-        .reject-btn {
-          background: rgba(239, 68, 68, 0.12);
-          color: #ef4444;
-          border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-        .cancel-btn {
-          background: #334155;
-          color: #94a3b8;
-          border: 1px solid #475569;
-        }
-        .no-shifts-day-placeholder {
-          font-size: 0.85rem;
-          color: #475569;
-          font-style: italic;
-          text-align: center;
-          padding: 10px 0;
-        }
-        .accordion-loading {
-          color: #64748b;
-          font-style: italic;
-          text-align: center;
-          padding: 24px 0;
-          font-size: 0.9rem;
-        }
-        .accordion-loading i {
-          color: #0ea5e9;
-          margin-right: 6px;
-        }
-      `}</style>
     </div>
   );
 };

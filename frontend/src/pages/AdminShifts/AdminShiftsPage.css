@@ -17,12 +17,14 @@
   color: #f1f5f9;
 }
 
-/* ФИКСИРОВАННАЯ КНОПКА ПАКЕТНОГО СОХРАНЕНИЯ */
+/* 🌟 ИСПРАВЛЕНО: Кнопка больше не растягивается во всю ширину окна браузера */
 .batch-publish-wrapper {
   position: fixed;
-  bottom: 80px; /* Над нижней панелью навигации PWA */
-  left: 0;
+  bottom: 84px; /* Чётко над нижней панелью навигации PWA */
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
+  max-width: 480px; /* Идеально вписывается во фрейм телефона */
   padding: 0 16px;
   box-sizing: border-box;
   z-index: 99;

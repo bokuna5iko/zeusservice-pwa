@@ -10,6 +10,9 @@ const AdminShiftsPage = () => {
   const [stagedChanges, setStagedChanges] = useState([]);
   const [cooldownTime, setCooldownTime] = useState(0);
 
+  // 🌟 ИСПРАВЛЕНО: Добавляем изолированный триггер сетевого обновления календаря
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   useEffect(() => {
     if (cooldownTime <= 0) return;
     const idx = setInterval(() => {
@@ -35,6 +38,10 @@ const AdminShiftsPage = () => {
 
       setStagedChanges([]);
       setCooldownTime(300); // 5 минут локального кулдауна
+
+      // 🌟 ИСПРАВЛЕНО: Увеличиваем триггер, заставляя аккордеон сделать ровно один чистый GET-запрос
+      setRefreshTrigger((prev) => prev + 1);
+
       alert("Пакет изменений успешно опубликован на сервере!");
     } catch (err) {
       console.error("Ошибка публикации смен:", err);
@@ -45,7 +52,10 @@ const AdminShiftsPage = () => {
   return (
     <div className="admin-shifts-page">
       <div className="page-center-container">
-        <AdminDashboardShifts pendingCount={pendingCount} />
+        <AdminDashboardShifts
+          pendingCount={pendingCount}
+          refreshTrigger={refreshTrigger}
+        />
 
         <div className="admin-calendar-box">
           <h3 className="admin-calendar-title">Модерация рабочих смен</h3>
@@ -53,6 +63,8 @@ const AdminShiftsPage = () => {
             setPendingCount={setPendingCount}
             stagedChanges={stagedChanges}
             setStagedChanges={setStagedChanges}
+            isCooldown={cooldownTime > 0}
+            refreshTrigger={refreshTrigger} // 🌟 ИСПРАВЛЕНО: Передаем триггер сети в компонент аккордеона
           />
         </div>
       </div>

@@ -1,12 +1,16 @@
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
 
 // Логи для отладки при старте
-console.log('--- СЕРВЕР ОБНОВЛЕН ---');
-console.log('Время запуска:', new Date().toLocaleTimeString());
-console.log('БД:', process.env.DB_NAME, process.env.DB_PASSWORD ? "✅ Пароль есть" : "❌ Пароля нет");
-console.log('-----------------------');
+console.log("--- СЕРВЕР ОБНОВЛЕН ---");
+console.log("Время запуска:", new Date().toLocaleTimeString());
+console.log(
+  "БД:",
+  process.env.DB_NAME,
+  process.env.DB_PASSWORD ? "✅ Пароль есть" : "❌ Пароля нет",
+);
+console.log("-----------------------");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,25 +20,27 @@ app.use(cors()); // Важно: cors должен быть ПЕРЕД роута
 app.use(express.json());
 
 // 1. Импортируем роуты
-const authRoutes = require('./src/routes/auth');
-const adminRoutes = require('./src/routes/admin');
-const visitRoutes = require('./src/routes/visits');
+const authRoutes = require("./src/routes/auth");
+const adminRoutes = require("./src/routes/admin");
+const visitRoutes = require("./src/routes/visits");
+const shiftRoutes = require("./src/routes/shifts"); // 🌟 ИСПРАВЛЕНО: Импортируем новые роуты смен
 
 // 2. Маршруты API или же регистрации эндпоинтов
-app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/user', visitRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/user", visitRoutes);
+app.use("/api/shifts", shiftRoutes); // 🌟 ИСПРАВЛЕНО: Монтируем роутер смен на префикс /api/shifts
 
 // Тестовый маршрут, чтобы проверить связь через браузер
-app.get('/api/ping', (req, res) => {
-    res.json({ status: 'ok', message: 'Server is reaching out!' });
+app.get("/api/ping", (req, res) => {
+  res.json({ status: "ok", message: "Server is reaching out!" });
 });
 
 // ЕДИНСТВЕННЫЙ запуск сервера
 app.listen(PORT, () => {
-    console.log(`
+  console.log(`
     ================================
-    🚀 СЕРВЕР ЗАПУЩЕН
+    🚀 С СЕРВЕР ЗАПУЩЕН
     📍 Адрес: http://localhost:${PORT}
     🛠 Режим: React Migration
     ================================
@@ -43,6 +49,6 @@ app.listen(PORT, () => {
 
 // Обработка ошибок, чтобы сервер не падал от одного кривого запроса
 app.use((err, req, res, next) => {
-    console.error('SERVER ERROR:', err.stack);
-    res.status(500).json({ message: 'Внутренняя ошибка сервера' });
+  console.error("SERVER ERROR:", err.stack);
+  res.status(500).json({ message: "Внутренняя ошибка сервера" });
 });
