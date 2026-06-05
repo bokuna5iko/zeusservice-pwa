@@ -1,4 +1,5 @@
-/* Добавь это в самое начало LoginPage.css для проверки */
+/* src/pages/Login/LoginPage.css */
+
 .auth-toggle-tabs {
   display: flex !important;
   visibility: visible !important;
@@ -19,7 +20,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #020617; /* Наш глубокий темный цвет */
+  background-color: #020617;
   box-sizing: border-box;
 }
 
@@ -27,7 +28,7 @@
 .login-card.content-group-box {
   width: 90%;
   max-width: 360px;
-  background: #0f172a !important; /* Цвет плашек из админки */
+  background: #0f172a !important;
   border: 1px solid #1e293b !important;
   border-radius: 24px;
   padding: 30px 24px !important;
@@ -57,7 +58,7 @@
   font-weight: 400;
 }
 
-/* 🌟 КНОПКИ ПЕРЕКЛЮЧЕНИЯ РЕЖИМОВ (Вход / Регистрация) */
+/* КНОПКИ ПЕРЕКЛЮЧЕНИЯ РЕЖИМОВ (Вход / Регистрация) */
 .auth-toggle-tabs {
   display: flex;
   background: #020617;
@@ -80,7 +81,6 @@
   transition: all 0.2s ease;
 }
 
-/* Эффект при клике на вкладку регистрации/входа */
 .toggle-tab.active {
   background: #1e293b;
   color: #38bdf8;
@@ -118,7 +118,6 @@
   width: 100%;
 }
 
-/* Выравниваем иконки внутри полей */
 .input-wrapper i {
   position: absolute;
   left: 16px;
@@ -132,7 +131,8 @@
   background: #020617;
   border: 1px solid #1e293b;
   border-radius: 12px;
-  padding: 14px 16px 14px 44px;
+  /* Добавили симметричный правый отступ 40px под кнопку крестика */
+  padding: 14px 40px 14px 44px;
   color: #f8fafc;
   font-size: 0.95rem;
   box-sizing: border-box;
@@ -154,20 +154,67 @@
   cursor: not-allowed;
 }
 
+/* Кнопка-крестик для быстрой очистки поля */
+.clear-input-cross {
+  position: absolute;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: #475569;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  transition: color 0.15s ease;
+  z-index: 10;
+}
+
+.clear-input-cross:hover {
+  color: #f8fafc;
+}
+
+/* 🌟 ЛОГИКА ОШИБКИ: Shake-вибрация и ярко-красный неоновый контур инпута */
+.input-wrapper.shake-error input {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.4) !important;
+  animation: shakeInputFrame 0.4s ease-in-out;
+}
+
+@keyframes shakeInputFrame {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+
 /* Главная синяя неоновая кнопка отправки */
 .login-btn {
   width: 100%;
-  background: #38bdf8;
-  color: #020617;
   border: none;
   border-radius: 12px;
   padding: 14px;
   font-size: 0.95rem;
   font-weight: 700;
-  cursor: pointer;
   margin-top: 6px;
   transition: all 0.2s ease;
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+}
+
+/* 🌟 СТЭЙТ АКТИВНОЙ КНОПКИ: зажигается неоном при полном вводе маски */
+.login-btn:not(:disabled) {
+  background: #38bdf8;
+  color: #020617;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.4);
+  cursor: pointer;
 }
 
 .login-btn:active:not(:disabled) {
@@ -175,6 +222,7 @@
   background: #0ea5e9;
 }
 
+/* Состояние покоя/блокировки */
 .login-btn:disabled {
   background: #1e293b;
   color: #64748b;
