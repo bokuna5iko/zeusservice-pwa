@@ -8,9 +8,10 @@ WORKDIR /app
 
 # 3. Копируем ТОЛЬКО файлы зависимостей. Это позволяет кэшировать слой npm install
 COPY package*.json ./
+RUN npm ci --only=production
 
 # 4. Устанавливаем зависимости. Слой кэшируется, если package.json не менялся
-RUN npm install
+#RUN npm install
 
 # 5. Копируем остальной код. Этот слой будет пересобираться при каждом изменении кода
 COPY . .
@@ -19,4 +20,4 @@ COPY . .
 EXPOSE 3000
 
 # 7. Команда запуска. Для разработки используем nodemon (hot reload)
-CMD ["npm", "run", "dev"]
+CMD ["node", "server.js"]
