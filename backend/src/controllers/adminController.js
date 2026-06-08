@@ -73,12 +73,9 @@ exports.verifyUserById = async (req, res) => {
     const timeDifference = Math.abs(currentTimestamp - qrTimestamp);
 
     if (timeDifference > 180) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "QR-код устарел. Попросите клиента обновить Главную страницу.",
-        });
+      return res.status(400).json({
+        message: "QR-код устарел. Попросите клиента обновить Главную страницу.",
+      });
     }
 
     // 3. ПРОВЕРКА ПОДЛИННОСТИ ХЭША (SHA-256)
@@ -90,11 +87,9 @@ exports.verifyUserById = async (req, res) => {
       .digest("hex");
 
     if (serverHash !== incomingHash) {
-      return res
-        .status(403)
-        .json({
-          message: "Критическая ошибка безопасности: Невалидный QR-код",
-        });
+      return res.status(403).json({
+        message: "Критическая ошибка безопасности: Невалидный QR-код",
+      });
     }
 
     // 4. ЕСЛИ ВСЁ ОТЛИЧНО — ИЩЕМ ПОЛЬЗОВАТЕЛЯ В БАЗЕ

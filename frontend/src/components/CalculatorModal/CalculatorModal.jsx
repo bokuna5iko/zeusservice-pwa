@@ -119,7 +119,7 @@ const CalculatorModal = ({
 
       const payload = {
         userId: isGuest ? null : clientData.id,
-        serviceId: selectedServiceId ? parseInt(selectedServiceId) : null,
+        serviceId: selectedServiceId || null,
         payment_type: paymentType,
         is_guest: isGuest,
         manual_price: isManualPrice ? finalPrice : null,
