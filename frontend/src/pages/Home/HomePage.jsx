@@ -4,13 +4,14 @@ import { AuthContext } from "../../context/AuthContext";
 import { QRCodeCanvas } from "qrcode.react";
 import "./HomePage.css";
 import PointsGrid from "../../components/PointsGrid/PointsGrid";
+import PackageCards from "../../components/PackageCards/PackageCards"; // Импортируем блок пакетов
 
 const HomePage = () => {
   const { user, refreshProfile } = useContext(AuthContext);
   const [isZoomed, setIsZoomed] = useState(false);
   const [qrValue, setQrValue] = useState(null);
 
-  // 🌟 СМАРТ-ОБНОВЛЕНИЕ ГРИДЫ: Стейты контроля синхронизации и защиты от спама
+  // СМАРТ-ОБНОВЛЕНИЕ ГРИДЫ: Стейты контроля синхронизации и защиты от спама
   const [isSyncing, setIsSyncing] = useState(false); // Идет ли запрос к Postgres
   const [cooldown, setCooldown] = useState(false); // Активна ли 10-сек блокировка кнопки
 
@@ -41,7 +42,7 @@ const HomePage = () => {
     return () => clearInterval(intervalId);
   }, [user]);
 
-  // 🌟 ОБРАБОТЧИК КНОПКИ ОБНОВЛЕНИЯ С ЗАЩИТОЙ НА 10 СЕКУНД
+  // ОБРАБОТЧИК КНОПКИ ОБНОВЛЕНИЯ С ЗАЩИТОЙ НА 10 СЕКУНД
   const handleManualRefresh = async () => {
     if (isSyncing || cooldown) return;
 
@@ -69,9 +70,7 @@ const HomePage = () => {
     <div className="home-page">
       <div className="page-center-container">
         {/* КОНТЕЙНЕР №1: Личный QR-код */}
-        <div
-          className={`home-card qr-container-box content-group-box ${isZoomed ? "zoomed" : ""}`}
-        >
+        <div className="home-card qr-container-box content-group-box">
           <div className="fill-zone">
             <p className="qr-label">Ваш QR</p>
             <div className="qr-wrapper" onClick={qrValue ? toggleZoom : null}>
@@ -127,24 +126,8 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* КОНТЕЙНЕР №3: Бонусный баланс */}
-        <div className="home-card balance-info-box content-group-box">
-          <div className="fill-zone">
-            <div className="balance-row">
-              <div className="balance-item">
-                <span className="label">Бонусы</span>
-                <span className="value">{user?.bonus_points || 0} ₽</span>
-              </div>
-              <div className="balance-divider"></div>
-              <div className="balance-item">
-                <span className="label">Ранг</span>
-                <span className="value">
-                  {user?.role === "admin" ? "Админ" : "Клиент"}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* КОНТЕЙНЕР №2 Выгодные пакеты (В разработке) */}
+        <PackageCards />
       </div>
 
       {/* Модальное окно для увеличенного QR */}

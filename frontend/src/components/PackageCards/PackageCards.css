@@ -1,0 +1,222 @@
+/* src/components/PackageCards/PackageCards.css */
+
+/* Базовый контейнер-обертка на базе нашей системной плашки */
+.package-container.content-group-box {
+  position: relative; /* 🌟 Критично для абсолютного позиционирования оверлея */
+  width: 90%;
+  max-width: 380px;
+  padding: 20px 16px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  cursor: default;
+  user-select: none;
+  overflow: hidden; /* 🌟 Чтобы размытый оверлей не вылезал за скругленные углы карточки */
+}
+
+.package-header {
+  width: 100%;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.package-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Пульсирующий неоновый огонек в заголовке */
+.fire-icon {
+  color: #ef4444;
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+  animation: ptrFlameBreath 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes ptrFlameBreath {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+/* 🌟 ИСПРАВЛЕНО: Выстраиваем карточки горизонтально рядом друг с другом */
+.package-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Общие правила для карточек пакетов */
+.package-card {
+  position: relative;
+  border-radius: 16px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+  flex: 1; /* Распределяем ширину 50/50 автоматически */
+  min-width: 0; /* Защита флекса от распирания длинным текстом */
+}
+
+/* --- 1. КАРТОЧКА FEATURED (ХИТ) --- */
+.card-featured {
+  background: linear-gradient(135deg, #facc15, #f97316);
+  box-shadow: 0 6px 14px rgba(249, 115, 22, 0.15);
+}
+
+.card-featured .card-title-text {
+  color: #020617;
+  font-weight: 800;
+}
+
+.card-featured .card-description {
+  color: #451a03;
+  font-weight: 600;
+}
+
+.card-featured .card-icon-wrapper i {
+  color: #020617;
+}
+
+/* Бейдж ХИТ */
+.card-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ff4e00;
+  color: #ffffff;
+  font-size: 0.55rem;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+/* --- 2. КАРТОЧКА STANDARD --- */
+.card-standard {
+  background: #1e293b;
+  border: 1px solid #334155;
+}
+
+.card-standard .card-title-text {
+  color: #f8fafc;
+}
+
+.card-standard .card-description {
+  color: #64748b;
+}
+
+.card-standard .card-icon-wrapper i {
+  color: #38bdf8;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+/* --- ВНУТРЕННИЕ ЭЛЕМЕНТЫ КАРТОЧЕК --- */
+.card-icon-wrapper {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.card-title-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Если текст не влезет — аккуратно поставит три точки */
+}
+
+.card-description {
+  font-size: 0.72rem;
+  margin-bottom: 12px;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-price-block {
+  display: flex;
+  flex-direction: column; /* В узкой колонке старую цену переносим под текущую */
+  align-items: flex-start;
+  gap: 2px;
+  margin-top: auto;
+}
+
+.price-current {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #ff4e00;
+  line-height: 1.1;
+}
+
+.price-old {
+  font-size: 0.72rem;
+  text-decoration: line-through;
+  color: rgba(69, 26, 3, 0.55);
+  font-weight: 600;
+}
+
+.price-standard {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #f8fafc;
+  line-height: 1.1;
+}
+
+/* ==========================================================================
+   🌟 СЛИЯНИЕ И СТИЛИЗАЦИЯ МАТОВОГО ОВЕРЛЕЯ "В РАЗРАБОТКЕ"
+   ========================================================================== */
+.package-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(
+    15,
+    23,
+    42,
+    0.7
+  ); /* Наш фирменный полупрозрачный темный фон */
+  backdrop-filter: blur(2px); /* Элегантное матовое размытие */
+  -webkit-backdrop-filter: blur(2px); /* Стабильность размытия на iOS Safari */
+  z-index: 10; /* Намертво перекрывает карточки от любых кликов */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Аккуратная хай-тек плашка по центру */
+.overlay-badge {
+  background: #020617;
+  border: 1px solid #1e293b;
+  color: #94a3b8; /* Приглушенный стальной цвет текста */
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase; /* Строгий заглавный формат */
+}
+
+.overlay-badge i {
+  font-size: 0.8rem;
+  color: #64748b;
+}
