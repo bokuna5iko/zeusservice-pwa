@@ -60,6 +60,9 @@ export const api = {
   getAdminCalendar: () => apiService.get("/shifts/admin/calendar"),
   batchUpdateShifts: (changes) =>
     apiService.post("/shifts/admin/batch-update", { changes }),
+
+  // 🌟 OFFLINE SYNC
+  syncOffline: (records) => apiService.post("/admin/sync-offline", { records }),
 };
 
 export default apiService;

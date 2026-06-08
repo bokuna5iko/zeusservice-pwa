@@ -3,9 +3,11 @@ import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
 import Navigation from "./components/Navigation";
 import LoginPage from "./pages/Login/LoginPage";
+import OfflineBanner from "./components/OfflineBanner/OfflineBanner";
 
 // Хук сервис-воркера из плагина vite-plugin-pwa
 import { useRegisterSW } from "virtual:pwa-register/react";
+import { useOfflineSync } from "./hooks/useOfflineSync";
 
 // Твои страницы пользователей
 import HomePage from "./pages/Home/HomePage.jsx";
@@ -67,6 +69,17 @@ function App() {
     }, 600);
   };
 
+  // 🌟 OFFLINE SYNC
+  const {
+    isOnline,
+    pendingCount,
+    isSyncing,
+    showBanner,
+    bannerType,
+    bannerMessage,
+    hideBanner,
+  } = useOfflineSync();
+
   // Условие для неавторизованного пользователя
   if (!user) {
     return (
@@ -83,6 +96,14 @@ function App() {
     <div className="app-shell">
       {/* Оболочка телефона */}
       <div className="app-main" style={{ position: "relative" }}>
+        {/* 🌟 OFFLINE BANNER */}
+        <OfflineBanner
+          show={showBanner}
+          type={bannerType}
+          message={bannerMessage}
+          pendingCount={pendingCount}
+          onClose={hideBanner}
+        />
         {/* 🌟 ВСПЛЫВАЮЩАЯ UX-ПОДСКАЗКА: Выезжает из-под шапки при фиксации новой версии */}
         <div
           className={`pwa-smart-hint-banner ${showHintBanner ? "slide-down" : ""}`}
