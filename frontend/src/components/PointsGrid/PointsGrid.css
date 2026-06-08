@@ -3,7 +3,7 @@
 .points-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 4 колонки */
-  grid-template-rows: repeat(2, 1fr);    /* 2 ряда */
+  grid-template-rows: repeat(2, 1fr); /* 2 ряда */
   gap: 12px;
   width: 100%;
   margin-top: 15px;
@@ -31,7 +31,7 @@
   border-color: #38bdf8;
   transform: scale(1.05);
   /* Эффект неонового свечения вокруг закрытого визита */
-  box-shadow: 0 0 12px rgba(14, 165, 233, 0.4); 
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.4);
 }
 
 /* 4-й визит (Скидка 20%) — Ожидание */
@@ -63,9 +63,76 @@
   border: 1px solid #fdba74;
   transform: scale(1.08); /* Чуть больше обычного, так как это главный приз */
   /* Мощное «золотое» свечение подарка */
-  box-shadow: 0 0 18px rgba(249, 115, 22, 0.6); 
+  box-shadow: 0 0 18px rgba(249, 115, 22, 0.6);
 }
 
 .point-content i {
   font-size: 1.2rem;
+}
+
+/* ==========================================================================
+   🌟 ТЕМНАЯ НЕОНОВАЯ КНОПКА СИНХРОНИЗАЦИИ ВИЗИТОВ (POINTS GRID REFRESH)
+   ========================================================================== */
+
+/* Обертка для выравнивания заголовка и кнопки в одну линию */
+.loyalty-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Сбрасываем дефолтный margin заголовка для ровного флекса */
+.loyalty-header-row .card-title {
+  margin: 0 !important;
+}
+
+/* Базовый дизайн кнопки синхронизации */
+.grid-sync-btn {
+  background: #020617; /* Глубокий темный фон карточки */
+  border: 1px solid #1e293b;
+  color: #38bdf8; /* Фирменный голубой неон */
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
+}
+
+/* Эффект при наведении/клике на активную кнопку */
+.grid-sync-btn:active:not(:disabled) {
+  transform: scale(0.92);
+  background: #1e293b;
+}
+
+/* 1. Состояние: Идет сетевой запрос (Анимация кручения) */
+.grid-sync-btn.syncing i {
+  animation: gridAxialSpin 0.7s linear infinite;
+}
+
+/* 2. Состояние: Защита от спама (10 секунд кулдауна) */
+.grid-sync-btn.cooldown-active {
+  background: #0f172a;
+  border-color: #1e293b;
+  color: #334155; /* Смягченный темно-серый цвет */
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.5;
+}
+
+/* Ключевые кадры для вращения иконки */
+@keyframes gridAxialSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

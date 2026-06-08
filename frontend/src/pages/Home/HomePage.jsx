@@ -1,5 +1,5 @@
 // src/pages/Home/HomePage.jsx
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { QRCodeCanvas } from "qrcode.react";
 import "./HomePage.css";
@@ -10,13 +10,11 @@ const HomePage = () => {
   const [isZoomed, setIsZoomed] = useState(false);
   const [qrValue, setQrValue] = useState(null);
 
-  // СТЭЙТЫ ДЛЯ АНИМАЦИИ ИНТЕРФЕЙСА
-  const [pullDistance, setPullDistance] = useState(0);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  // 🌟 СМАРТ-ОБНОВЛЕНИЕ ГРИДЫ: Стейты контроля синхронизации и защиты от спама
+  const [isSyncing, setIsSyncing] = useState(false); // Идет ли запрос к Postgres
+  const [cooldown, setCooldown] = useState(false); // Активна ли 10-сек блокировка кнопки
 
-  // Ссылки на элементы для нативного внедрения непассивных слушателей
-  const pageRef = useRef(null);
-
+  // Автообновление QR-кода раз в 60 секунд
   useEffect(() => {
     if (!user) return;
 
@@ -43,104 +41,32 @@ const HomePage = () => {
     return () => clearInterval(intervalId);
   }, [user]);
 
-  // 🌟 МОБИЛЬНЫЙ ЖЕСТ ДВИЖОК С ВЫСОКОЙ ТОЧНОСТЬЮ ОТКЛИКА
-  useEffect(() => {
-    const el = pageRef.current;
-    if (!el) return;
+  // 🌟 ОБРАБОТЧИК КНОПКИ ОБНОВЛЕНИЯ С ЗАЩИТОЙ НА 10 СЕКУНД
+  const handleManualRefresh = async () => {
+    if (isSyncing || cooldown) return;
 
-    let startY = 0;
-    let isTracking = false;
+    setIsSyncing(true);
 
-    const handleTouchStart = (e) => {
-      const scrollContainer = document.querySelector(".page-content");
-      // 🌟 ТРЮК №1: Зазор в 3 пикселя для борьбы с мобильными субпикселями Retina-экранов
-      const isAtTop = scrollContainer ? scrollContainer.scrollTop <= 3 : true;
+    try {
+      // Принудительно стучимся в сеть за свежими визитами из PostgreSQL
+      await refreshProfile();
+    } catch (err) {
+      console.error("Ошибка обновления визитов:", err);
+    } finally {
+      setIsSyncing(false);
+      setCooldown(true);
 
-      if (isAtTop && !isRefreshing) {
-        startY = e.touches[0].clientY;
-        isTracking = true;
-      }
-    };
-
-    const handleTouchMove = (e) => {
-      if (!isTracking || isRefreshing) return;
-
-      const scrollContainer = document.querySelector(".page-content");
-      const isAtTop = scrollContainer ? scrollContainer.scrollTop <= 3 : true;
-
-      if (!isAtTop) {
-        isTracking = false;
-        setPullDistance(0);
-        return;
-      }
-
-      const currentY = e.touches[0].clientY;
-      const diff = currentY - startY;
-
-      if (diff > 0) {
-        // 🌟 ТРЮК №2: Жестко глушим стандартный резиновый отскок браузера (Safari/Chrome).
-        // Теперь смартфон слушается только наш код и не обрывает тач-событие!
-        if (e.cancelable) e.preventDefault();
-
-        const resistance = Math.min(diff * 0.4, 60);
-        setPullDistance(resistance);
-      }
-    };
-
-    const handleTouchEnd = async () => {
-      if (!isTracking || isRefreshing) return;
-      isTracking = false;
-
-      // Снизили порог срабатывания до 40px для большего комфорта на маленьких экранах
-      if (pullDistance > 40) {
-        setIsRefreshing(true);
-        setPullDistance(45);
-
-        try {
-          await refreshProfile(); // Живой Network Only пинг в PostgreSQL
-        } catch (err) {
-          console.error(err);
-        } finally {
-          setTimeout(() => {
-            setIsRefreshing(false);
-            setPullDistance(0);
-          }, 400);
-        }
-      } else {
-        setPullDistance(0);
-      }
-    };
-
-    // Монтируем слушатели нативно с флагом { passive: false }, побеждая ограничения WebKit iOS
-    el.addEventListener("touchstart", handleTouchStart, { passive: true });
-    el.addEventListener("touchmove", handleTouchMove, { passive: false });
-    el.addEventListener("touchend", handleTouchEnd, { passive: true });
-
-    return () => {
-      el.removeEventListener("touchstart", handleTouchStart);
-      el.removeEventListener("touchmove", handleTouchMove);
-      el.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [pullDistance, isRefreshing, refreshProfile]);
+      // Включаем кулдаун ровно на 10 секунд перед следующим кликом
+      setTimeout(() => {
+        setCooldown(false);
+      }, 10000);
+    }
+  };
 
   const toggleZoom = () => setIsZoomed(!isZoomed);
 
   return (
-    <div className="home-page" ref={pageRef}>
-      {/* Спиннер парит над контентом */}
-      <div
-        className={`pull-to-refresh-loader ${isRefreshing ? "refreshing" : ""}`}
-        style={{
-          transform: `translate3d(-50%, ${pullDistance}px, 0)`,
-          opacity: pullDistance > 12 ? 1 : 0,
-        }}
-      >
-        <div className="ptr-spinner-circle">
-          <i className={`fas fa-sync-alt ${isRefreshing ? "fa-spin" : ""}`}></i>
-        </div>
-      </div>
-
-      {/* Оболочка контента */}
+    <div className="home-page">
       <div className="page-center-container">
         {/* КОНТЕЙНЕР №1: Личный QR-код */}
         <div
@@ -172,8 +98,27 @@ const HomePage = () => {
         {/* КОНТЕЙНЕР №2: Статус лояльности */}
         <div className="home-card loyalty-progress-box content-group-box">
           <div className="fill-zone">
-            <h3 className="card-title">Прогресс лояльности</h3>
+            {/* Флекс-контейнер для заголовка и смарт-кнопки */}
+            <div className="loyalty-header-row">
+              <h3 className="card-title">Прогресс лояльности</h3>
+
+              {/* Смарт-кнопка обновления визитов */}
+              <button
+                type="button"
+                className={`grid-sync-btn ${isSyncing ? "syncing" : ""} ${cooldown ? "cooldown-active" : ""}`}
+                disabled={isSyncing || cooldown}
+                onClick={handleManualRefresh}
+                title={
+                  cooldown ? "Подождите 10 секунд" : "Синхронизировать визиты"
+                }
+              >
+                <i className="fas fa-sync-alt"></i>
+              </button>
+            </div>
+
+            {/* Вставляем нашу сетку кружочков */}
             <PointsGrid visitCount={user?.visit_count || 0} />
+
             <div className="loyalty-footer-hint">
               {user?.visit_count < 8
                 ? `Осталось визитов до подарка: ${8 - user?.visit_count}`
@@ -202,7 +147,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Модальное окно QR */}
+      {/* Модальное окно для увеличенного QR */}
       {isZoomed && (
         <div className="qr-modal-overlay" onClick={toggleZoom}>
           <div className="qr-modal-content">
