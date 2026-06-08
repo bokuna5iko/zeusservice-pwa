@@ -6,30 +6,30 @@ import "./HomePage.css";
 import PointsGrid from "../../components/PointsGrid/PointsGrid";
 
 const HomePage = () => {
-  const { user } = useContext(AuthContext);
+  // 🌟 Достаем метод ручного обновления профиля из контекста
+  const { user, refreshProfile } = useContext(AuthContext);
   const [isZoomed, setIsZoomed] = useState(false);
-  // 🌟 Добавляем стейт для хранения динамической безопасной строки QR-кода
   const [qrValue, setQrValue] = useState(null);
 
-  // 🌟 ЛОГИКА ДИНАМИЧЕСКОГО ОБНОВЛЕНИЯ QR С СЕРВЕРА
+  // 🌟 СТЭЙТЫ ДЛЯ МЕХАНИКИ PULL-TO-REFRESH
+  const [startY, setStartY] = useState(0); // Точка касания пальца
+  const [pullDistance, setPullDistance] = useState(0); // Расстояние свайпа в пикселях
+  const [isRefreshing, setIsRefreshing] = useState(false); // Идет ли сетевой запрос
+
   useEffect(() => {
     if (!user) return;
 
     const fetchSecureQr = async () => {
       try {
-        // Достаем токен авторизации клиента (из ProfilePages мы знаем, что он лежит в 'token')
-        const token = localStorage.getItem("accessToken"); // 🌟 Должно быть так же, как в Axios!
-
+        const token = localStorage.getItem("accessToken");
         const res = await fetch("/api/user/generate", {
           method: "GET",
-          headers: {
-            Authorization: token ? `Bearer ${token}` : "",
-          },
+          headers: { Authorization: token ? `Bearer ${token}` : "" },
         });
 
         const data = await res.json();
         if (data.success && data.qrString) {
-          setQrValue(data.qrString); // Сажаем безопасную строку userId:timestamp:hash в QR
+          setQrValue(data.qrString);
         }
       } catch (err) {
         console.error("Ошибка при получении динамического QR:", err);
@@ -37,32 +37,97 @@ const HomePage = () => {
       }
     };
 
-    // Вызываем генерацию сразу при открытии вкладки
     fetchSecureQr();
-
-    // 🌟 Запускаем интервал: каждые 60 секунд запрашиваем бэк и обновляем QR-код
     const intervalId = setInterval(fetchSecureQr, 60000);
-
-    // Зачищаем интервал при уходе со страницы
     return () => clearInterval(intervalId);
   }, [user]);
+
+  // 🌟 ОБРАБОТЧИКИ НАДТИВНЫХ ТАЧ-ЖЕСТОВ СМАРТФОНА
+  const handleTouchStart = (e) => {
+    // Начинаем отслеживать жест только если скролл находится на самом верху страницы
+    if (window.scrollY === 0 && !isRefreshing) {
+      setStartY(e.touches[0].clientY);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (window.scrollY > 0 || isRefreshing) return;
+
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - startY;
+
+    if (diff > 0) {
+      // Применяем упругое логарифмическое сопротивление (резист), чтобы экран тянулся плавно
+      const resistance = Math.min(diff * 0.4, 74);
+      setPullDistance(resistance);
+    }
+  };
+
+  const handleTouchEnd = async () => {
+    if (isRefreshing) return;
+
+    // Если экран оттянули вниз больше чем на 55px — запускаем принудительный рефреш
+    if (pullDistance > 55) {
+      setIsRefreshing(true);
+      setPullDistance(55); // Фиксируем спиннер в активном положении
+
+      try {
+        // Атакуем базу данных Postgres живым HTTP-запросом через Network Only
+        await refreshProfile();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        // Плавно возвращаем верстку в исходное положение без резких прыжков
+        setTimeout(() => {
+          setIsRefreshing(false);
+          setPullDistance(0);
+        }, 400);
+      }
+    } else {
+      // Если натянули мало — просто плавно прячем плашку обратно
+      setPullDistance(0);
+    }
+  };
 
   const toggleZoom = () => setIsZoomed(!isZoomed);
 
   return (
-    <div className="home-page">
-      <div className="page-center-container">
+    // Навешиваем тач-слушатели на корневой див страницы
+    <div
+      className="home-page"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* 🌟 ВЫЕЗЖАЮЩИЙ ТЕМНЫЙ НЕОНОВЫЙ СПИННЕР ОБНОВЛЕНИЯ */}
+      <div
+        className={`pull-to-refresh-loader ${isRefreshing ? "refreshing" : ""}`}
+        style={{
+          transform: `translateY(${pullDistance}px)`,
+          opacity: pullDistance > 10 ? 1 : 0,
+        }}
+      >
+        <div className="ptr-spinner-circle">
+          <i className={`fas fa-sync-alt ${isRefreshing ? "fa-spin" : ""}`}></i>
+        </div>
+      </div>
+
+      {/* Контентная оболочка, которая плавно сдвигается вниз вслед за спиннером */}
+      <div
+        className="page-center-container ptr-anim-content"
+        style={{
+          transform: `translateY(${pullDistance}px)`,
+          transition: isRefreshing ? "none" : "transform 0.3s ease-out",
+        }}
+      >
         {/* КОНТЕЙНЕР №1: Личный QR-код */}
         <div
           className={`home-card qr-container-box content-group-box ${isZoomed ? "zoomed" : ""}`}
         >
           <div className="fill-zone">
             <p className="qr-label">Ваш QR</p>
-
-            {/* Обертка для клика */}
             <div className="qr-wrapper" onClick={qrValue ? toggleZoom : null}>
               {qrValue ? (
-                // Если строка пришла с бэка — рендерим настоящий безопасный QR
                 <QRCodeCanvas
                   value={qrValue}
                   size={180}
@@ -72,14 +137,12 @@ const HomePage = () => {
                   includeMargin={true}
                 />
               ) : (
-                // Пока запрос идет — админ или клиент видят стильную заглушку загрузки
                 <div className="qr-loading-placeholder">
                   <i className="fas fa-sync-alt fa-spin"></i>
                   <span>Генерация ключа...</span>
                 </div>
               )}
             </div>
-
             <h3 className="user-display-name">{user?.name || "Загрузка..."}</h3>
           </div>
         </div>
@@ -88,10 +151,7 @@ const HomePage = () => {
         <div className="home-card loyalty-progress-box content-group-box">
           <div className="fill-zone">
             <h3 className="card-title">Progress лояльности</h3>
-
-            {/* Вставляем сетку */}
             <PointsGrid visitCount={user?.visit_count || 0} />
-
             <div className="loyalty-footer-hint">
               {user?.visit_count < 8
                 ? `Осталось визитов до подарка: ${8 - user?.visit_count}`
@@ -120,15 +180,15 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* ШАГ 2: Модальное окно для увеличенного QR */}
+      {/* Модальное окно QR */}
       {isZoomed && (
         <div className="qr-modal-overlay" onClick={toggleZoom}>
           <div className="qr-modal-content">
             <QRCodeCanvas
               value={qrValue}
-              size={280} // 🌟 ИСПРАВЛЕНО: Увеличили размер до 280 для идеального сканирования
+              size={280}
               bgColor={"#ffffff"}
-              fgColor={"#000000"} // Черный цвет для максимального контраста под камерой
+              fgColor={"#000000"}
               level={"H"}
               includeMargin={true}
             />

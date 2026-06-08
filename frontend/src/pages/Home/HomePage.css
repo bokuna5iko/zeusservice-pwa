@@ -270,3 +270,71 @@
     opacity: 1;
   }
 }
+
+/* ==========================================================================
+   🌟 PULL-TO-REFRESH И КЛИЕНТСКИЙ СКРОЛЛ-ИНДИКАТОР
+   ========================================================================== */
+
+/* 1. Блокируем стандартный браузерный "белый" свайп перезагрузки страницы */
+.home-page {
+  overscroll-behavior-y: contain;
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+/* Оболочка плавно выезжающего индикатора */
+.pull-to-refresh-loader {
+  position: absolute;
+  top: -46px; /* Полностью скрыт за верхней границей экрана */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 38px;
+  height: 38px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+/* Круглый неоновый индикатор */
+.ptr-spinner-circle {
+  width: 100%;
+  height: 100%;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 15px rgba(56, 189, 248, 0.25),
+    0 0 4px rgba(56, 189, 248, 0.4);
+}
+
+.ptr-spinner-circle i {
+  color: #38bdf8; /* Наш акцентный голубой неон */
+  font-size: 0.85rem;
+}
+
+/* Плавный возврат контента при деактивации жеста */
+.ptr-anim-content {
+  will-change: transform;
+}
+
+/* Состояние активного бесконечного вращения во время запроса к Postgres */
+.pull-to-refresh-loader.refreshing .ptr-spinner-circle i {
+  animation: ptrSpinAxial 0.8s linear infinite;
+}
+
+@keyframes ptrSpinAxial {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
