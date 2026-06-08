@@ -1,3 +1,4 @@
+// vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
@@ -8,9 +9,11 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: "promptForUpdate", // 🌟 ИСПРАВЛЕНО: Теперь React будет знать, когда вышло обновление, и позволит нам управлять им!
-      includeAssets: ["favicon.ico", "robots.txt", "icons/**/*"], // Какие статические ресурсы кэшировать сразу
+      // 🌟 Настройка типа регистрации обновлений
+      registerType: "promptForUpdate",
+      includeAssets: ["favicon.ico", "robots.txt", "icons/**/*"],
 
+      // 🌟 Манифест нативного PWA-приложения
       manifest: {
         name: "ZEUS AUTO | Система лояльности",
         short_name: "ZEUS AUTO",
@@ -42,15 +45,16 @@ export default defineConfig({
         ],
       },
 
-      // 👇 ВПИХНУЛИ WORKBOX СЮДА (На один уровень с объектом manifest)
+      // 🌟 Стратегия кэширования движка Workbox
       workbox: {
         globPatterns: ["**/*.{js,css,html,png,svg,ico}"], // Кэшируем фронтенд-ресурсы для работы офлайн
         runtimeCaching: [
-          // 🌟 ИСПРАВЛЕНО: Полный запрет на кэширование любых эндпоинтов базы данных
+          // 🛑 СТРАТЕГИЯ NETWORK ONLY: Полный запрет на кэширование любых эндпоинтов базы данных
           {
             urlPattern: ({ url }) => url.pathname.startsWith("/api/"),
             handler: "NetworkOnly", // Запросы идут строго мимо кэша напрямую в сеть!
           },
+          // 🔄 СТРАТЕГИЯ CACHE FIRST: Шрифты берем железно из локальной памяти
           {
             urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/,
             handler: "CacheFirst",
@@ -58,7 +62,7 @@ export default defineConfig({
               cacheName: "google-fonts",
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // Храним кэш год
               },
             },
           },
@@ -67,12 +71,12 @@ export default defineConfig({
     }),
   ],
 
+  // 🌟 Настройки локального сервера разработки и проксирования
   server: {
     host: "0.0.0.0",
     port: 5173,
     allowedHosts: true,
     cors: true,
-    // Наш прокси-сервер для связи с бэком
     proxy: {
       "/api": {
         target: "http://localhost:3000",
