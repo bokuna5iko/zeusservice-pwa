@@ -59,3 +59,8 @@ users: id, phone, visit_count, last_visit.
 services: id, name, base_price.
 
 transactions: id, user_id, admin_id, service_id, gross_amount, net_amount, is_bonus, created_at.
+
+
+
+
+
