@@ -1,0 +1,63 @@
+/*Глобальный сброс стилей, базовые настройки отображения шрифтов документа и тотальное скрытие системных скроллбаров.*/
+
+/* src/styles/reset.css */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Отключаем полосу прокрутки ВООБЩЕ для всех элементов в приложении */
+*,
+*::before,
+*::after,
+html,
+body,
+#root,
+.app-main,
+.app-shell,
+[class*="-page"] {
+  scrollbar-width: none !important; /* Для Firefox */
+  -ms-overflow-style: none !important; /* Для IE/Edge */
+}
+
+/* Отключаем полосу прокрутки для WebKit (Chrome, Safari, Opera, Edge) */
+::-webkit-scrollbar,
+*::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.app-main::-webkit-scrollbar,
+#root::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* Настройки для плавного тач-скролла пальцем */
+body,
+.app-main,
+.admin-home-page {
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-y: none !important; /* Убираем дергание экрана */
+}
+
+body {
+  background-color: var(--bg-color);
+  font-family:
+    "Inter",
+    -apple-system,
+    sans-serif;
+  color: var(--text-main);
+  line-height: 1.5;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

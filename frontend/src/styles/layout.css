@@ -1,0 +1,136 @@
+/* src/styles/layout.css */
+
+.app-container {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  position: relative;
+  padding-bottom: 80px; /* Отступ под навигацию */
+}
+
+.main-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 1. Главная оболочка (твой монитор — подложка за пределами телефона) */
+.app-shell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Менять min-height на жесткую высоту vh, чтобы рамки не плыли */
+  width: 100%;
+  background-color: #020617;
+  overflow: hidden !important; /* Никакого системного скролла монитора */
+}
+
+/* 2. Твой "телефон" — Абсолютно жесткая монолитная коробка */
+.app-main {
+  width: 100vw;
+  max-width: 430px; /* Максимальная ширина как у iPhone Pro Max */
+  height: 100% !important; /* На мобилках строго вписать в высоту экрана */
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background-color: #020617;
+  position: relative;
+  /* 🌟 ИСПРАВЛЕНО: Сам телефон больше никогда не скроллится, не прыгает и не тянется целиком! */
+  overflow: hidden !important;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Тень для объема на десктопе */
+}
+
+/* 3. Адаптивность для десктопа (чтобы на большом экране это был телефон со скруглениями) */
+@media (min-width: 500px) {
+  .app-main {
+    height: 90vh !important;
+    max-height: 932px; /* Ограничиваем высоту на ПК */
+    border-radius: 30px;
+    border: 1px solid #1e293b; /* Аккуратный контур телефона на десктопе */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* ВЕРХ: Фиксированная высота шапки */
+.app-header {
+  height: 60px;
+  min-height: 60px;
+  background: #0f172a;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #1e293b;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 100; /* Шапка железно выше вытягивающегося спиннера */
+}
+
+.header-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* НИЗ: Фиксированная высота подвала (меню) */
+.app-footer {
+  width: 100%;
+  height: 75px;
+  background: #0f172a;
+  border-top: 1px solid #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 100;
+}
+
+/* 4. 🌟 ЕДИНСТВЕННЫЙ В ПРИЛОЖЕНИИ ВЛАДЕЛЕЦ СКРОЛЛА (page-content из App.jsx) */
+.page-content {
+  flex: 1;
+  width: 100%;
+  overflow-y: auto !important; /* Разрешаем внутренний скролл страниц только здесь */
+  overflow-x: hidden;
+  /* Блокируем резиновый отскок WebView браузера внутри рабочей зоны */
+  overscroll-behavior-y: contain !important;
+  -webkit-overflow-scrolling: touch !important; /* Включаем нативный инерционный скролл пальцем на iOS */
+  box-sizing: border-box;
+}
+
+/* Страницы внутри — просто заполняют рабочую область на 100% */
+.home-page,
+.profile-page,
+.history-page,
+.admin-page-flow {
+  width: 100% !important;
+  min-width: 100% !important;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background-color: #020617;
+}
+
+.page-center-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Меняем на старт, чтобы при рефреше контент не прыгал к центру */
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
