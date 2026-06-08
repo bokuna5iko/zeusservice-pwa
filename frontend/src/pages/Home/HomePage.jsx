@@ -6,15 +6,14 @@ import "./HomePage.css";
 import PointsGrid from "../../components/PointsGrid/PointsGrid";
 
 const HomePage = () => {
-  // 🌟 Достаем метод ручного обновления профиля из контекста
   const { user, refreshProfile } = useContext(AuthContext);
   const [isZoomed, setIsZoomed] = useState(false);
   const [qrValue, setQrValue] = useState(null);
 
-  // 🌟 СТЭЙТЫ ДЛЯ МЕХАНИКИ PULL-TO-REFRESH
-  const [startY, setStartY] = useState(0); // Точка касания пальца
-  const [pullDistance, setPullDistance] = useState(0); // Расстояние свайпа в пикселях
-  const [isRefreshing, setIsRefreshing] = useState(false); // Идет ли сетевой запрос
+  // СТЭЙТЫ ДЛЯ МЕХАНИКИ PULL-TO-REFRESH
+  const [startY, setStartY] = useState(0);
+  const [pullDistance, setPullDistance] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -42,23 +41,29 @@ const HomePage = () => {
     return () => clearInterval(intervalId);
   }, [user]);
 
-  // 🌟 ОБРАБОТЧИКИ НАДТИВНЫХ ТАЧ-ЖЕСТОВ СМАРТФОНА
+  // НАВЕДЕНИЕ ПОРЯДКА В ТАЧ-ЖЕСТАХ С УЧЕТОМ СТРУКТУРЫ ВПС
   const handleTouchStart = (e) => {
-    // Начинаем отслеживать жест только если скролл находится на самом верху страницы
-    if (window.scrollY === 0 && !isRefreshing) {
+    // 🌟 ИСПРАВЛЕНО: Проверяем скролл реального контейнера .page-content из App.jsx
+    const scrollContainer = document.querySelector(".page-content");
+    const isAtTop = scrollContainer ? scrollContainer.scrollTop === 0 : true;
+
+    if (isAtTop && !isRefreshing) {
       setStartY(e.touches[0].clientY);
     }
   };
 
   const handleTouchMove = (e) => {
-    if (window.scrollY > 0 || isRefreshing) return;
+    const scrollContainer = document.querySelector(".page-content");
+    const isAtTop = scrollContainer ? scrollContainer.scrollTop === 0 : true;
+
+    if (!isAtTop || isRefreshing) return;
 
     const currentY = e.touches[0].clientY;
     const diff = currentY - startY;
 
     if (diff > 0) {
-      // Применяем упругое логарифмическое сопротивление (резист), чтобы экран тянулся плавно
-      const resistance = Math.min(diff * 0.4, 74);
+      // Плавное упругое сопротивление для вытягивания оверлея
+      const resistance = Math.min(diff * 0.35, 60);
       setPullDistance(resistance);
     }
   };
@@ -66,25 +71,21 @@ const HomePage = () => {
   const handleTouchEnd = async () => {
     if (isRefreshing) return;
 
-    // Если экран оттянули вниз больше чем на 55px — запускаем принудительный рефреш
-    if (pullDistance > 55) {
+    if (pullDistance > 45) {
       setIsRefreshing(true);
-      setPullDistance(55); // Фиксируем спиннер в активном положении
+      setPullDistance(45); // Фиксируем положение для анимации кручения
 
       try {
-        // Атакуем базу данных Postgres живым HTTP-запросом через Network Only
         await refreshProfile();
       } catch (err) {
         console.error(err);
       } finally {
-        // Плавно возвращаем верстку в исходное положение без резких прыжков
         setTimeout(() => {
           setIsRefreshing(false);
           setPullDistance(0);
         }, 400);
       }
     } else {
-      // Если натянули мало — просто плавно прячем плашку обратно
       setPullDistance(0);
     }
   };
@@ -92,19 +93,18 @@ const HomePage = () => {
   const toggleZoom = () => setIsZoomed(!isZoomed);
 
   return (
-    // Навешиваем тач-слушатели на корневой див страницы
     <div
       className="home-page"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* 🌟 ВЫЕЗЖАЮЩИЙ ТЕМНЫЙ НЕОНОВЫЙ СПИННЕР ОБНОВЛЕНИЯ */}
+      {/* 🌟 ИСПРАВЛЕНО: Теперь спиннер парит НАД контентом, не сдвигая сетку */}
       <div
         className={`pull-to-refresh-loader ${isRefreshing ? "refreshing" : ""}`}
         style={{
-          transform: `translateY(${pullDistance}px)`,
-          opacity: pullDistance > 10 ? 1 : 0,
+          transform: `translate3d(-50%, ${pullDistance}px, 0)`,
+          opacity: pullDistance > 15 ? 1 : 0,
         }}
       >
         <div className="ptr-spinner-circle">
@@ -112,14 +112,8 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Контентная оболочка, которая плавно сдвигается вниз вслед за спиннером */}
-      <div
-        className="page-center-container ptr-anim-content"
-        style={{
-          transform: `translateY(${pullDistance}px)`,
-          transition: isRefreshing ? "none" : "transform 0.3s ease-out",
-        }}
-      >
+      {/* 🌟 ИСПРАВЛЕНО: Убрали динамические трансформации. Контент стоит монолитно */}
+      <div className="page-center-container">
         {/* КОНТЕЙНЕР №1: Личный QR-код */}
         <div
           className={`home-card qr-container-box content-group-box ${isZoomed ? "zoomed" : ""}`}

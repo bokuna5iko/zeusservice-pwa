@@ -272,32 +272,31 @@
 }
 
 /* ==========================================================================
-   🌟 PULL-TO-REFRESH И КЛИЕНТСКИЙ СКРОЛЛ-ИНДИКАТОР
+   🌟 НАВЕДЕНИЕ ПОРЯДКА В PULL-TO-REFRESH (OVERLAY STYLE)
    ========================================================================== */
 
-/* 1. Блокируем стандартный браузерный "белый" свайп перезагрузки страницы */
+/* Отключаем дефолтные подпрыгивания браузера */
 .home-page {
   overscroll-behavior-y: contain;
   position: relative;
   width: 100%;
-  min-height: 100%;
-  box-sizing: border-box;
+  height: 100%;
 }
 
-/* Оболочка плавно выезжающего индикатора */
+/* 🌟 ИСПРАВЛЕНО: Спиннер зафиксирован относительно экрана и парит НАД контентом */
 .pull-to-refresh-loader {
-  position: absolute;
-  top: -46px; /* Полностью скрыт за верхней границей экрана */
+  position: fixed;
+  top: 56px; /* Выезжает ровно из-под нижней кромки нашей шапки App-Header */
   left: 50%;
-  transform: translateX(-50%);
+  /* Центрирование через translateX заменено на JS-совместимый translate3d для плавности */
   width: 38px;
   height: 38px;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 9999; /* Железно выше любых карточек контента */
   pointer-events: none;
-  transition: opacity 0.15s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.1s ease-out;
+  will-change: transform, opacity;
 }
 
 /* Круглый неоновый индикатор */
@@ -311,21 +310,16 @@
   align-items: center;
   justify-content: center;
   box-shadow:
-    0 4px 15px rgba(56, 189, 248, 0.25),
-    0 0 4px rgba(56, 189, 248, 0.4);
+    0 4px 12px rgba(56, 189, 248, 0.3),
+    0 0 8px rgba(56, 189, 248, 0.1);
 }
 
 .ptr-spinner-circle i {
-  color: #38bdf8; /* Наш акцентный голубой неон */
+  color: #38bdf8;
   font-size: 0.85rem;
 }
 
-/* Плавный возврат контента при деактивации жеста */
-.ptr-anim-content {
-  will-change: transform;
-}
-
-/* Состояние активного бесконечного вращения во время запроса к Postgres */
+/* Бесконечное кручение при запросе */
 .pull-to-refresh-loader.refreshing .ptr-spinner-circle i {
   animation: ptrSpinAxial 0.8s linear infinite;
 }
