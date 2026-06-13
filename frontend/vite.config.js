@@ -49,10 +49,22 @@ export default defineConfig({
       workbox: {
         globPatterns: ["**/*.{js,css,html,png,svg,ico}"], // Кэшируем фронтенд-ресурсы для работы офлайн
         runtimeCaching: [
-          // 🛑 СТРАТЕГИЯ NETWORK ONLY: Полный запрет на кэширование любых эндпоинтов базы данных
+          // 🔄 СМАРТ-КЭШ ИСТОРИИ АДМИНА: Стратегия Stale-While-Revalidate
+          {
+            urlPattern: ({ url }) => url.pathname === "/api/admin/visits/today",
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "admin-visits-today",
+              expiration: {
+                maxEntries: 1, // Нам нужен только 1 слепок текущего дня
+                maxAgeSeconds: 60 * 60 * 24, // Храним историю ровно сутки
+              },
+            },
+          },
+          // 🛑 СТРАТЕГИЯ NETWORK ONLY: Полный запрет на кэширование остальных эндпоинтов (авторизация, создание визитов)
           {
             urlPattern: ({ url }) => url.pathname.startsWith("/api/"),
-            handler: "NetworkOnly", // Запросы идут строго мимо кэша напрямую в сеть!
+            handler: "NetworkOnly", // Остальные запросы идут строго мимо кэша напрямую в сеть!
           },
           // 🔄 СТРАТЕГИЯ CACHE FIRST: Шрифты берем железно из локальной памяти
           {
