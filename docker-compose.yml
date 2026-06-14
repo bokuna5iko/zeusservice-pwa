@@ -7,7 +7,7 @@ services:
       resources:
         limits:
           memory: 1536M
-          cpus: '1.0'
+          cpus: "1.0"
     environment:
       POSTGRES_USER: zeus_user
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -48,7 +48,7 @@ services:
       resources:
         limits:
           memory: 384M
-          cpus: '0.25'
+          cpus: "0.25"
     env_file:
       - .env
     environment:
@@ -60,7 +60,11 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health > /dev/null 2>&1 || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://localhost:3000/api/health > /dev/null 2>&1 || exit 1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -79,7 +83,7 @@ services:
       resources:
         limits:
           memory: 128M
-          cpus: '0.25'
+          cpus: "0.25"
     environment:
       - SERVER_NAME=${SERVER_NAME}
       - SSL_CERT_PATH=${SSL_CERT_PATH}
@@ -111,7 +115,7 @@ services:
       resources:
         limits:
           memory: 1024M
-          cpus: '0.5'
+          cpus: "0.5"
     profiles: ["metabase"]
     ports:
       - "127.0.0.1:3001:3000"
