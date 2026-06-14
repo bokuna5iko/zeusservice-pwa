@@ -13,7 +13,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: zeus_auto_db
     ports:
-      - "127.0.0.1:5432:5432"
+      - "10.16.0.4:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - /opt/wal_archive:/var/lib/postgresql/wal_archive
