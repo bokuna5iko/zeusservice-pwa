@@ -1,27 +1,20 @@
 {
   "main": {
-    "id": "01301b56a0c4a3d0",
+    "id": "cfa2a0fa6a9f6760",
     "type": "split",
     "children": [
       {
-        "id": "61420bcacac7e78b",
+        "id": "d8c9a4a6ed6f7b6c",
         "type": "tabs",
         "children": [
           {
-            "id": "6a020f7ba691a74c",
+            "id": "c6a32a8d05138e2e",
             "type": "leaf",
             "state": {
-              "type": "canvas",
-              "state": {
-                "file": "Projzeus/🧠Brainstorm/Server logic/TODO/Без названия.canvas",
-                "viewState": {
-                  "x": 0,
-                  "y": 0,
-                  "zoom": 0
-                }
-              },
-              "icon": "lucide-layout-dashboard",
-              "title": "Без названия"
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
             }
           }
         ]
@@ -30,15 +23,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "2d6164c153fc17f4",
+    "id": "18a373cfae29333f",
     "type": "split",
     "children": [
       {
-        "id": "8862956339b9ddc1",
+        "id": "a3f891924b000cfe",
         "type": "tabs",
         "children": [
           {
-            "id": "2c58408373b07149",
+            "id": "8d09dbcccac066af",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -47,11 +40,11 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "Файловый менеджер"
+              "title": "Files"
             }
           },
           {
-            "id": "c43980557ffddc57",
+            "id": "2a1ca2d4c5a0919a",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -64,40 +57,39 @@
                 "sortOrder": "alphabetical"
               },
               "icon": "lucide-search",
-              "title": "Поиск"
+              "title": "Search"
             }
           },
           {
-            "id": "50bd4474d9b45f86",
+            "id": "e6ade2896ae8f6bd",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
               "state": {},
               "icon": "lucide-bookmark",
-              "title": "Закладки"
+              "title": "Bookmarks"
             }
           }
         ]
       }
     ],
     "direction": "horizontal",
-    "width": 431.5
+    "width": 300
   },
   "right": {
-    "id": "1a3aa3a7c0cf7e23",
+    "id": "6805bcb3588c6415",
     "type": "split",
     "children": [
       {
-        "id": "da0359f579081e47",
+        "id": "23903a98e17ab6c4",
         "type": "tabs",
         "children": [
           {
-            "id": "c373ef4cf7dec9ad",
+            "id": "c217d4effef14106",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Без названия.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -107,53 +99,67 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Обратные ссылки для Без названия"
+              "title": "Backlinks"
             }
           },
           {
-            "id": "46d154fc024f3a4b",
+            "id": "ef3d1cbe5396719a",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Без названия.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Исходящие ссылки из Без названия"
+              "title": "Outgoing links"
             }
           },
           {
-            "id": "032beaf97d86661c",
+            "id": "ac96035ee1eb7f29",
             "type": "leaf",
             "state": {
               "type": "tag",
               "state": {
                 "sortOrder": "frequency",
-                "useHierarchy": true
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-tags",
-              "title": "Теги"
+              "title": "Tags"
             }
           },
           {
-            "id": "861120d3a1227ead",
+            "id": "58c7c949e4aff9b9",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "cf3cc32dab52d4a3",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "Projzeus/Star of death.canvas",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Структура Star of death"
+              "title": "Outline"
             }
           },
           {
-            "id": "3992e861fc73d1a6",
+            "id": "0651971ece7aff76",
             "type": "leaf",
             "state": {
               "type": "git-view",
@@ -163,80 +169,71 @@
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Меню быстрого перехода": false,
-      "graph:Граф": false,
-      "canvas:Создать новый холст": false,
-      "daily-notes:Сегодняшняя заметка": false,
-      "templates:Вставить шаблон": false,
-      "command-palette:Открыть палитру команд": false,
-      "bases:Создать новую базу": false,
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "6a020f7ba691a74c",
+  "active": "c6a32a8d05138e2e",
   "lastOpenFiles": [
-    "Projzeus/🧠Brainstorm/Server logic/Technology/Status.md",
-    "Projzeus/🧠Brainstorm/Server logic/TODO/Без названия.canvas",
-    "Projzeus/🧠Brainstorm/Server logic/TODO",
-    "Projzeus/🌌Star of death.canvas",
-    "Projzeus/🧠Brainstorm/Server logic/Technology/Stagging Server.md",
-    "Projzeus/🧠Brainstorm/Server logic/Technology/Prod server.md",
-    "Projzeus/🧠Brainstorm/Server logic/Hardware/Hardware.canvas",
-    "Projzeus/🧠Brainstorm/AI/MIGRATION_PLAN.md",
-    "Projzeus/🧠Brainstorm/Server logic/Technology/Prod server 1.md",
-    "Projzeus/🧠Brainstorm/Server logic/Technology",
-    "Без названия 1.canvas",
+    "Тест.md",
+    "Как какать.md",
     "Без названия.canvas",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
-    "Projzeus/🧠Brainstorm/Server logic/Hardware",
-    "Projzeus/🧠Brainstorm/Server logic",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Data-Sync.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
-    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md",
+    "Без названия 1.canvas",
+    "repomix-output.xml",
+    "README.md",
+    "Projzeus/📚Docs/Tutorials/AI/LLM/5 Fundamental Rules.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/Front.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/Design&Logic ТЗ.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend/CSS design.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Telegram Bot Logic.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Metrics-Definition.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Hosting & Domain.md",
-    "Projzeus/🗺RoadMap/Migratiom on react + vite/Step 2.md",
-    "Projzeus/🗺RoadMap/Migratiom on react + vite/Step 1.md",
-    "Projzeus/📚Docs/React + Vite Pwa PLAN.md",
-    "Projzeus/📚Docs/Instruction.md",
-    "Projzeus/📚Docs/How use.md",
-    "Projzeus/Project-Structure.md",
-    "Projzeus/Dashboard.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Database.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/Data-Sync.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server/API.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic/PWAlog.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/UI logic.canvas",
-    "Projzeus/📚Docs/Tutorials/AI/How take task.md",
-    "Projzeus/📚Docs/Tutorials/AI/How speak.md",
-    "Projzeus/📚Docs/Tutorials/AI",
-    "Projzeus/📚Docs/Tutorials/porj react arh/Без названия.md",
-    "Projzeus/📚Docs/Tutorials/porj react arh",
-    "Projzeus/🗺RoadMap/Migratiom on react + vite",
-    "Projzeus/🧠Brainstorm/AI",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)/Buslog.md",
+    "Projzeus/🧠Brainstorm/Server logic/TODO/06.2026.canvas",
+    "Projzeus/🧠Brainstorm/Server logic/Technology/Status.md",
+    "Projzeus/🧠Brainstorm/Server logic/Technology/Stagging Server.md",
+    "Projzeus/🧠Brainstorm/Server logic/Technology/Prod server.md",
+    "Projzeus/🧠Brainstorm/Server logic/Hardware/Hardware.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas-v2.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/Untitled.canvas",
-    "Projzeus/🗺RoadMap/MVC/pop.canvas",
-    "Projzeus/🗺RoadMap/MVC",
-    "Projzeus/📚Docs/Tutorials/Errors in vscode",
-    "frontend/icons/ios/180.png",
-    "frontend/icons/android/zeuslogo-512x512.png",
-    "frontend/icons/android/zeuslogo-192x192.png",
-    "SDLC-stages 1.png",
-    "QA/dsd2da223.png",
-    "Pasted image 20251011062228.png",
-    "dsd2das2.png",
-    "dsd2das2 1.png",
-    "dsd2da223 1.png",
-    "Pasted image 20251011060509.png"
+    "Projzeus/🗺RoadMap/Versions/v0.2/Readme-v0.2.md",
+    "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
+    "Projzeus/🗺RoadMap/Versions/v0.1/zeus-auto-pwa-canvas.canvas",
+    "Projzeus/🗺RoadMap/Versions/v0.1/Readme-v0.1.md",
+    "Projzeus/📚Docs/Tutorials/porj react arh/Без названия.md",
+    "Projzeus/📚Docs/Tutorials/Errors in vscode/node server.js.md",
+    "Projzeus/📚Docs/Tutorials/Git guide/🛠 Guide git for OBS&VSCODE.md",
+    "Projzeus/📚Docs/Tutorials/Git guide/Workflow&Golden Cycle.md",
+    "Projzeus/📚Docs/Tutorials/Git guide/Obsidian + GIT.md",
+    "Projzeus/📚Docs/Tutorials/API Tester/Получение токена через Talend API Tester.md",
+    "Projzeus/📚Docs/Tutorials/AI/LLM",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Server",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)",
+    "Projzeus/🧠Brainstorm/Server logic/TODO",
+    "Projzeus/🧠Brainstorm/Server logic/Technology",
+    "Projzeus/🧠Brainstorm/Server logic/Hardware",
+    "Projzeus/🗺RoadMap/Versions/v0.2"
   ]
 }
