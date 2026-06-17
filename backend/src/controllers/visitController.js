@@ -132,23 +132,26 @@ exports.getUserHistory = async (req, res) => {
 // 🌟 ДОБАВЛЕНО: Получение истории визитов за текущие сутки
 exports.getAdminVisitsToday = async (req, res) => {
   try {
-    // Делаем выборку визитов, оформленных строго с 00:00:00 текущего дня
+    // 🌟 ИСПРАВЛЕНО: Добавили выборку поля v.user_id из таблицы visits!
     const result = await db.query(
       `SELECT 
         v.id AS visit_id, 
+        v.user_id, 
         v.service_type AS service_name, 
         v.price, 
         v.created_at, 
-        u.name AS client_name, 
-        u.phone AS client_phone
+        u.name, 
+        u.phone,
+        u.role,
+        v.visit_number,
+        v.payment_type,
+        u.total_visits
        FROM visits v
        LEFT JOIN users u ON v.user_id = u.id
        WHERE v.created_at >= CURRENT_DATE
        ORDER BY v.created_at DESC`,
     );
 
-    // Отправляем массив. Express автоматически сгенерирует заголовок ETag.
-    // Если данные в БД не изменились, нативный механизм вернет статус 304 Not Modified.
     res.json(result.rows);
   } catch (err) {
     console.error("Ошибка в контроллере getAdminVisitsToday:", err);
