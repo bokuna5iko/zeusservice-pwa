@@ -38,19 +38,16 @@ exports.getTodayDashboardStats = async (req, res) => {
     const loyaltyPercentage =
       total_unique > 0 ? Math.round((loyal_unique / total_unique) * 100) : 0;
 
-    // 5. ГРАФИК: Почасовая группировка за сегодня
-    // (🌟 ИСПРАВЛЕНО: Применяем заменяемый timezone локального сервера локально, чтобы часы совпадали)
+    // 5. ГРАФИК: Почасовая группировка за сегодня с жестким приведением к Якутскому времени
     const graphRes = await db.query(`
       SELECT 
-        EXTRACT(HOUR FROM created_at)::int AS visit_hour, 
+        EXTRACT(HOUR FROM created_at AT TIME ZONE 'Asia/Yakutsk')::int AS visit_hour, 
         COUNT(*)::int AS total_cars
       FROM visits
       WHERE created_at >= CURRENT_DATE
       GROUP BY visit_hour
       ORDER BY visit_hour ASC;
     `);
-    // ⚠️ Примечание: Если у тебя часовой пояс не Якутск (+9), замени 'Asia/Yakutsk'
-    // на свой регион, например 'Europe/Moscow', чтобы часы на графике не плыли!
 
     // Форматируем массив под график Recharts
     const hourlyGraph = [];
