@@ -42,7 +42,7 @@ exports.getTodayDashboardStats = async (req, res) => {
     // (🌟 ИСПРАВЛЕНО: Применяем заменяемый timezone локального сервера локально, чтобы часы совпадали)
     const graphRes = await db.query(`
       SELECT 
-        EXTRACT(HOUR FROM created_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Yakutsk')::int AS visit_hour, 
+        EXTRACT(HOUR FROM created_at)::int AS visit_hour, 
         COUNT(*)::int AS total_cars
       FROM visits
       WHERE created_at >= CURRENT_DATE

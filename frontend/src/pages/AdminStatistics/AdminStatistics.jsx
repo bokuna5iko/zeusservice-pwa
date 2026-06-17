@@ -72,7 +72,26 @@ const AdminStatistics = () => {
     return <div className="admin-stats-loading">Загрузка аналитики...</div>;
   }
   // Подготовка данных для графика Recharts (заполнение дефолтных рабочих часов, если на бэке пусто)
-  const chartData = stats?.hourlyGraph || [];
+  const chartData = (stats?.hourlyGraph || []).map((item) => {
+    // Вытаскиваем числовое значение часа из строки бэка "XX:00"
+    const serverHour = parseInt(item.hour.split(":")[0], 10);
+
+    // Прибавляем 6 часов разницы между Москвой и Якутском.
+    // % 24 нужен, чтобы время не улетало выше 24 часов (например, 22 + 6 = 28 -> превратится в 4 часа утра)
+    const localHour = (serverHour + 6) % 24;
+
+    // Форматируем обратно в красивую строку "XX:00"
+    const formattedHour = `${String(localHour).padStart(2, "0")}:00`;
+
+    return {
+      ...item,
+      hour: formattedHour, // Перезаписываем ось X правильным местным временем
+      cars: item.cars,
+    };
+  });
+
+  // Пересортируем массив по часам, чтобы после сдвига сетка от 08:00 до 22:00 не перемешалась
+  chartData.sort((a, b) => a.hour.localeCompare(b.hour));
 
   return (
     <div className="admin-stats-page">
