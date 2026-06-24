@@ -3,164 +3,144 @@ import React, { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import "./LoginPage.css";
 
-// 🌟 Вспомогательная функция форматирования строки в маску +7 (XXX) XXX-XX-XX
-const formatDigits = (digits) => {
-  if (digits.length <= 1) return "+7 (";
-
-  let res = "+7 (";
-  res += digits.substring(1, 4);
-  if (digits.length > 4) res += ") " + digits.substring(4, 7);
-  if (digits.length > 7) res += "-" + digits.substring(7, 9);
-  if (digits.length > 9) res += "-" + digits.substring(9, 11);
-
-  return res;
-};
-
-const LoginPage = () => {
+// 🌟 ИСПРАВЛЕНО: Принимаем пропсы PWA-обновлений из App.jsx
+const LoginPage = ({
+  needRefresh,
+  showHintBanner,
+  setShowHintBanner,
+  isSpinning,
+  handlePwaUpdate,
+}) => {
   const [isRegister, setIsRegister] = useState(false); // false = Вход, true = Регистрация
-  const [phone, setPhone] = useState("+7 ("); // Стартовое состояние с маской
+  const [authMethod, setAuthMethod] = useState("login"); // 'login' = по логину, 'phone' = по телефону
+
+  // Стейты под систему авторизации
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [shakeInput, setShakeInput] = useState(false); // Стейт для триггера анимации ошибки Shake
+  const [phone, setPhone] = useState(""); // Опциональный телефон для регистрации
 
   const { login, register, loading, error } = useContext(AuthContext);
-
-  // Извлечение чистых цифр из маски для валидации и отправки на бэк
-  const getRawDigits = (formattedStr) => {
-    return formattedStr.replace(/\D/g, "");
-  };
-
-  // Метод запуска анимации покачивания инпута при ошибке
-  const triggerErrorAnimation = () => {
-    setShakeInput(true);
-    setTimeout(() => {
-      setShakeInput(false);
-    }, 500); // Сбрасываем через полсекунды
-  };
-
-  // 1. Обработка ввода (Фильтр символов, маска, ограничение длины)
-  const handlePhoneChange = (e) => {
-    const input = e.target.value;
-    let digits = input.replace(/\D/g, ""); // Жесткий символьный фильтр (только цифры)
-
-    // Гарантируем, что строка всегда начинается строго с семерки
-    if (digits.length === 0 || !digits.startsWith("7")) {
-      digits = "7" + digits.replace(/^8/, ""); // Если стерли или ввели 8 — подменяем на 7
-    }
-
-    // Ограничение длины: строго 11 цифр
-    digits = digits.slice(0, 11);
-
-    setPhone(formatDigits(digits));
-  };
-
-  // 2. Блокировка удаления префикса +7 через Backspace
-  const handleKeyDown = (e) => {
-    if (e.key === "Backspace" && e.target.selectionStart <= 4) {
-      e.preventDefault();
-    }
-  };
-
-  // 3. Запрет перемещения курсора левее префикса +7 при клике или фокусе
-  const handleCursorConstraint = (e) => {
-    if (e.target.selectionStart < 4) {
-      e.target.setSelectionRange(phone.length, phone.length);
-    }
-  };
-
-  // 4. Триггер ошибки при потере фокуса (Incomplete Blur)
-  const handleBlur = () => {
-    const rawLen = getRawDigits(phone).length;
-    if (rawLen > 1 && rawLen < 11) {
-      triggerErrorAnimation();
-    }
-  };
-
-  // 5. Умная обработка вставки из буфера обмена (Paste)
-  const handlePaste = (e) => {
-    e.preventDefault();
-    const pastedData = e.clipboardData.getData("text");
-    let cleaned = pastedData.replace(/\D/g, ""); // Чистим от скобок, пробелов и тире
-
-    if (cleaned.startsWith("8")) {
-      cleaned = "7" + cleaned.substring(1);
-    } else if (!cleaned.startsWith("7")) {
-      cleaned = "7" + cleaned;
-    }
-
-    cleaned = cleaned.slice(0, 11);
-    setPhone(formatDigits(cleaned));
-  };
-
-  // Кнопка-крестик полной очистки
-  const handleClearInput = () => {
-    setPhone("+7 (");
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const rawPhone = getRawDigits(phone);
-
-    // Валидация перед отправкой
-    if (rawPhone.length < 11) {
-      triggerErrorAnimation();
-      return;
-    }
-
     if (isRegister) {
       if (register) {
-        register({ name, phone: rawPhone });
-      } else {
-        console.log("Отправка регистрации:", { name, phone: rawPhone });
+        register({ name, username, password, phone: phone || null });
       }
     } else {
-      login({ phone: rawPhone }); // Отправляем чистые 11 цифр на сервер
+      if (login) {
+        login({ username, password });
+      }
     }
   };
 
-  const isPhoneComplete = getRawDigits(phone).length === 11;
-  // Кнопка активна только когда телефон заполнен полностью (+ имя в случае регистрации)
+  // Валидация полей
   const isFormValid = isRegister
-    ? isPhoneComplete && name.trim().length > 0
-    : isPhoneComplete;
+    ? name.trim().length > 0 &&
+      username.trim().length > 0 &&
+      password.length >= 4
+    : username.trim().length > 0 && password.length > 0;
 
   return (
-    <div className="login-page">
-      <div className="page-center-container">
-        <div className="login-card content-group-box">
-          <div className="fill-zone">
-            <h1 className="login-logo">
-              ZEUS <span>AUTO</span>
-            </h1>
+    <div
+      className="login-page-wrapper"
+      style={{ width: "100%", height: "100%", position: "relative" }}
+    >
+      {/* 🌟 ВСПЛЫВАЮЩАЯ UX-ПОДСКАЗКА ДЛЯ СТРАНИЦЫ ЛОГИНА */}
+      <div
+        className={`pwa-smart-hint-banner ${showHintBanner ? "slide-down" : ""}`}
+      >
+        <i className="fas fa-info-circle"></i>
+        <span>Доступна новая версия бизнеса. Обновитесь!</span>
+      </div>
 
-            <div className="auth-toggle-tabs">
-              <button
-                type="button"
-                className={`toggle-tab ${!isRegister ? "active" : ""}`}
-                onClick={() => setIsRegister(false)}
-                disabled={loading}
-              >
-                Вход
-              </button>
-              <button
-                type="button"
-                className={`toggle-tab ${isRegister ? "active" : ""}`}
-                onClick={() => setIsRegister(true)}
-                disabled={loading}
-              >
-                Регистрация
-              </button>
+      {/* 🌟 КНОПКА ОБНОВЛЕНИЯ: Позиционируется абсолютно в углу карточки или страницы */}
+      <div className="login-pwa-anchor">
+        <button
+          type="button"
+          className={`global-smart-update-btn ${needRefresh ? "update-available" : ""} ${isSpinning ? "rapid-spinning" : ""}`}
+          disabled={!needRefresh || isSpinning}
+          onClick={handlePwaUpdate}
+          title={
+            needRefresh
+              ? "Доступно свежее обновление!"
+              : "Приложение актуальной версии"
+          }
+        >
+          <i className="fas fa-sync-alt"></i>
+          {needRefresh && <span className="notification-pulsing-dot"></span>}
+        </button>
+      </div>
+
+      <div className="login-card content-group-box">
+        <div className="fill-zone">
+          <h1 className="login-logo">
+            ZEUS <span>AUTO</span>
+          </h1>
+
+          {/* ВЕРХНИЕ ТАБЫ: Вход / Регистрация */}
+          <div className="auth-toggle-tabs">
+            <button
+              type="button"
+              className={`toggle-tab ${!isRegister ? "active" : ""}`}
+              onClick={() => setIsRegister(false)}
+              disabled={loading}
+            >
+              Вход
+            </button>
+            <button
+              type="button"
+              className={`toggle-tab ${isRegister ? "active" : ""}`}
+              onClick={() => setIsRegister(true)}
+              disabled={loading}
+            >
+              Регистрация
+            </button>
+          </div>
+
+          {/* ВНУТРЕННИЕ ПЕРЕКЛЮЧАТЕЛИ: По телефону / По логину */}
+          <div className="method-toggle-container">
+            <button
+              type="button"
+              className={`method-btn ${authMethod === "login" ? "selected" : ""}`}
+              onClick={() => setAuthMethod("login")}
+            >
+              <i className="fas fa-key"></i> По логину
+            </button>
+            <button
+              type="button"
+              className={`method-btn ${authMethod === "phone" ? "selected" : ""}`}
+              onClick={() => setAuthMethod("phone")}
+            >
+              <i className="fas fa-phone"></i> По телефону
+            </button>
+          </div>
+
+          {error && <div className="login-error-msg">{error}</div>}
+
+          {/* Если выбран телефон — блокируем вход */}
+          {authMethod === "phone" ? (
+            <div className="phone-blocked-notice">
+              <div className="blocked-icon-box">
+                <i className="fas fa-lock"></i>
+              </div>
+              <h3>Вход по телефону недоступен</h3>
+              <p>
+                Авторизация через СМС временно отключена технической поддержкой.
+                Пожалуйста, используйте вкладку <strong>«По логину»</strong>.
+              </p>
             </div>
-
-            <p className="login-subtitle">
-              {isRegister
-                ? "Заполните данные для создания аккаунта"
-                : "Введите номер телефона для входа"}
-            </p>
-
-            {error && <div className="login-error-msg">{error}</div>}
-
+          ) : (
+            /* Если выбран логин — выводим форму */
             <form onSubmit={handleSubmit} className="login-form">
+              <p className="login-subtitle">
+                {isRegister
+                  ? "Заполните данные для создания аккаунта"
+                  : "Введите учетные данные для доступа в систему"}
+              </p>
+
               {isRegister && (
                 <div className="input-wrapper">
                   <i className="fas fa-user"></i>
@@ -175,37 +155,44 @@ const LoginPage = () => {
                 </div>
               )}
 
-              {/* Поле телефона с тройной UX-защитой и анимацией shake-error */}
-              <div
-                className={`input-wrapper ${shakeInput ? "shake-error" : ""}`}
-              >
-                <i className="fas fa-phone"></i>
+              <div className="input-wrapper">
+                <i className="fas fa-at"></i>
                 <input
-                  type="tel"
-                  inputMode="tel" // Жесткий вызов исключительно цифровой клавиатуры на iOS/Android
-                  value={phone}
-                  onChange={handlePhoneChange}
-                  onKeyDown={handleKeyDown}
-                  onClick={handleCursorConstraint}
-                  onFocus={handleCursorConstraint}
-                  onBlur={handleBlur}
-                  onPaste={handlePaste}
+                  type="text"
+                  placeholder="Логин (username)"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   disabled={loading}
+                  autoComplete="username"
                   required
                 />
-
-                {/* Иконка-крестик очистки инпута (появляется, когда ввели что-то кроме +7) */}
-                {getRawDigits(phone).length > 1 && (
-                  <button
-                    type="button"
-                    className="clear-input-cross"
-                    onClick={handleClearInput}
-                    disabled={loading}
-                  >
-                    <i className="fas fa-times"></i>
-                  </button>
-                )}
               </div>
+
+              <div className="input-wrapper">
+                <i className="fas fa-lock"></i>
+                <input
+                  type="password"
+                  placeholder="Пароль"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  autoComplete="current-password"
+                  required
+                />
+              </div>
+
+              {isRegister && (
+                <div className="input-wrapper">
+                  <i className="fas fa-phone"></i>
+                  <input
+                    type="text"
+                    placeholder="Телефон (необязательно)"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+              )}
 
               <button
                 type="submit"
@@ -219,7 +206,7 @@ const LoginPage = () => {
                     : "Войти"}
               </button>
             </form>
-          </div>
+          )}
         </div>
       </div>
     </div>
