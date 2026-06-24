@@ -1,120 +1,157 @@
-const db = require('../config/db');
-const jwt = require('jsonwebtoken');
+// backend/src/controllers/authController.js
+const db = require("../config/db");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs"); // 🌟 ДОБАВЛЕНО: Хеширование паролей
 
+// 1. АВТОРИЗАЦИЯ ЧЕРЕЗ ЛОГИН И ПАРОЛЬ
 exports.login = async (req, res) => {
-    try {
-        const { phone } = req.body;
-        const result = await db.query('SELECT * FROM users WHERE phone = $1', [phone]);
-        const user = result.rows[0];
+  try {
+    const { username, password } = req.body;
 
-        if (!user) {
-            return res.status(404).json({ message: 'Пользователь не найден' });
-        }
-
-        const token = jwt.sign(
-            { id: user.id, role: user.role },
-            process.env.JWT_SECRET || 'secret123',
-            { expiresIn: '24h' }
-        );
-
-        // Отправляем расширенный объект пользователя
-        res.json({
-            accessToken: token,
-            user: {
-                id: user.id,
-                name: user.name,
-                phone: user.phone,
-                role: user.role,
-                bonus_points: user.bonus_points,
-                visit_count: user.visit_count, 
-                total_visits: user.total_visits,
-                created_at: user.created_at
-            }
-        });
-    } catch (err) {
-        console.error('Ошибка в authController:', err);
-        res.status(500).json({ message: 'Ошибка сервера' });
+    // Валидация входных данных
+    if (!username || !password) {
+      return res.status(400).json({ message: "Логин и пароль обязательны" });
     }
-};;
 
-// 2. ПОЛУЧЕНИЕ ПРОФИЛЯ
-// Эта функция вызывается фронтендом (api.getProfile) при каждой загрузке страницы
-exports.getMe = async (req, res) => {
-    try {
-        // req.user.id берется из middleware авторизации (который проверяет токен)
-        const result = await db.query(
-            'SELECT id, phone, name, role, visit_count, total_visits, created_at FROM users WHERE id = $1',
-            [req.user.id]
-        );
-        
-        const user = result.rows[0];
+    // Ищем пользователя по username
+    const result = await db.query("SELECT * FROM users WHERE username = $1", [
+      username.trim(),
+    ]);
+    const user = result.rows[0];
 
-        if (!user) {
-            return res.status(404).json({ message: 'Пользователь не найден' });
-        }
-
-        // Отправляем полные данные пользователя на фронтенд
-        res.json({
-            id: user.id,
-            name: user.name,
-            phone: user.phone,
-            role: user.role,
-            visit_count: user.visit_count,   // Для кружочков (0-7)
-            total_visits: user.total_visits, // Для общей статистики в профиле
-            last_visit: user.last_visit,      // Дата последнего заезда
-            created_at: user.created_at
-        });
-    } catch (err) {
-        console.error('Ошибка получения профиля:', err);
-        res.status(500).json({ message: 'Ошибка сервера' });
+    if (!user) {
+      return res.status(404).json({ message: "Пользователь не найден" });
     }
+
+    // Проверяем, есть ли хэш пароля у пользователя (для старых записей)
+    if (!user.password_hash) {
+      return res
+        .status(400)
+        .json({ message: "Для данного аккаунта пароль не установлен" });
+    }
+
+    // Сверяем введенный пароль с зашифрованным хэшем из БД
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Неверный логин или пароль" });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      process.env.JWT_SECRET || "secret123",
+      { expiresIn: "24h" },
+    );
+
+    // Отправляем расширенный объект пользователя
+    res.json({
+      accessToken: token,
+      user: {
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        phone: user.phone,
+        role: user.role,
+        visit_count: user.visit_count,
+        total_visits: user.total_visits,
+        created_at: user.created_at,
+      },
+    });
+  } catch (err) {
+    console.error("Ошибка в authController (login):", err);
+    res.status(500).json({ message: "Ошибка сервера" });
+  }
 };
 
-// 3. РЕГИСТРАЦИЯ НОВОГО ПОЛЬЗОВАТЕЛЯ (Исправленная версия)
-exports.register = async (req, res) => {
-    try {
-        const { name, phone } = req.body;
+// 2. ПОЛУЧЕНИЕ ПРОФИЛЯ
+exports.getMe = async (req, res) => {
+  try {
+    const result = await db.query(
+      "SELECT id, username, phone, name, role, visit_count, total_visits, created_at FROM users WHERE id = $1",
+      [req.user.id],
+    );
 
-        if (!name || !phone) {
-            return res.status(400).json({ message: 'Имя и номер телефона обязательны' });
-        }
+    const user = result.rows[0];
 
-        const candidate = await db.query('SELECT * FROM users WHERE phone = $1', [phone]);
-        if (candidate.rows[0]) {
-            return res.status(400).json({ message: 'Пользователь с таким номером уже существует' });
-        }
-
-        // 🌟 ИСПРАВЛЕНИЕ: Убрали bonus_points из структуры INSERT, так как столбца нет в БД
-        const result = await db.query(
-            `INSERT INTO users (name, phone, role, visit_count, total_visits) 
-             VALUES ($1, $2, $3, $4, $5) 
-             RETURNING *`,
-            [name, phone, 'user', 0, 0]
-        );
-        const newUser = result.rows[0];
-
-        const token = jwt.sign(
-            { id: newUser.id, role: newUser.role },
-            process.env.JWT_SECRET || 'secret123',
-            { expiresIn: '24h' }
-        );
-
-        res.status(201).json({
-            accessToken: token,
-            user: {
-                id: newUser.id,
-                name: newUser.name,
-                phone: newUser.phone,
-                role: newUser.role,
-                bonus_points: 0, // 🌟 Возвращаем просто 0 фронтенду, чтобы не было undefined
-                visit_count: newUser.visit_count, 
-                total_visits: newUser.total_visits,
-                created_at: newUser.created_at
-            }
-        });
-
-    } catch (err) {
-        console.error('Ошибка в authController (register):', err);
-        res.status(500).json({ message: 'Ошибка сервера при регистрации' });
+    if (!user) {
+      return res.status(404).json({ message: "Пользователь не найден" });
     }
+
+    res.json({
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      phone: user.phone,
+      role: user.role,
+      visit_count: user.visit_count,
+      total_visits: user.total_visits,
+      created_at: user.created_at,
+    });
+  } catch (err) {
+    console.error("Ошибка получения профиля:", err);
+    res.status(500).json({ message: "Ошибка сервера" });
+  }
+};
+
+// 3. РЕГИСТРАЦИЯ С ХЕШИРОВАНИЕМ ПАРОЛЯ (Исправлено: замена NULL телефона на текстовую заглушку)
+exports.register = async (req, res) => {
+  try {
+    const { name, username, password, phone } = req.body;
+
+    if (!name || !username || !password) {
+      return res
+        .status(400)
+        .json({ message: "Имя, логин и пароль обязательны" });
+    }
+
+    // Проверяем уникальность логина
+    const candidate = await db.query(
+      "SELECT * FROM users WHERE username = $1",
+      [username.trim()],
+    );
+    if (candidate.rows[0]) {
+      return res
+        .status(400)
+        .json({ message: "Пользователь с таким логином уже существует" });
+    }
+
+    // Хешируем пароль перед записью в БД
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // 🌟 ИСПРАВЛЕНО: Если телефон не передан или пришла пустая строка, пишем 'Нет телефона'
+    const safePhone =
+      phone && phone.trim().length > 0 ? phone.trim() : "Нет телефона";
+
+    // Сохраняем нового пользователя в базу данных
+    const result = await db.query(
+      `INSERT INTO users (name, username, password_hash, phone, role, visit_count, total_visits, created_at) 
+             VALUES ($1, $2, $3, $4, $5, 0, 0, NOW()) 
+             RETURNING *`,
+      [name.trim(), username.trim(), hashedPassword, safePhone, "user"],
+    );
+    const newUser = result.rows[0];
+
+    const token = jwt.sign(
+      { id: newUser.id, role: newUser.role },
+      process.env.JWT_SECRET || "secret123",
+      { expiresIn: "24h" },
+    );
+
+    res.status(201).json({
+      accessToken: token,
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        username: newUser.username,
+        phone: newUser.phone,
+        role: newUser.role,
+        visit_count: newUser.visit_count,
+        total_visits: newUser.total_visits,
+        created_at: newUser.created_at,
+      },
+    });
+  } catch (err) {
+    console.error("Ошибка в authController (register):", err);
+    res.status(500).json({ message: "Ошибка сервера при регистрации" });
+  }
 };

@@ -84,8 +84,15 @@ function App() {
   if (!user) {
     return (
       <div className="app-shell">
-        <main className="app-main">
-          <LoginPage />
+        <main className="app-main" style={{ position: "relative" }}>
+          {/* 🌟 ПЕРЕДАЕМ СМАРТ-ОБНОВЛЕНИЯ ВНУТРЬ СТРАНИЦЫ ЛОГИНА */}
+          <LoginPage
+            needRefresh={needRefresh}
+            showHintBanner={showHintBanner}
+            setShowHintBanner={setShowHintBanner}
+            isSpinning={isSpinning}
+            handlePwaUpdate={handlePwaUpdate}
+          />
         </main>
       </div>
     );

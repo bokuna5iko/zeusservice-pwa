@@ -72,7 +72,7 @@ const AdminStatistics = () => {
     return <div className="admin-stats-loading">Загрузка аналитики...</div>;
   }
   // 🌟 ИСПРАВЛЕНО: Умная корректировка часового пояса (Сервер МСК -> Админ Якутск)
-  const chartData = stats?.hourlyGraph || [];
+  const chartData = stats?.hourlyGraph ? [...stats.hourlyGraph] : [];
 
   // Пересортируем массив по часам, чтобы после сдвига сетка от 08:00 до 22:00 не перемешалась
   chartData.sort((a, b) => a.hour.localeCompare(b.hour));
