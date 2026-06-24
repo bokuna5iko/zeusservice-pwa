@@ -1,4 +1,4 @@
-services:
+ervices:
   db:
     image: postgres:15-alpine
     container_name: zeus_db
@@ -63,7 +63,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -qO- http://localhost:3000/api/health > /dev/null 2>&1 || exit 1",
+          "wget -qO- http://localhost:3000/api/ping > /dev/null 2>&1 || exit 1",
         ]
       interval: 10s
       timeout: 5s
@@ -97,7 +97,6 @@ services:
       - ./frontend/dist:/usr/share/nginx/html:ro
       - ./certbot/www:/var/www/certbot:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
-      - ./nginx/extra:/etc/nginx/conf.d/extra:ro
     command: /entrypoint.sh
     depends_on:
       backend:
@@ -107,37 +106,6 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-  metabase:
-    image: metabase/metabase:v0.53.2
-    container_name: zeus_metabase
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 1024M
-          cpus: "0.5"
-    profiles: ["metabase"]
-    ports:
-      - "127.0.0.1:3001:3000"
-    environment:
-      MB_DB_TYPE: postgres
-      MB_DB_DBNAME: metabase_db
-      MB_DB_PORT: 5432
-      MB_DB_USER: zeus_user
-      MB_DB_PASS: ${DB_PASSWORD}
-      MB_DB_HOST: db
-      MB_ENCRYPTION_SECRET_KEY: ${METABASE_SECRET}
-      JAVA_OPTS: "-Xmx768m -Xms384m"
-    depends_on:
-      - db
-    volumes:
-      - metabase_data:/metabase-data
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
 volumes:
   postgres_data:
-  metabase_data:
