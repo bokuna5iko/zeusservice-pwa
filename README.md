@@ -83,3 +83,4 @@ window.addEventListener("online", syncOfflineData);
 
 Проверка
 123
+тест2
