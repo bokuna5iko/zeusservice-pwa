@@ -73,12 +73,9 @@ exports.verifyUserById = async (req, res) => {
     const timeDifference = Math.abs(currentTimestamp - qrTimestamp);
 
     if (timeDifference > 180) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "QR-код устарел. Попросите клиента обновить Главную страницу.",
-        });
+      return res.status(400).json({
+        message: "QR-код устарел. Попросите клиента обновить Главную страницу.",
+      });
     }
 
     // 3. ПРОВЕРКА ПОДЛИННОСТИ ХЭША (SHA-256)
@@ -90,11 +87,9 @@ exports.verifyUserById = async (req, res) => {
       .digest("hex");
 
     if (serverHash !== incomingHash) {
-      return res
-        .status(403)
-        .json({
-          message: "Критическая ошибка безопасности: Невалидный QR-код",
-        });
+      return res.status(403).json({
+        message: "Критическая ошибка безопасности: Невалидный QR-код",
+      });
     }
 
     // 4. ЕСЛИ ВСЁ ОТЛИЧНО — ИЩЕМ ПОЛЬЗОВАТЕЛЯ В БАЗЕ
@@ -148,20 +143,36 @@ exports.getAllServices = async (req, res) => {
   }
 };
 
-// 4. Зачисление визита (для Калькулятора)
+// 4. Зачисление визита (для Калькулятора и QR-сканера) с поддержкой кассы и Socket.io
 exports.createVisit = async (req, res) => {
   try {
-    // 1. Принимаем параметры, которые РЕАЛЬНО отправляет калькулятор
+    // Принимаем параметры, которые отправляет калькулятор
     const { userId, serviceId, payment_type, is_guest, manual_price } =
       req.body;
 
     // Начинаем транзакцию через прямой db.query
     await db.query("BEGIN");
 
+    // 🌟 1. ПРОВЕРКА АКТИВНОЙ СМЕНЫ ПУЛЬТА УПРАВЛЕНИЯ
+    // Ищем открытую смену на текущую дату
+    const shiftResult = await db.query(
+      "SELECT id, status FROM work_shifts WHERE shift_date = CURRENT_DATE AND status = 'open'",
+    );
+    const activeShift = shiftResult.rows[0];
+
+    if (!activeShift) {
+      await db.query("ROLLBACK");
+      return res.status(400).json({
+        message:
+          "🚨 Ошибка зачисления: Операционная смена на сегодня не открыта администратором на Пульте!",
+      });
+    }
+
     let finalUserId = null;
     let currentVisitNumber = null;
     let serviceName = "Нестандартная услуга";
     let finalPrice = manual_price || 0;
+    let loyaltyStep = 1; // Шаг лояльности для вывода на пульте
 
     // 2. Если передан serviceId — подтягиваем название и цену услуги из справочника
     if (serviceId) {
@@ -186,7 +197,7 @@ exports.createVisit = async (req, res) => {
     // 3. СЦЕНАРИЙ 1: Полноценный клиент (НЕ ГОСТЬ)
     if (!is_guest) {
       const userResult = await db.query(
-        "SELECT id, visit_count, total_visits FROM users WHERE id = $1",
+        "SELECT id, name, phone, car_brand, visit_count, total_visits FROM users WHERE id = $1",
         [userId],
       );
 
@@ -203,8 +214,9 @@ exports.createVisit = async (req, res) => {
       // Считаем номер текущего визита
       const currentVisitCount = parseInt(user.visit_count || 0);
       currentVisitNumber = currentVisitCount + 1;
+      loyaltyStep = currentVisitNumber;
 
-      // Логика скидок
+      // Логика скидок автомойки
       if (!manual_price) {
         if (currentVisitNumber === 4) {
           finalPrice = Math.round(finalPrice * 0.8); // Скидка 20%
@@ -221,19 +233,34 @@ exports.createVisit = async (req, res) => {
       // Обновляем счетчики пользователя
       await db.query(
         `UPDATE users 
-                 SET visit_count = $1, 
-                     total_visits = COALESCE(total_visits, 0) + 1 
-                 WHERE id = $2`,
+         SET visit_count = $1, 
+             total_visits = COALESCE(total_visits, 0) + 1 
+         WHERE id = $2`,
         [nextVisitCount, finalUserId],
       );
     }
 
-    // 4. СЦЕНАРИЙ 2: Гость (is_guest = true)
+    // 🌟 4. ОПРЕДЕЛЕНИЕ ТИПА КАССЫ И КОРРЕКТИРОВКА ФИНАНСОВЫХ ИТОГОВ СМЕНЫ
+    // В зависимости от способа расчета плюсуем выручку в нужную колонку work_shifts
+    const isCash = payment_type === "Наличные" || payment_type === "Нал";
+    const updateColumn = isCash ? "cash_total" : "card_total";
 
-    // Вставляем запись в таблицу визитов
     await db.query(
-      `INSERT INTO visits (user_id, service_id, service_type, price, visit_number, payment_type, admin_id, amount, created_at) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())`,
+      `UPDATE work_shifts 
+       SET ${updateColumn} = ${updateColumn} + $1 
+       WHERE id = $2`,
+      [finalPrice, activeShift.id],
+    );
+
+    // 🌟 5. СОХРАНЕНИЕ ВИЗИТА С УКАЗАНИЕМ SHIFT_ID И РУЧНЫХ ПАРАМЕТРОВ
+    const insertVisitResult = await db.query(
+      `INSERT INTO visits (
+        user_id, service_id, service_type, price, visit_number, 
+        payment_type, admin_id, amount, created_at, shift_id,
+        manual_car_brand, manual_client_name, manual_client_phone, manual_service_name, manual_payment_type
+      ) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9, $10, $11, $12, $13, $14)
+      RETURNING id, created_at`,
       [
         finalUserId,
         serviceId || null,
@@ -243,10 +270,53 @@ exports.createVisit = async (req, res) => {
         payment_type,
         req.user.id, // ID админа, который зачислил визит
         finalPrice,
+        activeShift.id, // Привязка к открытой смене дня
+        is_guest ? "Гостевой авто" : null, // manual_car_brand
+        is_guest ? "Гость" : null, // manual_client_name
+        null, // manual_client_phone
+        serviceName, // manual_service_name
+        payment_type, // manual_payment_type
       ],
     );
 
+    const newVisitId = insertVisitResult.rows[0].id;
+    const newVisitCreatedAt = insertVisitResult.rows[0].created_at;
+
+    // Коммитим транзакцию, чтобы данные железно легли в PostgreSQL
     await db.query("COMMIT");
+
+    // 🌟 6. МГНОВЕННАЯ СИНХРОНИЗАЦИЯ ЧЕРЕЗ WEBSOCKETS (SOCKET.IO)
+    // Достаем инстанс 'io', который мы привязали в server.js, и пушим событие на пульт админа
+    const io = req.app.get("io");
+    if (io) {
+      // Подтягиваем данные для красивой вставки строки таблицы фронтенда
+      const clientInfo = is_guest
+        ? { name: "Гость", phone: "—", car_brand: "—" }
+        : req.body.clientData || {};
+
+      const socketPayload = {
+        id: newVisitId,
+        created_at: newVisitCreatedAt,
+        price: finalPrice,
+        loyalty_step: loyaltyStep,
+        manual_car_brand: clientInfo.car_brand || "—",
+        manual_client_name: clientInfo.name || "Гость",
+        manual_client_phone: clientInfo.phone || "—",
+        manual_service_name: serviceName,
+        manual_payment_type: payment_type,
+        // Также отправляем обновленные балансы кассы с бэкенда, чтобы дашборд пересчитался
+        refreshFinancials: true,
+      };
+
+      io.to("admin_dashboard").emit("visit_update", {
+        action: "create",
+        visit: socketPayload,
+      });
+      console.log(
+        `📡 Сокет-событие 'visit_update' (create) отправлено в комнату АРМ для визита №${newVisitId}`,
+      );
+    }
+
     res
       .status(201)
       .json({ success: true, message: "Visits successfully added" });

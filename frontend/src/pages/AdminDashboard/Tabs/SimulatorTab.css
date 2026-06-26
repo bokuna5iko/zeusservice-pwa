@@ -1,0 +1,309 @@
+/* src/pages/AdminDashboard/Tabs/SimulatorTab.css */
+
+.simulator-tab-viewport {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.simulator-instructions {
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.simulator-instructions h3 {
+  margin: 0;
+  color: #38bdf8;
+  font-size: 1.15rem;
+}
+
+.simulator-instructions p {
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.simulator-quick-nav {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-group-label {
+  font-size: 0.8rem;
+  color: #475569;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sim-nav-btn {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  color: #94a3b8;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.sim-nav-btn:hover,
+.sim-nav-btn.active {
+  border-color: #38bdf8;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.02);
+}
+
+/* 🌟 АНИМИРОВАННЫЙ КОРПУС СМАРТФОНА */
+.smartphone-frame {
+  width: 310px;
+  height: 620px;
+  background: #000000;
+  border: 10px solid #1e293b;
+  border-radius: 36px;
+  position: relative;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.7),
+    0 0 30px rgba(56, 189, 248, 0.1);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Челка/Вырез телефона */
+.phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 18px;
+  background: #1e293b;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  z-index: 20;
+}
+
+.phone-screen-content {
+  width: 100%;
+  height: 100%;
+  background-color: #020617;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  padding-top: 10px; /* Отступ под челку */
+  box-sizing: border-box;
+}
+
+/* Элементы мобильного приложения внутри симулятора */
+.phone-app-header {
+  height: 44px;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: #0f172a;
+}
+
+.phone-logo {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #38bdf8;
+}
+.phone-logo span {
+  color: #fff;
+  font-weight: 400;
+}
+.phone-status-icon {
+  color: #475569;
+  font-size: 0.8rem;
+}
+
+.phone-app-main {
+  flex-grow: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.phone-screen-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.phone-metric-strip {
+  display: flex;
+  gap: 8px;
+}
+
+.p-chip {
+  flex: 1;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.phone-action-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.phone-action-card h4 {
+  margin: 0 0 6px 0;
+  font-size: 0.9rem;
+  color: #f8fafc;
+}
+.phone-action-card p {
+  margin: 0 0 14px 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.phone-accent-btn {
+  width: 100%;
+  background: #38bdf8;
+  color: #020617;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.phone-logs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.p-log-item {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  padding: 10px 12px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.p-log-item small {
+  color: #64748b;
+}
+
+/* Анимация лазера сканера */
+.phone-scanner-mock {
+  align-items: center;
+  text-align: center;
+}
+
+.phone-scanner-mock p {
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.scanner-target-box {
+  width: 140px;
+  height: 140px;
+  border: 2px solid #1e293b;
+  border-radius: 12px;
+  position: relative;
+  background: rgba(15, 23, 42, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.scanner-bg-icon {
+  font-size: 2rem;
+  color: #1e293b;
+}
+
+.scanner-laser-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+  top: 0;
+  animation: laserScan 2s infinite ease-in-out;
+}
+
+@keyframes laserScan {
+  0%,
+  100% {
+    top: 0%;
+  }
+  50% {
+    top: 100%;
+  }
+}
+
+.phone-cancel-btn {
+  background: #1e293b;
+  color: #94a3b8;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+/* Мобильный подвал */
+.phone-app-footer {
+  height: 48px;
+  border-top: 1px solid #1e293b;
+  background: #0f172a;
+  display: flex;
+}
+
+.phone-app-footer button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #475569;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.phone-app-footer button.active {
+  color: #38bdf8;
+}
+
+.fade-in {
+  animation: simFade 0.25s ease-out;
+}
+
+@keyframes simFade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

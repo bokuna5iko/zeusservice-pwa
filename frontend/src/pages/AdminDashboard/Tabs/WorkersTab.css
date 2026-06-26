@@ -1,0 +1,132 @@
+/* src/pages/AdminDashboard/Tabs/WorkersTab.css */
+
+.workers-tab-viewport {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100%;
+}
+
+.tab-block-title {
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tab-block-subtitle {
+  margin: 0 0 20px 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* Сетка интерактивных чекбоксов */
+.attendance-checkbox-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.attendance-chip {
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.attendance-chip input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.chip-custom-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #475569;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.attendance-chip.checked {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.04);
+}
+
+.attendance-chip.checked .chip-custom-checkbox {
+  border-color: #38bdf8;
+  background: #38bdf8;
+}
+
+.attendance-chip.checked .chip-custom-checkbox::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid #020617;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.chip-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.attendance-chip.checked .chip-name {
+  color: #38bdf8;
+}
+
+/* Стилизация таблицы выработки */
+.worker-table-name {
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.row-disabled td {
+  opacity: 0.4;
+  background: rgba(15, 23, 42, 0.2);
+}
+
+.status-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.status-online {
+  background: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+}
+
+.status-offline {
+  background: rgba(148, 163, 184, 0.1);
+  color: #94a3b8;
+}
+
+.salary-cell {
+  font-weight: 800;
+  color: #22c55e;
+  font-size: 1rem;
+}
+
+.row-disabled .salary-cell {
+  color: #94a3b8;
+}

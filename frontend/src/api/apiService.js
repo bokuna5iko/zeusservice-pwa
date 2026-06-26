@@ -60,6 +60,15 @@ export const api = {
   getAdminCalendar: () => apiService.get("/shifts/admin/calendar"),
   batchUpdateShifts: (changes) =>
     apiService.post("/shifts/admin/batch-update", { changes }),
+
+  // 🌟 ДОБАВЛЕНО: Методы АРМ Пульта Управления (Операционные Смены и Расходы)
+  getWorkShiftStatus: () => apiService.get("/work-shifts/status"),
+  openWorkShift: () => apiService.post("/work-shifts/open"),
+  closeWorkShift: () => apiService.post("/work-shifts/close"),
+  addWorkShiftExpense: (amount, description) =>
+    apiService.post("/work-shifts/expenses", { amount, description }),
+  // Получить список всех заездов за текущий операционный день
+  getTodayVisits: () => apiService.get("/admin/visits/today"),
 };
 
 export default apiService;

@@ -22,6 +22,9 @@ import AdminStatistics from "./pages/AdminStatistics/AdminStatistics.jsx";
 import WorkerShiftsPage from "./pages/WorkerShifts/WorkerShiftsPage.jsx";
 import AdminShiftsPage from "./pages/AdminShifts/AdminShiftsPage.jsx";
 
+// 🌟 ДОБАВЛЕНО: Импортируем новый главный компонент десктопного пульта управления
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
+
 function App() {
   const { user, activePage } = useContext(AuthContext);
 
@@ -43,6 +46,16 @@ function App() {
   // Локальные стейты для UX-сценариев
   const [showHintBanner, setShowHintBanner] = useState(false); // Выезжающая плашка
   const [isSpinning, setIsSpinning] = useState(false); // Бешеное вращение при клике
+
+  // 🌟 ДОБАВЛЕНО: Стейт контроля адаптивности под ПК/Планшеты в реальном времени
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  // Эффект отслеживания изменения ширины экрана
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Эффект отслеживания появления новой версии (UX-подсказка на 5 секунд)
   useEffect(() => {
@@ -85,7 +98,20 @@ function App() {
     );
   }
 
-  // Условие для авторизованного пользователя
+  // 🌟 ДОБАВЛЕНО: Условие умного десктопного роутинга (БЛОК 2 ТЗ)
+  // Если авторизован админ и ширина экрана >= 1024px — монтируем пульт управления и пропсы обновлений
+  if (user.role === "admin" && windowWidth >= 1024) {
+    return (
+      <AdminDashboard
+        needRefresh={needRefresh}
+        showHintBanner={showHintBanner}
+        isSpinning={isSpinning}
+        handlePwaUpdate={handlePwaUpdate}
+      />
+    );
+  }
+
+  // Условие для стандартного мобильного PWA (Экран < 1024px или для клиентов)
   return (
     <div className="app-shell">
       {/* Оболочка телефона */}

@@ -24,7 +24,12 @@ const isAdmin = (req, res, next) => {
 router.get("/stats/today-count", adminController.getTodayCount);
 router.get("/stats/last-visits", adminController.getLastVisits);
 router.get("/services", adminController.getAllServices);
-router.get("/history", adminController.getAdminHistory);
+router.get(
+  "/history",
+  authenticateToken,
+  isAdmin,
+  adminController.getAdminHistory,
+);
 
 router.post(
   "/visits/add",
