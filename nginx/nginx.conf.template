@@ -42,4 +42,4 @@ server {
     }
 }
 # Metabase и прочее подключаем через include
-include /etc/nginx/conf.d/extra/*.conf;
+#include /etc/nginx/conf.d/extra/*.conf;
