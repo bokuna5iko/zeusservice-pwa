@@ -13,15 +13,16 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: zeus_auto_db
     ports:
-      - "10.16.0.4:5432:5432"
+      - "${HOST_IP}:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - /opt/wal_archive:/var/lib/postgresql/wal_archive
     command: >
       postgres
       -c wal_level=replica
-      -c archive_mode=on
+      -c archive_mode=off
       -c archive_command='test ! -f /var/lib/postgresql/wal_archive/%f && cp %p /var/lib/postgresql/wal_archive/%f'
+      -c archive_timeout=3600
       -c max_wal_senders=3
       -c shared_buffers=384MB
       -c effective_cache_size=1152MB
@@ -38,6 +39,7 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
 
   backend:
     build:
