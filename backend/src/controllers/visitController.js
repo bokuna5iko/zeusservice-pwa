@@ -140,35 +140,54 @@ exports.getUserHistory = async (req, res) => {
 };
 
 // 🌟 ДОБАВЛЕНО: Получение истории визитов за текущие сутки с "умной" подменой ручных правок АРМ через COALESCE
+// 🌟 МОДЕРНИЗИРОВАНО: Получение истории визитов за указанную дату (или за текущие сутки по дефолту)
 exports.getAdminVisitsToday = async (req, res) => {
   try {
-    const result = await db.query(
-      `SELECT 
-        v.id AS visit_id, 
-        v.user_id, 
-        COALESCE(v.manual_service_name, v.service_type) AS service_name, 
-        v.price, 
-        v.created_at, 
-        COALESCE(v.manual_client_name, u.name) AS name, 
-        COALESCE(v.manual_client_phone, u.phone) AS phone,
-        u.role,
-        COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
-        COALESCE(v.manual_payment_type, v.payment_type) AS payment_type,
-        u.total_visits,
-        
-        -- Оставляем сырые ручные поля для корректного предзаполнения модалки АРМ
-        v.manual_car_brand,
-        v.manual_client_name,
-        v.manual_client_phone,
-        v.manual_service_name,
-        v.manual_payment_type,
-        v.manual_visit_number
-       FROM visits v
-       LEFT JOIN users u ON v.user_id = u.id
-       WHERE v.created_at >= CURRENT_DATE
-       ORDER BY v.created_at DESC`,
-    );
+    if (req.query.date) {
+      const parsedDate = new Date(req.query.date).toISOString().split("T")[0];
+    }
+    // Проверяем, прислал ли фронтенд конкретную дату для фильтрации архива
+    const { date } = req.query;
 
+    let queryText = "";
+    let values = [];
+
+    if (date) {
+      // Режим Архива: вытаскиваем визиты строго за выбранный день
+      queryText = `
+        SELECT 
+          v.id AS visit_id, v.user_id, u.role, u.total_visits,
+          COALESCE(v.manual_service_name, v.service_type) AS service_name, 
+          v.price, v.created_at, 
+          COALESCE(v.manual_client_name, u.name) AS name, 
+          COALESCE(v.manual_client_phone, u.phone) AS phone,
+          COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
+          COALESCE(v.manual_payment_type, v.payment_type) AS payment_type,
+          v.manual_car_brand, v.manual_client_name, v.manual_client_phone, v.manual_service_name, v.manual_payment_type, v.manual_visit_number
+        FROM visits v
+        LEFT JOIN users u ON v.user_id = u.id
+        WHERE v.created_at::date = $1::date
+        ORDER BY v.created_at DESC`;
+      values = [date];
+    } else {
+      // Оперативный режим: визиты за сегодняшние сутки
+      queryText = `
+        SELECT 
+          v.id AS visit_id, v.user_id, u.role, u.total_visits,
+          COALESCE(v.manual_service_name, v.service_type) AS service_name, 
+          v.price, v.created_at, 
+          COALESCE(v.manual_client_name, u.name) AS name, 
+          COALESCE(v.manual_client_phone, u.phone) AS phone,
+          COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
+          COALESCE(v.manual_payment_type, v.payment_type) AS payment_type,
+          v.manual_car_brand, v.manual_client_name, v.manual_client_phone, v.manual_service_name, v.manual_payment_type, v.manual_visit_number
+        FROM visits v
+        LEFT JOIN users u ON v.user_id = u.id
+        WHERE v.created_at >= CURRENT_DATE
+        ORDER BY v.created_at DESC`;
+    }
+
+    const result = await db.query(queryText, values);
     res.json(result.rows);
   } catch (err) {
     console.error("Ошибка в getAdminVisitsToday:", err);

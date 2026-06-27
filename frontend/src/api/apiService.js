@@ -68,11 +68,28 @@ export const api = {
   addWorkShiftExpense: (amount, description) =>
     apiService.post("/work-shifts/expenses", { amount, description }),
 
-  // 🌟 ДОБАВЛЯЕМ СЮДА: Метод получения расходов за сегодня
-  getTodayExpenses: () => apiService.get("/work-shifts/expenses/today"),
+  // Роуты модуля Архива смен и Сверки кассы
+  getPreCloseReport: (shiftId) =>
+    apiService.get(`/work-shifts/pre-close-report/${shiftId}`),
+  closeWorkShiftWithReport: (payload) =>
+    apiService.post("/work-shifts/close", payload),
+  getArchiveCalendar: () => apiService.get("/work-shifts/archive/calendar"),
+
+  // 🌟 ИСПРАВЛЕНО: Универсальный метод расходов с защитой от кэширования браузера (304 Not Modified)
+  getTodayExpenses: (shiftId) => {
+    return apiService.get("/work-shifts/expenses/today", {
+      params: {
+        shiftId: shiftId || undefined,
+        _: Date.now(), // Уникальный таймстамп заставит браузер всегда делать свежий запрос в сеть!
+      },
+    });
+  },
 
   // Получить список всех заездов за текущий операционный день
-  getTodayVisits: () => apiService.get("/admin/visits/today"),
+  getTodayVisits: (date) =>
+    apiService.get(
+      date ? `/admin/visits/today?date=${date}` : "/admin/visits/today",
+    ),
 
   // Точечное редактирование полей визита администратором (PATCH)
   updateVisitFields: (visitId, fields) =>

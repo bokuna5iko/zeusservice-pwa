@@ -84,12 +84,28 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
     }
   };
 
-  // Получение визитов за сегодня
+  // 🌟 МОДЕРНИЗИРОВАНО: Полная защита от смещения часовых поясов JS
   const fetchTodayVisits = async () => {
-    if (shiftStatus !== "open") return;
+    const isArchive = !!initialShiftData?.shift_date;
+    if (shiftStatus !== "open" && !isArchive) return;
+
     setLoadingVisits(true);
     try {
-      const response = await api.getTodayVisits();
+      let targetDate = undefined;
+
+      if (isArchive && initialShiftData.shift_date) {
+        // Создаем объект даты, игнорируя Z-таймзону, чтобы получить чистый локальный день
+        const pureDate = new Date(initialShiftData.shift_date);
+
+        // Форматируем строго в YYYY-MM-DD по стандарту ISO без искажений поясов
+        const year = pureDate.getFullYear();
+        const month = String(pureDate.getMonth() + 1).padStart(2, "0");
+        const day = String(pureDate.getDate()).padStart(2, "0");
+
+        targetDate = `${year}-${month}-${day}`;
+      }
+
+      const response = await api.getTodayVisits(targetDate);
       const dbVisits = response.data || [];
       setVisits(dbVisits.reverse());
     } catch (err) {
@@ -98,6 +114,10 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
       setLoadingVisits(false);
     }
   };
+  // 🌟 ИСПРАВЛЕНО: Триггерим загрузку при изменении смены или её данных
+  useEffect(() => {
+    fetchTodayVisits();
+  }, [shiftStatus, initialShiftData?.shift_date]);
 
   // Получение списка трат и открытие истории расходов
   const handleExpensesWidgetClick = (openExpenseInputForm = false) => {
@@ -108,9 +128,15 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
 
     setLoadingExpensesList(true);
     setShowHistoryModal(true);
+
+    const isArchive = !!initialShiftData?.shift_date;
+    const targetShiftId = isArchive ? initialShiftData.id : undefined;
+
     api
-      .getTodayExpenses()
-      .then((res) => setExpensesList(res.data || []))
+      .getTodayExpenses(targetShiftId)
+      .then((res) => {
+        setExpensesList(res.data || []);
+      })
       .catch((err) =>
         console.error("Не удалось загрузить историю расходов:", err),
       )
