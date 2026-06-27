@@ -331,14 +331,33 @@ const AdminDashboard = ({
           </div>
 
           <div className="top-bar-right">
+            {/* 🌟 СМАРТ-ОБНОВЛЕНИЕ АРМ: Полностью синхронизировано с логикой из App.jsx */}
             <button
               className={`global-smart-update-btn ${needRefresh ? "update-available" : ""} ${isSpinning ? "rapid-spinning" : ""}`}
               disabled={!needRefresh || isSpinning}
               onClick={handlePwaUpdate}
+              title={
+                needRefresh
+                  ? "Доступно свежее обновление пульта!"
+                  : "Система пульта актуальна"
+              }
+              style={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                cursor: needRefresh && !isSpinning ? "pointer" : "default",
+              }}
             >
-              <i className="fas fa-sync-alt"></i>{" "}
+              <i className="fas fa-sync-alt"></i>
               <span>{needRefresh ? "Обновить АРМ" : "Пульт актуален"}</span>
+
+              {/* Пульсирующая оранжево-красная точка-уведомление в углу кнопки */}
+              {needRefresh && (
+                <span className="notification-pulsing-dot"></span>
+              )}
             </button>
+
             <div className="admin-profile-badge">
               <div className="avatar-box">A</div>
               <span>Администратор</span>
