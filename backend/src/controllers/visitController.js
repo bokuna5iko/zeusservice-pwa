@@ -111,14 +111,24 @@ exports.getUserMe = async (req, res) => {
   }
 };
 
-// 🌟 МОДЕРНИЗИРОВАНО: История визитов с отдачей способа расчета
+// 🌟 МОДЕРНИЗИРОВАНО: История визитов с "умной" подменой ручных правок админа (COALESCE)
 exports.getUserHistory = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // ИСПРАВЛЕНО: Добавили выборку поля payment_type из базы данных!
+    // С помощью COALESCE отдаем приоритет ручным полям manual_*, если они не NULL
     const result = await db.query(
-      "SELECT service_type AS service_name, price AS base_price, created_at, payment_type FROM visits WHERE user_id = $1 ORDER BY created_at DESC",
+      `SELECT 
+        id,
+        COALESCE(manual_service_name, service_type) AS service_name, 
+        price AS base_price, 
+        created_at, 
+        COALESCE(manual_payment_type, payment_type) AS payment_type,
+        COALESCE(manual_visit_number, visit_number) AS visit_number,
+        manual_car_brand
+       FROM visits 
+       WHERE user_id = $1 
+       ORDER BY created_at DESC`,
       [userId],
     );
 
@@ -129,23 +139,30 @@ exports.getUserHistory = async (req, res) => {
   }
 };
 
-// 🌟 ДОБАВЛЕНО: Получение истории визитов за текущие сутки
+// 🌟 ДОБАВЛЕНО: Получение истории визитов за текущие сутки с "умной" подменой ручных правок АРМ через COALESCE
 exports.getAdminVisitsToday = async (req, res) => {
   try {
-    // 🌟 ИСПРАВЛЕНО: Добавили выборку поля v.user_id из таблицы visits!
     const result = await db.query(
       `SELECT 
         v.id AS visit_id, 
         v.user_id, 
-        v.service_type AS service_name, 
+        COALESCE(v.manual_service_name, v.service_type) AS service_name, 
         v.price, 
         v.created_at, 
-        u.name, 
-        u.phone,
+        COALESCE(v.manual_client_name, u.name) AS name, 
+        COALESCE(v.manual_client_phone, u.phone) AS phone,
         u.role,
-        v.visit_number,
-        v.payment_type,
-        u.total_visits
+        COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
+        COALESCE(v.manual_payment_type, v.payment_type) AS payment_type,
+        u.total_visits,
+        
+        -- Оставляем сырые ручные поля для корректного предзаполнения модалки АРМ
+        v.manual_car_brand,
+        v.manual_client_name,
+        v.manual_client_phone,
+        v.manual_service_name,
+        v.manual_payment_type,
+        v.manual_visit_number
        FROM visits v
        LEFT JOIN users u ON v.user_id = u.id
        WHERE v.created_at >= CURRENT_DATE
@@ -154,9 +171,9 @@ exports.getAdminVisitsToday = async (req, res) => {
 
     res.json(result.rows);
   } catch (err) {
-    console.error("Ошибка в контроллере getAdminVisitsToday:", err);
+    console.error("Ошибка в getAdminVisitsToday:", err);
     res
       .status(500)
-      .json({ message: "Ошибка сервера при загрузке утренней кассы" });
+      .json({ message: "Ошибка сервера при получении операционной ленты" });
   }
 };

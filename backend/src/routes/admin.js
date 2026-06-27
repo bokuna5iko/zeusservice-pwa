@@ -74,4 +74,13 @@ router.get(
   archiveController.getClientArchive,
 );
 
+// Точечное редактирование полей заезда администратором (Умные формы)
+// Полный путь: PATCH /api/admin/visits/update/:id
+router.patch(
+  "/visits/update/:id",
+  authenticateToken,
+  isAdmin,
+  adminController.updateVisit,
+);
+
 module.exports = router;

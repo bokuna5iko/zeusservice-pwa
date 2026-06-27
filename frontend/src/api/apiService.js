@@ -67,8 +67,16 @@ export const api = {
   closeWorkShift: () => apiService.post("/work-shifts/close"),
   addWorkShiftExpense: (amount, description) =>
     apiService.post("/work-shifts/expenses", { amount, description }),
+
+  // 🌟 ДОБАВЛЯЕМ СЮДА: Метод получения расходов за сегодня
+  getTodayExpenses: () => apiService.get("/work-shifts/expenses/today"),
+
   // Получить список всех заездов за текущий операционный день
   getTodayVisits: () => apiService.get("/admin/visits/today"),
+
+  // Точечное редактирование полей визита администратором (PATCH)
+  updateVisitFields: (visitId, fields) =>
+    apiService.patch(`/admin/visits/update/${visitId}`, fields),
 };
 
 export default apiService;

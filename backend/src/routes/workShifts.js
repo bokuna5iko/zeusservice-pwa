@@ -15,4 +15,7 @@ router.post("/close", workShiftController.closeShift);
 // Маршрут добавления расхода денег из кассы
 router.post("/expenses", workShiftController.addExpense);
 
+// 🌟 ДОБАВЛЕНО: Роут на получение списка трат за сегодня
+router.get("/expenses/today", workShiftController.getTodayExpenses);
+
 module.exports = router;

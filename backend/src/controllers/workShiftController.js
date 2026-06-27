@@ -145,3 +145,31 @@ exports.addExpense = async (req, res) => {
     res.status(500).json({ message: "Ошибка сервера при фиксации расхода" });
   }
 };
+
+// 5. Получить список всех расходов за текущую смену (для просмотра в АРМ)
+exports.getTodayExpenses = async (req, res) => {
+  try {
+    // Находим сегодняшнюю смену (не важно, открыта она или уже закрыта)
+    const checkShift = await db.query(
+      "SELECT id FROM work_shifts WHERE shift_date = CURRENT_DATE",
+    );
+    const currentShift = checkShift.rows[0];
+
+    if (!currentShift) {
+      return res.json([]); // Если смены еще нет, то и расходов быть не может
+    }
+
+    // Вытаскиваем расходы этой смены, сортируя их: сначала новые
+    const expensesResult = await db.query(
+      "SELECT id, amount, description, created_at FROM expenses WHERE shift_id = $1 ORDER BY created_at DESC",
+      [currentShift.id],
+    );
+
+    res.json(expensesResult.rows);
+  } catch (err) {
+    console.error("Ошибка при получении списка расходов:", err);
+    res
+      .status(500)
+      .json({ message: "Ошибка сервера при получении списка расходов" });
+  }
+};

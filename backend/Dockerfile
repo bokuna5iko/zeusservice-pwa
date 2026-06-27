@@ -11,7 +11,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 # 4. Устанавливаем зависимости. Слой кэшируется, если package.json не менялся
-#RUN npm install
+RUN npm install
 
 # 5. Копируем остальной код. Этот слой будет пересобираться при каждом изменении кода
 COPY . .

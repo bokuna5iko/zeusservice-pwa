@@ -413,16 +413,23 @@
   z-index: 100;
 }
 
-.modal-content {
-  width: 100%;
-  max-width: 400px;
-  padding: 24px !important;
+/* 🌟 ИСПРАВЛЕНО: Защищаем ширину модалки от перебивания через .content-group-box */
+.admin-dashboard-layout .modal-content {
+  width: 100% !important;
+  max-width: 460px !important; /* Комфортный, компактный десктопный размер формы */
+  padding: 28px !important;
   border-radius: 16px !important;
+  background-color: #0f172a !important; /* Благородный темный цвет карточки */
+  border: 1px solid #1e293b !important;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.5),
+    0 10px 10px -5px rgba(0, 0, 0, 0.4) !important;
 }
 
 .modal-title {
   margin: 0 0 20px 0;
-  font-size: 1.15rem;
+  font-size: 1.25rem; /* Чуть увеличили заголовок для читаемости */
+  font-weight: 700;
   color: #38bdf8;
   display: flex;
   align-items: center;
@@ -517,7 +524,7 @@
 }
 
 /* 🌟 СБРОС МОБИЛЬНЫХ ОГРАНИЧЕНИЙ ДЛЯ КАРТОЧЕК НА ПУЛЬТЕ */
-.admin-dashboard-layout .content-group-box {
+.content-group-box {
   width: 100% !important;
   max-width: none !important;
   padding: 20px !important; /* Убираем огромные мобильные паддинги, если нужно */

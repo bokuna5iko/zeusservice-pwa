@@ -361,6 +361,74 @@ exports.getAdminHistory = async (req, res) => {
   }
 };
 
+// 6. Точечное обновление ручных параметров визита администратором из АРМ
+exports.updateVisit = async (req, res) => {
+  console.log("=== ТЕСТ 2: БЭКЕНД ПРИНЯЛ ЗАПРОС ===");
+  console.log("req.params.id:", req.params.id);
+  console.log("req.body:", req.body);
+
+  const visitId = req.params.id;
+  const {
+    manual_car_brand,
+    manual_client_name,
+    manual_client_phone,
+    manual_service_name,
+    manual_payment_type,
+    manual_visit_number, // 🌟 ДОБАВЛЕНО
+  } = req.body;
+
+  try {
+    const checkVisit = await db.query("SELECT id FROM visits WHERE id = $1", [
+      visitId,
+    ]);
+    if (checkVisit.rows.length === 0) {
+      return res.status(404).json({ message: "Визит не найден в системе" });
+    }
+
+    // 🌟 ИСПРАВЛЕНО: Добавили manual_visit_number в SET
+    const queryText = `
+      UPDATE visits
+      SET 
+        manual_car_brand = $1,
+        manual_client_name = $2,
+        manual_client_phone = $3,
+        manual_service_name = $4,
+        manual_payment_type = $5,
+        manual_visit_number = $6
+      WHERE id = $7
+      RETURNING id
+    `;
+
+    const values = [
+      manual_car_brand || null,
+      manual_client_name || null,
+      manual_client_phone || null,
+      manual_service_name || null,
+      manual_payment_type || null,
+      manual_visit_number ? parseInt(manual_visit_number, 10) : null, // Валидируем в число
+      visitId,
+    ];
+
+    console.log("Массив values для SQL:", values);
+
+    await db.query(queryText, values);
+
+    res.status(200).json({
+      success: true,
+      message: "Параметры заезда успешно обновлены в базе данных",
+    });
+
+    console.log(
+      `✏️ Визит №${visitId} успешно отредактирован (включая шаг лояльности).`,
+    );
+  } catch (err) {
+    console.error("Ошибка в контроллере updateVisit:", err);
+    res
+      .status(500)
+      .json({ message: "Ошибка сервера при обновлении полей визита" });
+  }
+};
+
 // Заглушка для общего роута статистики
 exports.getStats = async (req, res) => {
   try {
