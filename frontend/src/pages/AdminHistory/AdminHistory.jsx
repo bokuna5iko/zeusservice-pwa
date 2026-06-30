@@ -1,3 +1,4 @@
+// src/pages/AdminHistory/AdminHistory.jsx
 import React, { useState, useEffect } from "react";
 import "./AdminHistory.css";
 
@@ -10,10 +11,10 @@ const AdminHistory = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        // 🌟 ИСПРАВЛЕНО: Используем единый ключ токена accessToken
+        // 🌟 Используем единый ключ токена accessToken
         const token = localStorage.getItem("accessToken");
 
-        // 🌟 ИСПРАВЛЕНО: Стучимся на выделенный эндпоинт сегодняшней истории визитов
+        // 🌟 Стучимся на выделенный эндпоинт сегодняшней истории визитов
         const response = await fetch("/api/admin/visits/today", {
           headers: {
             Authorization: token ? `Bearer ${token}` : "",
@@ -57,6 +58,12 @@ const AdminHistory = () => {
     const serviceName = (visit.service_name || "").toLowerCase();
     const clientPhone = (visit.phone || "").toLowerCase();
     const clientName = (visit.name || "").toLowerCase();
+    const manualBrand = (visit.manual_car_brand || "").toLowerCase();
+    const profileBrand = (
+      visit.user_car_brand ||
+      visit.car_brand ||
+      ""
+    ).toLowerCase();
 
     const dateFormatted = visit.created_at
       ? new Date(visit.created_at).toLocaleDateString("ru-RU")
@@ -66,6 +73,8 @@ const AdminHistory = () => {
       serviceName.includes(term) ||
       clientPhone.includes(term) ||
       clientName.includes(term) ||
+      manualBrand.includes(term) ||
+      profileBrand.includes(term) ||
       dateFormatted.includes(term)
     );
   });
@@ -96,7 +105,7 @@ const AdminHistory = () => {
             <input
               type="text"
               className="admin-search-input"
-              placeholder="Поиск по услуге, телефону, имени или дате..."
+              placeholder="Поиск по услуге, телефону, марке, имени или дате..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -111,8 +120,8 @@ const AdminHistory = () => {
           </div>
         </div>
 
-        {/* КОНТЕЙНЕР №2: Лента визитов (Аккордеон) */}
-        <div className="content-group-box admin-history-list-box">
+        {/* КОНТЕЙНЕР №2: Lента визитов (Аккордеон) */}
+        <div className="content-group-box filter-container">
           <h3 className="section-title-history">История заездов за неделю</h3>
 
           {loading ? (
@@ -168,14 +177,27 @@ const AdminHistory = () => {
                           {isGuest ? (
                             <span className="guest-badge-pill">Гость</span>
                           ) : (
-                            <span className="car-brand-pill">
-                              {visit.car_brand || "Авто"}
+                            <span
+                              className="car-brand-pill"
+                              style={{ whiteSpace: "nowrap" }}
+                            >
+                              {/* 🌟 ИСПРАВЛЕНО: Сквозное правило склейки марок автомобиля для админа */}
+                              {(() => {
+                                const profileBrand =
+                                  visit.user_car_brand || visit.car_brand; // Из профиля клиента
+                                const manualBrand = visit.manual_car_brand; // От администратора при заезде
+
+                                if (profileBrand && manualBrand) {
+                                  return `${profileBrand} (${manualBrand})`;
+                                }
+                                return profileBrand || manualBrand || "Авто";
+                              })()}
                             </span>
                           )}
                         </div>
                       </div>
 
-                      {/* ПОДБЛОК 3: Независимая стрелка-индикатор (позиционируется абсолютно через CSS) */}
+                      {/* ПОДБЛОК 3: Независимая стрелка-индикатор */}
                       <i
                         className={`fas fa-chevron-down admin-accordion-arrow ${isExpanded ? "rotate" : ""}`}
                       ></i>
@@ -193,6 +215,29 @@ const AdminHistory = () => {
                           </div>
                         ) : (
                           <div className="client-info-list">
+                            {/* 🌟 ДОБАВЛЕНО: Сквозная строка отображения автомобиля в выпадающих деталях */}
+                            <div className="detail-row-item">
+                              <span className="detail-item-label">
+                                Автомобиль:
+                              </span>
+                              <span
+                                className="detail-item-value"
+                                style={{ fontWeight: "700", color: "#38bdf8" }}
+                              >
+                                {(() => {
+                                  const profileBrand =
+                                    visit.user_car_brand || visit.car_brand;
+                                  const manualBrand = visit.manual_car_brand;
+                                  if (profileBrand && manualBrand) {
+                                    return `${profileBrand} (${manualBrand})`;
+                                  }
+                                  return (
+                                    profileBrand || manualBrand || "Не указан"
+                                  );
+                                })()}
+                              </span>
+                            </div>
+
                             <div className="detail-row-item">
                               <span className="detail-item-label">
                                 ID Клиента:

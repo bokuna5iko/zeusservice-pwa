@@ -147,14 +147,19 @@ exports.getAllServices = async (req, res) => {
 exports.createVisit = async (req, res) => {
   try {
     // Принимаем параметры, которые отправляет калькулятор
-    const { userId, serviceId, payment_type, is_guest, manual_price } =
-      req.body;
+    const {
+      userId,
+      serviceId,
+      payment_type,
+      is_guest,
+      manual_price,
+      manual_car_brand,
+    } = req.body;
 
     // Начинаем транзакцию через прямой db.query
     await db.query("BEGIN");
 
     // 🌟 1. ПРОВЕРКА АКТИВНОЙ СМЕНЫ ПУЛЬТА УПРАВЛЕНИЯ
-    // Ищем открытую смену на текущую дату
     const shiftResult = await db.query(
       "SELECT id, status FROM work_shifts WHERE shift_date = CURRENT_DATE AND status = 'open'",
     );
@@ -188,7 +193,6 @@ exports.createVisit = async (req, res) => {
       }
       serviceName = serviceResult.rows[0].service_name;
 
-      // Если ручная цена не была введена, берем базовую стоимость услуги
       if (!manual_price) {
         finalPrice = serviceResult.rows[0].base_price;
       }
@@ -211,12 +215,10 @@ exports.createVisit = async (req, res) => {
       const user = userResult.rows[0];
       finalUserId = user.id;
 
-      // Считаем номер текущего визита
       const currentVisitCount = parseInt(user.visit_count || 0);
       currentVisitNumber = currentVisitCount + 1;
       loyaltyStep = currentVisitNumber;
 
-      // Логика скидок автомойки
       if (!manual_price) {
         if (currentVisitNumber === 4) {
           finalPrice = Math.round(finalPrice * 0.8); // Скидка 20%
@@ -230,7 +232,6 @@ exports.createVisit = async (req, res) => {
         nextVisitCount = 0;
       }
 
-      // Обновляем счетчики пользователя
       await db.query(
         `UPDATE users 
          SET visit_count = $1, 
@@ -241,7 +242,6 @@ exports.createVisit = async (req, res) => {
     }
 
     // 🌟 4. ОПРЕДЕЛЕНИЕ ТИПА КАССЫ И КОРРЕКТИРОВКА ФИНАНСОВЫХ ИТОГОВ СМЕНЫ
-    // В зависимости от способа расчета плюсуем выручку в нужную колонку work_shifts
     const isCash = payment_type === "Наличные" || payment_type === "Нал";
     const updateColumn = isCash ? "cash_total" : "card_total";
 
@@ -252,7 +252,19 @@ exports.createVisit = async (req, res) => {
       [finalPrice, activeShift.id],
     );
 
-    // 🌟 5. СОХРАНЕНИЕ ВИЗИТА С УКАЗАНИЕМ SHIFT_ID И РУЧНЫХ ПАРАМЕТРОВ
+    // 🌟 5. СОХРАНЕНИЕ ВИЗИТА (ИСПРАВЛЕНО: Пишем ручной ввод админа, если он передан, иначе дефолты)
+    // 🌟 ОПРЕДЕЛЯЕМ РУЧНЫЕ ПАРАМЕТРЫ ДЛЯ ЗАПИСИ
+    const finalManualBrand =
+      manual_car_brand && manual_car_brand.trim() !== ""
+        ? manual_car_brand.trim()
+        : is_guest
+          ? "Гостевой авто"
+          : null;
+
+    // Если это не гость, то ручное имя не пишем (оно подтянется из профиля по user_id),
+    // а если гость — пишем жестко "Гость"
+    const finalManualClientName = is_guest ? "Гость" : null;
+
     const insertVisitResult = await db.query(
       `INSERT INTO visits (
         user_id, service_id, service_type, price, visit_number, 
@@ -262,49 +274,44 @@ exports.createVisit = async (req, res) => {
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9, $10, $11, $12, $13, $14)
       RETURNING id, created_at`,
       [
-        finalUserId,
-        serviceId || null,
-        serviceName,
-        finalPrice,
-        currentVisitNumber,
-        payment_type,
-        req.user.id, // ID админа, который зачислил визит
-        finalPrice,
-        activeShift.id, // Привязка к открытой смене дня
-        is_guest ? "Гостевой авто" : null, // manual_car_brand
-        is_guest ? "Гость" : null, // manual_client_name
-        null, // manual_client_phone
-        serviceName, // manual_service_name
-        payment_type, // manual_payment_type
+        finalUserId, // $1
+        serviceId || null, // $2
+        serviceName, // $3
+        finalPrice, // $4
+        currentVisitNumber, // $5
+        payment_type, // $6
+        req.user.id, // $7
+        finalPrice, // $8
+        activeShift.id, // $9
+        finalManualBrand, // $10
+        finalManualClientName, // $11
+        null, // $12 (manual_client_phone)
+        serviceName, // $13
+        payment_type, // $14
       ],
     );
 
     const newVisitId = insertVisitResult.rows[0].id;
     const newVisitCreatedAt = insertVisitResult.rows[0].created_at;
 
-    // Коммитим транзакцию, чтобы данные железно легли в PostgreSQL
     await db.query("COMMIT");
 
-    // 🌟 6. МГНОВЕННАЯ СИНХРОНИЗАЦИЯ ЧЕРЕЗ WEBSOCKETS (SOCKET.IO)
-    // Достаем инстанс 'io', который мы привязали в server.js, и пушим событие на пульт админа
+    // 🌟 6. МГНОВЕННАЯ СИНХРОНИЗАЦИЯ ЧЕРЕЗ WEBSOCKETS
     const io = req.app.get("io");
     if (io) {
-      // Подтягиваем данные для красивой вставки строки таблицы фронтенда
-      const clientInfo = is_guest
-        ? { name: "Гость", phone: "—", car_brand: "—" }
-        : req.body.clientData || {};
+      const clientInfo = req.body.clientData || {};
 
       const socketPayload = {
         id: newVisitId,
         created_at: newVisitCreatedAt,
         price: finalPrice,
         loyalty_step: loyaltyStep,
-        manual_car_brand: clientInfo.car_brand || "—",
-        manual_client_name: clientInfo.name || "Гость",
-        manual_client_phone: clientInfo.phone || "—",
+        manual_car_brand: finalManualBrand || clientInfo.car_brand || "—",
+        // Если зарегистрирован — берем имя из clientData, иначе пишем Гость
+        manual_client_name: finalUserId ? clientInfo.name || "Клиент" : "Гость",
+        manual_client_phone: finalUserId ? clientInfo.phone || "—" : "—",
         manual_service_name: serviceName,
         manual_payment_type: payment_type,
-        // Также отправляем обновленные балансы кассы с бэкенда, чтобы дашборд пересчитался
         refreshFinancials: true,
       };
 
@@ -312,9 +319,7 @@ exports.createVisit = async (req, res) => {
         action: "create",
         visit: socketPayload,
       });
-      console.log(
-        `📡 Сокет-событие 'visit_update' (create) отправлено в комнату АРМ для визита №${newVisitId}`,
-      );
+      console.log(`📡 Сокет-событие отправлено для визита №${newVisitId}`);
     }
 
     res

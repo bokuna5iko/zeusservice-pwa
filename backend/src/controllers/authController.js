@@ -92,7 +92,7 @@ exports.getMe = async (req, res) => {
   }
 };
 
-// 3. РЕГИСТРАЦИЯ С ХЕШИРОВАНИЕМ ПАРОЛЯ (Исправлено: замена NULL телефона на текстовую заглушку)
+// 3. РЕГИСТРАЦИЯ С ХЕШИРОВАНИЕМ ПАРОЛЯ (Исправлено: запись NULL вместо текстовой заглушки для уникальности)
 exports.register = async (req, res) => {
   try {
     const { name, username, password, phone } = req.body;
@@ -118,9 +118,8 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // 🌟 ИСПРАВЛЕНО: Если телефон не передан или пришла пустая строка, пишем 'Нет телефона'
-    const safePhone =
-      phone && phone.trim().length > 0 ? phone.trim() : "Нет телефона";
+    // 🌟 ИСПРАВЛЕНО: Вместо строки "Нет телефона" пишем NULL, чтобы не ломать уникальный индекс UNIQUE
+    const safePhone = phone && phone.trim().length > 0 ? phone.trim() : null;
 
     // Сохраняем нового пользователя в базу данных
     const result = await db.query(
