@@ -38,7 +38,7 @@ apiService.interceptors.response.use(
 export const api = {
   login: (phone) => apiService.post("/auth/login", { phone }),
   getProfile: () => apiService.get("/user/me"),
-  getServices: () => apiService.get("/services"),
+  getServices: () => apiService.get("/admin/services"),
   getUserHistory: () => apiService.get("/user/history"),
   addVisit: (userId, serviceId) =>
     apiService.post("/visits/add", { userId, serviceId }),

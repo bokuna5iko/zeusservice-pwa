@@ -12,13 +12,6 @@ import ExpenseModal from "../components/modals/ExpenseModal";
 import EditVisitModal from "../components/modals/EditVisitModal";
 import ExpenseHistoryModal from "../components/modals/ExpenseHistoryModal";
 
-const SERVICE_PRICES = [
-  { id: 1, name: "Экспресс-мойка", price: 500 },
-  { id: 2, name: "Кузов + Салон (Комплекс)", price: 1500 },
-  { id: 3, name: "Премиум Детейлинг", price: 5000 },
-  { id: 4, name: "Химчистка салона", price: 3500 },
-];
-
 const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
   const [liveShiftData, setLiveShiftData] = useState({
     cash: 0,
@@ -27,6 +20,9 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
   });
   const [visits, setVisits] = useState([]);
   const [loadingVisits, setLoadingVisits] = useState(false);
+
+  // 🌟 ДОБАВЛЕНО: Стейт для хранения полноценного справочника услуг из БД
+  const [allServices, setAllServices] = useState([]);
 
   // Состояния триггеров видимости окон
   const [showExpenseModal, setShowExpenseModal] = useState(false);
@@ -42,19 +38,83 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
   const [loadingEdit, setLoadingEdit] = useState(false);
   const [loadingExpensesList, setLoadingExpensesList] = useState(false);
 
+  // 🌟 МОДЕРНИЗИРОВАНО: Работаем через исправленный и централизованный apiService!
+  useEffect(() => {
+    api
+      .getServices()
+      .then((res) => {
+        setAllServices(res.data || []);
+      })
+      .catch((err) => {
+        console.error(
+          "Ошибка загрузки услуг в VisitsTab через apiService:",
+          err,
+        );
+      });
+  }, []);
+
   // Клик на карандашик таблицы
   const handleEditClick = (visit) => {
     setEditingVisit(visit);
     setShowEditModal(true);
   };
 
-  // Сохранение изменений визита
+  // Сохранение изменений визита с ГАРАНТИРОВАННЫМ пересчетом кассы
   const handleEditVisitSubmit = async (payload) => {
     setLoadingEdit(true);
     try {
       const targetId = editingVisit.id || editingVisit.visit_id;
       await api.updateVisitFields(targetId, payload);
 
+      // 🌟 ИСПРАВЛЕНО: Безопасное определение старого и нового способов оплаты
+      const getPaymentString = (v) => {
+        if (!v) return "";
+        return String(v.manual_payment_type || v.payment_type || "")
+          .trim()
+          .toLowerCase();
+      };
+
+      const oldPaymentStr = getPaymentString(editingVisit);
+      // Из модалки редактирования прилетает manual_payment_type
+      const newPaymentStr = String(
+        payload.manual_payment_type || payload.payment_type || "",
+      )
+        .trim()
+        .toLowerCase();
+
+      // Наличными считаем всё, что содержит "нал" (Наличные, Нал, нал)
+      const oldIsCash = oldPaymentStr.includes("нал");
+      const newIsCash = newPaymentStr.includes("нал");
+
+      const oldPrice = Number(editingVisit.price || 0);
+      const newPrice = Number(payload.price || oldPrice);
+
+      setLiveShiftData((prev) => {
+        let updatedCash = Number(prev.cash || 0);
+        let updatedCard = Number(prev.card || 0);
+
+        // Шаг А: Корректно вычитаем старую стоимость из нужной ячейки
+        if (oldIsCash) {
+          updatedCash -= oldPrice;
+        } else {
+          updatedCard -= oldPrice;
+        }
+
+        // Шаг Б: Корректно прибавляем новую стоимость в нужную ячейку
+        if (newIsCash) {
+          updatedCash += newPrice;
+        } else {
+          updatedCard += newPrice;
+        }
+
+        return {
+          ...prev,
+          cash: updatedCash,
+          card: updatedCard,
+        };
+      });
+
+      // 2. Обновляем строки в таблице
       setVisits((prevVisits) =>
         prevVisits.map((v) => {
           const currentId = v.id || v.visit_id;
@@ -64,6 +124,7 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
             return {
               ...v,
               ...payload,
+              price: newPrice, // Фиксируем измененную цену в строке
               visit_number: payload.manual_visit_number,
               loyalty_step: payload.manual_visit_number,
             };
@@ -75,6 +136,7 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
       setShowEditModal(false);
       alert("Запись визита успешно обновлена в БД!");
     } catch (err) {
+      console.error(err);
       alert(
         err.response?.data?.message ||
           "Ошибка при изменении полей визита на сервере",
@@ -224,14 +286,12 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
 
   return (
     <div className="visits-tab-viewport">
-      {/* 🌟 Чистый и лаконичный вызов дашборда кассы */}
       <CashDashboard
         liveShiftData={liveShiftData}
         onAddExpenseClick={handleExpensesWidgetClick}
         shiftStatus={shiftStatus}
       />
 
-      {/* 🌟 Чистый и лаконичный вызов таблицы заездов */}
       <VisitsTable
         visits={visits}
         loadingVisits={loadingVisits}
@@ -246,14 +306,17 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
         onSave={handleAddExpenseSubmit}
         loadingExpense={loadingExpense}
       />
+
+      {/* 🌟 ОСТАВЛЯЕМ ТОЛЬКО ОДИН ПРАВИЛЬНЫЙ ВЫЗОВ МОДАЛКИ С ОКАЗАНИЕМ УСЛУГ ИЗ БД */}
       <EditVisitModal
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         visit={editingVisit}
         onSave={handleEditVisitSubmit}
         loadingEdit={loadingEdit}
-        servicePrices={SERVICE_PRICES}
+        servicePrices={allServices}
       />
+
       <ExpenseHistoryModal
         isOpen={showHistoryModal}
         onClose={() => setShowHistoryModal(false)}

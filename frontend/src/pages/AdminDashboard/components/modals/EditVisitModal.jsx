@@ -7,7 +7,7 @@ const EditVisitModal = ({
   visit,
   onSave,
   loadingEdit,
-  servicePrices,
+  servicePrices, // Теперь сюда приходит массив allServices из БД
 }) => {
   const [editBrand, setEditBrand] = useState("");
   const [editName, setEditName] = useState("");
@@ -48,6 +48,15 @@ const EditVisitModal = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // 🌟 ДОБАВЛЕНО: Находим выбранную услугу в справочнике, чтобы обновить её цену в БД
+    const selectedServiceObj = servicePrices.find(
+      (s) => s.service_name === editService,
+    );
+    const updatedPrice = selectedServiceObj
+      ? selectedServiceObj.base_price
+      : visit.price;
+
     const payload = {
       manual_car_brand: editBrand,
       manual_client_name: editName,
@@ -55,6 +64,9 @@ const EditVisitModal = ({
       manual_service_name: editService,
       manual_payment_type: editPayment,
       manual_visit_number: Number(editVisitNumber),
+      // Пробрасываем скорректированную цену, если админ выбрал другую услугу
+      price: updatedPrice,
+      amount: updatedPrice,
     };
     onSave(payload);
   };
@@ -99,6 +111,7 @@ const EditVisitModal = ({
               disabled={loadingEdit}
             />
           </div>
+
           <div className="arm-input-group">
             <label>Вид оказываемой услуги</label>
             <select
@@ -111,12 +124,14 @@ const EditVisitModal = ({
                 padding: "12px",
                 borderRadius: "8px",
                 border: "1px solid #1e293b",
+                width: "100%",
               }}
             >
               <option value="">-- Выберите услугу --</option>
+              {/* 🌟 ИСПРАВЛЕНО: Читаем корректные свойства s.service_name и s.base_price из БД */}
               {servicePrices.map((s) => (
-                <option key={s.id} value={s.name}>
-                  {s.name} ({s.price} ₽)
+                <option key={s.id} value={s.service_name}>
+                  {s.service_name} ({s.base_price} ₽)
                 </option>
               ))}
             </select>
@@ -134,6 +149,7 @@ const EditVisitModal = ({
                 padding: "12px",
                 borderRadius: "8px",
                 border: "1px solid #1e293b",
+                width: "100%",
               }}
             >
               {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
@@ -157,9 +173,11 @@ const EditVisitModal = ({
                 padding: "12px",
                 borderRadius: "8px",
                 border: "1px solid #1e293b",
+                width: "100%",
               }}
             >
               <option value="Наличные">Наличные</option>
+              <option value="Онлайн-перевод">Онлайн-перевод</option>
               <option value="Карта">Карта / СБП</option>
             </select>
           </div>
