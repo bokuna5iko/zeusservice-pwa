@@ -215,8 +215,26 @@ exports.createVisit = async (req, res) => {
       const user = userResult.rows[0];
       finalUserId = user.id;
 
-      const currentVisitCount = parseInt(user.visit_count || 0);
+      // 🌟 ИСПРАВЛЕНО: Вместо слепой веры в user.visit_count, смотрим на номер последнего визита в базе!
+      const lastVisitCheck = await db.query(
+        "SELECT COALESCE(manual_visit_number, visit_number) AS last_num FROM visits WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1",
+        [finalUserId],
+      );
+
+      let currentVisitCount = parseInt(user.visit_count || 0);
+
+      // Если в базе уже есть визиты, отталкиваемся от номера последнего реального заезда
+      if (lastVisitCheck.rows.length > 0) {
+        currentVisitCount = parseInt(lastVisitCheck.rows[0].last_num || 0);
+      }
+
       currentVisitNumber = currentVisitCount + 1;
+
+      // Если вышли за рамки 8 заездов, сбрасываем цикл лояльности в 1
+      if (currentVisitNumber > 8) {
+        currentVisitNumber = 1;
+      }
+
       loyaltyStep = currentVisitNumber;
 
       if (!manual_price) {
@@ -229,7 +247,7 @@ exports.createVisit = async (req, res) => {
 
       let nextVisitCount = currentVisitNumber;
       if (currentVisitNumber === 8) {
-        nextVisitCount = 0;
+        nextVisitCount = 0; // Сбрасываем счетчик в профиле для кружочков на главной
       }
 
       await db.query(
@@ -389,7 +407,7 @@ exports.updateVisit = async (req, res) => {
 
     // 1. Получаем текущее состояние визита до обновления (чтобы знать, что вычитать из кассы)
     const oldVisitRes = await db.query(
-      "SELECT price, payment_type, shift_id FROM visits WHERE id = $1",
+      "SELECT user_id, price, payment_type, shift_id FROM visits WHERE id = $1",
       [visitId],
     );
     if (oldVisitRes.rows.length === 0) {
@@ -423,7 +441,7 @@ exports.updateVisit = async (req, res) => {
         price = $7,
         amount = $8
       WHERE id = $9
-      RETURNING id
+      RETURNING id, user_id
     `;
 
     const values = [
@@ -433,12 +451,41 @@ exports.updateVisit = async (req, res) => {
       manual_service_name || null, // $4
       manual_payment_type || null, // $5
       manual_visit_number ? parseInt(manual_visit_number, 10) : null, // $6
-      parseInt(newPrice, 10), // $7 (строго INTEGER для price)
-      parseFloat(newPrice), // $8 (строго NUMERIC для amount)
+      parseInt(newPrice, 10), // $7
+      parseFloat(newPrice), // $8
       visitId, // $9
     ];
 
-    await db.query(queryText, values);
+    const updateVisitRes = await db.query(queryText, values);
+    const userId = oldVisit.user_id;
+
+    // 🌟 ИСПРАВЛЕНО: Глобальная синхронизация с карточкой пользователя (Вариант А)
+    if (userId && manual_visit_number !== undefined) {
+      // Ищем самый последний хронологический заезд этого человека, чтобы выставить кружочки на главной
+      const currentLastVisitRes = await db.query(
+        "SELECT COALESCE(manual_visit_number, visit_number) AS last_num FROM visits WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1",
+        [userId],
+      );
+
+      if (currentLastVisitRes.rows.length > 0) {
+        let lastRegisteredNum = parseInt(
+          currentLastVisitRes.rows[0].last_num || 0,
+        );
+
+        // Если последний визит равен 8, в профиль для сетки кружочков пишем 0
+        if (lastRegisteredNum === 8) {
+          lastRegisteredNum = 0;
+        }
+
+        await db.query("UPDATE users SET visit_count = $1 WHERE id = $2", [
+          lastRegisteredNum,
+          userId,
+        ]);
+        console.log(
+          `🔄 Профиль пользователя ID:${userId} принудительно пересчитан. Текущий шаг на главной: ${lastRegisteredNum}`,
+        );
+      }
+    }
 
     // 3. ПЕРЕСЧИТЫВАЕМ И КОРРЕКТИРУЕМ ТАБЛИЦУ СМЕН (work_shifts) В ПОСТГРЕСЕ
     if (oldVisit.shift_id) {

@@ -95,18 +95,9 @@ const HistoryPage = () => {
                 </div>
               ) : history.length > 0 ? (
                 history.map((visit, index) => {
-                  // Наша логика счетчика на основе главной страницы
-                  const currentCount =
-                    user?.visit_count !== undefined
-                      ? Number(user.visit_count)
-                      : 0;
-
-                  let visitNum =
-                    currentCount === 0 ? 8 - index : currentCount - index;
-
-                  if (visitNum <= 0) {
-                    visitNum = ((((visitNum - 1) % 8) + 8) % 8) + 1;
-                  }
+                  // 🌟 ИСПРАВЛЕНО: Прямой и надежный запуск номера визита из БД без "угадывания" по индексам
+                  const visitNum =
+                    visit.visit_number ?? visit.manual_visit_number ?? 1;
 
                   // Сбор параметров из Response
                   const serviceTitle =
@@ -118,7 +109,7 @@ const HistoryPage = () => {
                   const dateRaw = visit.created_at;
                   const carName = visit.car_name || "Не указан";
 
-                  // 🌟 ИСПРАВЛЕНО: Бронебойное определение способа оплаты ( cash / Наличные )
+                  // Бронебойное определение способа оплаты ( cash / Наличные )
                   const rawPayment = visit.payment_type || "";
                   const isCash =
                     rawPayment === "cash" || rawPayment === "Наличные";
@@ -230,7 +221,7 @@ const HistoryPage = () => {
                             </span>
                           </div>
 
-                          {/* 🌟 МОДЕРНИЗИРОВАНО: Корректный вывод иконки и типа оплаты */}
+                          {/* Корректный вывод иконки и типа оплаты */}
                           <div className="client-detail-row-item">
                             <span className="client-detail-item-label">
                               Способ расчета

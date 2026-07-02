@@ -109,9 +109,11 @@ const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
                   <td>{v.price} ₽</td>
                   <td>
                     <span className="action-step-badge">
-                      {v.manual_visit_number ||
-                        v.loyalty_step ||
-                        v.visit_number ||
+                      {/* 🌟 ИСПРАВЛЕНО: Сначала берем готовый visit_number от бэка. 
+                       Используем оператор ?? вместо ||, чтобы ноль (0) не занулялся и не перескакивал на дефолты! */}
+                      {v.visit_number ??
+                        v.manual_visit_number ??
+                        v.loyalty_step ??
                         1}
                       /8
                     </span>
