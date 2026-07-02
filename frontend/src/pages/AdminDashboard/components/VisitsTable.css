@@ -1,0 +1,102 @@
+/* src/pages/AdminDashboard/components/VisitsTable.css */
+
+/* Контейнер ячейки услуги для относительного позиционирования */
+.service-cell-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+}
+
+/* Обертка для баджа и поповера */
+.addon-badge-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-left: 6px;
+}
+
+/* Сам яркий фиолетовый неоновый бадж допов */
+.addon-neon-badge {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 0 8px rgba(168, 85, 247, 0.2);
+  white-space: nowrap; /* 🌟 ИСПРАВЛЕНО: добавили дефис */
+  user-select: none;
+  transition: all 0.2s;
+}
+
+.addon-neon-badge:hover {
+  background: rgba(168, 85, 247, 0.25);
+  border-color: rgba(168, 85, 247, 0.6);
+}
+
+/* Прозрачный полноэкранный задник для закрытия кликом мимо */
+.addon-popover-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9998; /* Чуть ниже самого окна деталей */
+}
+
+/* Окно деталей дозаказа - парит в body, обрезка контейнерами теперь невозможна физически! */
+.addon-popover-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.7),
+    0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  min-width: 240px;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.addon-popover-title {
+  color: #94a3b8;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.addon-popover-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  color: #f1f5f9;
+  gap: 10px;
+}
+
+.addon-popover-item-price {
+  color: #38bdf8;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Очищенные вспомогательные стили для ячеек таблицы */
+.table-index-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+}
+
+.table-time-sub {
+  font-size: 11px;
+  color: #64748b;
+  letter-spacing: 0.5px;
+}
+
+.table-amount-bold {
+  font-weight: 700;
+  color: #f8fafc;
+}

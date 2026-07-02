@@ -167,7 +167,8 @@ exports.getAdminVisitsToday = async (req, res) => {
           COALESCE(v.manual_client_phone, u.phone) AS phone,
           COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
           COALESCE(v.manual_payment_type, v.payment_type) AS payment_type,
-          v.manual_car_brand, v.manual_client_name, v.manual_client_phone, v.manual_service_name, v.manual_payment_type, v.manual_visit_number
+          v.manual_car_brand, v.manual_client_name, v.manual_client_phone, v.manual_service_name, v.manual_payment_type, v.manual_visit_number,
+          v.additional_services -- 🌟 ИСПРАВЛЕНО: Теперь возвращаем допы из базы данных в архиве
         FROM visits v
         LEFT JOIN users u ON v.user_id = u.id
         WHERE v.created_at::date = $1::date
@@ -184,7 +185,8 @@ exports.getAdminVisitsToday = async (req, res) => {
           COALESCE(v.manual_client_phone, u.phone) AS phone,
           COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
           COALESCE(v.manual_payment_type, v.payment_type) AS payment_type,
-          v.manual_car_brand, v.manual_client_name, v.manual_client_phone, v.manual_service_name, v.manual_payment_type, v.manual_visit_number
+          v.manual_car_brand, v.manual_client_name, v.manual_client_phone, v.manual_service_name, v.manual_payment_type, v.manual_visit_number,
+          v.additional_services -- 🌟 ИСПРАВЛЕНО: Теперь возвращаем допы из базы данных в оперативной ленте
         FROM visits v
         LEFT JOIN users u ON v.user_id = u.id
         WHERE v.created_at >= CURRENT_DATE

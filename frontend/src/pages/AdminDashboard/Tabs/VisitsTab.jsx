@@ -59,14 +59,14 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
     setShowEditModal(true);
   };
 
-  // Сохранение изменений визита с ГАРАНТИРОВАННЫМ пересчетом кассы
+  // Сохранение изменений визита с ГАРАНТИРОВАННЫМ пересчетом кассы (включая Апсейл/Допы)
   const handleEditVisitSubmit = async (payload) => {
     setLoadingEdit(true);
     try {
       const targetId = editingVisit.id || editingVisit.visit_id;
-      await api.updateVisitFields(targetId, payload);
+      const res = await api.updateVisitFields(targetId, payload);
 
-      // 🌟 ИСПРАВЛЕНО: Безопасное определение старого и нового способов оплаты
+      // Безопасное определение старого и нового способов оплаты
       const getPaymentString = (v) => {
         if (!v) return "";
         return String(v.manual_payment_type || v.payment_type || "")
@@ -75,36 +75,45 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
       };
 
       const oldPaymentStr = getPaymentString(editingVisit);
-      // Из модалки редактирования прилетает manual_payment_type
       const newPaymentStr = String(
         payload.manual_payment_type || payload.payment_type || "",
       )
         .trim()
         .toLowerCase();
 
-      // Наличными считаем всё, что содержит "нал" (Наличные, Нал, нал)
       const oldIsCash = oldPaymentStr.includes("нал");
       const newIsCash = newPaymentStr.includes("нал");
 
-      const oldPrice = Number(editingVisit.price || 0);
-      const newPrice = Number(payload.price || oldPrice);
+      // Рассчитываем старый и новый ИТОГОВЫЕ чеки (база + сумма всех допов)
+      const oldAmount = Number(editingVisit.amount ?? editingVisit.price ?? 0);
+
+      // 🌟 ИСПРАВЛЕНО: Убрали затесавшуюся стрелочную функцию, теперь суммирует строго числа!
+      const addonsSum = Array.isArray(payload.additional_services)
+        ? payload.additional_services.reduce(
+            (acc, curr) => acc + Number(curr.price || 0),
+            0,
+          )
+        : 0;
+
+      const newAmount =
+        Number(payload.price || editingVisit.price || 0) + addonsSum;
 
       setLiveShiftData((prev) => {
         let updatedCash = Number(prev.cash || 0);
         let updatedCard = Number(prev.card || 0);
 
-        // Шаг А: Корректно вычитаем старую стоимость из нужной ячейки
+        // Шаг А: Вычитаем старый чек полностью из старой ячейки
         if (oldIsCash) {
-          updatedCash -= oldPrice;
+          updatedCash -= oldAmount;
         } else {
-          updatedCard -= oldPrice;
+          updatedCard -= oldAmount;
         }
 
-        // Шаг Б: Корректно прибавляем новую стоимость в нужную ячейку
+        // Шаг Б: Плюсуем новый чек полностью в правильную ячейку
         if (newIsCash) {
-          updatedCash += newPrice;
+          updatedCash += newAmount;
         } else {
-          updatedCard += newPrice;
+          updatedCard += newAmount;
         }
 
         return {
@@ -124,7 +133,8 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
             return {
               ...v,
               ...payload,
-              price: newPrice, // Фиксируем измененную цену в строке
+              price: Number(payload.price || v.price),
+              amount: newAmount, // Записываем полный чек для моментального рендера в таблице
               visit_number: payload.manual_visit_number,
               loyalty_step: payload.manual_visit_number,
             };

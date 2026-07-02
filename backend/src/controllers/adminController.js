@@ -384,12 +384,9 @@ exports.getAdminHistory = async (req, res) => {
   }
 };
 
-// 6. Точечное обновление ручных параметров визита администратором из АРМ с пересчетом кассы смены
+// 6. Обновление параметров визита + Доп. Услуги (JSONB) с пересчетом кассы
 exports.updateVisit = async (req, res) => {
-  console.log("=== БЭКЕНД: РЕДАКТИРОВАНИЕ ВИЗИТА С КОРРЕКЦИЕЙ КАССЫ ===");
-  console.log("req.params.id:", req.params.id);
-  console.log("req.body:", req.body);
-
+  console.log("=== БЭКЕНД: РЕДАКТИРОВАНИЕ ВИЗИТА + АПСЕЙЛ ДОПОВ ===");
   const visitId = req.params.id;
   const {
     manual_car_brand,
@@ -398,28 +395,39 @@ exports.updateVisit = async (req, res) => {
     manual_service_name,
     manual_payment_type,
     manual_visit_number,
-    price, // 🌟 ДОБАВЛЕНО: Принимаем новую цену с фронтенда
+    price,
+    additional_services, // 🌟 Принимаем массив допов с фронта
   } = req.body;
 
   try {
-    // Начинаем транзакцию через прямой db.query
     await db.query("BEGIN");
 
-    // 1. Получаем текущее состояние визита до обновления (чтобы знать, что вычитать из кассы)
+    // 1. Вытягиваем старое состояние визита
     const oldVisitRes = await db.query(
-      "SELECT user_id, price, payment_type, shift_id FROM visits WHERE id = $1",
+      "SELECT user_id, price, amount, payment_type, shift_id FROM visits WHERE id = $1",
       [visitId],
     );
     if (oldVisitRes.rows.length === 0) {
       await db.query("ROLLBACK");
-      return res.status(404).json({ message: "Визит не найден в системе" });
+      return res.status(444).json({ message: "Запись визита не найдена" });
     }
     const oldVisit = oldVisitRes.rows[0];
 
     const oldPrice = Number(oldVisit.price || 0);
-    const newPrice = price !== undefined ? Number(price) : oldPrice;
+    const oldAmount = Number(oldVisit.amount || oldPrice); // Сколько заезд стоил раньше в кассе
 
-    // Безопасное определение Нал/Безнал (приводим к нижнему регистру)
+    const basePrice = price !== undefined ? Number(price) : oldPrice;
+
+    // 🌟 ВЫЧИСЛЯЕМ СУММУ ДОПОВ И ИТОГОВЫЙ AMOUNT
+    const addonsArray = Array.isArray(additional_services)
+      ? additional_services
+      : [];
+    const addonsSum = addonsArray.reduce(
+      (acc, current) => acc + Number(current.price || 0),
+      0,
+    );
+    const newAmount = basePrice + addonsSum; // База + Допы!
+
     const oldIsCash = String(oldVisit.payment_type || "")
       .toLowerCase()
       .includes("нал");
@@ -427,7 +435,7 @@ exports.updateVisit = async (req, res) => {
       .toLowerCase()
       .includes("нал");
 
-    // 2. ОБНОВЛЯЕМ САМ ВИЗИТ В БД (Разделили переменные под разные типы данных $7 и $8)
+    // 2. ОБНОВЛЯЕМ ВИЗИТ (Включая колонку additional_services)
     const queryText = `
       UPDATE visits
       SET 
@@ -439,89 +447,73 @@ exports.updateVisit = async (req, res) => {
         manual_visit_number = $6,
         payment_type = $5,
         price = $7,
-        amount = $8
-      WHERE id = $9
-      RETURNING id, user_id
+        amount = $8,
+        additional_services = $9
+      WHERE id = $10
+      RETURNING id
     `;
 
     const values = [
-      manual_car_brand || null, // $1
-      manual_client_name || null, // $2
-      manual_client_phone || null, // $3
-      manual_service_name || null, // $4
-      manual_payment_type || null, // $5
-      manual_visit_number ? parseInt(manual_visit_number, 10) : null, // $6
-      parseInt(newPrice, 10), // $7
-      parseFloat(newPrice), // $8
-      visitId, // $9
+      manual_car_brand || null,
+      manual_client_name || null,
+      manual_client_phone || null,
+      manual_service_name || null,
+      manual_payment_type || null,
+      manual_visit_number ? parseInt(manual_visit_number, 10) : null,
+      parseInt(basePrice, 10),
+      parseFloat(newAmount), // Итоговый чек идет в amount
+      JSON.stringify(addonsArray), // JSONB-колонка требует строку JSON
+      visitId,
     ];
 
-    const updateVisitRes = await db.query(queryText, values);
-    const userId = oldVisit.user_id;
+    await db.query(queryText, values);
 
-    // 🌟 ИСПРАВЛЕНО: Глобальная синхронизация с карточкой пользователя (Вариант А)
+    // 3. СИНХРОНИЗАЦИЯ ЛОЯЛЬНОСТИ КЛИЕНТА (Сетка на главной)
+    const userId = oldVisit.user_id;
     if (userId && manual_visit_number !== undefined) {
-      // Ищем самый последний хронологический заезд этого человека, чтобы выставить кружочки на главной
       const currentLastVisitRes = await db.query(
         "SELECT COALESCE(manual_visit_number, visit_number) AS last_num FROM visits WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1",
         [userId],
       );
-
       if (currentLastVisitRes.rows.length > 0) {
         let lastRegisteredNum = parseInt(
           currentLastVisitRes.rows[0].last_num || 0,
         );
-
-        // Если последний визит равен 8, в профиль для сетки кружочков пишем 0
-        if (lastRegisteredNum === 8) {
-          lastRegisteredNum = 0;
-        }
-
+        if (lastRegisteredNum === 8) lastRegisteredNum = 0;
         await db.query("UPDATE users SET visit_count = $1 WHERE id = $2", [
           lastRegisteredNum,
           userId,
         ]);
-        console.log(
-          `🔄 Профиль пользователя ID:${userId} принудительно пересчитан. Текущий шаг на главной: ${lastRegisteredNum}`,
-        );
       }
     }
 
-    // 3. ПЕРЕСЧИТЫВАЕМ И КОРРЕКТИРУЕМ ТАБЛИЦУ СМЕН (work_shifts) В ПОСТГРЕСЕ
+    // 4. КОРРЕКТИРУЕМ ТАБЛИЦУ СМЕН (work_shifts) НА СУММУ РАЗНИЦЫ AMOUNT
     if (oldVisit.shift_id) {
-      // Шаг А: Сминусовываем старую цену из старой колонки кассы
       const oldColumn = oldIsCash ? "cash_total" : "card_total";
+      // Вычитаем из кассы старый полный чек заезда
       await db.query(
         `UPDATE work_shifts SET ${oldColumn} = ${oldColumn} - $1 WHERE id = $2`,
-        [oldPrice, oldVisit.shift_id],
+        [oldAmount, oldVisit.shift_id],
       );
 
-      // Шаг Б: Плюсуем новую цену в новую колонку кассы
       const newColumn = newIsCash ? "cash_total" : "card_total";
+      // Прибавляем в кассу новый скорректированный полный чек заезда (с допами)
       await db.query(
         `UPDATE work_shifts SET ${newColumn} = ${newColumn} + $1 WHERE id = $2`,
-        [newPrice, oldVisit.shift_id],
+        [newAmount, oldVisit.shift_id],
       );
     }
 
-    // Коммитим транзакцию, чтобы изменения железно записались в базу
     await db.query("COMMIT");
 
     res.status(200).json({
       success: true,
-      message:
-        "Параметры заезда и баланс кассы успешно обновлены в базе данных",
+      message: "Параметры заезда, доп. услуги и баланс кассы успешно обновлены",
     });
-
-    console.log(
-      `✏️ Баланс кассы и визит №${visitId} успешно синхронизированы в базе данных.`,
-    );
   } catch (err) {
     await db.query("ROLLBACK");
-    console.error("Ошибка в контроллере updateVisit:", err);
-    res
-      .status(500)
-      .json({ message: "Ошибка сервера при обновлении полей визита" });
+    console.error("Ошибка в контроллере updateVisit с допами:", err);
+    res.status(500).json({ message: "Ошибка сервера при обработке апсейла" });
   }
 };
 

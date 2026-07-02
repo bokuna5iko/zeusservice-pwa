@@ -1,0 +1,107 @@
+/* src/pages/AdminDashboard/components/modals/EditVisitModal.css */
+
+/* Базовые селекты и инпуты формы */
+.arm-modal-select {
+  background: #020617;
+  color: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #1e293b;
+  width: 100%;
+  font-size: 14px;
+}
+
+/* Секция дополнительных услуг (Апсейл) */
+.additional-services-section {
+  margin-top: 20px;
+  padding: 15px 0;
+  border-top: 1px dashed #1e293b;
+}
+
+.additional-services-title {
+  color: #38bdf8;
+  margin-bottom: 14px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Контейнер строки доп. услуги - исправляем съезжание полей */
+.addon-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+  align-items: center;
+  background: rgba(30, 41, 59, 0.3);
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #1e293b;
+}
+
+/* Адаптивное распределение ширины для элементов внутри доп-строки */
+.addon-input-name {
+  flex: 2;
+  min-width: 150px;
+  background: #020617;
+  color: #f8fafc;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #1e293b;
+  font-size: 14px;
+}
+
+.addon-input-price {
+  flex: 1;
+  min-width: 80px;
+  background: #020617;
+  color: #f8fafc;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #1e293b;
+  font-size: 14px;
+}
+
+.addon-select-worker {
+  flex: 1.2;
+  min-width: 120px;
+  background: #0f172a;
+  color: #64748b;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #1e293b;
+  font-size: 14px;
+  cursor: not-allowed;
+}
+
+.addon-delete-btn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 1.2rem;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.addon-delete-btn:hover {
+  color: #f87171;
+}
+
+.addon-add-trigger-btn {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  border: 1px dashed #38bdf8;
+  color: #38bdf8;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addon-add-trigger-btn:hover {
+  background: rgba(56, 189, 248, 0.1);
+}
