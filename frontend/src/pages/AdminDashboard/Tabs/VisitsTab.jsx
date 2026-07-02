@@ -274,28 +274,91 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
     return () => socket.disconnect();
   }, [shiftStatus]);
 
-  if (shiftStatus === "not_started") {
-    return (
-      <div className="shift-lock-overlay">
-        <div className="lock-card content-group-box">
-          <div className="lock-icon-circle">
-            <i className="fas fa-lock"></i>
+  // 🌟 МОДЕРНИЗИРОВАНО: Умная блокировка смены с открытием кнопки после 6:00 утра
+  if (shiftStatus === "not_started" || shiftStatus === "closed") {
+    // Получаем текущий час (0-23)
+    const currentHour = new Date().getHours();
+
+    // Если смена закрыта, но уже наступило 6 утра — разрешаем открыть новую смену!
+    const isNewDayReady = shiftStatus === "closed" && currentHour >= 6;
+
+    // Переопределяем отображение: если новый день готов, пропускаем экран блокировки
+    if (!isNewDayReady) {
+      return (
+        <div className="shift-lock-overlay">
+          <div className="lock-card content-group-box">
+            <div className="lock-icon-circle">
+              <i className="fas fa-lock"></i>
+            </div>
+            <h2>
+              {shiftStatus === "closed"
+                ? "Операционный день завершен"
+                : "Операционный день закрыт"}
+            </h2>
+            <p>
+              {shiftStatus === "closed"
+                ? "Рабочая смена была успешно заархивирована. Кнопка открытия новой смены станет доступна автоматически после 06:00 утра."
+                : "Для активации таблиц, дашбордов и запуска приема машин, пожалуйста, откройте текущую рабочую смену."}
+            </p>
+
+            {shiftStatus !== "closed" ? (
+              <button className="open-shift-big-btn" onClick={onOpenShift}>
+                <i className="fas fa-key"></i> Открыть рабочую смену
+              </button>
+            ) : (
+              <div
+                style={{
+                  color: "#ef4444",
+                  fontWeight: "600",
+                  marginTop: "15px",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                <i className="fas fa-calendar-check"></i> Касса заперта. Смена
+                сдана до 6:00 утра.
+              </div>
+            )}
           </div>
-          <h2>Операционный день закрыт</h2>
-          <p>
-            Для активации таблиц, дашбордов и запуска приема машин, пожалуйста,
-            откройте текущую рабочую смену.
-          </p>
-          <button className="open-shift-big-btn" onClick={onOpenShift}>
-            <i className="fas fa-key"></i> Открыть рабочую смену
-          </button>
         </div>
-      </div>
-    );
+      );
+    }
   }
 
   return (
     <div className="visits-tab-viewport">
+      {/* 🌟 ДОБАВЛЕНО: Если смена в базе числится closed, но время > 6 утра, 
+          выводим сверху плашку-уведомление с кнопкой принудительного открытия нового дня */}
+      {shiftStatus === "closed" && (
+        <div
+          style={{
+            background: "rgba(245, 158, 11, 0.15)",
+            border: "1px solid #f59e0b",
+            padding: "15px",
+            borderRadius: "8px",
+            marginBottom: "20px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ color: "#f59e0b", fontWeight: "500" }}>
+            <i className="fas fa-sun"></i> Наступило утро нового дня. Предыдущая
+            смена заархивирована.
+          </span>
+          <button
+            className="btn-primary"
+            onClick={onOpenShift}
+            style={{
+              background: "#f59e0b",
+              color: "#020617",
+              padding: "8px 16px",
+            }}
+          >
+            <i className="fas fa-key"></i> Открыть новую смену
+          </button>
+        </div>
+      )}
+
       <CashDashboard
         liveShiftData={liveShiftData}
         onAddExpenseClick={handleExpensesWidgetClick}

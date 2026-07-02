@@ -35,12 +35,20 @@ const ShiftReportModal = ({ isOpen, shiftId, onClose, onArchiveSuccess }) => {
         cardCalculated: reportData.cardCalculated,
       };
 
-      const response = (await api.closeShiftTemplate)
-        ? api.closeWorkShiftWithReport(payload)
-        : api.closeWorkShiftWithReport(payload);
+      // 🌟 ИСПРАВЛЕНО: Убрали странный тернарный оператор и поставили await строго перед вызовом API!
+      const response = await api.closeWorkShiftWithReport(payload);
+
       alert("Смена успешно закрыта и заархивирована!");
-      onArchiveSuccess(response.data.shift);
+
+      // Безопасно передаем закрытую смену вверх, чтобы заблокировать экран
+      if (response && response.data && response.data.shift) {
+        onArchiveSuccess(response.data.shift);
+      } else {
+        // Если бэк вернул успешный статус, но структура ответа иная, просто триггерим успех
+        onArchiveSuccess({ status: "closed" });
+      }
     } catch (err) {
+      console.error("Критическая ошибка при закрытии смены в модалке:", err);
       alert(err.response?.data?.message || "Ошибка при архивации смены");
     } finally {
       setSubmitting(false);
