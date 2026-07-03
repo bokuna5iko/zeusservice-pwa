@@ -136,13 +136,13 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Телефон */}
+            {/* Телефон
             <div className="profile-info-row">
               <label className="profile-field-label">Номер телефона</label>
               <div className="profile-value disabled">
                 <i className="fas fa-phone-alt"></i> {user?.phone || "—"}
               </div>
-            </div>
+            </div> */}
 
             {/* 🌟 ШАГ 3: Новая интерактивная зона автомобиля */}
             <div className="profile-info-row">
