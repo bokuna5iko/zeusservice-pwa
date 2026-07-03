@@ -102,9 +102,83 @@ const AdminDashboard = ({
   };
 
   // Коллбэк успешной сдачи кассы и архивации с бэка
-  const handleArchiveSuccess = () => {
-    setShowCloseReportModal(false);
-    fetchShiftStatus(); // Перезапрашиваем статус дня — база выдаст либо closed, либо разрешит открыть новую смену
+  const handleArchiveSuccess = (closedShift) => {
+    console.log("=============================================");
+    console.log("🚀 [DIAGNOSTIC TEST] Сработала handleArchiveSuccess");
+    console.log("📦 Данные смены, прилетевшие от бэкенда:", closedShift);
+    console.log("=============================================");
+
+    // 1. Закрываем модальное окно финансового отчета
+    if (typeof setShowCloseReportModal === "function") {
+      console.log(
+        "➡️ Шаг 1: setShowCloseReportModal найден, закрываем окно...",
+      );
+      setShowCloseReportModal(false);
+    } else {
+      console.error(
+        "❌ Ошибка: setShowCloseReportModal НЕ НАЙДЕН или не является функцией!",
+      );
+    }
+
+    // 2. 🌟 МГНОВЕННЫЙ ПЕРЕКЛЮЧАТЕЛЬ: Переводим пульт в режим закрытого дня
+    if (typeof setShiftStatus === "function") {
+      // Пытаемся безопасно прочитать текущее состояние, если переменная доступна в контексте
+      try {
+        console.log(
+          "➡️ Шаг 2: Текущий shiftStatus ДО изменения:",
+          typeof shiftStatus !== "undefined"
+            ? shiftStatus
+            : "не определен в текущей области",
+        );
+      } catch (e) {}
+
+      setShiftStatus("closed");
+      console.log(
+        "✅ Шаг 2: Команда setShiftStatus('closed') успешно отправлена в React.",
+      );
+    } else {
+      console.error(
+        "❌ КРИТИЧЕСКАЯ ОШИБКА: Функция setShiftStatus НЕ НАЙДЕНА в AdminDashboard! Проверь, как точно называется твой useState для статуса смены!",
+      );
+    }
+
+    // 3. 🌟 ФИКС СУММЫ: Записываем финальные архивные цифры кассы, которые прислал бэк
+    if (typeof setCurrentShiftRaw === "function") {
+      if (closedShift) {
+        setCurrentShiftRaw(closedShift);
+        console.log(
+          "✅ Шаг 3: Финальные архивные цифры от бэка записаны в setCurrentShiftRaw.",
+        );
+      } else {
+        console.warn(
+          "⚠️ Предупреждение Шаг 3: closedShift пришел пустым (undefined/null) от модалки.",
+        );
+      }
+    } else {
+      console.error(
+        "❌ КРИТИЧЕСКАЯ ОШИБКА: Функция setCurrentShiftRaw НЕ НАЙДЕНА! Проверь имя стейта, куда сохраняются сырые данные текущей смены (например, currentShift Raw, setShiftData и т.д.)",
+      );
+    }
+
+    // 4. Локальный перезапрос (подстраховка для синхронизации с БД)
+    if (typeof fetchShiftStatus === "function") {
+      console.log(
+        "➡️ Шаг 4: fetchShiftStatus найден, запускаем принудительный сетевой перезапрос...",
+      );
+      fetchShiftStatus();
+    } else {
+      console.warn(
+        "⚠️ Предупреждение Шаг 4: fetchShiftStatus не найден. Перезапрос статуса из БД пропущен.",
+      );
+    }
+
+    console.log("=============================================");
+    console.log(
+      "🏁 [DIAGNOSTIC TEST] handleArchiveSuccess завершила выполнение",
+    );
+    console.log("=============================================");
+
+    alert("Смена успешно заархивирована! Касса заблокирована до утра.");
   };
 
   // Вход в архивный просмотр за конкретную дату
@@ -368,14 +442,13 @@ const AdminDashboard = ({
         <main className="dashboard-content-viewport">
           {activeTab === "visits" && (
             <VisitsTab
-              // Если мы в режиме архива, принудительно шлем статус 'closed', чтобы скрыть все кнопки редактирования и добавления трат
+              // Если мы в режиме архива, принудительно шлем статус 'closed'
               shiftStatus={isArchiveMode ? "closed" : shiftStatus}
-              /* 🌟 ИСПРАВЛЕНО: Теперь обязательно прокидываем shift_date, чтобы таблица знала, какой день загрузить! */
               initialShiftData={
                 isArchiveMode
                   ? {
                       id: archivedShiftData.id,
-                      shift_date: archivedShiftData.shift_date, // Добавили!
+                      shift_date: archivedShiftData.shift_date,
                       cash_total: archivedShiftData.cash_total,
                       card_total: archivedShiftData.card_total,
                       expenses_total: archivedShiftData.expenses_total,
@@ -383,6 +456,12 @@ const AdminDashboard = ({
                   : currentShiftRaw
               }
               onOpenShift={handleOpenShift}
+              // 🌟 ДОБАВЛЕНО: Прокидываем колбэк изменения статуса смены в стейте dashboard
+              onCloseShiftSuccess={() => {
+                if (typeof setShiftStatus === "function") {
+                  setShiftStatus("closed");
+                }
+              }}
             />
           )}
           {activeTab === "workers" && (

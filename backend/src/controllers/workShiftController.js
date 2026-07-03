@@ -74,20 +74,20 @@ exports.openShift = async (req, res) => {
   }
 };
 
-// 3. Подготовка пре-отчета (Вызывается перед закрытием смены админом)
+// 3. Подготовка пре-отчета (Вызывается перед закрытием смены админом) - ФИНАЛЬНЫЙ ЭТАЛОН
 exports.getPreCloseReport = async (req, res) => {
   try {
     const { shiftId } = req.params;
 
-    // Считаем показатели по реальным заездам за эту смену из таблицы visits
+    // 🌟 ЖЕЛЕЗНО: Считаем деньги строго по shift_id, привязанному к визитам!
+    // Никакие сдвиги времени или старые заезды больше не исказят отчет.
     const statsRes = await db.query(
       `SELECT 
         COUNT(id) as cars_count,
-        COALESCE(SUM(CASE WHEN COALESCE(manual_payment_type, payment_type) = 'Наличные' THEN price ELSE 0 END), 0) as calc_cash,
-        COALESCE(SUM(CASE WHEN COALESCE(manual_payment_type, payment_type) = 'Карта' THEN price ELSE 0 END), 0) as calc_card
+        COALESCE(SUM(CASE WHEN LOWER(COALESCE(manual_payment_type, payment_type)) LIKE '%нал%' THEN COALESCE(amount, price) ELSE 0 END), 0) as calc_cash,
+        COALESCE(SUM(CASE WHEN LOWER(COALESCE(manual_payment_type, payment_type)) NOT LIKE '%нал%' THEN COALESCE(amount, price) ELSE 0 END), 0) as calc_card
        FROM visits 
-       WHERE created_at >= (SELECT opened_at FROM work_shifts WHERE id = $1)
-         AND created_at <= NOW()`,
+       WHERE shift_id = $1`, // 🌟 Заменили фильтр по времени на строгий shift_id
       [shiftId],
     );
 
@@ -103,6 +103,7 @@ exports.getPreCloseReport = async (req, res) => {
       expensesTotal: parseFloat(shiftRes.rows[0].expenses_total || 0),
     };
 
+    console.log("=== ЭТАЛОННЫЙ ОТЧЕТ СФОРМИРОВАН ПО SHIFT_ID ===", report);
     res.json(report);
   } catch (err) {
     console.error("Ошибка подготовки отчета:", err);
@@ -110,7 +111,7 @@ exports.getPreCloseReport = async (req, res) => {
   }
 };
 
-// 4. Финальное закрытие смены со сверкой кассы и архивацией
+// 4. Финальное закрытие смены со сверкой кассы и архивацией - ИСПРАВЛЕНО
 exports.closeShift = async (req, res) => {
   try {
     const { shiftId, actualCash, carsCount, cashCalculated, cardCalculated } =
@@ -122,10 +123,34 @@ exports.closeShift = async (req, res) => {
       });
     }
 
-    // Высчитываем разницу (фактический нал минус расчетный)
-    const cashDifference = Number(actualCash) - Number(cashCalculated);
+    // 🌟 ПОДСТРАХОВКА: Вытягиваем текущие накопленные за смену финансовые показатели прямо из БД,
+    // чтобы исключить обнуление, если фронтенд передал некорректные/пустые параметры
+    const currentShiftRes = await db.query(
+      "SELECT cash_total, card_total, expenses_total FROM work_shifts WHERE id = $1",
+      [shiftId],
+    );
 
-    // Архивация смены: фиксируем все итоги, переводим статус в closed
+    if (currentShiftRes.rows.length === 0) {
+      return res.status(444).json({ message: "Рабочая смена не найдена" });
+    }
+
+    const dbShift = currentShiftRes.rows[0];
+
+    // Если фронт передал корректные числа — берем их, если прилетел undefined/0 — берем эталон из БД
+    const finalCashCalculated =
+      Number(cashCalculated) || Number(dbShift.cash_total || 0);
+    const finalCardCalculated =
+      Number(cardCalculated) || Number(dbShift.card_total || 0);
+
+    // Высчитываем честную разницу (фактический нал минус расчетный эталон)
+    const cashDifference = Number(actualCash) - finalCashCalculated;
+
+    console.log("=== БЭКЕНД: ЗАКРЫТИЕ СМЕНЫ ===");
+    console.log(
+      `Смена ID: ${shiftId}, Фактический нал: ${actualCash} ₽, Расчетный нал: ${finalCashCalculated} ₽, Разница: ${cashDifference} ₽`,
+    );
+
+    // Архивация смены: переводим статус в closed и фиксируем финальный финансовый аудит
     const result = await db.query(
       `UPDATE work_shifts 
        SET status = 'closed', 
@@ -138,9 +163,9 @@ exports.closeShift = async (req, res) => {
        WHERE id = $6
        RETURNING *`,
       [
-        Number(cashCalculated),
-        Number(cardCalculated),
-        Number(carsCount),
+        finalCashCalculated,
+        finalCardCalculated,
+        Number(carsCount || 0),
         Number(actualCash),
         cashDifference,
         shiftId,

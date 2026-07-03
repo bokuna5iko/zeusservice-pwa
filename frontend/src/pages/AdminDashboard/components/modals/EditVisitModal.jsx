@@ -1,6 +1,6 @@
 // src/pages/AdminDashboard/components/modals/EditVisitModal.jsx
 import React, { useState, useEffect } from "react";
-import "./EditVisitModal.css"; // 🔥 Подключаем выделенные CSS-стили
+import "./EditVisitModal.css";
 
 const EditVisitModal = ({
   isOpen,
@@ -8,7 +8,7 @@ const EditVisitModal = ({
   visit,
   onSave,
   loadingEdit,
-  servicePrices,
+  servicePrices, // Сюда прилетает массив всех услуг allServices из БД
 }) => {
   const [editBrand, setEditBrand] = useState("");
   const [editName, setEditName] = useState("");
@@ -18,6 +18,9 @@ const EditVisitModal = ({
   const [editVisitNumber, setEditVisitNumber] = useState(1);
   const [additionalServices, setAdditionalServices] = useState([]);
 
+  // 🌟 НОВЫЕ СТЕНТЫ: Для логики калькулятора (Классы машин)
+  const [carClass, setCarClass] = useState(1);
+
   useEffect(() => {
     if (visit && isOpen) {
       setEditBrand(visit.manual_car_brand || "");
@@ -26,12 +29,6 @@ const EditVisitModal = ({
       );
       setEditPhone(
         visit.manual_client_phone || visit.client_phone || visit.phone || "",
-      );
-      setEditService(
-        visit.manual_service_name ||
-          visit.service_name ||
-          visit.service_type ||
-          "",
       );
       setEditPayment(
         visit.manual_payment_type || visit.payment_type || "Наличные",
@@ -43,10 +40,35 @@ const EditVisitModal = ({
           1,
       );
       setAdditionalServices(visit.additional_services || []);
+
+      // 🌟 Логика автоопределения класса машины при открытии:
+      // Ищем текущую услугу в базе, чтобы подсветить нужный класс (если привязано)
+      const currentServiceInDb = servicePrices.find(
+        (s) =>
+          s.service_name === visit.manual_service_name ||
+          s.service_name === visit.service_name,
+      );
+      if (currentServiceInDb && currentServiceInDb.car_class) {
+        setCarClass(currentServiceInDb.car_class);
+        setEditService(currentServiceInDb.service_name);
+      } else {
+        setCarClass(1);
+        setEditService(
+          visit.manual_service_name ||
+            visit.service_name ||
+            visit.service_type ||
+            "",
+        );
+      }
     }
-  }, [visit, isOpen]);
+  }, [visit, isOpen, servicePrices]);
 
   if (!isOpen || !visit) return null;
+
+  // 🌟 ФИЛЬТРАЦИЯ: Оставляем только те услуги, которые соответствуют выбранному классу (или общие для всех)
+  const filteredServices = servicePrices.filter(
+    (s) => s.car_class === null || s.car_class === parseInt(carClass),
+  );
 
   const handleAddAddonField = () => {
     setAdditionalServices([
@@ -63,8 +85,13 @@ const EditVisitModal = ({
     const updated = [...additionalServices];
     updated[index][field] = value;
 
+    // Автоподстановка цены допа (тоже с учетом выбранного класса для удобства!)
     if (field === "name") {
-      const found = servicePrices.find((s) => s.service_name === value);
+      const found = servicePrices.find(
+        (s) =>
+          s.service_name === value &&
+          (s.car_class === null || s.car_class === parseInt(carClass)),
+      );
       if (found) {
         updated[index]["price"] = Number(found.base_price || 0);
       }
@@ -75,8 +102,11 @@ const EditVisitModal = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Ищем точный объект услуги по имени И выбранному классу авто
     const selectedServiceObj = servicePrices.find(
-      (s) => s.service_name === editService,
+      (s) =>
+        s.service_name === editService &&
+        (s.car_class === null || s.car_class === parseInt(carClass)),
     );
     const basePrice = selectedServiceObj
       ? Number(selectedServiceObj.base_price)
@@ -89,7 +119,7 @@ const EditVisitModal = ({
       manual_service_name: editService,
       manual_payment_type: editPayment,
       manual_visit_number: Number(editVisitNumber),
-      price: basePrice,
+      price: basePrice, // Отдаем правильную базовую цену за нужный класс!
       additional_services: additionalServices,
     };
     onSave(payload);
@@ -136,16 +166,41 @@ const EditVisitModal = ({
             />
           </div>
 
+          {/* 🌟 ДОБАВЛЕНО: Выбор Класса машины (Полная адаптация из Калькулятора) */}
           <div className="arm-input-group">
-            <label>Вид оказываемой услуги</label>
+            <label>Класс автомобиля</label>
+            <div
+              className="calc-class-selector"
+              style={{ marginBottom: "5px" }}
+            >
+              {[1, 2, 3, 4, 5].map((cls) => (
+                <button
+                  key={cls}
+                  type="button"
+                  className={`calc-class-tab ${carClass === cls ? "active" : ""}`}
+                  onClick={() => {
+                    setCarClass(cls);
+                    setEditService(""); // Сбрасываем выбранную услугу, чтобы админ указал её заново для нового класса
+                  }}
+                  disabled={loadingEdit}
+                >
+                  {cls}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="arm-input-group">
+            <label>Вид оказываемой услуги (Класс {carClass})</label>
             <select
               value={editService}
               onChange={(e) => setEditService(e.target.value)}
               disabled={loadingEdit}
               className="arm-modal-select"
+              required
             >
-              <option value="">-- Выберите услугу --</option>
-              {servicePrices.map((s) => (
+              <option value="">-- Нажмите для выбора услуги --</option>
+              {filteredServices.map((s) => (
                 <option key={s.id} value={s.service_name}>
                   {s.service_name} ({s.base_price} ₽)
                 </option>
@@ -153,7 +208,7 @@ const EditVisitModal = ({
             </select>
           </div>
 
-          {/* 🌟 ЧИСТЫЙ БЛОК ДОП. УСЛУГ (БЕЗ ИНЛАЙН СТИЛЕЙ) */}
+          {/* Блок доп. услуг (Апсейл) */}
           <div className="additional-services-section">
             <h4 className="additional-services-title">Дополнительные услуги</h4>
 
@@ -170,7 +225,7 @@ const EditVisitModal = ({
                   className="addon-input-name"
                 />
                 <datalist id={`services-list-${index}`}>
-                  {servicePrices.map((s) => (
+                  {filteredServices.map((s) => (
                     <option key={s.id} value={s.service_name} />
                   ))}
                 </datalist>

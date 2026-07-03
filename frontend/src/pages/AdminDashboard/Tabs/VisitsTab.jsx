@@ -12,7 +12,12 @@ import ExpenseModal from "../components/modals/ExpenseModal";
 import EditVisitModal from "../components/modals/EditVisitModal";
 import ExpenseHistoryModal from "../components/modals/ExpenseHistoryModal";
 
-const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
+const VisitsTab = ({
+  shiftStatus,
+  initialShiftData,
+  onOpenShift,
+  onCloseShiftSuccess,
+}) => {
   const [liveShiftData, setLiveShiftData] = useState({
     cash: 0,
     card: 0,
@@ -64,66 +69,33 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
     setLoadingEdit(true);
     try {
       const targetId = editingVisit.id || editingVisit.visit_id;
+
+      // Отправляем данные на бэк и ждем эталонный ответ с новой кассой
       const res = await api.updateVisitFields(targetId, payload);
 
-      // Безопасное определение старого и нового способов оплаты
-      const getPaymentString = (v) => {
-        if (!v) return "";
-        return String(v.manual_payment_type || v.payment_type || "")
-          .trim()
-          .toLowerCase();
-      };
+      // 🌟 ИСПРАВЛЕНО: Больше никакой ручной математики на фронте!
+      // Если бэк вернул обновленную кассу смены — просто ставим её в стейт
+      if (res && res.data && res.data.updatedShift) {
+        const { cash_total, card_total, expenses_total } =
+          res.data.updatedShift;
+        setLiveShiftData({
+          cash: Number(cash_total || 0),
+          card: Number(card_total || 0),
+          expenses: Number(expenses_total || 0),
+        });
+      }
 
-      const oldPaymentStr = getPaymentString(editingVisit);
-      const newPaymentStr = String(
-        payload.manual_payment_type || payload.payment_type || "",
-      )
-        .trim()
-        .toLowerCase();
-
-      const oldIsCash = oldPaymentStr.includes("нал");
-      const newIsCash = newPaymentStr.includes("нал");
-
-      // Рассчитываем старый и новый ИТОГОВЫЕ чеки (база + сумма всех допов)
-      const oldAmount = Number(editingVisit.amount ?? editingVisit.price ?? 0);
-
-      // 🌟 ИСПРАВЛЕНО: Убрали затесавшуюся стрелочную функцию, теперь суммирует строго числа!
+      // Рассчитываем сумму допов для мгновенного обновления строки в таблице пульта
       const addonsSum = Array.isArray(payload.additional_services)
         ? payload.additional_services.reduce(
             (acc, curr) => acc + Number(curr.price || 0),
             0,
           )
         : 0;
-
       const newAmount =
         Number(payload.price || editingVisit.price || 0) + addonsSum;
 
-      setLiveShiftData((prev) => {
-        let updatedCash = Number(prev.cash || 0);
-        let updatedCard = Number(prev.card || 0);
-
-        // Шаг А: Вычитаем старый чек полностью из старой ячейки
-        if (oldIsCash) {
-          updatedCash -= oldAmount;
-        } else {
-          updatedCard -= oldAmount;
-        }
-
-        // Шаг Б: Плюсуем новый чек полностью в правильную ячейку
-        if (newIsCash) {
-          updatedCash += newAmount;
-        } else {
-          updatedCard += newAmount;
-        }
-
-        return {
-          ...prev,
-          cash: updatedCash,
-          card: updatedCard,
-        };
-      });
-
-      // 2. Обновляем строки в таблице
+      // 2. Обновляем строку визита в локальной таблице
       setVisits((prevVisits) =>
         prevVisits.map((v) => {
           const currentId = v.id || v.visit_id;
@@ -134,7 +106,8 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
               ...v,
               ...payload,
               price: Number(payload.price || v.price),
-              amount: newAmount, // Записываем полный чек для моментального рендера в таблице
+              amount: newAmount,
+              additional_services: payload.additional_services, // Явно прописываем новые допы в строку!
               visit_number: payload.manual_visit_number,
               loyalty_step: payload.manual_visit_number,
             };
@@ -275,60 +248,60 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
   }, [shiftStatus]);
 
   // 🌟 МОДЕРНИЗИРОВАНО: Умная блокировка смены с открытием кнопки после 6:00 утра
-  if (shiftStatus === "not_started" || shiftStatus === "closed") {
-    // Получаем текущий час (0-23)
-    const currentHour = new Date().getHours();
+  // Определяем, архив ли это, прямо в теле компонента
+  const isArchive = !!initialShiftData?.shift_date;
 
-    // Если смена закрыта, но уже наступило 6 утра — разрешаем открыть новую смену!
-    const isNewDayReady = shiftStatus === "closed" && currentHour >= 6;
+  if (!isArchive) {
+    if (shiftStatus === "not_started" || shiftStatus === "closed") {
+      const currentHour = new Date().getHours();
+      const isNewDayReady = shiftStatus === "closed" && currentHour >= 6;
 
-    // Переопределяем отображение: если новый день готов, пропускаем экран блокировки
-    if (!isNewDayReady) {
-      return (
-        <div className="shift-lock-overlay">
-          <div className="lock-card content-group-box">
-            <div className="lock-icon-circle">
-              <i className="fas fa-lock"></i>
-            </div>
-            <h2>
-              {shiftStatus === "closed"
-                ? "Операционный день завершен"
-                : "Операционный день закрыт"}
-            </h2>
-            <p>
-              {shiftStatus === "closed"
-                ? "Рабочая смена была успешно заархивирована. Кнопка открытия новой смены станет доступна автоматически после 06:00 утра."
-                : "Для активации таблиц, дашбордов и запуска приема машин, пожалуйста, откройте текущую рабочую смену."}
-            </p>
-
-            {shiftStatus !== "closed" ? (
-              <button className="open-shift-big-btn" onClick={onOpenShift}>
-                <i className="fas fa-key"></i> Открыть рабочую смену
-              </button>
-            ) : (
-              <div
-                style={{
-                  color: "#ef4444",
-                  fontWeight: "600",
-                  marginTop: "15px",
-                  letterSpacing: "0.5px",
-                }}
-              >
-                <i className="fas fa-calendar-check"></i> Касса заперта. Смена
-                сдана до 6:00 утра.
+      if (!isNewDayReady) {
+        return (
+          <div className="shift-lock-overlay">
+            <div className="lock-card content-group-box">
+              <div className="lock-icon-circle">
+                <i className="fas fa-lock"></i>
               </div>
-            )}
+              <h2>
+                {shiftStatus === "closed"
+                  ? "Операционный день завершен"
+                  : "Операционный день закрыт"}
+              </h2>
+              <p>
+                {shiftStatus === "closed"
+                  ? "Рабочая смена была успешно заархивирована. Кнопка открытия новой смены станет доступна автоматически после 06:00 утра."
+                  : "Для активации таблиц, дашбордов и запуска приема машин, пожалуйста, откройте текущую рабочую смену."}
+              </p>
+
+              {shiftStatus !== "closed" ? (
+                <button className="open-shift-big-btn" onClick={onOpenShift}>
+                  <i className="fas fa-key"></i> Открыть рабочую смену
+                </button>
+              ) : (
+                <div
+                  style={{
+                    color: "#ef4444",
+                    fontWeight: "600",
+                    marginTop: "15px",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  <i className="fas fa-calendar-check"></i> Касса заперта. Смена
+                  сдана до 6:00 утра.
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     }
   }
 
   return (
     <div className="visits-tab-viewport">
-      {/* 🌟 ДОБАВЛЕНО: Если смена в базе числится closed, но время > 6 утра, 
-          выводим сверху плашку-уведомление с кнопкой принудительного открытия нового дня */}
-      {shiftStatus === "closed" && (
+      {/* 🌟 ИСПРАВЛЕНО: Плашка «Наступило утро» рендерится ТОЛЬКО для оперативного дня (НЕ в архиве) */}
+      {!isArchive && shiftStatus === "closed" && (
         <div
           style={{
             background: "rgba(245, 158, 11, 0.15)",
@@ -380,7 +353,6 @@ const VisitsTab = ({ shiftStatus, initialShiftData, onOpenShift }) => {
         loadingExpense={loadingExpense}
       />
 
-      {/* 🌟 ОСТАВЛЯЕМ ТОЛЬКО ОДИН ПРАВИЛЬНЫЙ ВЫЗОВ МОДАЛКИ С ОКАЗАНИЕМ УСЛУГ ИЗ БД */}
       <EditVisitModal
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}

@@ -490,26 +490,36 @@ exports.updateVisit = async (req, res) => {
     // 4. КОРРЕКТИРУЕМ ТАБЛИЦУ СМЕН (work_shifts) НА СУММУ РАЗНИЦЫ AMOUNT
     if (oldVisit.shift_id) {
       const oldColumn = oldIsCash ? "cash_total" : "card_total";
-      // Вычитаем из кассы старый полный чек заезда
       await db.query(
         `UPDATE work_shifts SET ${oldColumn} = ${oldColumn} - $1 WHERE id = $2`,
         [oldAmount, oldVisit.shift_id],
       );
 
       const newColumn = newIsCash ? "cash_total" : "card_total";
-      // Прибавляем в кассу новый скорректированный полный чек заезда (с допами)
       await db.query(
         `UPDATE work_shifts SET ${newColumn} = ${newColumn} + $1 WHERE id = $2`,
         [newAmount, oldVisit.shift_id],
       );
+
+      // 🌟 ДОБАВЛЕНО: Сразу вытягиваем из БД свежие, пересчитанные сервером данные кассы!
+      const updatedShiftRes = await db.query(
+        "SELECT cash_total, card_total, expenses_total FROM work_shifts WHERE id = $1",
+        [oldVisit.shift_id],
+      );
+
+      await db.query("COMMIT");
+
+      // 🌟 МОДЕРНИЗИРОВАНО: Отдаем фронтенду эталонные цифры кассы
+      return res.status(200).json({
+        success: true,
+        message:
+          "Параметры заезда, доп. услуги и баланс кассы успешно обновлены",
+        updatedShift: updatedShiftRes.rows[0],
+      });
     }
 
     await db.query("COMMIT");
-
-    res.status(200).json({
-      success: true,
-      message: "Параметры заезда, доп. услуги и баланс кассы успешно обновлены",
-    });
+    res.status(200).json({ success: true });
   } catch (err) {
     await db.query("ROLLBACK");
     console.error("Ошибка в контроллере updateVisit с допами:", err);
