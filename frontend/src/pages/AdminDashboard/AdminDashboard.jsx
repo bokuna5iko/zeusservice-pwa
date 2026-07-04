@@ -46,11 +46,15 @@ const DashboardContent = () => {
   // Открытие смены через контекстный провайдер API (переиспользуем оригинальный метод)
   const handleOpenShift = async () => {
     try {
-      const response = await api.openWorkShift();
-      setShiftStatus("open");
-      setCurrentShiftRaw(response.data.shift);
+      const res = await api.openWorkShift();
+      // твоя логика успеха...
     } catch (err) {
-      alert(err.response?.data?.message || "Не удалось открыть смену");
+      console.error("ПОЛНАЯ ОШИБКА ОТКРЫТИЯ СМЕНЫ:", err);
+
+      // Выводим точечный текст ошибки от бэкенда, если он есть
+      const serverMessage =
+        err.response?.data?.message || err.message || "Неизвестная ошибка";
+      alert(`Не удалось открыть смену. Причина: ${serverMessage}`);
     }
   };
 
