@@ -14,7 +14,7 @@
               "type": "empty",
               "state": {},
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "Новая вкладка"
             }
           }
         ]
@@ -40,7 +40,7 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "Files"
+              "title": "Файловый менеджер"
             }
           },
           {
@@ -177,18 +177,23 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "bases:Create new base": false,
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "bases:Создать новую базу": false,
       "obsidian-git:Open Git source control": false
     }
   },
   "active": "c6a32a8d05138e2e",
   "lastOpenFiles": [
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Пульт управления/Техническое ТЗ.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Пульт управления/Смены и его логика.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Пульт управления/Идейное ТЗ.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Пульт управления/Дизайнерское ТЗ.md",
+    "Projzeus/🧠Brainstorm/📱Progressive Web App/Пульт управления",
     "Тест.md",
     "Как какать.md",
     "Без названия.canvas",
@@ -222,10 +227,6 @@
     "Projzeus/🗺RoadMap/Versions/v0.1/Readme-v0.1.md",
     "Projzeus/📚Docs/Tutorials/porj react arh/Без названия.md",
     "Projzeus/📚Docs/Tutorials/Errors in vscode/node server.js.md",
-    "Projzeus/📚Docs/Tutorials/Git guide/🛠 Guide git for OBS&VSCODE.md",
-    "Projzeus/📚Docs/Tutorials/Git guide/Workflow&Golden Cycle.md",
-    "Projzeus/📚Docs/Tutorials/Git guide/Obsidian + GIT.md",
-    "Projzeus/📚Docs/Tutorials/API Tester/Получение токена через Talend API Tester.md",
     "Projzeus/📚Docs/Tutorials/AI/LLM",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server",
@@ -233,7 +234,6 @@
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)",
     "Projzeus/🧠Brainstorm/Server logic/TODO",
     "Projzeus/🧠Brainstorm/Server logic/Technology",
-    "Projzeus/🧠Brainstorm/Server logic/Hardware",
-    "Projzeus/🗺RoadMap/Versions/v0.2"
+    "Projzeus/🧠Brainstorm/Server logic/Hardware"
   ]
 }
