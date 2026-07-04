@@ -15,6 +15,8 @@ import WorkersTab from "./Tabs/WorkersTab.jsx";
 import SimulatorTab from "./Tabs/SimulatorTab.jsx";
 import AnalyticsTab from "./Tabs/AnalyticsTab.jsx";
 
+import { api } from "../../api/apiService";
+
 // Импортируем защитные модалки управления сменными циклами
 import ForgottenLockModal from "./components/modals/ForgottenLockModal";
 import ShiftReportModal from "./components/modals/ShiftReportModal";
