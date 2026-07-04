@@ -82,7 +82,7 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
           marginBottom: "12px",
         }}
       >
-        {WEEKDAYS.map((day) => (
+        {WEEK_DAYS.map((day) => (
           <div
             key={day}
             style={{

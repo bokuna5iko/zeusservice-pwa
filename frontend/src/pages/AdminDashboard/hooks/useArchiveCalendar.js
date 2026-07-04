@@ -4,10 +4,10 @@ import { useState } from "react";
 export const WEEK_DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
 export const useArchiveCalendar = (calendarShifts) => {
-  const [currentDate, setCurrentMonthDate] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const handlePrevMonth = () => {
-    setCurrentMonthDate(
+    setCurrentMonth(
       (prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1),
     );
   };
@@ -33,9 +33,9 @@ export const useArchiveCalendar = (calendarShifts) => {
     const firstDayOfMonth = new Date(year, month, 1);
     const lastDayOfMonth = new Date(year, month + 1, 0);
 
-    const totalDays = lastMonthDay.getDate();
+    const totalDays = lastDayOfMonth.getDate();
     // Корректируем день недели (0 - воскресенье в JS, переводим под Пн = 0)
-    let startDayOfWeek = firstMonthDay.getDay() - 1;
+    let startDayOfWeek = firstDayOfMonth.getDay() - 1;
     if (startDayOfWeek === -1) startDayOfWeek = 6;
 
     const cells = [];
@@ -48,7 +48,7 @@ export const useArchiveCalendar = (calendarShifts) => {
     // 2. Реальные дни месяца
     for (let day = 1; day <= totalDays; day++) {
       // Ищем, была ли смена в этот конкретный день
-      const matchedShift = calendarShifts.find((shift) => {
+      const matchedShift = calendarShifts?.find((shift) => {
         const shiftDate = new Date(shift.shift_date);
         return (
           shiftDate.getFullYear() === year &&
