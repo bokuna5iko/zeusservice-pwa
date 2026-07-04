@@ -1,11 +1,9 @@
 // src/pages/AdminDashboard/Tabs/SimulatorTab.jsx
-import React from "react";
-import { useSimulatorState } from "../hooks/useSimulatorState";
+import React, { useState } from "react";
 import "./SimulatorTab.css";
 
 const SimulatorTab = () => {
-  // Подключаем наш изолированный хук логики симулятора девайса
-  const { phoneScreen, changeScreen } = useSimulatorState();
+  const [phoneScreen, setPhoneScreen] = useState("home"); // Смена экранов внутри телефона ('home', 'history', 'scanner')
 
   return (
     <div className="simulator-tab-viewport">
@@ -23,19 +21,19 @@ const SimulatorTab = () => {
           <span className="nav-group-label">Быстрый переход:</span>
           <button
             className={`sim-nav-btn ${phoneScreen === "home" ? "active" : ""}`}
-            onClick={() => changeScreen("home")}
+            onClick={() => setPhoneScreen("home")}
           >
             Главная
           </button>
           <button
             className={`sim-nav-btn ${phoneScreen === "history" ? "active" : ""}`}
-            onClick={() => changeScreen("history")}
+            onClick={() => setPhoneScreen("history")}
           >
             История
           </button>
           <button
             className={`sim-nav-btn ${phoneScreen === "scanner" ? "active" : ""}`}
-            onClick={() => changeScreen("scanner")}
+            onClick={() => setPhoneScreen("scanner")}
           >
             QR-Сканер
           </button>
@@ -67,7 +65,7 @@ const SimulatorTab = () => {
                   <p>Готовность к сканированию карты лояльности клиента</p>
                   <button
                     className="phone-accent-btn"
-                    onClick={() => changeScreen("scanner")}
+                    onClick={() => setPhoneScreen("scanner")}
                   >
                     <i className="fas fa-qrcode"></i> Включить камеру
                   </button>
@@ -107,7 +105,7 @@ const SimulatorTab = () => {
                 </p>
                 <button
                   className="phone-cancel-btn"
-                  onClick={() => changeScreen("home")}
+                  onClick={() => setPhoneScreen("home")}
                 >
                   Закрыть сканер
                 </button>
@@ -119,19 +117,19 @@ const SimulatorTab = () => {
           <footer className="phone-app-footer">
             <button
               className={phoneScreen === "home" ? "active" : ""}
-              onClick={() => changeScreen("home")}
+              onClick={() => setPhoneScreen("home")}
             >
               <i className="fas fa-home"></i>
             </button>
             <button
               className={phoneScreen === "scanner" ? "active" : ""}
-              onClick={() => changeScreen("scanner")}
+              onClick={() => setPhoneScreen("scanner")}
             >
               <i className="fas fa-qrcode"></i>
             </button>
             <button
               className={phoneScreen === "history" ? "active" : ""}
-              onClick={() => changeScreen("history")}
+              onClick={() => setPhoneScreen("history")}
             >
               <i className="fas fa-history"></i>
             </button>

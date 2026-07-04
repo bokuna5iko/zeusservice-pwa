@@ -1,7 +1,71 @@
 // src/pages/AdminDashboard/components/VisitsTable.jsx
-import React from "react";
-import AddonPopoverBadge from "./AddonPopoverBadge";
+import React, { useState, useRef } from "react";
+import { createPortal } from "react-dom"; // 🌟 Добавили Портал для обхода ограничений overflow
 import "./VisitsTable.css";
+
+const AddonPopoverBadge = ({ addons }) => {
+  const [visible, setVisible] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const badgeRef = useRef(null);
+
+  if (!addons || addons.length === 0) return null;
+
+  const handleBadgeClick = (e) => {
+    e.stopPropagation();
+
+    if (!visible && badgeRef.current) {
+      // 🌟 Магия геометрии: вычисляем точное положение баджа на экране в пикселях
+      const rect = badgeRef.current.getBoundingClientRect();
+      setCoords({
+        // Опускаем окно чуть ниже баджа с учетом текущей прокрутки страницы
+        top: rect.bottom + window.scrollY + 6,
+        left: rect.left + window.scrollX + rect.width / 2,
+      });
+    }
+    setVisible(!visible);
+  };
+
+  return (
+    <div className="addon-badge-wrapper" ref={badgeRef}>
+      <span onClick={handleBadgeClick} className="addon-neon-badge">
+        +{addons.length} доп
+      </span>
+
+      {visible &&
+        // 🌟 Рендерим оверлей и поповер прямо в корень <body>, минуя любые таблицы!
+        createPortal(
+          <>
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                setVisible(false);
+              }}
+              className="addon-popover-overlay"
+            />
+            <div
+              className="addon-popover-card"
+              style={{
+                position: "absolute",
+                top: `${coords.top}px`,
+                left: `${coords.left}px`,
+                transform: "translateX(-50%)", // Идеальное центрирование
+                zIndex: 99999, // Поверх абсолютно всего на автомойке!
+              }}
+            >
+              <div className="addon-popover-title">Детали дозаказа:</div>
+              {addons.map((a, i) => (
+                <div key={i} className="addon-popover-item">
+                  <span>• {a.name || "Доп. услуга"}</span>
+                  <span className="addon-popover-item-price">{a.price} ₽</span>
+                </div>
+              ))}
+            </div>
+          </>,
+          document.body, // Портируем элементы в корень страницы!
+        )}
+    </div>
+  );
+};
 
 const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
   const formatTime = (dateString) => {
@@ -48,7 +112,7 @@ const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
             visits.map((v, index) => {
               const isGuest = !v.user_id;
 
-              // Склейка марки машины
+              // Логика склейки марки машины
               const profileBrand = v.user_car_brand || v.car_brand;
               const manualBrand = v.manual_car_brand;
               let carBrandDisplay = "—";
@@ -63,7 +127,7 @@ const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
                 }
               }
 
-              // Вывод имени клиента
+              // Логика вывода имени
               const clientNameDisplay = isGuest
                 ? v.manual_client_name || "Гость"
                 : v.name || v.client_name || v.manual_client_name || "Клиент";
@@ -85,7 +149,7 @@ const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
                     {v.manual_client_phone || v.client_phone || v.phone || "—"}
                   </td>
 
-                  {/* Основная услуга + изолированный бадж дозаказов */}
+                  {/* Услуга со стильным баджем апсейла без инлайн стилей */}
                   <td>
                     <div className="service-cell-container">
                       <span>

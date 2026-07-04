@@ -1,19 +1,59 @@
 // src/pages/AdminDashboard/components/modals/ShiftReportModal.jsx
-import React from "react";
-import { useShiftReport } from "../../hooks/useShiftReport";
+import React, { useState, useEffect } from "react";
+import { api } from "../../../../api/apiService";
 
 const ShiftReportModal = ({ isOpen, shiftId, onClose, onArchiveSuccess }) => {
-  // Подключаем наш изолированный хук логики отчета
-  const {
-    loadingReport,
-    reportData,
-    actualCash,
-    setActualCash,
-    submitting,
-    handleSubmitShift,
-  } = useShiftReport(isOpen, shiftId, onArchiveSuccess, onClose);
+  const [loadingReport, setLoadingReport] = useState(false);
+  const [reportData, setReportData] = useState(null);
+  const [actualCash, setActualCash] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && shiftId) {
+      setLoadingReport(true);
+      api
+        .getPreCloseReport(shiftId)
+        .then((res) => setReportData(res.data))
+        .catch((err) => console.error("Ошибка загрузки пре-отчета:", err))
+        .finally(() => setLoadingReport(false));
+    }
+  }, [isOpen, shiftId]);
 
   if (!isOpen) return null;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!reportData || submitting) return;
+
+    setSubmitting(true);
+    try {
+      const payload = {
+        shiftId,
+        actualCash: Number(actualCash),
+        carsCount: reportData.carsCount,
+        cashCalculated: reportData.cashCalculated,
+        cardCalculated: reportData.cardCalculated,
+      };
+
+      // 🌟 ИСПРАВЛЕНО: Убрали странный тернарный оператор и поставили await строго перед вызовом API!
+      const response = await api.closeWorkShiftWithReport(payload);
+
+      alert("Смена успешно закрыта и заархивирована!");
+
+      // Безопасно передаем закрытую смену вверх, чтобы заблокировать экран
+      if (response && response.data && response.data.shift) {
+        onArchiveSuccess(response.data.shift);
+      } else {
+        // Если бэк вернул успешный статус, но структура ответа иная, просто триггерим успех
+        onArchiveSuccess({ status: "closed" });
+      }
+    } catch (err) {
+      console.error("Критическая ошибка при закрытии смены в модалке:", err);
+      alert(err.response?.data?.message || "Ошибка при архивации смены");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="modal-overlay" style={{ zIndex: 2000 }}>
@@ -34,7 +74,7 @@ const ShiftReportModal = ({ isOpen, shiftId, onClose, onArchiveSuccess }) => {
             из БД...
           </p>
         ) : reportData ? (
-          <form onSubmit={handleSubmitShift} className="arm-modal-form">
+          <form onSubmit={handleSubmit} className="arm-modal-form">
             <div
               style={{
                 display: "flex",
