@@ -45,15 +45,21 @@ const DashboardContent = () => {
     setArchivedShiftData,
   } = useAdminDashboard();
 
-  // Открытие смены через контекстный провайдер API (переиспользуем оригинальный метод)
+  // 🌟 ИСПРАВЛЕНО: Закрыли синтаксис try/catch и добавили мгновенную реактивность переключения экранов
   const handleOpenShift = async () => {
     try {
       const res = await api.openWorkShift();
-      // твоя логика успеха...
+      alert("Смена успешно открыта!");
+
+      // Если бэк вернул объект созданной смены, записываем его в стейт пульта
+      if (res && res.data && res.data.shift) {
+        setCurrentShiftRaw(res.data.shift);
+      }
+
+      // Переключаем визуальное состояние АРМ на "open", чтобы зарендерить таблицу заездов
+      setShiftStatus("open");
     } catch (err) {
       console.error("ПОЛНАЯ ОШИБКА ОТКРЫТИЯ СМЕНЫ:", err);
-
-      // Выводим точечный текст ошибки от бэкенда, если он есть
       const serverMessage =
         err.response?.data?.message || err.message || "Неизвестная ошибка";
       alert(`Не удалось открыть смену. Причина: ${serverMessage}`);
