@@ -1,5 +1,19 @@
 /* src/pages/AdminDashboard/components/modals/EditVisitModal.css */
 
+/* 📐 Новые общие контейнеры для эргономики и компактности */
+.compact-edit-modal {
+  max-width: 540px !important;
+  padding: 16px 20px !important;
+}
+
+/* Двухколоночные ряды */
+.form-row-twin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
 /* Базовые селекты и инпуты формы */
 .arm-modal-select {
   background: #020617;
@@ -13,64 +27,94 @@
 
 /* Секция дополнительных услуг (Апсейл) */
 .additional-services-section {
-  margin-top: 20px;
-  padding: 15px 0;
+  margin-top: 14px;
+  padding-top: 10px;
   border-top: 1px dashed #1e293b;
+}
+
+.addon-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .additional-services-title {
   color: #38bdf8;
-  margin-bottom: 14px;
-  font-size: 16px;
+  margin-bottom: 0;
+  font-size: 15px;
   font-weight: 600;
 }
 
-/* Контейнер строки доп. услуги - исправляем съезжание полей */
-.addon-row {
+/* ↕️ Изолированный скролл-контейнер для дозаказов */
+.addons-scroll-viewport {
+  max-height: 125px;
+  overflow-y: auto;
+  background: #020617;
+  border-radius: 6px;
+  padding: 6px;
+  border: 1px solid #1e293b;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 12px;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.addons-empty-placeholder {
+  font-size: 12px;
+  color: #475569;
+  text-align: center;
+  margin: 0;
+  padding: 15px 0;
+}
+
+/* Новая кнопка «Добавить доп» сверху блока */
+.addon-mini-add-btn {
+  background: transparent;
+  border: 1px dashed #38bdf8;
+  color: #38bdf8;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addon-mini-add-btn:hover {
+  background: rgba(56, 189, 248, 0.1);
+}
+
+/* Контейнер строки доп. услуги в компактной сетке [Инпут | Цена | Крестик] */
+.addon-row.compact-row {
+  display: grid;
+  grid-template-columns: 1fr 90px 30px;
+  gap: 8px;
   align-items: center;
   background: rgba(30, 41, 59, 0.3);
-  padding: 8px;
+  padding: 4px 8px;
   border-radius: 6px;
   border: 1px solid #1e293b;
 }
 
-/* Адаптивное распределение ширины для элементов внутри доп-строки */
+/* Адаптивное распределение полей */
 .addon-input-name {
-  flex: 2;
-  min-width: 150px;
   background: #020617;
   color: #f8fafc;
-  padding: 10px;
+  padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid #1e293b;
-  font-size: 14px;
+  font-size: 13px;
+  width: 100%;
 }
 
 .addon-input-price {
-  flex: 1;
-  min-width: 80px;
   background: #020617;
   color: #f8fafc;
-  padding: 10px;
+  padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid #1e293b;
-  font-size: 14px;
-}
-
-.addon-select-worker {
-  flex: 1.2;
-  min-width: 120px;
-  background: #0f172a;
-  color: #64748b;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #1e293b;
-  font-size: 14px;
-  cursor: not-allowed;
+  font-size: 13px;
+  width: 100%;
 }
 
 .addon-delete-btn {
@@ -78,8 +122,9 @@
   border: none;
   color: #ef4444;
   cursor: pointer;
-  padding: 8px;
-  font-size: 1.2rem;
+  padding: 4px;
+  font-size: 1.3rem;
+  font-weight: 300;
   transition: color 0.2s;
   display: flex;
   align-items: center;
@@ -90,26 +135,10 @@
   color: #f87171;
 }
 
-.addon-add-trigger-btn {
-  padding: 8px 12px;
-  font-size: 0.85rem;
-  margin-top: 5px;
-  border: 1px dashed #38bdf8;
-  color: #38bdf8;
-  background: transparent;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.addon-add-trigger-btn:hover {
-  background: rgba(56, 189, 248, 0.1);
-}
-
-/* Дополнительные стили для табов классов в модалке редактирования */
+/* Дополнительные стили для табов классов */
 .calc-class-selector {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   width: 100%;
 }
 
@@ -136,4 +165,15 @@
   color: #020617;
   border-color: #38bdf8;
   box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+}
+
+/* Вспомогательные утилиты */
+.mt-10 {
+  margin-top: 10px;
+}
+.mt-15 {
+  margin-top: 15px;
+}
+.text-center {
+  text-align: center;
 }
