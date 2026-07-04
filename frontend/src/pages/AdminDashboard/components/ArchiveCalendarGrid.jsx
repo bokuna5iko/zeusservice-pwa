@@ -1,7 +1,7 @@
 // src/pages/AdminDashboard/components/ArchiveCalendarGrid.jsx
-import React, { useState } from "react";
+import React from "react";
+import { useArchiveCalendar, WEEK_DAYS } from "../hooks/useArchiveCalendar";
 
-const WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 const MONTHS = [
   "Январь",
   "Февраль",
@@ -18,65 +18,11 @@ const MONTHS = [
 ];
 
 const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
-  // Базовый стейт на текущую дату (для старта календаря)
-  const [currentDate, setCurrentTime] = useState(new Date());
+  // Подключаем наш изолированный хук календарной арифметики
+  const { currentMonth, handlePrevMonth, handleNextMonth, getDaysGrid } =
+    useArchiveCalendar(calendarShifts);
 
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth(); // 0 - 11
-
-  // Переключатели месяцев
-  const handlePrevMonth = () => {
-    setCurrentTime(new Date(currentYear, currentMonth - 1, 1));
-  };
-
-  const handleNextMonth = () => {
-    setCurrentTime(new Date(currentYear, currentMonth + 1, 1));
-  };
-
-  // 🧠 Математика календаря:
-  // 1. Сколько дней в текущем месяце
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-  // 2. С какого дня недели начинается месяц (0 - Вс, 1 - Пн... 6 - Сб)
-  let startDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
-  // Переводим на человеческий стандарт (Пн - 0, Вт - 1... Вс - 6)
-  startDayOfWeek = startDayOfWeek === 0 ? 6 : startDayOfWeek - 1;
-
-  // Генерируем массив ячеек сетки
-  const calendarCells = [];
-
-  // А. Заполняем пустые дни-заглушки до начала месяца
-  for (let i = 0; i < startDayOfWeek; i++) {
-    calendarCells.push({ type: "empty", key: `empty-start-${i}` });
-  }
-
-  // Б. Заполняем реальные дни месяца (от 1 до daysInMonth)
-  for (let day = 1; day <= daysInMonth; day++) {
-    // Ищем, есть ли в нашем массиве смен с бэкенда смена на этот день
-    // Важно: сравниваем год, месяц и число локально, защищаясь от таймзон!
-    const matchingShift = calendarShifts.find((shift) => {
-      const shiftDate = new Date(shift.shift_date);
-      return (
-        shiftDate.getFullYear() === currentYear &&
-        shiftDate.getMonth() === currentMonth &&
-        shiftDate.getDate() === day
-      );
-    });
-
-    calendarCells.push({
-      type: "day",
-      dayNumber: day,
-      shift: matchingShift || null,
-      key: `day-cell-${day}`,
-    });
-  }
-
-  // В. Заполняем пустые заглушки в конце сетки до полного квадрата кратного 7
-  const totalSlots = Math.ceil(calendarCells.length / 7) * 7;
-  const endEmptyCount = totalSlots - calendarCells.length;
-  for (let i = 0; i < endEmptyCount; i++) {
-    calendarCells.push({ type: "empty", key: `empty-end-${i}` });
-  }
+  const cells = getDaysGrid();
 
   return (
     <div
@@ -88,7 +34,7 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
         border: "1px solid #1e293b",
       }}
     >
-      {/* Шапка календаря с кнопками переключения месяцев */}
+      {/* Навигация по месяцам */}
       <div
         className="calendar-header"
         style={{
@@ -114,7 +60,7 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
             textAlign: "center",
           }}
         >
-          {MONTHS[currentMonth]} {currentYear}
+          {MONTHS[currentMonth.getMonth()]} {currentMonth.getFullYear()}
         </h3>
         <button
           className="btn-secondary"
@@ -125,7 +71,7 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
         </button>
       </div>
 
-      {/* Сетка дней недели (Пн - Вс) */}
+      {/* Дни недели (Пн - Вс) */}
       <div
         className="weekdays-grid"
         style={{
@@ -152,7 +98,7 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
         ))}
       </div>
 
-      {/* Глобальная сетка календаря */}
+      {/* Основная сетка ячеек */}
       <div
         className="days-calendar-grid"
         style={{
@@ -161,9 +107,8 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
           gap: "12px",
         }}
       >
-        {calendarCells.map((cell) => {
+        {cells.map((cell) => {
           if (cell.type === "empty") {
-            // Рисуем пустой некликабельный серый квадрат-заглушку
             return (
               <div
                 key={cell.key}
@@ -178,7 +123,6 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
             );
           }
 
-          // Если это реальный день месяца
           const hasShift = !!cell.shift;
           let finalRevenue = 0;
           let diff = 0;
@@ -222,7 +166,6 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
                 }
               }}
             >
-              {/* Число месяца */}
               <span
                 style={{
                   fontSize: "14px",
@@ -234,7 +177,6 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
                 {cell.dayNumber}
               </span>
 
-              {/* Операционная мини-сводка, если в этот день была закрытая смена */}
               {hasShift ? (
                 <div
                   style={{
@@ -264,7 +206,6 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
                     {finalRevenue} ₽
                   </span>
 
-                  {/* Крохотный индикатор сверки кассы */}
                   {diff !== 0 && (
                     <span
                       style={{

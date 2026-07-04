@@ -10,7 +10,7 @@ const ExpenseHistoryModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} style={{ zIndex: 2000 }}>
       <div
         className="modal-content content-group-box"
         onClick={(e) => e.stopPropagation()}
@@ -20,7 +20,9 @@ const ExpenseHistoryModal = ({
           <i className="fas fa-list-alt"></i> История расходов за смену
         </h3>
 
+        {/* Контейнер списка трат скроллится встроенными классами АРМ */}
         <div
+          className="arm-modal-scroll-container"
           style={{
             maxHeight: "300px",
             overflowY: "auto",
@@ -31,11 +33,20 @@ const ExpenseHistoryModal = ({
           }}
         >
           {loadingExpensesList ? (
-            <p style={{ textAlign: "center", color: "#64748b" }}>
-              <i className="fas fa-spinner fa-spin"></i> Загрузка...
+            <p
+              className="table-empty-notice"
+              style={{
+                textAlign: "center",
+                color: "#64748b",
+                padding: "20px 0",
+              }}
+            >
+              <i className="fas fa-spinner fa-spin"></i> Загрузка операционных
+              данных расходов...
             </p>
           ) : expensesList.length === 0 ? (
             <p
+              className="table-empty-notice"
               style={{
                 textAlign: "center",
                 color: "#64748b",
@@ -47,7 +58,8 @@ const ExpenseHistoryModal = ({
           ) : (
             expensesList.map((exp) => (
               <div
-                key={exp.id}
+                key={exp.id || exp.expense_id}
+                className="expense-history-card"
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -66,7 +78,7 @@ const ExpenseHistoryModal = ({
                   }}
                 >
                   <span style={{ fontWeight: "600", color: "#f8fafc" }}>
-                    {exp.description}
+                    {exp.comment || exp.description || "Операционный расход"}
                   </span>
                   <span style={{ fontSize: "11px", color: "#475569" }}>
                     {new Date(exp.created_at).toLocaleTimeString([], {
@@ -76,6 +88,7 @@ const ExpenseHistoryModal = ({
                   </span>
                 </div>
                 <span
+                  className="expense-amount-negative"
                   style={{
                     color: "#f87171",
                     fontWeight: "700",
