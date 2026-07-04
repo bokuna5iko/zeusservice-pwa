@@ -7,18 +7,28 @@ export const useAnalyticsData = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    let isMounted = true; // Защита от утечки памяти и повторных вызовов в StrictMode
+
     setLoading(true);
     api
       .getArchiveCalendar()
-      // Переворачиваем массив смен наоборот, чтобы при совпадении логики
-      // или вложенных массивов они обрабатывались в прямом календарном порядке
       .then((res) => {
+        if (!isMounted) return;
         const shifts = res.data || [];
+        // Переворачиваем массив смен наоборот, чтобы они шли в хронологическом порядке
         setCalendarShifts(shifts.reverse());
       })
-      .catch((err) => console.error("Ошибка чтения календаря в хуке:", err))
-      .finally(() => setLoading(false));
-  }, []);
+      .catch((err) => {
+        console.error("Ошибка чтения календаря в хуке:", err);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false; // Отменяем стейты, если админ резко переключил вкладку
+    };
+  }, []); // 🌟 ВАЖНО: Массив зависимостей строго пустой! Запрос выполнится ровно 1 раз.
 
   return {
     calendarShifts,
