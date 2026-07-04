@@ -1,6 +1,6 @@
 // src/pages/AdminDashboard/components/ArchiveCalendarGrid.jsx
 import React from "react";
-import { useArchiveCalendar, WEEK_DAYS } from "../hooks/useArchiveCalendar";
+import { useArchiveCalendar, WEEKDAYS } from "../hooks/useArchiveCalendar";
 
 const MONTHS = [
   "Январь",
@@ -70,7 +70,6 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
           Вперед ▶ <i className="fas fa-chevron-right"></i>
         </button>
       </div>
-
       {/* Дни недели (Пн - Вс) */}
       <div
         className="weekdays-grid"
@@ -82,20 +81,24 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
           marginBottom: "12px",
         }}
       >
-        {WEEKDAYS.map((day) => (
-          <div
-            key={day}
-            style={{
-              color: "#64748b",
-              fontWeight: "700",
-              fontSize: "13px",
-              paddingBottom: "6px",
-              borderBottom: "1px solid #1e293b",
-            }}
-          >
-            {day}
-          </div>
-        ))}
+        {WEEKDAYS.map(
+          (
+            day, // 🌟 Заменили WEEK_DAYS на WEEKDAYS
+          ) => (
+            <div
+              key={day}
+              style={{
+                color: "#64748b",
+                fontWeight: "700",
+                fontSize: "13px",
+                paddingBottom: "6px",
+                borderBottom: "1px solid #1e293b",
+              }}
+            >
+              {day}
+            </div>
+          ),
+        )}
       </div>
 
       {/* Основная сетка ячеек */}
