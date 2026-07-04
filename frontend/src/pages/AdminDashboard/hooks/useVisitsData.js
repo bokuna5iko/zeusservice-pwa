@@ -115,11 +115,20 @@ export const useVisitsData = (shiftStatus, initialShiftData) => {
   }, [shiftStatus]);
 
   // Сохранение изменений визита
+  // Сохранение изменений визита
   const handleEditVisitSubmit = async (payload) => {
     setLoadingEdit(true);
+
+    console.log("=== 🛠 ДИАГНОСТИКА САБМИТА РЕДАКТИРОВАНИЯ ===");
+    console.log("Отправляем PAYLOAD на бэк:", payload);
+    console.log("Текущий редактируемый визит (editingVisit):", editingVisit);
+
     try {
       const targetId = editingVisit.id || editingVisit.visit_id;
       const res = await api.updateVisitFields(targetId, payload);
+
+      console.log("=== 🟢 ОТВЕТ СЕРВЕРА НА PATCH ПОЛУЧЕН ===");
+      console.log("Полный res.data от бэкенда:", res?.data);
 
       if (res?.data?.updatedShift) {
         const { cash_total, card_total, expenses_total } =
@@ -140,12 +149,20 @@ export const useVisitsData = (shiftStatus, initialShiftData) => {
       const newAmount =
         Number(payload.price || editingVisit.price || 0) + addonsSum;
 
-      setVisits((prevVisits) =>
-        prevVisits.map((v) => {
+      console.log("Рассчитанный на фронте addonsSum:", addonsSum);
+      console.log("Рассчитанный на фронте итоговый newAmount:", newAmount);
+
+      setVisits((prevVisits) => {
+        const updatedArray = prevVisits.map((v) => {
           const currentId = v.id || v.visit_id;
           const currentEditingId = editingVisit.id || editingVisit.visit_id;
+
           if (currentId === currentEditingId) {
-            return {
+            console.log(
+              "Нашли обновляемую строку в массиве visits! Старый объект:",
+              v,
+            );
+            const newObj = {
               ...v,
               ...payload,
               price: Number(payload.price || v.price),
@@ -154,15 +171,21 @@ export const useVisitsData = (shiftStatus, initialShiftData) => {
               visit_number: payload.manual_visit_number,
               loyalty_step: payload.manual_visit_number,
             };
+            console.log(
+              "Сформированный НОВЫЙ объект для стейта таблицы:",
+              newObj,
+            );
+            return newObj;
           }
           return v;
-        }),
-      );
+        });
+        return updatedArray;
+      });
 
       setShowEditModal(false);
       alert("Запись визита успешно обновлена в БД!");
     } catch (err) {
-      console.error(err);
+      console.error("КРИТИЧЕСКАЯ ОШИБКА ОБНОВЛЕНИЯ ВИЗИТА:", err);
       alert(err.response?.data?.message || "Ошибка при изменении полей визита");
     } finally {
       setLoadingEdit(false);
