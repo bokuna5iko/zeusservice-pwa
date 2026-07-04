@@ -82,8 +82,14 @@ export const useVisitsData = (shiftStatus, initialShiftData) => {
     fetchTodayVisits();
 
     const socketUrl =
-      import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-    const socket = io(socketUrl);
+      window.location.hostname === "localhost"
+        ? "http://localhost:3000"
+        : window.location.origin;
+
+    const socket = io(socketUrl, {
+      path: "/socket.io",
+      transports: ["websocket", "polling"],
+    });
 
     socket.on("connect", () => {
       socket.emit("join_admin_room");
@@ -103,7 +109,9 @@ export const useVisitsData = (shiftStatus, initialShiftData) => {
       }
     });
 
-    return () => socket.disconnect();
+    return () => {
+      socket.disconnect();
+    };
   }, [shiftStatus]);
 
   // Сохранение изменений визита
