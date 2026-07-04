@@ -1,5 +1,4 @@
 // src/pages/AdminDashboard/components/modals/ExpenseModal.jsx
-//Здесь мы забираем стейты суммы и комментария внутрь модалки
 import React, { useState } from "react";
 
 const ExpenseModal = ({ isOpen, onClose, onSave, loadingExpense }) => {
@@ -20,7 +19,7 @@ const ExpenseModal = ({ isOpen, onClose, onSave, loadingExpense }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} style={{ zIndex: 2000 }}>
       <div
         className="modal-content content-group-box"
         onClick={(e) => e.stopPropagation()}

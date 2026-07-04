@@ -15,22 +15,26 @@ const ForgottenLockModal = ({ isOpen, shiftData, onTriggerClose }) => {
 
   return (
     <div
-      className="modal-overlay"
+      className="modal-overlay forgotten-lock-overlay"
       style={{ zIndex: 9999, background: "rgba(2, 6, 23, 0.95)" }}
     >
       <div
-        className="modal-content content-group-box"
+        className="modal-content content-group-box forgotten-lock-content"
         style={{
           maxWidth: "550px",
           textAlign: "center",
           border: "1px solid #ef4444",
         }}
       >
-        <h2 style={{ color: "#ef4444", marginBottom: "16px" }}>
+        <h2
+          className="forgotten-lock-title"
+          style={{ color: "#ef4444", marginBottom: "16px" }}
+        >
           <i className="fas fa-exclamation-triangle"></i> Внимание! Блокировка
           АРМ
         </h2>
         <p
+          className="forgotten-lock-desc"
           style={{
             color: "#94a3b8",
             fontSize: "15px",
@@ -44,6 +48,7 @@ const ForgottenLockModal = ({ isOpen, shiftData, onTriggerClose }) => {
         </p>
 
         <div
+          className="forgotten-lock-info-box"
           style={{
             background: "#0f172a",
             padding: "16px",
@@ -64,7 +69,7 @@ const ForgottenLockModal = ({ isOpen, shiftData, onTriggerClose }) => {
         </div>
 
         <button
-          className="btn-primary"
+          className="btn-primary forgotten-lock-action-btn"
           onClick={onTriggerClose}
           style={{
             background: "#ef4444",

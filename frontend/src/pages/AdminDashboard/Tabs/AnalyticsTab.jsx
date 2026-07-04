@@ -1,25 +1,11 @@
 // src/pages/AdminDashboard/Tabs/AnalyticsTab.jsx
-import React, { useState, useEffect } from "react";
-import { api } from "../../../api/apiService";
+import React from "react";
+import { useAnalyticsData } from "../hooks/useAnalyticsData";
 import ArchiveCalendarGrid from "../components/ArchiveCalendarGrid"; // 🚀 Импортируем наш новый календарь
 
 const AnalyticsTab = ({ onSelectArchiveDate }) => {
-  const [calendarShifts, setCalendarShifts] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    api
-      .getArchiveCalendar()
-      // Переворачиваем массив смен наоборот, чтобы при совпадении логики
-      // или вложенных массивов они обрабатывались в прямом календарном порядке
-      .then((res) => {
-        const shifts = res.data || [];
-        setCalendarShifts(shifts.reverse());
-      })
-      .catch((err) => console.error("Ошибка чтения календаря:", err))
-      .finally(() => setLoading(false));
-  }, []);
+  // Подключаем наш изолированный хук логики архивного календаря
+  const { calendarShifts, loading } = useAnalyticsData();
 
   return (
     <div className="visits-tab-viewport">
