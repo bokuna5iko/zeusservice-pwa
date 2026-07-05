@@ -156,7 +156,7 @@ const AdminHistory = () => {
                           {visit.service_name || visit.service_type || "Услуга"}
                         </span>
                         <span className="admin-visit-price">
-                          {visit.price} ₽
+                          {visit.amount || visit.price} ₽
                         </span>
                       </div>
 

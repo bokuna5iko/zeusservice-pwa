@@ -125,7 +125,7 @@ exports.getUserHistory = async (req, res) => {
       `SELECT 
         id,
         COALESCE(manual_service_name, service_type) AS service_name, 
-        price AS base_price, 
+        amount AS base_price, 
         created_at, 
         COALESCE(manual_payment_type, payment_type) AS payment_type,
         COALESCE(manual_visit_number, visit_number) AS visit_number,
@@ -162,7 +162,7 @@ exports.getAdminVisitsToday = async (req, res) => {
         SELECT 
           v.id AS visit_id, v.user_id, u.role, u.total_visits,
           COALESCE(v.manual_service_name, v.service_type) AS service_name, 
-          v.price, v.created_at, 
+          v.price, v.amount, v.created_at, 
           COALESCE(v.manual_client_name, u.name) AS name, 
           COALESCE(v.manual_client_phone, u.phone) AS phone,
           COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
@@ -180,7 +180,7 @@ exports.getAdminVisitsToday = async (req, res) => {
         SELECT 
           v.id AS visit_id, v.user_id, u.role, u.total_visits,
           COALESCE(v.manual_service_name, v.service_type) AS service_name, 
-          v.price, v.created_at, 
+          v.price, v.amount, v.created_at, 
           COALESCE(v.manual_client_name, u.name) AS name, 
           COALESCE(v.manual_client_phone, u.phone) AS phone,
           COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
