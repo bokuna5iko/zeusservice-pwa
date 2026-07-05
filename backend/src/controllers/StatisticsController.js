@@ -17,7 +17,7 @@ exports.getTodayDashboardStats = async (req, res) => {
 
     // 3. МЕТРИКА: Выручка за сегодня
     const revenueRes = await db.query(
-      "SELECT COALESCE(SUM(price), 0)::int AS sum FROM visits WHERE created_at >= CURRENT_DATE",
+      "SELECT COALESCE(SUM(amount), 0)::int AS sum FROM visits WHERE created_at >= CURRENT_DATE",
     );
     const totalRevenueToday = revenueRes.rows[0].sum;
 

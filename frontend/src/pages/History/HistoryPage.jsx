@@ -8,11 +8,8 @@ const HistoryPage = () => {
   const { user } = useContext(AuthContext);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Стейт для отслеживания открытого аккордеона
   const [openCardId, setOpenCardId] = useState(null);
 
-  // Загружаем историю при монтировании компонента
   useEffect(() => {
     const fetchHistory = async () => {
       try {
@@ -32,10 +29,8 @@ const HistoryPage = () => {
     setOpenCardId(openCardId === id ? null : id);
   };
 
-  // Безопасный парсер времени
   const formatVisitTime = (dateString) => {
     if (!dateString) return { time: "—:—", date: "—" };
-
     const d = new Date(dateString);
     if (isNaN(d.getTime())) return { time: "—:—", date: "—" };
 
@@ -48,16 +43,7 @@ const HistoryPage = () => {
       month: "2-digit",
       year: "numeric",
     });
-
     return { time, date };
-  };
-
-  // Логика расчета скидок на фронте
-  const calculateDiscountedPrice = (price, visitNum) => {
-    const num = Number(visitNum);
-    if (num === 8) return 0;
-    if (num === 4) return price * 0.8;
-    return price;
   };
 
   return (
@@ -95,87 +81,64 @@ const HistoryPage = () => {
                 </div>
               ) : history.length > 0 ? (
                 history.map((visit, index) => {
-                  // 🌟 ИСПРАВЛЕНО: Прямой и надежный запуск номера визита из БД без "угадывания" по индексам
-                  const visitNum =
-                    visit.visit_number ?? visit.manual_visit_number ?? 1;
-
-                  // Сбор параметров из Response
-                  const serviceTitle =
-                    visit.service_name || "Комплексная мойка";
-                  const basePrice =
-                    visit.base_price !== undefined && visit.base_price !== null
-                      ? visit.base_price
-                      : 0;
+                  // 🌟 ИСПРАВЛЕНО: Используем visit_number_display от бэкенда
+                  const visitNum = visit.visit_number_display || visit.visit_number || visit.manual_visit_number || 1;
+                  const serviceTitle = visit.service_name || "Комплексная мойка";
+                  
+                  const finalPrice = visit.base_price !== undefined && visit.base_price !== null
+                    ? visit.base_price
+                    : 0;
+                  
+                  // 🌟 ИСПРАВЛЕНО: Используем original_price и has_discount от бэкенда
+                  const originalPrice = visit.original_price || finalPrice;
+                  const hasDiscount = visit.has_discount === true;
+                  
                   const dateRaw = visit.created_at;
                   const carName = visit.car_name || "Не указан";
 
-                  // Бронебойное определение способа оплаты ( cash / Наличные )
                   const rawPayment = visit.payment_type || "";
-                  const isCash =
-                    rawPayment === "cash" || rawPayment === "Наличные";
-
-                  // Динамически подставляем текст и иконку в зависимости от ответа бэка
-                  const paymentDisplayText = isCash
-                    ? " Наличные"
-                    : rawPayment || " Карта / СБП";
-                  const paymentIconClass = isCash
-                    ? "fa-money-bill-wave"
-                    : "fa-credit-card";
-
-                  // Рассчитываем цену со скидками 20% / 100%
-                  const finalPrice = calculateDiscountedPrice(
-                    basePrice,
-                    visitNum,
-                  );
+                  const isCash = rawPayment === "cash" || rawPayment === "Наличные";
+                  const paymentDisplayText = isCash ? " Наличные" : rawPayment || " Карта / СБП";
+                  const paymentIconClass = isCash ? "fa-money-bill-wave" : "fa-credit-card";
 
                   const cardId = visit.id || index;
                   const isOpen = openCardId === cardId;
                   const { time, date } = formatVisitTime(dateRaw);
+
+                  const discountText = visitNum === 8 ? "100% подарок" : "20% скидка";
 
                   return (
                     <div
                       key={cardId}
                       className={`client-visit-accordion-card ${isOpen ? "open" : ""}`}
                     >
-                      {/* Шапка карточки */}
                       <div
                         className="client-visit-header"
                         onClick={() => toggleAccordion(cardId)}
                       >
-                        {/* Верхняя строка: Название услуги и Цена */}
                         <div className="client-header-row main-row">
                           <span className="client-visit-service-title">
                             {serviceTitle}
                           </span>
                           <span className="client-visit-price">
-                            {parseInt(basePrice) === 0 ||
-                            Number(finalPrice) === 0
-                              ? "БЕСПЛАТНО"
-                              : `${finalPrice} ₽`}
+                            {finalPrice === 0 ? "БЕСПЛАТНО" : `${finalPrice} ₽`}
                           </span>
                         </div>
 
-                        {/* Нижняя строка: Мета-данные */}
                         <div className="client-header-row sub-row">
                           <div className="client-visit-meta-time">
                             <span className="client-visit-time">{time}</span>
-                            <span className="client-visit-date-sub">
-                              {date}
-                            </span>
+                            <span className="client-visit-date-sub">{date}</span>
                           </div>
 
                           <div className="client-visit-badge-zone">
-                            <span className="visit-number-pill">
-                              Визит №{visitNum}
-                            </span>
+                            <span className="visit-number-pill">Визит №{visitNum}</span>
                           </div>
                         </div>
 
-                        {/* Независимая стрелка-индикатор */}
                         <i className="fas fa-chevron-down client-accordion-arrow"></i>
                       </div>
 
-                      {/* Внутренний раскрывающийся блок деталей */}
                       <div className="client-visit-details">
                         <div className="client-details-content">
                           <div className="client-detail-row-item">
@@ -183,8 +146,7 @@ const HistoryPage = () => {
                               Стоимость заезда
                             </span>
                             <span className="client-detail-item-value">
-                              {Number(visitNum) === 4 ||
-                              Number(visitNum) === 8 ? (
+                              {hasDiscount && visitNum === 4 ? (
                                 <>
                                   <span
                                     style={{
@@ -193,7 +155,7 @@ const HistoryPage = () => {
                                       marginRight: "6px",
                                     }}
                                   >
-                                    {basePrice} ₽
+                                    {originalPrice} ₽
                                   </span>
                                   <span
                                     className="success-text"
@@ -208,20 +170,42 @@ const HistoryPage = () => {
                                       marginLeft: "6px",
                                     }}
                                   >
-                                    (
-                                    {Number(visitNum) === 8
-                                      ? "100% подарок"
-                                      : "20% скидка"}
-                                    )
+                                    ({discountText})
+                                  </span>
+                                </>
+                              ) : hasDiscount && visitNum === 8 ? (
+                                <>
+                                  <span
+                                    style={{
+                                      textDecoration: "line-through",
+                                      color: "#64748b",
+                                      marginRight: "6px",
+                                    }}
+                                  >
+                                    {originalPrice} ₽
+                                  </span>
+                                  <span
+                                    className="success-text"
+                                    style={{ fontWeight: "bold" }}
+                                  >
+                                    БЕСПЛАТНО
+                                  </span>
+                                  <span
+                                    style={{
+                                      color: "#f59e0b",
+                                      fontSize: "0.8rem",
+                                      marginLeft: "6px",
+                                    }}
+                                  >
+                                    ({discountText})
                                   </span>
                                 </>
                               ) : (
-                                `${basePrice} ₽`
+                                `${finalPrice} ₽`
                               )}
                             </span>
                           </div>
 
-                          {/* Корректный вывод иконки и типа оплаты */}
                           <div className="client-detail-row-item">
                             <span className="client-detail-item-label">
                               Способ расчета
@@ -269,7 +253,6 @@ const HistoryPage = () => {
           </div>
         </div>
 
-        {/* КОНТЕЙНЕР №3: Подвал поддержки */}
         <div className="client-history-card history-footer-info content-group-box">
           <div className="fill-zone footer-center">
             <i className="fas fa-info-circle"></i>

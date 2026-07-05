@@ -1,8 +1,8 @@
 // src/controllers/visitController.js
-const db = require("../config/db"); // Используем db везде
+const db = require("../config/db");
 
 const VISITS_FOR_BONUS = 8;
-const ANTI_SPAM_DELAY = 5000; // 5 секунд блокировки повторного нажатия
+const ANTI_SPAM_DELAY = 5000;
 
 // Начисление визита через калькулятор
 exports.addVisit = async (req, res) => {
@@ -13,7 +13,6 @@ exports.addVisit = async (req, res) => {
   console.log("manual_car_brand из запроса:", req.body.manual_car_brand);
 
   try {
-    // 1. Ищем услугу в справочнике
     const serviceRes = await db.query(
       "SELECT service_name, base_price FROM services WHERE id = $1",
       [serviceId],
@@ -24,14 +23,12 @@ exports.addVisit = async (req, res) => {
     }
     const service = serviceRes.rows[0];
 
-    // 2. Ищем пользователя
     const user = await db.query("SELECT * FROM users WHERE id = $1", [userId]);
     if (user.rows.length === 0)
       return res.status(404).json({ message: "Клиент не найден" });
 
     const userData = user.rows[0];
 
-    // 3. ЗАЩИТА ОТ ДВОЙНОГО НАЧИСЛЕНИЯ
     const lastVisit = await db.query(
       "SELECT created_at FROM visits WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1",
       [userId],
@@ -46,7 +43,6 @@ exports.addVisit = async (req, res) => {
       }
     }
 
-    // 4. ЛОГИРОВАНИЕ
     await db.query(
       "INSERT INTO visits (user_id, service_id, service_type, price, admin_id, amount) VALUES ($1, $2, $3, $4, $5, $6)",
       [
@@ -59,7 +55,6 @@ exports.addVisit = async (req, res) => {
       ],
     );
 
-    // 5. ЛОГИКА БОНУСА
     let newCount = (userData.visit_count || 0) + 1;
     let isFree = false;
 
@@ -115,20 +110,23 @@ exports.getUserMe = async (req, res) => {
   }
 };
 
-// 🌟 МОДЕРНИЗИРОВАНО: История визитов с "умной" подменой ручных правок админа (COALESCE)
+// 🌟 МОДЕРНИЗИРОВАНО: История визитов с использованием bonus_type
 exports.getUserHistory = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // С помощью COALESCE отдаем приоритет ручным полям manual_*, если они не NULL
     const result = await db.query(
       `SELECT 
         id,
+        service_id,
         COALESCE(manual_service_name, service_type) AS service_name, 
-        amount AS base_price, 
+        amount AS base_price,
+        price,
+        visit_number,
+        bonus_type,
         created_at, 
         COALESCE(manual_payment_type, payment_type) AS payment_type,
-        COALESCE(manual_visit_number, visit_number) AS visit_number,
+        COALESCE(manual_visit_number, visit_number) AS visit_number_display,
         manual_car_brand
        FROM visits 
        WHERE user_id = $1 
@@ -136,31 +134,52 @@ exports.getUserHistory = async (req, res) => {
       [userId],
     );
 
-    res.json(result.rows);
+    // 🌟 Используем bonus_type из БД для определения скидки
+    const visitsWithOriginal = result.rows.map((v) => {
+      const finalPrice = Number(v.base_price || 0);
+      let originalPrice = finalPrice;
+      let hasDiscount = false;
+
+      if (v.bonus_type === '20%') {
+        // Обратно считаем исходную цену
+        originalPrice = Math.round(finalPrice / 0.8);
+        hasDiscount = true;
+      } else if (v.bonus_type === '100%') {
+        // Для бесплатного визита показываем цену основной услуги
+        originalPrice = Number(v.price || finalPrice);
+        if (originalPrice === 0) originalPrice = finalPrice;
+        hasDiscount = true;
+      }
+
+      return {
+        ...v,
+        original_price: originalPrice,
+        has_discount: hasDiscount,
+      };
+    });
+
+    res.json(visitsWithOriginal);
   } catch (err) {
     console.error("Ошибка в getUserHistory:", err);
     res.status(500).json({ message: "Ошибка при получении истории" });
   }
 };
 
-// 🌟 ДОБАВЛЕНО: Получение истории визитов за текущие сутки с "умной" подменой ручных правок АРМ через COALESCE
-// 🌟 МОДЕРНИЗИРОВАНО: Получение истории визитов за указанную дату (или за текущие сутки по дефолту)
+// Получение истории визитов за текущие сутки
 exports.getAdminVisitsToday = async (req, res) => {
   try {
     if (req.query.date) {
       const parsedDate = new Date(req.query.date).toISOString().split("T")[0];
     }
-    // Проверяем, прислал ли фронтенд конкретную дату для фильтрации архива
     const { date } = req.query;
 
     let queryText = "";
     let values = [];
 
     if (date) {
-      // Режим Архива: вытаскиваем визиты строго за выбранный день
       queryText = `
         SELECT 
-          v.id AS visit_id, v.user_id, u.role, u.total_visits,
+          v.id AS visit_id, v.user_id, v.service_id, u.role, u.total_visits,
           COALESCE(v.manual_service_name, v.service_type) AS service_name, 
           v.price, v.amount, v.created_at, 
           COALESCE(v.manual_client_name, u.name) AS name, 
@@ -168,17 +187,16 @@ exports.getAdminVisitsToday = async (req, res) => {
           COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
           COALESCE(v.manual_payment_type, v.payment_type) AS payment_type,
           v.manual_car_brand, v.manual_client_name, v.manual_client_phone, v.manual_service_name, v.manual_payment_type, v.manual_visit_number,
-          v.additional_services -- 🌟 ИСПРАВЛЕНО: Теперь возвращаем допы из базы данных в архиве
+          v.additional_services
         FROM visits v
         LEFT JOIN users u ON v.user_id = u.id
         WHERE v.created_at::date = $1::date
         ORDER BY v.created_at DESC`;
       values = [date];
     } else {
-      // Оперативный режим: визиты за сегодняшние сутки
       queryText = `
         SELECT 
-          v.id AS visit_id, v.user_id, u.role, u.total_visits,
+          v.id AS visit_id, v.user_id, v.service_id, u.role, u.total_visits,
           COALESCE(v.manual_service_name, v.service_type) AS service_name, 
           v.price, v.amount, v.created_at, 
           COALESCE(v.manual_client_name, u.name) AS name, 
@@ -186,7 +204,7 @@ exports.getAdminVisitsToday = async (req, res) => {
           COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
           COALESCE(v.manual_payment_type, v.payment_type) AS payment_type,
           v.manual_car_brand, v.manual_client_name, v.manual_client_phone, v.manual_service_name, v.manual_payment_type, v.manual_visit_number,
-          v.additional_services -- 🌟 ИСПРАВЛЕНО: Теперь возвращаем допы из базы данных в оперативной ленте
+          v.additional_services
         FROM visits v
         LEFT JOIN users u ON v.user_id = u.id
         WHERE v.created_at >= CURRENT_DATE
