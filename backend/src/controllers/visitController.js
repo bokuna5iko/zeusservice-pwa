@@ -125,6 +125,7 @@ exports.getUserHistory = async (req, res) => {
         visit_number,
         bonus_type,
         created_at, 
+        additional_services,
         COALESCE(manual_payment_type, payment_type) AS payment_type,
         COALESCE(manual_visit_number, visit_number) AS visit_number_display,
         manual_car_brand
@@ -135,28 +136,32 @@ exports.getUserHistory = async (req, res) => {
     );
 
     // 🌟 Используем bonus_type из БД для определения скидки
-    const visitsWithOriginal = result.rows.map((v) => {
-      const finalPrice = Number(v.base_price || 0);
-      let originalPrice = finalPrice;
-      let hasDiscount = false;
+const visitsWithOriginal = result.rows.map((v) => {
+  const finalPrice = Number(v.base_price || 0);
+  let originalPrice = finalPrice;
+  let hasDiscount = false;
 
-      if (v.bonus_type === '20%') {
-        // Обратно считаем исходную цену
-        originalPrice = Math.round(finalPrice / 0.8);
-        hasDiscount = true;
-      } else if (v.bonus_type === '100%') {
-        // Для бесплатного визита показываем цену основной услуги
-        originalPrice = Number(v.price || finalPrice);
-        if (originalPrice === 0) originalPrice = finalPrice;
-        hasDiscount = true;
-      }
+  if (v.bonus_type === '20%') {
+    // Обратно считаем исходную цену
+    originalPrice = Math.round(finalPrice / 0.8);
+    hasDiscount = true;
+  } else if (v.bonus_type === '100%') {
+    // 🌟 ИСПРАВЛЕНО: Для 100% скидки считаем полную сумму (основная + допы)
+    const addons = Array.isArray(v.additional_services) ? v.additional_services : [];
+    const addonsTotal = addons.reduce((sum, addon) => sum + Number(addon.price || 0), 0);
 
-      return {
-        ...v,
-        original_price: originalPrice,
-        has_discount: hasDiscount,
-      };
-    });
+    // Исходная цена = базовая услуга + все допы
+    originalPrice = Number(v.price || 0) + addonsTotal;
+    if (originalPrice === 0) originalPrice = Number(v.price || 0);
+    hasDiscount = true;
+  }
+
+  return {
+    ...v,
+    original_price: originalPrice,
+    has_discount: hasDiscount,
+  };
+});
 
     res.json(visitsWithOriginal);
   } catch (err) {

@@ -121,7 +121,9 @@ const HistoryPage = () => {
                             {serviceTitle}
                           </span>
                           <span className="client-visit-price">
-                            {finalPrice === 0 ? "БЕСПЛАТНО" : `${finalPrice} ₽`}
+                            {Number(finalPrice) === 0 
+			     ? "БЕСПЛАТНО"
+			     : `${finalPrice} ₽`}
                           </span>
                         </div>
 
