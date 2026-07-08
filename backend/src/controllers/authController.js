@@ -3,7 +3,7 @@ const db = require("../config/db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs"); // 🌟 ДОБАВЛЕНО: Хеширование паролей
 
-// 1. АВТОРИЗАЦИЯ ЧЕРЕЗ ЛОГИН И ПАРОЛЬ
+// 1. АВТОРИЗАЦИЯ ЧЕРЕЗ ЛОГИН И ПАРОЛЬ (С поддержкой сброса через NocoDB)
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -23,15 +23,29 @@ exports.login = async (req, res) => {
       return res.status(404).json({ message: "Пользователь не найден" });
     }
 
-    // Проверяем, есть ли хэш пароля у пользователя (для старых записей)
     if (!user.password_hash) {
       return res
         .status(400)
         .json({ message: "Для данного аккаунта пароль не установлен" });
     }
 
-    // Сверяем введенный пароль с зашифрованным хэшем из БД
-    const isMatch = await bcrypt.compare(password, user.password_hash);
+    const dbPassword = user.password_hash.trim();
+    let isMatch = false;
+    let mustResetPassword = false;
+
+    // 🕵️‍♂️ УМНАЯ ПРОВЕРКА: Это хэш bcrypt или сырой текст из NocoDB?
+    const isBcryptHash =
+      dbPassword.startsWith("$2a$") || dbPassword.startsWith("$2b$");
+
+    if (isBcryptHash) {
+      // Сценарий А: Обычный хэш пароля. Сверяем через bcrypt
+      isMatch = await bcrypt.compare(password, dbPassword);
+    } else {
+      // Сценарий Б: Артём сбросил пароль в NocoDB на обычный текст
+      isMatch = password === dbPassword;
+      mustResetPassword = true; // Выставляем флаг принудительной смены
+    }
+
     if (!isMatch) {
       return res.status(400).json({ message: "Неверный логин или пароль" });
     }
@@ -42,9 +56,10 @@ exports.login = async (req, res) => {
       { expiresIn: "24h" },
     );
 
-    // Отправляем расширенный объект пользователя
+    // Отправляем расширенный объект пользователя + флаг mustResetPassword
     res.json({
       accessToken: token,
+      mustResetPassword, // 🌟 Передаем флаг на фронтенд
       user: {
         id: user.id,
         name: user.name,
@@ -62,11 +77,12 @@ exports.login = async (req, res) => {
   }
 };
 
-// 2. ПОЛУЧЕНИЕ ПРОФИЛЯ
+// 2. ПОЛУЧЕНИЕ ПРОФИЛЯ (С постоянной защитой от обхода сброса пароля)
 exports.getMe = async (req, res) => {
   try {
+    // 🌟 Добавили password_hash в SQL-запрос, чтобы проверить его тип при F5
     const result = await db.query(
-      "SELECT id, username, phone, name, role, visit_count, total_visits, created_at FROM users WHERE id = $1",
+      "SELECT id, username, phone, name, role, password_hash, visit_count, total_visits, created_at FROM users WHERE id = $1",
       [req.user.id],
     );
 
@@ -76,15 +92,24 @@ exports.getMe = async (req, res) => {
       return res.status(404).json({ message: "Пользователь не найден" });
     }
 
+    // 🕵️‍♂️ Проверяем: если пароль в базе не bcrypt-хэш, значит Артём его сбросил
+    const dbPassword = user.password_hash ? user.password_hash.trim() : "";
+    const isBcryptHash =
+      dbPassword.startsWith("$2a$") || dbPassword.startsWith("$2b$");
+    const mustResetPassword = !isBcryptHash; // Если не хэш, то принудительно true
+
     res.json({
-      id: user.id,
-      name: user.name,
-      username: user.username,
-      phone: user.phone,
-      role: user.role,
-      visit_count: user.visit_count,
-      total_visits: user.total_visits,
-      created_at: user.created_at,
+      mustResetPassword, // 🌟 Отдаем этот флаг фронтенду даже при обычном обновлении страницы!
+      user: {
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        phone: user.phone,
+        role: user.role,
+        visit_count: user.visit_count,
+        total_visits: user.total_visits,
+        created_at: user.created_at,
+      },
     });
   } catch (err) {
     console.error("Ошибка получения профиля:", err);

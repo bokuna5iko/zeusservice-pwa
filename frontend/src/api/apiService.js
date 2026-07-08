@@ -94,6 +94,10 @@ export const api = {
   // Точечное редактирование полей визита администратором (PATCH)
   updateVisitFields: (visitId, fields) =>
     apiService.patch(`/admin/visits/update/${visitId}`, fields),
+
+  // Смена временного пароля на постоянный с хэшированием в БД
+  changePassword: (newPassword) =>
+    apiService.post("/user/change-password", { newPassword }),
 };
 
 export default apiService;

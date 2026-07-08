@@ -22,13 +22,16 @@ import AdminStatistics from "./pages/AdminStatistics/AdminStatistics.jsx";
 import WorkerShiftsPage from "./pages/WorkerShifts/WorkerShiftsPage.jsx";
 import AdminShiftsPage from "./pages/AdminShifts/AdminShiftsPage.jsx";
 
-// 🌟 ДОБАВЛЕНО: Импортируем новый главный компонент десктопного пульта управления
+// Главный компонент десктопного пульта управления
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 
-function App() {
-  const { user, activePage } = useContext(AuthContext);
+// 🌟 ДОБАВЛЕНО: Импортируем блокировщик для форсированного сброса пароля
+import ForceResetPasswordModal from "./components/modals/ForceResetPasswordModal";
 
-  // 🌟 СМАРТ-ОБНОВЛЕНИЯ: Инициализируем хуки плагина PWA с автопроверкой каждые 10 секунд
+function App() {
+  const { user, activePage, mustResetPassword } = useContext(AuthContext); // 🌟 ДОБАВЛЕНО: Достаем флаг из контекста
+
+  // СМАРТ-ОБНОВЛЕНИЯ: Инициализируем хуки плагина PWA с автопроверкой каждые 10 секунд
   const {
     needRefresh: [needRefresh],
     updateServiceWorker,
@@ -47,7 +50,7 @@ function App() {
   const [showHintBanner, setShowHintBanner] = useState(false); // Выезжающая плашка
   const [isSpinning, setIsSpinning] = useState(false); // Бешеное вращение при клике
 
-  // 🌟 ДОБАВЛЕНО: Стейт контроля адаптивности под ПК/Планшеты в реальном времени
+  // Стейт контроля адаптивности под ПК/Планшеты в реальном времени
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   // Эффект отслеживания изменения ширины экрана
@@ -85,7 +88,6 @@ function App() {
     return (
       <div className="app-shell">
         <main className="app-main" style={{ position: "relative" }}>
-          {/* 🌟 ПЕРЕДАЕМ СМАРТ-ОБНОВЛЕНИЯ ВНУТРЬ СТРАНИЦЫ ЛОГИНА */}
           <LoginPage
             needRefresh={needRefresh}
             showHintBanner={showHintBanner}
@@ -98,25 +100,31 @@ function App() {
     );
   }
 
-  // 🌟 ДОБАВЛЕНО: Условие умного десктопного роутинга (БЛОК 2 ТЗ)
-  // Если авторизован админ и ширина экрана >= 1024px — монтируем пульт управления и пропсы обновлений
+  // 🌟 ДОБАВЛЕНО: Условие умного десктопного роутинга (БЛОК 2 ТЗ) + Защита со сбросом пароля
   if (user.role === "admin" && windowWidth >= 1024) {
     return (
-      <AdminDashboard
-        needRefresh={needRefresh}
-        showHintBanner={showHintBanner}
-        isSpinning={isSpinning}
-        handlePwaUpdate={handlePwaUpdate}
-      />
+      <>
+        {/* Модалка отрендерится поверх пульта и заблокирует его, если mustResetPassword === true */}
+        <ForceResetPasswordModal />
+        <AdminDashboard
+          needRefresh={needRefresh}
+          showHintBanner={showHintBanner}
+          isSpinning={isSpinning}
+          handlePwaUpdate={handlePwaUpdate}
+        />
+      </>
     );
   }
 
   // Условие для стандартного мобильного PWA (Экран < 1024px или для клиентов)
   return (
     <div className="app-shell">
+      {/* 🌟 ДОБАВЛЕНО: Намертво перекрываем мобильный интерфейс, если пароль временный */}
+      <ForceResetPasswordModal />
+
       {/* Оболочка телефона */}
       <div className="app-main" style={{ position: "relative" }}>
-        {/* 🌟 ВСПЛЫВАЮЩАЯ UX-ПОДСКАЗКА: Выезжает из-под шапки при фиксации новой версии */}
+        {/* ВСПЛЫВАЮЩАЯ UX-ПОДСКАЗКА: Выезжает из-под шапки при фиксации новой версии */}
         <div
           className={`pwa-smart-hint-banner ${showHintBanner ? "slide-down" : ""}`}
         >
@@ -138,19 +146,18 @@ function App() {
               ZEUS <span>AUTO</span>
             </span>
 
-            {/* 🌟 ГЛОБАЛЬНЫЙ СМАРТ-ИНДИКАТОР ОБНОВЛЕНИЙ В ШАПКЕ */}
+            {/* ГЛОБАЛЬНЫЙ СМАРТ-ИНДИКАТОР ОБНОВЛЕНИЙ В ШАПКЕ */}
             <button
               className={`global-smart-update-btn ${needRefresh ? "update-available" : ""} ${isSpinning ? "rapid-spinning" : ""}`}
               disabled={!needRefresh || isSpinning}
               onClick={handlePwaUpdate}
               title={
                 needRefresh
-                  ? "Доступно свежее обновление!"
+                  ? "Доступно свежее update-обновление!"
                   : "Приложение актуальной версии"
               }
             >
               <i className="fas fa-sync-alt"></i>
-              {/* Пульсирующая оранжево-красная точка в углу кнопки */}
               {needRefresh && (
                 <span className="notification-pulsing-dot"></span>
               )}

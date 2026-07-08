@@ -12,17 +12,27 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 🌟 ИСПРАВЛЕНО: Standalone метод принудительного обновления данных профиля из PostgreSQL
+  // 🌟 ДОБАВЛЕНО: Стейт принудительного сброса пароля
+  const [mustResetPassword, setMustResetPassword] = useState(false);
+
   const refreshProfile = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) return;
 
     try {
       const response = await api.getProfile();
-      setUser(response.data); // Мгновенно обновляем стейт юзера (кружочки, ранг, бонусы)
+
+      // 🌟 ИСПРАВЛЕНО: Читаем флаг из ответа профиля при F5
+      if (response.data && response.data.mustResetPassword) {
+        setMustResetPassword(true);
+      } else {
+        setMustResetPassword(false);
+      }
+
+      // Записываем чистый объект юзера без технического поля пароля
+      setUser(response.data.user || response.data);
     } catch (err) {
       console.error("Ошибка при фоновом обновлении профиля:", err);
-      // Если токен тотально протух — разлогиниваем
       if (err.response?.status === 401 || err.response?.status === 403) {
         localStorage.removeItem("accessToken");
         setUser(null);
@@ -39,7 +49,6 @@ export const AuthProvider = ({ children }) => {
       }
 
       try {
-        // Используем наш вынесенный метод при первичном монтировании приложения
         await refreshProfile();
       } catch (err) {
         console.error("Ошибка сессии:", err);
@@ -65,6 +74,14 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem("accessToken", data.accessToken);
       setUser(data.user);
+
+      // 🌟 ИСПРАВЛЕНО: Ловим флаг от бэкенда при входе
+      if (data.mustResetPassword) {
+        setMustResetPassword(true);
+      } else {
+        setMustResetPassword(false);
+      }
+
       setActivePage("home");
     } catch (err) {
       setError(err.message);
@@ -90,6 +107,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("accessToken", data.accessToken);
       }
       setUser(data.user);
+      setMustResetPassword(false); // При регистрации сброс не нужен
       setActivePage("home");
     } catch (err) {
       setError(err.message);
@@ -101,11 +119,11 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("accessToken");
     setUser(null);
+    setMustResetPassword(false);
     setActivePage("home");
   };
 
   return (
-    // 🌟 ИСПРАВЛЕНО: Прокидываем метод refreshProfile в глобальный доступ
     <AuthContext.Provider
       value={{
         user,
@@ -117,6 +135,9 @@ export const AuthProvider = ({ children }) => {
         refreshProfile,
         loading,
         error,
+        // 🌟 Прокидываем стейт сброса пароля в приложение
+        mustResetPassword,
+        setMustResetPassword,
       }}
     >
       {children}
