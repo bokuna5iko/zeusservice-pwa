@@ -30,6 +30,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh; /* Менять min-height на жесткую высоту vh, чтобы рамки не плыли */
+  height: 100svh;
   width: 100%;
   background-color: #020617;
   overflow: hidden !important; /* Никакого системного скролла монитора */
@@ -41,6 +42,7 @@
   max-width: 430px; /* Максимальная ширина как у iPhone Pro Max */
   height: 100% !important; /* На мобилках строго вписать в высоту экрана */
   max-height: 100vh;
+  max-height: 100svh; /* Жестко вписываем контейнер в видимую область Safari */
   display: flex;
   flex-direction: column;
   align-items: stretch;
