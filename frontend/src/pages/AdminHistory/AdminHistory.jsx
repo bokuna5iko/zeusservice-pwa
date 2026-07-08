@@ -1,5 +1,6 @@
 // src/pages/AdminHistory/AdminHistory.jsx
 import React, { useState, useEffect } from "react";
+import { api } from "../../api/apiService"; // 🌟 Импортируем наш готовый центральный сервис API
 import "./AdminHistory.css";
 
 const AdminHistory = () => {
@@ -11,28 +12,16 @@ const AdminHistory = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        // 🌟 Используем единый ключ токена accessToken
-        const token = localStorage.getItem("accessToken");
+        setLoading(true);
 
-        // 🌟 Стучимся на выделенный эндпоинт сегодняшней истории визитов
-        const response = await fetch("/api/admin/visits/today", {
-          headers: {
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-        });
+        // 🌟 ИСПРАВЛЕНО: Заменили сырой fetch на наш Axios-метод.
+        // Он автоматически прокинет токен из localStorage и корректно обработает 304 статус от Workbox
+        const response = await api.getTodayVisits();
+        const dbVisits = response.data || [];
 
-        if (response.ok) {
-          const data = await response.json();
-          setVisits(data);
-        } else if (response.status === 304) {
-          // ТЗ Выполнено: Изменений в базе нет, браузер и Workbox бесшовно оставили данные из кэша
-          console.log("Данные не изменились (304). Используем актуальный кэш.");
-        } else {
-          console.error("Ошибка при получении утренней истории визитов");
-        }
+        setVisits(dbVisits);
       } catch (error) {
-        // ТЗ Выполнено: В случае падения интернета (NetworkError), этот блок поймает ошибку,
-        // но экран не упадет, так как StaleWhileRevalidate уже мгновенно вывел прошлый слепок данных на экран!
+        // Блок поймает критический сбой сети, но приложение не упадёт
         console.warn(
           "Оффлайн-режим или сбой сети. Выведен локальный слепок истории:",
           error,
@@ -181,7 +170,6 @@ const AdminHistory = () => {
                               className="car-brand-pill"
                               style={{ whiteSpace: "nowrap" }}
                             >
-                              {/* 🌟 ИСПРАВЛЕНО: Сквозное правило склейки марок автомобиля для админа */}
                               {(() => {
                                 const profileBrand =
                                   visit.user_car_brand || visit.car_brand; // Из профиля клиента
@@ -215,7 +203,6 @@ const AdminHistory = () => {
                           </div>
                         ) : (
                           <div className="client-info-list">
-                            {/* 🌟 ДОБАВЛЕНО: Сквозная строка отображения автомобиля в выпадающих деталях */}
                             <div className="detail-row-item">
                               <span className="detail-item-label">
                                 Автомобиль:
