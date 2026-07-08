@@ -25,11 +25,11 @@ import AdminShiftsPage from "./pages/AdminShifts/AdminShiftsPage.jsx";
 // Главный компонент десктопного пульта управления
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 
-// 🌟 ДОБАВЛЕНО: Импортируем блокировщик для форсированного сброса пароля
+// Импортируем блокировщик для форсированного сброса пароля
 import ForceResetPasswordModal from "./components/modals/ForceResetPasswordModal";
 
 function App() {
-  const { user, activePage, mustResetPassword } = useContext(AuthContext); // 🌟 ДОБАВЛЕНО: Достаем флаг из контекста
+  const { user, activePage, mustResetPassword } = useContext(AuthContext);
 
   // СМАРТ-ОБНОВЛЕНИЯ: Инициализируем хуки плагина PWA с автопроверкой каждые 10 секунд
   const {
@@ -53,6 +53,26 @@ function App() {
   // Стейт контроля адаптивности под ПК/Планшеты в реальном времени
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  // 🌟 ДОБАВЛЕНО: Глобальная ловушка нативного события установки для Android/Chrome
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      // Блокируем нативное всплывающее окно браузера по умолчанию
+      e.preventDefault();
+      // Сохраняем событие в глобальный объект window, чтобы менеджер шторки мог вызвать .prompt()
+      window.deferredPrompt = e;
+      console.log(
+        "✅ Событие beforeinstallprompt успешно перехвачено и сохранено.",
+      );
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    return () =>
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt,
+      );
+  }, []);
+
   // Эффект отслеживания изменения ширины экрана
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -75,11 +95,10 @@ function App() {
   const handlePwaUpdate = () => {
     if (!needRefresh || isSpinning) return;
 
-    setIsSpinning(true); // Включаем непрерывное быстрое вращение иконки
+    setIsSpinning(true);
 
-    // Небольшая задержка перед перезагрузкой для сочного визуального отклика
     setTimeout(() => {
-      updateServiceWorker(true); // Очистка старого кэша и жесткий перезапуск страницы воркером
+      updateServiceWorker(true);
     }, 600);
   };
 
@@ -100,11 +119,10 @@ function App() {
     );
   }
 
-  // 🌟 ДОБАВЛЕНО: Условие умного десктопного роутинга (БЛОК 2 ТЗ) + Защита со сбросом пароля
+  // Условие для умного десктопного роутинга + Защита со сбросом пароля
   if (user.role === "admin" && windowWidth >= 1024) {
     return (
       <>
-        {/* Модалка отрендерится поверх пульта и заблокирует его, если mustResetPassword === true */}
         <ForceResetPasswordModal />
         <AdminDashboard
           needRefresh={needRefresh}
@@ -119,7 +137,6 @@ function App() {
   // Условие для стандартного мобильного PWA (Экран < 1024px или для клиентов)
   return (
     <div className="app-shell">
-      {/* 🌟 ДОБАВЛЕНО: Намертво перекрываем мобильный интерфейс, если пароль временный */}
       <ForceResetPasswordModal />
 
       {/* Оболочка телефона */}

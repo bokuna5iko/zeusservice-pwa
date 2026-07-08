@@ -4,19 +4,27 @@ import { AuthContext } from "../../context/AuthContext";
 import "./ProfilePages.css";
 import PriceListModal from "../../components/PriceList/PriceListModal";
 
+// 🌟 ДОБАВЛЕНО: Импортируем менеджер установки для резервного входа
+import PwaOnboardingManager from "../../components/PwaOnboardingManager/PwaOnboardingManager";
+
 const ProfilePage = () => {
   const { user, setUser, logout } = useContext(AuthContext);
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState("");
 
-  // 🌟 ШАГ 1: Новые стейты для интерактивного редактирования авто
+  // Новые стейты для интерактивного редактирования авто
   const [isEditingCar, setIsEditingCar] = useState(false);
   const [newCarBrand, setNewCarBrand] = useState("");
 
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
-  const [activeModal, setActiveModal] = useState(null); // 'prices' или 'kb' или null
+  const [activeModal, setActiveModal] = useState(null); // 'prices' | 'kb' | null
 
-  // Синхронизация полей с данными из базы данных
+  // 🌟 ДОБАВЛЕНО: Стейты для резервного управления PWA из профиля
+  const [isPwaInstalled, setIsPwaInstalled] = useState(true);
+  const [showNotificationDot, setShowNotificationDot] = useState(false);
+  const [forcePlatform, setForcePlatform] = useState(null); // 'android' | 'ios' | null
+
+  // Синхронизация полей с данными из базы данных и проверка статуса PWA
   useEffect(() => {
     if (user?.name) {
       setNewName(user.name);
@@ -24,17 +32,39 @@ const ProfilePage = () => {
     if (user?.car_brand) {
       setNewCarBrand(user.car_brand);
     }
+
+    // 🌟 Проверка: если открыто уже как PWA — пункт установки не нужен
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone;
+    setIsPwaInstalled(isStandalone);
+
+    if (!isStandalone) {
+      // Проверяем, скрыл ли пользователь баннер на главной на 7 дней
+      const dismissedTime = localStorage.getItem("zeus_pwa_prompt_dismissed");
+      if (dismissedTime) {
+        const diffDays =
+          (Date.now() - Number(dismissedTime)) / (1000 * 60 * 60 * 24);
+        if (diffDays < 7) {
+          // Баннер на главной скрыт по тайм-ауту ➔ зажигаем неоновую точку в профиле!
+          setShowNotificationDot(true);
+        }
+      } else {
+        setShowNotificationDot(true);
+      }
+    }
   }, [user]);
 
-  const handlePwaUpdate = async () => {
-    try {
-      await updateServiceWorker(true);
-      setTimeout(() => {
-        window.location.reload();
-      }, 400);
-    } catch (err) {
-      window.location.reload();
-    }
+  // 🌟 ДОБАВЛЕНО: Обработчик клика по пункту меню установки PWA
+  const handleTriggerPwaInstall = () => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isIOS = /iphone|ipad|ipod/.test(userAgent);
+
+    // Передаем принудительный триггер ОС в менеджер онбординга
+    setForcePlatform(isIOS ? "ios" : "android");
+
+    // Погашаем неоновую точку-маркер, так как пользователь нажал на пункт
+    setShowNotificationDot(false);
   };
 
   const updateProfile = async (field, value) => {
@@ -54,7 +84,6 @@ const ProfilePage = () => {
         setUser({ ...user, [field]: value });
         if (field === "name") setIsEditingName(false);
         if (field === "avatar_url") setShowAvatarPicker(false);
-        // 🌟 ШАГ 2: Закрываем режим редактирования машины при успешном ответе бэка
         if (field === "car_brand") setIsEditingCar(false);
       }
     } catch (error) {
@@ -136,15 +165,7 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Телефон
-            <div className="profile-info-row">
-              <label className="profile-field-label">Номер телефона</label>
-              <div className="profile-value disabled">
-                <i className="fas fa-phone-alt"></i> {user?.phone || "—"}
-              </div>
-            </div> */}
-
-            {/* 🌟 ШАГ 3: Новая интерактивная зона автомобиля */}
+            {/* Зона автомобиля */}
             <div className="profile-info-row">
               <label className="profile-field-label">Основной автомобиль</label>
               <div className="input-with-action">
@@ -216,6 +237,26 @@ const ProfilePage = () => {
         {/* КОНТЕЙНЕР №3: Меню действий */}
         <div className="profile-card actions-box content-group-box">
           <div className="fill-zone">
+            {/* 🌟 ДОБАВЛЕНО: Резервный пункт меню установки PWA с пульсирующим маркером (Пункт 5 ТЗ) */}
+            {!isPwaInstalled && (
+              <div
+                className="profile-action-item pwa-menu-item"
+                onClick={handleTriggerPwaInstall}
+              >
+                <div className="action-left" style={{ position: "relative" }}>
+                  <i className="fas fa-mobile-alt text-blue"></i>
+                  <span>Установить приложение</span>
+                  {showNotificationDot && (
+                    <span
+                      className="notification-pulsing-dot"
+                      style={{ left: "18px", top: "-2px" }}
+                    ></span>
+                  )}
+                </div>
+                <i className="fas fa-chevron-right arrow-gray"></i>
+              </div>
+            )}
+
             <div
               className="profile-action-item"
               onClick={() => setActiveModal("prices")}
@@ -266,6 +307,11 @@ const ProfilePage = () => {
         isOpen={activeModal === "prices"}
         onClose={() => setActiveModal(null)}
       />
+
+      {/* 🌟 ДОБАВЛЕНО: Менеджер принудительного вызова шторки онбординга */}
+      {forcePlatform && (
+        <PwaOnboardingManager forceOpenPlatform={forcePlatform} />
+      )}
 
       {/* МОДАЛКА №2: БАЗА ЗНАНИЙ */}
       {activeModal === "kb" && (

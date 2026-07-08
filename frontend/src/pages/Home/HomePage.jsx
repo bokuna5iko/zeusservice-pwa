@@ -5,6 +5,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import "./HomePage.css";
 import PointsGrid from "../../components/PointsGrid/PointsGrid";
 import PackageCards from "../../components/PackageCards/PackageCards"; // Импортируем блок пакетов
+import PwaOnboardingManager from "../../components/PwaOnboardingManager/PwaOnboardingManager";
 
 const HomePage = () => {
   const { user, refreshProfile } = useContext(AuthContext);
@@ -129,6 +130,8 @@ const HomePage = () => {
         {/* КОНТЕЙНЕР №2 Выгодные пакеты (В разработке) */}
         <PackageCards />
       </div>
+
+      <PackageCards />
 
       {/* Модальное окно для увеличенного QR */}
       {isZoomed && (
