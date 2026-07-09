@@ -145,6 +145,25 @@ export const useVisitsData = (shiftStatus, initialShiftData) => {
           expenses: Number(expenses_total || 0),
         });
       }
+	if (res?.data?.updatedVisit) {
+  	 const { price, amount, bonus_type, visit_number, manual_visit_number } = res.data.updatedVisit;
+  
+  	setVisits((prev) =>
+    	prev.map((v) =>
+      	v.id === targetId
+        	? {
+            	...v,
+            	price: Number(price),
+            	amount: Number(amount),
+            	bonus_type,
+            	visit_number,
+            	manual_visit_number,
+          	}
+        	: v
+    	)
+  	);
+  	console.log("✅ Визит обновлён в стейте сразу:", res.data.updatedVisit);
+}
 
       // 🌟 ИСПРАВЛЕНО: Получаем правильную сумму с бэкенда
       // Бэкенд возвращает обновленный визит с правильной суммой

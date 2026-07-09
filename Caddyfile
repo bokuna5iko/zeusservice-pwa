@@ -1,0 +1,39 @@
+{$SERVER_NAME} {
+    # === WebSocket для socket.io ===
+    handle /socket.io/* {
+        reverse_proxy backend:3000 {
+            # Длинные таймауты для WebSocket (24 часа)
+            transport http {
+                keepalive 24h
+            }
+            # Отключаем буферизацию для мгновенной доставки данных
+            flush_interval -1
+        }
+    }
+
+    # === API endpoints ===
+    handle /api/* {
+        reverse_proxy backend:3000
+    }
+
+    # === Статический фронтенд (SPA) ===
+    handle {
+        root * /usr/share/caddy
+        file_server
+        try_files {path} /index.html
+    }
+
+    # === Безопасность ===
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+
+    # === Логирование ===
+    log {
+        output stdout
+        format console
+    }
+}
