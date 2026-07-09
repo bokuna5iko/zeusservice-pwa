@@ -42,7 +42,7 @@ const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
               <tr>
                 <td colSpan="9" className="table-empty-notice">
                   {shiftStatus === "closed"
-                    ? "Смена завершена. Лента заездов зафиксирована."
+                    ? "Смена завершена. Таблица заездов зафиксирована."
                     : "Лента заездов пуста. Машины появятся автоматически через WebSockets при сканировании QR-кодов."}
                 </td>
               </tr>
