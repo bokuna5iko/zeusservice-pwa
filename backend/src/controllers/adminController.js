@@ -481,6 +481,7 @@ exports.updateVisit = async (req, res) => {
       .toLowerCase()
       .includes("нал");
 
+    // 🌟 ИСПРАВЛЕНО: Возвращаем все обновлённые поля
     const queryText = `
       UPDATE visits
       SET 
@@ -497,7 +498,7 @@ exports.updateVisit = async (req, res) => {
         bonus_type = $11,
         service_id = $12
       WHERE id = $10
-      RETURNING id
+      RETURNING id, price, amount, manual_service_name, service_id, additional_services, bonus_type, manual_visit_number
     `;
 
     const values = [
@@ -507,15 +508,16 @@ exports.updateVisit = async (req, res) => {
       manual_service_name || null,
       manual_payment_type || null,
       manual_visit_number ? parseInt(manual_visit_number, 10) : null,
-      parseInt(basePrice, 10), // 🌟 price = базовая цена (1800)
-      parseFloat(finalAmount), // 🌟 amount = со скидкой + допы (1440 + допы*0.8)
+      Number(basePrice), // 🌟 ИСПРАВЛЕНО: используем Number вместо parseInt
+      Number(finalAmount), // 🌟 ИСПРАВЛЕНО: используем Number вместо parseFloat
       JSON.stringify(addonsArray),
       visitId,
       bonusType,
       service_id ? parseInt(service_id, 10) : null,
     ];
 
-    await db.query(queryText, values);
+    const updateResult = await db.query(queryText, values);
+    const updatedVisit = updateResult.rows[0]; // 🌟 Получаем обновлённый визит
 
     const userId = oldVisit.user_id;
     if (userId && manual_visit_number !== undefined) {
@@ -555,16 +557,23 @@ exports.updateVisit = async (req, res) => {
 
       await db.query("COMMIT");
 
+      // 🌟 ИСПРАВЛЕНО: Возвращаем обновлённый визит
       return res.status(200).json({
         success: true,
         message:
           "Параметры заезда, доп. услуги и баланс кассы успешно обновлены",
+        updatedVisit: updatedVisit, // 🌟 ДОБАВЛЕНО
         updatedShift: updatedShiftRes.rows[0],
       });
     }
 
     await db.query("COMMIT");
-    res.status(200).json({ success: true });
+
+    // 🌟 ИСПРАВЛЕНО: Возвращаем обновлённый визит
+    res.status(200).json({
+      success: true,
+      updatedVisit: updatedVisit, // 🌟 ДОБАВЛЕНО
+    });
   } catch (err) {
     await db.query("ROLLBACK");
     console.error("Ошибка в контроллере updateVisit с допами:", err);

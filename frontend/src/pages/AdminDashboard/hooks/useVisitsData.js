@@ -126,18 +126,16 @@ export const useVisitsData = (shiftStatus, initialShiftData) => {
   // Сохранение изменений визита
   const handleEditVisitSubmit = async (payload) => {
     setLoadingEdit(true);
-
     console.log("=== 🛠 ДИАГНОСТИКА САБМИТА РЕДАКТИРОВАНИЯ ===");
     console.log("Отправляем PAYLOAD на бэк:", payload);
-    console.log("Текущий редактируемый визит (editingVisit):", editingVisit);
 
     try {
       const targetId = editingVisit.id || editingVisit.visit_id;
       const res = await api.updateVisitFields(targetId, payload);
-
       console.log("=== 🟢 ОТВЕТ СЕРВЕРА НА PATCH ПОЛУЧЕН ===");
       console.log("Полный res.data от бэкенда:", res?.data);
 
+      // Обновляем данные смены
       if (res?.data?.updatedShift) {
         const { cash_total, card_total, expenses_total } =
           res.data.updatedShift;
@@ -148,14 +146,22 @@ export const useVisitsData = (shiftStatus, initialShiftData) => {
         });
       }
 
+      // 🌟 ИСПРАВЛЕНО: Получаем правильную сумму с бэкенда
+      // Бэкенд возвращает обновленный визит с правильной суммой
+      const updatedVisitFromBackend = res?.data?.updatedVisit;
+
       const addonsSum = Array.isArray(payload.additional_services)
         ? payload.additional_services.reduce(
             (acc, curr) => acc + Number(curr.price || 0),
             0,
           )
         : 0;
-      const newAmount =
-        Number(payload.price || editingVisit.price || 0) + addonsSum;
+
+      // 🌟 ИСПРАВЛЕНО: Используем сумму с бэкенда, если она есть
+      // Иначе рассчитываем на фронте (но правильно!)
+      const newAmount = updatedVisitFromBackend?.amount
+        ? Number(updatedVisitFromBackend.amount)
+        : Number(payload.price) + addonsSum;
 
       console.log("Рассчитанный на фронте addonsSum:", addonsSum);
       console.log("Рассчитанный на фронте итоговый newAmount:", newAmount);
@@ -164,21 +170,28 @@ export const useVisitsData = (shiftStatus, initialShiftData) => {
         const updatedArray = prevVisits.map((v) => {
           const currentId = v.id || v.visit_id;
           const currentEditingId = editingVisit.id || editingVisit.visit_id;
-
           if (currentId === currentEditingId) {
             console.log(
               "Нашли обновляемую строку в массиве visits! Старый объект:",
               v,
             );
+
             const newObj = {
               ...v,
               ...payload,
-              price: Number(payload.price || v.price),
+              // 🌟 ИСПРАВЛЕНО: Используем правильную цену и сумму
+              price: updatedVisitFromBackend?.price
+                ? Number(updatedVisitFromBackend.price)
+                : Number(payload.price),
               amount: newAmount,
               additional_services: payload.additional_services,
               visit_number: payload.manual_visit_number,
               loyalty_step: payload.manual_visit_number,
+              // 🌟 ИСПРАВЛЕНО: Обновляем название услуги
+              manual_service_name: payload.manual_service_name,
+              service_id: payload.service_id,
             };
+
             console.log(
               "Сформированный НОВЫЙ объект для стейта таблицы:",
               newObj,
