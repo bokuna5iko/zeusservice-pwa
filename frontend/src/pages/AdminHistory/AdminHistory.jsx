@@ -111,7 +111,7 @@ const AdminHistory = () => {
 
         {/* КОНТЕЙНЕР №2: Lента визитов (Аккордеон) */}
         <div className="content-group-box filter-container">
-          <h3 className="section-title-history">История заездов за неделю</h3>
+          <h3 className="section-title-history">История заездов за сегодня</h3>
 
           {loading ? (
             <div className="admin-data-placeholder">

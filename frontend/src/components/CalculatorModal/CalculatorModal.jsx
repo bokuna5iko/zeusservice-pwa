@@ -11,33 +11,29 @@ const CalculatorModal = ({
 }) => {
   const [allServices, setAllServices] = useState([]); // Все услуги из БД
   const [carClass, setCarClass] = useState(1); // Выбранный класс (1-5)
-  const [selectedServiceId, setSelectedServiceId] = useState(""); // Выбранная услуга
+  const [selectedServiceId, setSelectedServiceId] = useState(""); // Выбранная основная услуга
+  const [selectedAddons, setSelectedAddons] = useState([]); // Выбранные доп. услуги (массив объектов)
   const [finalPrice, setFinalPrice] = useState(0); // Итоговая цена для отображения
   const [isManualPrice, setIsManualPrice] = useState(false); // Флаг ручного ввода цены
   const [paymentType, setPaymentType] = useState("Наличные"); // Тип оплаты
   const [loading, setLoading] = useState(false);
   const [successChecked, setSuccessChecked] = useState(false); // Для анимации зеленой галочки
-
-  // 🌟 ДОБАВЛЕНО: Стейт для ручного ввода марки или краткого имени автомобиля администратором
   const [manualCarBrand, setManualCarBrand] = useState("");
 
-  // Определяем номер визита для расчета лояльности
   const nextVisitNum = isGuest ? null : (clientData?.visit_count || 0) + 1;
 
+  // Подтягиваем услуги из БД при открытии модалки
   useEffect(() => {
     if (!isOpen) return;
 
-    // Сбрасываем стейты при открытии модалки
     setSelectedServiceId("");
+    setSelectedAddons([]);
     setFinalPrice(0);
     setIsManualPrice(false);
     setSuccessChecked(false);
     setCarClass(1);
-
-    // 🌟 ДОБАВЛЕНО: Сброс поля марки автомобиля при открытии окна
     setManualCarBrand("");
 
-    // Подтягиваем услуги из БД
     const fetchServices = async () => {
       try {
         const res = await fetch("/api/admin/services");
@@ -50,34 +46,71 @@ const CalculatorModal = ({
     fetchServices();
   }, [isOpen]);
 
-  // Фильтруем услуги под выбранный класс машины
-  const filteredServices = allServices.filter(
-    (s) => s.car_class === null || s.car_class === parseInt(carClass),
+  // Фильтруем основные пакетные услуги под выбранный класс машины (исключаем null)
+  const filteredMainServices = allServices.filter(
+    (s) => s.car_class === parseInt(carClass),
   );
 
-  // Калькуляция цены при смене услуги или класса авто (для отображения администратору)
+  // Вытаскиваем самодостаточные доп. услуги (где car_class === null)
+  const availableAddons = allServices.filter((s) => s.car_class === null);
+
+  // Переключатель чекбокса доп. услуги
+  const handleToggleAddon = (addon) => {
+    setSelectedAddons((prev) => {
+      const isAlreadySelected = prev.some((item) => item.id === addon.id);
+      if (isAlreadySelected) {
+        return prev.filter((item) => item.id !== addon.id);
+      } else {
+        // Формируем структуру объекта допки, которую ожидает Пульт Управления
+        return [
+          ...prev,
+          {
+            id: addon.id,
+            service_name: addon.service_name,
+            price: addon.base_price,
+            employee_id: null,
+          },
+        ];
+      }
+    });
+  };
+
+  // Калькуляция цены при смене базовой услуги, класса авто или доп. услуг
   useEffect(() => {
-    if (isManualPrice || !selectedServiceId) return;
+    if (isManualPrice) return;
 
-    const currentService = allServices.find(
-      (s) => s.id === parseInt(selectedServiceId),
-    );
-    if (!currentService) return;
-
-    let calculated = currentService.base_price;
-
-    // Логика лояльности (визуальный просчет для админа)
-    if (!isGuest) {
-      if (nextVisitNum === 4) {
-        calculated = Math.round(calculated * 0.8); // Скидка 20%
-      } else if (nextVisitNum === 8) {
-        calculated = 0; // Бесплатно
+    let baseAmount = 0;
+    if (selectedServiceId) {
+      const currentService = allServices.find(
+        (s) => s.id === parseInt(selectedServiceId),
+      );
+      if (currentService) {
+        baseAmount = parseFloat(currentService.base_price);
       }
     }
 
-    setFinalPrice(calculated);
+    // Считаем сумму выбранных допок
+    let addonsAmount = 0;
+    selectedAddons.forEach((addon) => {
+      addonsAmount += parseFloat(addon.price || 0);
+    });
+
+    // Полная сумма без скидок
+    let totalRaw = baseAmount + addonsAmount;
+
+    // Применяем скидку лояльности (на всю сумму, включая допки, согласно ответу 1)
+    if (!isGuest) {
+      if (nextVisitNum === 4) {
+        totalRaw = Math.round(totalRaw * 0.8); // Скидка 20%
+      } else if (nextVisitNum === 8) {
+        totalRaw = 0; // Бесплатно
+      }
+    }
+
+    setFinalPrice(totalRaw);
   }, [
     selectedServiceId,
+    selectedAddons,
     carClass,
     allServices,
     isManualPrice,
@@ -85,66 +118,51 @@ const CalculatorModal = ({
     nextVisitNum,
   ]);
 
-  useEffect(() => {
-    // Находим главный контейнер контента страницы (или можно использовать document.body)
-    const pageContent = document.querySelector(".page-content");
-    if (!pageContent) return;
-
-    if (isOpen) {
-      // Когда модалка открыта — жестко отключаем скролл заднего фона
-      pageContent.style.overflowY = "hidden";
-    } else {
-      // Когда модалка закрывается — возвращаем стандартный скролл
-      pageContent.style.overflowY = "auto";
-    }
-
-    // Подстраховка: если компонент размонтируется (удалится из DOM), возвращаем скролл
-    return () => {
-      if (pageContent) pageContent.style.overflowY = "auto";
-    };
-  }, [isOpen]);
-
   const handleSubmit = async () => {
-    // Проверка авторизованного клиента: теперь проверяем по id, полученному из QR/профиля
+    console.log("=== 🔍 КЛИК НА ФРОНТЕНДЕ: handleSubmit в калькуляторе ===");
+    console.log("isGuest:", isGuest, "clientData:", clientData);
+    console.log(
+      "selectedServiceId:",
+      selectedServiceId,
+      "selectedAddons:",
+      selectedAddons,
+    );
+
     if (!isGuest && !clientData?.id) {
       alert("Ошибка: Данные клиента не загружены (отсутствует ID)");
       return;
     }
     if (!selectedServiceId && !isManualPrice) {
-      alert("Выберите услугу или введите цену вручную");
+      alert("Выберите основную услугу или введите цену вручную");
       return;
     }
 
     setLoading(true);
-
     try {
-      // 🌟 ДОСТАЕМ АДМИНСКИЙ ТОКЕН ИЗ ЛОКАЛСТОРИДЖА
       const token = localStorage.getItem("accessToken");
 
-      // Синхронизация с защищенным роутом на бэкенде
       const res = await fetch("/api/admin/visits/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // 🌟 ИСПРАВЛЕНО: Передаем токен в заголовке, чтобы пройти authenticateToken
           Authorization: token ? `Bearer ${token}` : "",
         },
         body: JSON.stringify({
-          userId: isGuest ? null : clientData.id, // ПЕРЕДАЕМ ИМЕННО ID (извлеченный из QR)
-          serviceId: selectedServiceId ? parseInt(selectedServiceId) : null, // ПЕРЕДАЕМ ID УСЛУГИ
+          userId: isGuest ? null : clientData.id,
+          serviceId: selectedServiceId ? parseInt(selectedServiceId) : null,
           payment_type: paymentType,
           is_guest: isGuest,
-          manual_price: isManualPrice ? finalPrice : null, // Если ручная цена — передаем её
-          // 🌟 ДОБАВЛЕНО: Отправляем админский ввод марки автомобиля в базу данных
+          manual_price: isManualPrice ? finalPrice : null,
           manual_car_brand: manualCarBrand.trim() || null,
+          additional_services: selectedAddons, // 🌟 Отправляем массив доп. услуг на бэкенд!
         }),
       });
 
       if (res.ok) {
-        setSuccessChecked(true); // Включаем микро-отклик (зеленую галочку)
+        setSuccessChecked(true);
         setTimeout(() => {
-          onSuccess(); // Обновляем инфу на главной админа
-          onClose(); // Закрываем модалку
+          onSuccess();
+          onClose();
         }, 1200);
       } else {
         const errData = await res.json();
@@ -189,7 +207,6 @@ const CalculatorModal = ({
             </div>
 
             <div className="calc-modal-body">
-              {/* Информация о лояльности */}
               {!isGuest && (
                 <div className="calc-loyalty-info-alert">
                   Текущий визит клиента: <strong>{nextVisitNum}-й</strong>
@@ -199,7 +216,6 @@ const CalculatorModal = ({
                   {nextVisitNum === 8 && (
                     <span className="gift-text"> (БЕСПЛАТНО)</span>
                   )}
-                  {/* 🌟 ДОБАВЛЕНО: Подсказка админу, если у пользователя в профиле уже сохранена марка */}
                   {clientData?.car_brand && (
                     <div
                       style={{
@@ -215,20 +231,17 @@ const CalculatorModal = ({
                 </div>
               )}
 
-              {/* 🌟 ДОБАВЛЕНО: Поле ручного ввода марки / краткого описания машины админом */}
               <div className="calc-field-group">
                 <label>Марка авто / Краткое имя (Заполняет Админ)</label>
                 <input
                   type="text"
                   className="calc-price-input"
-                  style={{ fontSize: "14px", padding: "10px" }}
                   placeholder="Пример: Camry 555, Белый BMW, Probox"
                   value={manualCarBrand}
                   onChange={(e) => setManualCarBrand(e.target.value)}
                 />
               </div>
 
-              {/* Выбор Класса машины */}
               <div className="calc-field-group">
                 <label>Класс автомобиля</label>
                 <div className="calc-class-selector">
@@ -248,9 +261,8 @@ const CalculatorModal = ({
                 </div>
               </div>
 
-              {/* Выбор услуги */}
               <div className="calc-field-group">
-                <label>Выберите услугу</label>
+                <label>Выберите основную услугу</label>
                 <select
                   className="calc-select"
                   value={selectedServiceId}
@@ -260,7 +272,7 @@ const CalculatorModal = ({
                   }}
                 >
                   <option value="">-- Нажмите для выбора услуги --</option>
-                  {filteredServices.map((s) => (
+                  {filteredMainServices.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.service_name} ({s.base_price} ₽)
                     </option>
@@ -268,7 +280,47 @@ const CalculatorModal = ({
                 </select>
               </div>
 
-              {/* Переключатель на ручной ввод */}
+              {/* 🌟 ДОБАВЛЕНО: Блок выбора дополнительных услуг (Пункт 2 ТЗ) */}
+              {!isManualPrice &&
+                selectedServiceId &&
+                availableAddons.length > 0 && (
+                  <div className="calc-field-group pwa-addons-section">
+                    <label className="addons-section-title">
+                      <i className="fas fa-plus-circle text-cyan"></i>{" "}
+                      Дополнительные услуги
+                    </label>
+                    <div className="pwa-addons-grid">
+                      {availableAddons.map((addon) => {
+                        const isChecked = Array.isArray(window.temp)
+                          ? false
+                          : !!selectedAddons.some(
+                              (item) => item.id === addon.id,
+                            );
+                        return (
+                          <label
+                            key={addon.id}
+                            className={`pwa-addon-card-label ${isChecked ? "checked" : ""}`}
+                          >
+                            <div className="addon-checkbox-left">
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => handleToggleAddon(addon)}
+                              />
+                              <span className="addon-name">
+                                {addon.service_name}
+                              </span>
+                            </div>
+                            <span className="addon-price">
+                              +{addon.base_price} ₽
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
               <div className="manual-price-checkbox-row">
                 <label>
                   <input
@@ -276,14 +328,16 @@ const CalculatorModal = ({
                     checked={isManualPrice}
                     onChange={(e) => {
                       setIsManualPrice(e.target.checked);
-                      if (e.target.checked) setSelectedServiceId("");
+                      if (e.target.checked) {
+                        setSelectedServiceId("");
+                        setSelectedAddons([]);
+                      }
                     }}
                   />
                   Ввести сумму вручную (нестандартная цена)
                 </label>
               </div>
 
-              {/* Поле цены / Вывод стоимости */}
               <div className="calc-field-group">
                 <label>Итоговая стоимость к оплате</label>
                 {isManualPrice ? (
@@ -301,11 +355,15 @@ const CalculatorModal = ({
                       !isGuest &&
                       (nextVisitNum === 4 || nextVisitNum === 8) && (
                         <span className="old-struck-price">
-                          {
+                          {parseFloat(
                             allServices.find(
                               (s) => s.id === parseInt(selectedServiceId),
-                            )?.base_price
-                          }{" "}
+                            )?.base_price || 0,
+                          ) +
+                            selectedAddons.reduce(
+                              (sum, a) => sum + parseFloat(a.price),
+                              0,
+                            )}{" "}
                           ₽
                         </span>
                       )}
@@ -316,7 +374,6 @@ const CalculatorModal = ({
                 )}
               </div>
 
-              {/* Выбор оплаты */}
               <div className="calc-field-group">
                 <label>Тип оплаты</label>
                 <div className="calc-radio-group">

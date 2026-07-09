@@ -25,18 +25,22 @@
   color: white;
   display: flex;
   flex-direction: column; /* Элементы выстраиваются вертикально */
-  
+
   /* ИСПРАВЛЕНО: Убрали конфликт свойств overflow. 
      Сама обертка теперь не скроллится, скролл уходит внутрь тела! */
-  overflow: hidden; 
-  
+  overflow: hidden;
+
   /* Плавная анимация выезда шторки */
   animation: slideUpCalc 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes slideUpCalc {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 /* 3. Фиксированная шапка калькулятора (Крестик всегда на виду) */
@@ -69,14 +73,14 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
-  
+
   /* Включаем независимый нативный скролл только для тела калькулятора */
-  overflow-y: auto; 
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch; /* Плавный инерционный скролл для iPhone */
-  
+
   /* ИСПРАВЛЕНО: Безопасный отступ снизу перенесен сюда и увеличен до 95px.
      Это принудительно поднимет кнопку над навигационным меню PWA */
-  padding-bottom: 95px !important; 
+  padding-bottom: 95px !important;
 }
 
 .calc-loyalty-info-alert {
@@ -130,7 +134,8 @@
 }
 
 /* Выпадающие списки и инпуты */
-.calc-select, .calc-price-input {
+.calc-select,
+.calc-price-input {
   background: #1e293b;
   border: 1px solid #334155;
   color: white;
@@ -246,6 +251,88 @@
   animation: scaleInCheck 0.3s ease-out;
 }
 @keyframes scaleInCheck {
-  0% { transform: scale(0.5); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Дополнительные услуги внутри калькулятора PWA */
+.pwa-addons-section {
+  margin-top: 16px;
+  background: #020617;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #1e293b;
+}
+
+.addons-section-title {
+  color: #38bdf8 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  margin-bottom: 10px !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+}
+
+.pwa-addons-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.pwa-addon-card-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pwa-addon-card-label:hover {
+  border-color: #38bdf8;
+}
+
+.pwa-addon-card-label.checked {
+  background: rgba(56, 189, 248, 0.07);
+  border-color: #00ffcc;
+  box-shadow: 0 0 10px rgba(0, 255, 204, 0.1);
+}
+
+.addon-checkbox-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.addon-checkbox-left input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #00ffcc;
+  cursor: pointer;
+}
+
+.addon-name {
+  color: #f8fafc;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.addon-price {
+  color: #00ffcc;
+  font-size: 14px;
+  font-weight: 700;
 }

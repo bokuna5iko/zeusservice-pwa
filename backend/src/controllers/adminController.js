@@ -132,8 +132,19 @@ exports.getAllServices = async (req, res) => {
   }
 };
 
-// 4. Зачисление визита (для Калькулятора и QR-сканера) с поддержкой кассы и Socket.io
+// 4. Зачисление визита (для Калькулятора и QR-сканера) со сквозной поддержкой кассы, доп. услуг и Socket.io
 exports.createVisit = async (req, res) => {
+  // 🌟 НАШИ ЛОГИ ДЛЯ ЛОКАЛЬНОГО ТЕРМИНАЛА — ТЕПЕРЬ ОНИ ТОЧНО ЗАГОРЯТСЯ!
+  console.log("\n=======================================================");
+  console.log(
+    "🚀 [DEBUG] ТРИГГЕРНУЛСЯ НАСТОЯЩИЙ createVisit В adminController!",
+  );
+  console.log(
+    "Входящий Payload (req.body):",
+    JSON.stringify(req.body, null, 2),
+  );
+  console.log("=======================================================\n");
+
   try {
     const {
       userId,
@@ -142,10 +153,12 @@ exports.createVisit = async (req, res) => {
       is_guest,
       manual_price,
       manual_car_brand,
+      additional_services, // 🌟 ДОБАВЛЕНО: Достаем допки из запроса калькулятора
     } = req.body;
 
     await db.query("BEGIN");
 
+    // Проверяем открытую оперативную смену (с фиксацией часового пояса сервера)
     const shiftResult = await db.query(
       "SELECT id, status FROM work_shifts WHERE shift_date = CURRENT_DATE AND status = 'open'",
     );
@@ -153,6 +166,7 @@ exports.createVisit = async (req, res) => {
 
     if (!activeShift) {
       await db.query("ROLLBACK");
+      console.log("❌ Ошибка: Смена на сегодня не открыта!");
       return res.status(400).json({
         message:
           "🚨 Ошибка зачисления: Операционная смена на сегодня не открыта администратором на Пульте!",
@@ -162,10 +176,8 @@ exports.createVisit = async (req, res) => {
     let finalUserId = null;
     let currentVisitNumber = null;
     let serviceName = "Нестандартная услуга";
-    
-    // 🌟 ИСПРАВЛЕНО: Разделяем базовую цену (без скидки) и финальную (со скидкой)
-    let basePrice = manual_price || 0;    // Исходная цена услуги
-    let finalPrice = manual_price || 0;   // Итоговая цена к оплате
+
+    let basePrice = manual_price || 0; // Справочная цена услуги
     let loyaltyStep = 1;
     let bonusType = null;
 
@@ -183,10 +195,30 @@ exports.createVisit = async (req, res) => {
       serviceName = serviceResult.rows[0].service_name;
 
       if (!manual_price) {
-        basePrice = serviceResult.rows[0].base_price;  // Справочная цена
-        finalPrice = basePrice;                         // Пока без скидки
+        basePrice = serviceResult.rows[0].base_price;
       }
     }
+
+    // 🌟 БЕЗОПАСНЫЙ СБОР И АГРЕГАЦИЯ ДОП. УСЛУГ
+    let clientAddons = [];
+    if (Array.isArray(additional_services)) {
+      clientAddons = additional_services;
+    } else if (typeof additional_services === "string") {
+      try {
+        clientAddons = JSON.parse(additional_services);
+      } catch (e) {
+        clientAddons = [];
+      }
+    }
+
+    let addonsSum = 0;
+    clientAddons.forEach((addon) => {
+      addonsSum += parseFloat(addon.price || 0);
+    });
+
+    // Суммируем базовую услугу и все допки для расчета чека
+    let totalCheckAmount = basePrice + addonsSum;
+    let finalPrice = totalCheckAmount; // Сюда заложим итоговую цену к оплате с учетом скидок
 
     if (!is_guest) {
       const userResult = await db.query(
@@ -210,27 +242,25 @@ exports.createVisit = async (req, res) => {
       );
 
       let currentVisitCount = parseInt(user.visit_count || 0);
-
       if (lastVisitCheck.rows.length > 0) {
         currentVisitCount = parseInt(lastVisitCheck.rows[0].last_num || 0);
       }
 
       currentVisitNumber = currentVisitCount + 1;
-
       if (currentVisitNumber > 8) {
         currentVisitNumber = 1;
       }
 
       loyaltyStep = currentVisitNumber;
 
-      // 🌟 ИСПРАВЛЕНО: Применяем скидку только к finalPrice, basePrice остаётся без изменений
+      // 🌟 Логика лояльности: Скидка калькулируется от общей суммы чека (База + Допки)
       if (!manual_price) {
         if (currentVisitNumber === 4) {
-          finalPrice = Math.round(basePrice * 0.8);  // Скидка 20%
-          bonusType = '20%';
+          finalPrice = Math.round(totalCheckAmount * 0.8); // Скидка 20%
+          bonusType = "20%";
         } else if (currentVisitNumber === 8) {
-          finalPrice = 0;                            // Бесплатно
-          bonusType = '100%';
+          finalPrice = 0; // Бесплатно
+          bonusType = "100%";
         }
       }
 
@@ -241,9 +271,9 @@ exports.createVisit = async (req, res) => {
 
       await db.query(
         `UPDATE users 
-         SET visit_count = $1, 
-             total_visits = COALESCE(total_visits, 0) + 1 
-         WHERE id = $2`,
+          SET visit_count = $1, 
+              total_visits = COALESCE(total_visits, 0) + 1 
+          WHERE id = $2`,
         [nextVisitCount, finalUserId],
       );
     }
@@ -251,11 +281,11 @@ exports.createVisit = async (req, res) => {
     const isCash = payment_type === "Наличные" || payment_type === "Нал";
     const updateColumn = isCash ? "cash_total" : "card_total";
 
-    // В кассу записываем финальную сумму (со скидкой)
+    // В кассу операционной смены записываем фактическую сумму к оплате
     await db.query(
       `UPDATE work_shifts 
-       SET ${updateColumn} = ${updateColumn} + $1 
-       WHERE id = $2`,
+        SET ${updateColumn} = ${updateColumn} + $1 
+        WHERE id = $2`,
       [finalPrice, activeShift.id],
     );
 
@@ -268,24 +298,28 @@ exports.createVisit = async (req, res) => {
 
     const finalManualClientName = is_guest ? "Гость" : null;
 
+    // 🌟 ИСПРАВЛЕНО: Принудительно приводим допки к чистой JSON-строке,
+    // чтобы node-postgres не воспринимал массив как массив PostgreSQL {}
+    const jsonbParam = JSON.stringify(clientAddons);
+
     const insertVisitResult = await db.query(
       `INSERT INTO visits (
         user_id, service_id, service_type, price, visit_number, 
         payment_type, admin_id, amount, created_at, shift_id,
         manual_car_brand, manual_client_name, manual_client_phone, manual_service_name, manual_payment_type,
-        bonus_type
+        bonus_type, additional_services
       ) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9, $10, $11, $12, $13, $14, $15)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9, $10, $11, $12, $13, $14, $15, $16)
       RETURNING id, created_at`,
       [
         finalUserId,
         serviceId || null,
         serviceName,
-        basePrice,           // 🌟 price = базовая цена (1800)
+        totalCheckAmount, // price = общая базовая стоимость без скидки
         currentVisitNumber,
         payment_type,
         req.user.id,
-        finalPrice,          // 🌟 amount = со скидкой (1440)
+        finalPrice, // amount = итоговая сумма к оплате со скидкой
         activeShift.id,
         finalManualBrand,
         finalManualClientName,
@@ -293,6 +327,7 @@ exports.createVisit = async (req, res) => {
         serviceName,
         payment_type,
         bonusType,
+        jsonbParam, // 🌟 ИСПРАВЛЕНО: Передаем чистую JSON-строку для JSONB колонки
       ],
     );
 
@@ -300,7 +335,11 @@ exports.createVisit = async (req, res) => {
     const newVisitCreatedAt = insertVisitResult.rows[0].created_at;
 
     await db.query("COMMIT");
+    console.log(
+      `🟢 [SQL] Визит №${newVisitId} успешно сохранен с доп. услугами!`,
+    );
 
+    // Отправляем сокет-событие на пульт управления
     const io = req.app.get("io");
     if (io) {
       const clientInfo = req.body.clientData || {};
@@ -308,15 +347,16 @@ exports.createVisit = async (req, res) => {
       const socketPayload = {
         id: newVisitId,
         created_at: newVisitCreatedAt,
-        price: basePrice,           // 🌟 Базовая цена для отображения "было"
-        amount: finalPrice,         // 🌟 Финальная цена
-        bonus_type: bonusType,      // 🌟 Тип скидки
+        price: totalCheckAmount,
+        amount: finalPrice,
+        bonus_type: bonusType,
         loyalty_step: loyaltyStep,
         manual_car_brand: finalManualBrand || clientInfo.car_brand || "—",
         manual_client_name: finalUserId ? clientInfo.name || "Клиент" : "Гость",
         manual_client_phone: finalUserId ? clientInfo.phone || "—" : "—",
         manual_service_name: serviceName,
         manual_payment_type: payment_type,
+        additional_services: clientAddons, // 🌟 Прокидываем допки в сокет, чтобы пульт сразу перерисовался
         refreshFinancials: true,
       };
 
@@ -324,7 +364,7 @@ exports.createVisit = async (req, res) => {
         action: "create",
         visit: socketPayload,
       });
-      console.log(`📡 Сокет-событие отправлено для визита №${newVisitId}`);
+      console.log(`📡 Сокет-событие visit_update отправлено на пульт.`);
     }
 
     res
@@ -332,7 +372,10 @@ exports.createVisit = async (req, res) => {
       .json({ success: true, message: "Visits successfully added" });
   } catch (err) {
     await db.query("ROLLBACK");
-    console.error("Ошибка в createVisit (adminController):", err);
+    console.error(
+      "❌ КРИТИЧЕСКАЯ ОШИБКА В createVisit (adminController):",
+      err,
+    );
     res.status(500).json({ message: "Ошибка сервера при зачислении визита" });
   }
 };
@@ -414,17 +457,19 @@ exports.updateVisit = async (req, res) => {
       (acc, current) => acc + Number(current.price || 0),
       0,
     );
-    
+
     // 🌟 ИСПРАВЛЕНО: Считаем финальную сумму с учётом скидки
-    const visitNum = manual_visit_number ? parseInt(manual_visit_number, 10) : null;
+    const visitNum = manual_visit_number
+      ? parseInt(manual_visit_number, 10)
+      : null;
     let bonusType = null;
     let finalAmount = basePrice + addonsSum;
 
     if (visitNum === 4) {
-      bonusType = '20%';
+      bonusType = "20%";
       finalAmount = Math.round((basePrice + addonsSum) * 0.8);
     } else if (visitNum === 8) {
-      bonusType = '100%';
+      bonusType = "100%";
       finalAmount = 0;
     }
 
@@ -460,8 +505,8 @@ exports.updateVisit = async (req, res) => {
       manual_service_name || null,
       manual_payment_type || null,
       manual_visit_number ? parseInt(manual_visit_number, 10) : null,
-      parseInt(basePrice, 10),     // 🌟 price = базовая цена (1800)
-      parseFloat(finalAmount),     // 🌟 amount = со скидкой + допы (1440 + допы*0.8)
+      parseInt(basePrice, 10), // 🌟 price = базовая цена (1800)
+      parseFloat(finalAmount), // 🌟 amount = со скидкой + допы (1440 + допы*0.8)
       JSON.stringify(addonsArray),
       visitId,
       bonusType,
