@@ -99,33 +99,33 @@ export const useEditVisit = (isOpen, visit, servicePrices, onSave) => {
     setAdditionalServices(updated);
   };
 
-const handleSubmitFields = (e) => {
-  e.preventDefault();
+  const handleSubmitFields = (e) => {
+    e.preventDefault();
 
-  const selectedServiceObj = servicePrices.find(
-    (s) =>
-      s.service_name === editService &&
-      (s.car_class === null || s.car_class === parseInt(carClass)),
-  );
+    const selectedServiceObj = servicePrices.find(
+      (s) =>
+        s.service_name === editService &&
+        (s.car_class === null || s.car_class === parseInt(carClass)),
+    );
 
-  // 🌟 Отправляем БАЗОВУЮ цену без скидки — бэкенд сам применит скидку
-  const basePrice = selectedServiceObj
-    ? Number(selectedServiceObj.base_price)
-    : Number(visit.price || 0);
+    // 🌟 Отправляем БАЗОВУЮ цену без скидки — бэкенд сам применит скидку
+    const basePrice = selectedServiceObj
+      ? Number(selectedServiceObj.base_price)
+      : Number(visit.price || 0);
 
-  const payload = {
-    manual_car_brand: editBrand,
-    manual_client_name: editName,
-    manual_client_phone: editPhone,
-    manual_service_name: editService,
-    manual_payment_type: editPayment,
-    manual_visit_number: Number(editVisitNumber),
-    price: basePrice,  // ← Базовая цена (500), БЕЗ скидки
-    additional_services: additionalServices,  // ← Допы БЕЗ скидки
+    const payload = {
+      manual_car_brand: editBrand,
+      manual_client_name: editName,
+      manual_client_phone: editPhone,
+      manual_service_name: editService,
+      manual_payment_type: editPayment,
+      manual_visit_number: Number(editVisitNumber),
+      price: basePrice, // ← Базовая цена (500), БЕЗ скидки
+      additional_services: additionalServices, // ← Допы БЕЗ скидки
+      service_id: selectedServiceObj ? selectedServiceObj.id : null,
+    };
+    onSave(payload);
   };
-  onSave(payload);
-};
-
 
   return {
     editBrand,

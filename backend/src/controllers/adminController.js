@@ -429,6 +429,7 @@ exports.updateVisit = async (req, res) => {
     manual_visit_number,
     price,
     additional_services,
+    service_id,
   } = req.body;
 
   try {
@@ -493,7 +494,8 @@ exports.updateVisit = async (req, res) => {
         price = $7,
         amount = $8,
         additional_services = $9,
-        bonus_type = $11
+        bonus_type = $11,
+        service_id = $12
       WHERE id = $10
       RETURNING id
     `;
@@ -510,6 +512,7 @@ exports.updateVisit = async (req, res) => {
       JSON.stringify(addonsArray),
       visitId,
       bonusType,
+      service_id ? parseInt(service_id, 10) : null,
     ];
 
     await db.query(queryText, values);
