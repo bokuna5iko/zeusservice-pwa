@@ -18,7 +18,7 @@ const PwaOnboardingManager = ({ forceOpenPlatform = null }) => {
     if (dismissedTime && !forceOpenPlatform) {
       const diffDays =
         (Date.now() - Number(dismissedTime)) / (1000 * 60 * 60 * 24);
-      if (diffDays < 7) return;
+      if (diffDays < 1) return; // Здесь можно менять частоту повторного показа (в днях). Сейчас 1 день.
     }
 
     // 3. Вычисляем платформу пользователя
@@ -50,10 +50,18 @@ const PwaOnboardingManager = ({ forceOpenPlatform = null }) => {
     return () => clearTimeout(timer);
   }, [forceOpenPlatform]);
 
+  // Обновляем функцию закрытия:
   const handleDismiss = () => {
     setVisible(false);
+
+    // Фиксируем таймстамп закрытия на 7 дней только для автоматических показов
     if (!forceOpenPlatform) {
       localStorage.setItem("zeus_pwa_prompt_dismissed", Date.now().toString());
+    }
+
+    // 🌟 ДОБАВЛЕНО: Если передан колбэк закрытия, сбрасываем стейт в родителе
+    if (onClose) {
+      onClose();
     }
   };
 

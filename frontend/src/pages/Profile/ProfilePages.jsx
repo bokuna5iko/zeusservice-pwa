@@ -58,6 +58,8 @@ const ProfilePage = () => {
   // 🌟 ДОБАВЛЕНО: Обработчик клика по пункту меню установки PWA
   const handleTriggerPwaInstall = () => {
     const userAgent = window.navigator.userAgent.toLowerCase();
+
+    // Для тестов на ПК (десктопах) или Android принудительно отдаем 'android'
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
 
     // Передаем принудительный триггер ОС в менеджер онбординга
@@ -212,7 +214,7 @@ const ProfilePage = () => {
             <div className="stats-grid">
               <div className="profile-stat-item">
                 <span className="stat-label">Мой статус</span>
-                <span className="profile-status-badge">Постоянный клиент</span>
+                <span className="profile-status-badge">Постоянный client</span>
               </div>
 
               <div className="profile-stat-item">
@@ -237,7 +239,7 @@ const ProfilePage = () => {
         {/* КОНТЕЙНЕР №3: Меню действий */}
         <div className="profile-card actions-box content-group-box">
           <div className="fill-zone">
-            {/* 🌟 ДОБАВЛЕНО: Резервный пункт меню установки PWA с пульсирующим маркером (Пункт 5 ТЗ) */}
+            {/* 🌟 Резервный пункт меню установки PWA */}
             {!isPwaInstalled && (
               <div
                 className="profile-action-item pwa-menu-item"
@@ -308,10 +310,11 @@ const ProfilePage = () => {
         onClose={() => setActiveModal(null)}
       />
 
-      {/* 🌟 ДОБАВЛЕНО: Менеджер принудительного вызова шторки онбординга */}
-      {forcePlatform && (
-        <PwaOnboardingManager forceOpenPlatform={forcePlatform} />
-      )}
+      {/* 🌟 ИСПРАВЛЕНО: Менеджер примонтирован всегда и сбрасывает стейт через onClose */}
+      <PwaOnboardingManager
+        forceOpenPlatform={forcePlatform}
+        onClose={() => setForcePlatform(null)}
+      />
 
       {/* МОДАЛКА №2: БАЗА ЗНАНИЙ */}
       {activeModal === "kb" && (
@@ -350,7 +353,7 @@ const ProfilePage = () => {
                 <h4>2. Какие бонусы я получаю в цикле?</h4>
                 <p>
                   Наша программа лояльности автоматически рассчитывает скидки
-                  каждые 8 заездов:
+                  каждывые 8 заездов:
                   <br />• На <strong>4-й визит</strong> система активирует для
                   вас гарантированную <strong>скидку 20%</strong> на текущую
                   мойку.
