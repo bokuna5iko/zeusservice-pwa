@@ -1,5 +1,47 @@
 /* src/pages/AdminDashboard/components/VisitsTable.css */
 
+/* 🌟 ИСПРАВЛЕНО: Ограничиваем внешний контейнер, чтобы он не распирал страницу */
+.visits-table-wrapper {
+  overflow: hidden; /* Скрываем все, что выходит за рамки бокса */
+  padding: 0 !important; /* Обнуляем внутренние отступы, чтобы скролл прижимался к краям */
+}
+
+/* 🌟 ДОБАВЛЕНО: Наш новый внутренний скролл-контейнер для таблицы */
+.arm-table-scroll-area {
+  max-height: 1100px; /* Ограничение высоты ленты (примерно 8-9 заездов, дальше пойдет скролл) */
+  overflow-y: auto; /* Включаем вертикальный скролл */
+  overflow-x: auto; /* Горизонтальный скролл на случай узких экранов */
+  position: relative;
+}
+
+/* 🌟 ДОБАВЛЕНО: Фиксация шапки таблицы при прокрутке */
+.arm-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #0f172a; /* Непрозрачный темный фон, чтобы строки под ним не просвечивали */
+  box-shadow: inset 0 -1px 0 #1e293b; /* Тонкая линия-разделитель снизу зафиксированной шапки */
+}
+
+/* 🌟 ДОБАВЛЕНО: Красивый тонкий кастомный скроллбар в цвет интерфейса */
+.arm-table-scroll-area::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.arm-table-scroll-area::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+.arm-table-scroll-area::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+.arm-table-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8; /* Неоновый отклик ползунка при наведении */
+}
+
 /* Контейнер ячейки услуги для относительного позиционирования */
 .service-cell-container {
   display: flex;
@@ -26,7 +68,7 @@
   cursor: pointer;
   font-weight: bold;
   box-shadow: 0 0 8px rgba(168, 85, 247, 0.2);
-  white-space: nowrap; /* 🌟 ИСПРАВЛЕНО: добавили дефис */
+  white-space: nowrap;
   user-select: none;
   transition: all 0.2s;
 }
@@ -43,10 +85,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 9998; /* Чуть ниже самого окна деталей */
+  z-index: 9998;
 }
 
-/* Окно деталей дозаказа - парит в body, обрезка контейнерами теперь невозможна физически! */
+/* Окно деталей дозаказа */
 .addon-popover-card {
   background: #0f172a;
   border: 1px solid #1e293b;
