@@ -8,11 +8,12 @@ import PriceListModal from "../../components/PriceList/PriceListModal";
 import PwaOnboardingManager from "../../components/PwaOnboardingManager/PwaOnboardingManager";
 
 const ProfilePage = () => {
+  // 🌟 ИСПРАВЛЕНО: Теперь деструктурируем setUser из контекста!
   const { user, setUser, logout } = useContext(AuthContext);
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState("");
 
-  // Новые стейты для интерактивного редактирования авто
+  // 🌟 Новые стейты для интерактивного редактирования авто
   const [isEditingCar, setIsEditingCar] = useState(false);
   const [newCarBrand, setNewCarBrand] = useState("");
 
@@ -24,7 +25,7 @@ const ProfilePage = () => {
   const [showNotificationDot, setShowNotificationDot] = useState(false);
   const [forcePlatform, setForcePlatform] = useState(null); // 'android' | 'ios' | null
 
-  // Синхронизация полей с данными из базы данных и проверка статуса PWA
+  // 🌟 Синхронизация полей с данными из базы данных и проверка статуса PWA
   useEffect(() => {
     if (user?.name) {
       setNewName(user.name);
@@ -40,13 +41,13 @@ const ProfilePage = () => {
     setIsPwaInstalled(isStandalone);
 
     if (!isStandalone) {
-      // Проверяем, скрыл ли пользователь баннер на главной на 7 дней
+      // 🌟 Проверяем, скрыл ли пользователь баннер на главной на 7 дней
       const dismissedTime = localStorage.getItem("zeus_pwa_prompt_dismissed");
       if (dismissedTime) {
         const diffDays =
           (Date.now() - Number(dismissedTime)) / (1000 * 60 * 60 * 24);
         if (diffDays < 7) {
-          // Баннер на главной скрыт по тайм-ауту ➔ зажигаем неоновую точку в профиле!
+          // 🌟 Баннер на главной скрыт по тайм-ауту ➔ зажигаем неоновую точку в профиле!
           setShowNotificationDot(true);
         }
       } else {
@@ -59,20 +60,31 @@ const ProfilePage = () => {
   const handleTriggerPwaInstall = () => {
     const userAgent = window.navigator.userAgent.toLowerCase();
 
-    // Для тестов на ПК (десктопах) или Android принудительно отдаем 'android'
+    // 🌟 Для тестов на ПК (десктопах) или Android принудительно отдаем 'android'
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
 
-    // Передаем принудительный триггер ОС в менеджер онбординга
+    // 🌟 Передаем принудительный триггер ОС в менеджер онбординга
     setForcePlatform(isIOS ? "ios" : "android");
 
-    // Погашаем неоновую точку-маркер, так как пользователь нажал на пункт
+    // 🌟 Погашаем неоновую точку-маркер, так как пользователь нажал на пункт
     setShowNotificationDot(false);
   };
 
+  // 🌟 ИСПРАВЛЕНО: Функция обновления профиля с правильным использованием setUser
   const updateProfile = async (field, value) => {
+    console.log(`🔄 Обновление профиля: ${field} = ${value}`);
+
+    if (!value || String(value).trim() === "") {
+      alert("Поле не может быть пустым");
+      return;
+    }
+
     try {
       const token =
         localStorage.getItem("accessToken") || localStorage.getItem("token");
+
+      console.log("📤 Отправка запроса...");
+
       const response = await fetch("/api/user/update", {
         method: "PUT",
         headers: {
@@ -82,14 +94,29 @@ const ProfilePage = () => {
         body: JSON.stringify({ [field]: value }),
       });
 
+      console.log("📥 Ответ получен:", response.status);
+
       if (response.ok) {
+        console.log("✅ Успешно сохранено в БД");
+
+        // 🌟 ИСПРАВЛЕНО: Теперь setUser доступен и работает!
         setUser({ ...user, [field]: value });
+
+        // 🌟 Закрываем режим редактирования
         if (field === "name") setIsEditingName(false);
         if (field === "avatar_url") setShowAvatarPicker(false);
-        if (field === "car_brand") setIsEditingCar(false);
+        if (field === "car_brand") {
+          setIsEditingCar(false);
+          console.log("✅ Автомобиль сохранён:", value);
+        }
+      } else {
+        const errorData = await response.json();
+        console.error("❌ Ошибка:", errorData);
+        alert(`Ошибка сохранения: ${errorData.message || "Неизвестная ошибка"}`);
       }
     } catch (error) {
-      console.error("Ошибка обновления профиля:", error);
+      console.error("❌ Критическая ошибка:", error);
+      alert("Ошибка соединения с сервером");
     }
   };
 
@@ -167,41 +194,57 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Зона автомобиля */}
-            <div className="profile-info-row">
-              <label className="profile-field-label">Основной автомобиль</label>
-              <div className="input-with-action">
-                {isEditingCar ? (
-                  <div className="edit-input-wrapper">
+            {/* 🌟 Зона автомобиля - улучшенный интерфейс редактирования */}
+            <div className="profile-section">
+              <label className="profile-label">
+                <i className="fas fa-car"></i> Основной автомобиль
+              </label>
+              {isEditingCar ? (
+                <div className="edit-car-section">
+                  <div className="input-with-icon">
+                    <i className="fas fa-car-side input-icon"></i>
                     <input
+                      type="text"
                       value={newCarBrand}
                       onChange={(e) => setNewCarBrand(e.target.value)}
-                      className="profile-input"
-                      placeholder="Марка или госномер"
+                      className="profile-input car-input"
+                      placeholder="Например: Toyota Camry А123ВС"
                       maxLength={40}
+                      autoFocus
                     />
+                  </div>
+                  <div className="car-edit-buttons">
                     <button
-                      className="profile-save-btn"
-                      onClick={() => updateProfile("car_brand", newCarBrand)}
+                      type="button"
+                      onClick={() => {
+                        setIsEditingCar(false);
+                        setNewCarBrand(user?.car_brand || "");
+                      }}
+                      className="profile-btn profile-btn-cancel"
                     >
-                      <i className="fas fa-check"></i>
+                      <i className="fas fa-times"></i> Отмена
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => updateProfile("car_brand", newCarBrand)}
+                      className="profile-btn profile-btn-save"
+                    >
+                      <i className="fas fa-check"></i> Сохранить
                     </button>
                   </div>
-                ) : (
-                  <div
-                    className="display-value-wrapper profile-car-brand-pill"
-                    onClick={() => setIsEditingCar(true)}
-                  >
-                    <div className="car-pill-left">
-                      <i className="fas fa-car"></i>
-                      <span>{user?.car_brand || "Добавить авто"}</span>
-                    </div>
-                    <button className="profile-edit-btn-car">
-                      <i className="fas fa-pen"></i>
-                    </button>
-                  </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div
+                  className={`profile-value car-field ${!user?.car_brand ? "empty-car" : ""}`}
+                  onClick={() => setIsEditingCar(true)}
+                >
+                  <i
+                    className={`fas ${user?.car_brand ? "fa-car" : "fa-plus-circle"}`}
+                  ></i>
+                  <span>{user?.car_brand || "Добавить автомобиль"}</span>
+                  <i className="fas fa-chevron-right edit-indicator"></i>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -214,7 +257,7 @@ const ProfilePage = () => {
             <div className="stats-grid">
               <div className="profile-stat-item">
                 <span className="stat-label">Мой статус</span>
-                <span className="profile-status-badge">Постоянный client</span>
+                <span className="profile-status-badge">Постоянный клиент</span>
               </div>
 
               <div className="profile-stat-item">

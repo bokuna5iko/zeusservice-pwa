@@ -1,6 +1,7 @@
 // src/pages/AdminDashboard/components/DashboardHeader.jsx
 import React from "react";
 import { useAdminDashboard } from "../context/AdminDashboardContext";
+import "./DashboardHeader.css";
 
 const DashboardHeader = () => {
   const {
@@ -16,71 +17,41 @@ const DashboardHeader = () => {
 
   return (
     <>
-      {/* СМАРТ-БАННЕР УВЕДОМЛЕНИЙ ОБ ОБНОВЛЕНИИ */}
-      <div
-        className={`pwa-smart-hint-banner ${showHintBanner ? "slide-down" : ""}`}
-      >
-        <i className="fas fa-info-circle"></i>
-        <span>
-          Система зафиксировала update. Рекомендуется обновить пульт управления!
-        </span>
+      {/* 🌟 КНОПКА ОБНОВЛЕНИЯ ПУЛЬТА - показывает статус актуальности версии */}
+      <div className="dashboard-header-controls">
+        <button
+          onClick={handlePwaUpdate}
+          className={`pwa-update-btn ${needRefresh ? "needs-update" : "up-to-date"}`}
+          disabled={!needRefresh}
+        >
+          <i className={`fas fa-sync-alt ${isSpinning ? "fa-spin" : ""}`}></i>
+          <span>{needRefresh ? "Обновить пульт" : "Пульт актуален"}</span>
+          {needRefresh && <span className="update-badge">!</span>}
+        </button>
       </div>
 
-      <header className="dashboard-top-bar">
-        <div className="top-bar-left">
-          <h1 className="current-tab-title">
-            {activeTab === "visits" &&
-              (isArchiveMode
-                ? `Архив заездов за ${new Date(archivedShiftData.shift_date).toLocaleDateString("ru-RU")}`
-                : "Управление текущим потоком машин")}
-            {activeTab === "workers" && "Контроль сотрудников на смене"}
-            {activeTab === "simulator" && "Интегрированный симулятор смартфона"}
-            {activeTab === "archive" && "Исторический хаб автомойки"}
-
-            {!isArchiveMode && (
-              <span className={`top-status-badge ${shiftStatus}`}>
-                {shiftStatus === "open"
-                  ? "● Смена Открыта"
-                  : shiftStatus === "forgotten_lock"
-                    ? "● Касса заблокирована"
-                    : "● Смена Закрыта"}
-              </span>
-            )}
-          </h1>
-        </div>
-
-        <div className="top-bar-right">
-          {/* КНОПКА СМАРТ-ОБНОВЛЕНИЯ АРМ */}
-          <button
-            className={`global-smart-update-btn ${needRefresh ? "update-available" : ""} ${isSpinning ? "rapid-spinning" : ""}`}
-            disabled={!needRefresh || isSpinning}
-            onClick={handlePwaUpdate}
-            title={
-              needRefresh
-                ? "Доступно свежее обновление пульта!"
-                : "Система пульта актуальна"
-            }
-            style={{
-              position: "relative",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              cursor: needRefresh && !isSpinning ? "pointer" : "default",
-            }}
-          >
-            <i className="fas fa-sync-alt"></i>
-            <span>{needRefresh ? "Обновить АРМ" : "Пульт актуален"}</span>
-
-            {/* Пульсирующая оранжево-красная точка-уведомление */}
-            {needRefresh && <span className="notification-pulsing-dot"></span>}
-          </button>
-
-          <div className="admin-profile-badge">
-            <div className="avatar-box">A</div>
-            <span>Администратор</span>
+      {/* 🌟 СМАРТ-БАННЕР УВЕДОМЛЕНИЙ ОБ ОБНОВЛЕНИИ */}
+      {needRefresh && (
+        <div className="update-notification-banner">
+          <div className="update-banner-content">
+            <div className="update-banner-icon">
+              <i className="fas fa-sync-alt fa-spin"></i>
+            </div>
+            <div className="update-banner-text">
+              <strong>Доступно обновление</strong>
+              <p>
+                Система зафиксировала новую версию. Рекомендуется обновить пульт
+                управления для корректной работы.
+              </p>
+            </div>
+            <button onClick={handlePwaUpdate} className="update-banner-btn">
+              <i className="fas fa-redo"></i>
+              Обновить сейчас
+            </button>
           </div>
+          <div className="update-banner-glow"></div>
         </div>
-      </header>
+      )}
     </>
   );
 };

@@ -82,7 +82,7 @@ exports.getMe = async (req, res) => {
   try {
     // 🌟 Добавили password_hash в SQL-запрос, чтобы проверить его тип при F5
     const result = await db.query(
-      "SELECT id, username, phone, name, role, password_hash, visit_count, total_visits, created_at FROM users WHERE id = $1",
+      "SELECT id, username, phone, name, role, password_hash, visit_count, total_visits, created_at, car_brand, avatar_url FROM users WHERE id = $1",
       [req.user.id],
     );
 
@@ -109,6 +109,8 @@ exports.getMe = async (req, res) => {
         visit_count: user.visit_count,
         total_visits: user.total_visits,
         created_at: user.created_at,
+        car_brand: user.car_brand || null,  // 🌟 Добавлено
+        avatar_url: user.avatar_url || "1.png",  // 🌟 Добавлено
       },
     });
   } catch (err) {
@@ -172,6 +174,8 @@ exports.register = async (req, res) => {
         visit_count: newUser.visit_count,
         total_visits: newUser.total_visits,
         created_at: newUser.created_at,
+        car_brand: user.car_brand || null,  // 🌟 Добавлено
+        avatar_url: user.avatar_url || "1.png",  // 🌟 Добавлено
       },
     });
   } catch (err) {

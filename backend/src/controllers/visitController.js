@@ -200,8 +200,9 @@ exports.addVisit = async (req, res) => {
 // Получение профиля текущего пользователя
 exports.getUserMe = async (req, res) => {
   try {
+    // 🌟 ИСПРАВЛЕНО: Добавлены поля car_brand и avatar_url в SELECT
     const userResult = await db.query(
-      "SELECT id, phone, name, role, visit_count, total_visits, bonus_points FROM users WHERE id = $1",
+      "SELECT id, phone, name, role, visit_count, total_visits, bonus_points, car_brand, avatar_url FROM users WHERE id = $1",
       [req.user.id],
     );
 
@@ -220,13 +221,14 @@ exports.getUserMe = async (req, res) => {
       total_visits: parseInt(user.total_visits || 0),
       bonus_points: parseInt(user.bonus_points || 0),
       nextBonusIn: user.visit_count >= 8 ? 0 : 8 - user.visit_count,
+      car_brand: user.car_brand || null,  // 🌟 Добавлено
+      avatar_url: user.avatar_url || "1.png",  // 🌟 Добавлено
     });
   } catch (err) {
     console.error("Ошибка в getUserMe:", err);
     res.status(500).json({ message: "Ошибка получения данных профиля" });
   }
 };
-
 // 🌟 МОДЕРНИЗИРОВАНО: История визитов с использованием bonus_type
 exports.getUserHistory = async (req, res) => {
   try {
