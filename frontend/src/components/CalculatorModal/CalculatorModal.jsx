@@ -151,7 +151,7 @@ const CalculatorModal = ({
         body: JSON.stringify({
           userId: isGuest ? null : clientData.id,
           // Если основной услуги нет, отправляем null на бэкенд
-          serviceId: hasMainService ? parseInt(serviceServiceId) : null,
+          serviceId: hasMainService ? parseInt(selectedServiceId, 10) : null,
           payment_type: paymentType,
           is_guest: isGuest,
           manual_price: isManualPrice ? finalPrice : null,
