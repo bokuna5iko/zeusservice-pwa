@@ -1,5 +1,7 @@
 // src/pages/AdminDashboard/components/ArchiveCalendarGrid.jsx
 import React from "react";
+import { Button } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { useArchiveCalendar, WEEKDAYS } from "../hooks/useArchiveCalendar";
 
 const MONTHS = [
@@ -25,105 +27,43 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
   const cells = getDaysGrid();
 
   return (
-    <div
-      className="calendar-wrapper"
-      style={{
-        background: "#0f172a",
-        borderRadius: "16px",
-        padding: "24px",
-        border: "1px solid #1e293b",
-      }}
-    >
+    <div className="zeus-calendar-container">
       {/* Навигация по месяцам */}
-      <div
-        className="calendar-header"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "24px",
-        }}
-      >
-        <button
-          className="btn-secondary"
+      <div className="zeus-calendar-header">
+        <Button
+          type="text"
+          icon={<LeftOutlined />}
           onClick={handlePrevMonth}
-          style={{ padding: "8px 16px", fontSize: "14px" }}
+          className="calendar-nav-btn"
         >
-          <i className="fas fa-chevron-left"></i> ◀ Назад
-        </button>
-        <h3
-          style={{
-            fontSize: "1.2rem",
-            fontWeight: "800",
-            color: "#f8fafc",
-            minWidth: "180px",
-            textAlign: "center",
-          }}
-        >
+          Назад
+        </Button>
+        <h3 className="calendar-current-month">
           {MONTHS[currentMonth.getMonth()]} {currentMonth.getFullYear()}
         </h3>
-        <button
-          className="btn-secondary"
+        <Button
+          type="text"
           onClick={handleNextMonth}
-          style={{ padding: "8px 16px", fontSize: "14px" }}
+          className="calendar-nav-btn"
         >
-          Вперед ▶ <i className="fas fa-chevron-right"></i>
-        </button>
+          Вперед <RightOutlined />
+        </Button>
       </div>
+
       {/* Дни недели (Пн - Вс) */}
-      <div
-        className="weekdays-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(7, 1fr)",
-          gap: "10px",
-          textAlign: "center",
-          marginBottom: "12px",
-        }}
-      >
-        {WEEKDAYS.map(
-          (
-            day, // 🌟 Заменили WEEK_DAYS на WEEKDAYS
-          ) => (
-            <div
-              key={day}
-              style={{
-                color: "#64748b",
-                fontWeight: "700",
-                fontSize: "13px",
-                paddingBottom: "6px",
-                borderBottom: "1px solid #1e293b",
-              }}
-            >
-              {day}
-            </div>
-          ),
-        )}
+      <div className="calendar-weekdays-grid">
+        {WEEKDAYS.map((day) => (
+          <div key={day} className="calendar-weekday-item">
+            {day}
+          </div>
+        ))}
       </div>
 
       {/* Основная сетка ячеек */}
-      <div
-        className="days-calendar-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(7, 1fr)",
-          gap: "12px",
-        }}
-      >
+      <div className="calendar-days-grid">
         {cells.map((cell) => {
           if (cell.type === "empty") {
-            return (
-              <div
-                key={cell.key}
-                style={{
-                  background: "rgba(15, 23, 42, 0.3)",
-                  border: "1px dashed #1e293b",
-                  borderRadius: "10px",
-                  aspectRatio: "1/1",
-                  opacity: 0.2,
-                }}
-              />
-            );
+            return <div key={cell.key} className="calendar-cell-empty" />;
           }
 
           const hasShift = !!cell.shift;
@@ -142,97 +82,29 @@ const ArchiveCalendarGrid = ({ calendarShifts, onSelectArchiveDate }) => {
             <div
               key={cell.key}
               onClick={() => hasShift && onSelectArchiveDate(cell.shift)}
-              style={{
-                background: hasShift ? "#1e293b" : "#090d16",
-                border: hasShift ? "1px solid #334155" : "1px solid #111827",
-                borderRadius: "12px",
-                aspectRatio: "1/1",
-                padding: "10px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                cursor: hasShift ? "pointer" : "default",
-                transition: "all 0.2s",
-                position: "relative",
-              }}
-              className={hasShift ? "interactive-calendar-cell" : ""}
-              onMouseEnter={(e) => {
-                if (hasShift) {
-                  e.currentTarget.style.borderColor = "#38bdf8";
-                  e.currentTarget.style.transform = "scale(1.03)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (hasShift) {
-                  e.currentTarget.style.borderColor = "#334155";
-                  e.currentTarget.style.transform = "scale(1)";
-                }
-              }}
+              className={`calendar-day-cell ${hasShift ? "has-shift" : "no-shift"}`}
             >
-              <span
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "800",
-                  color: hasShift ? "#fff" : "#334155",
-                  alignSelf: "flex-start",
-                }}
-              >
-                {cell.dayNumber}
-              </span>
+              <span className="cell-day-number">{cell.dayNumber}</span>
 
               {hasShift ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "2px",
-                    width: "100%",
-                    textAlign: "right",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "10px",
-                      color: "#94a3b8",
-                      fontWeight: "600",
-                    }}
-                  >
+                <div className="cell-stats-block">
+                  <span className="stat-cars">
                     🚗 {cell.shift.total_cars_count} шт.
                   </span>
-                  <span
-                    style={{
-                      fontSize: "12px",
-                      color: "#4ade80",
-                      fontWeight: "800",
-                    }}
-                  >
-                    {finalRevenue} ₽
+                  <span className="stat-revenue">
+                    {finalRevenue.toLocaleString("ru-RU")} ₽
                   </span>
 
                   {diff !== 0 && (
                     <span
-                      style={{
-                        fontSize: "9px",
-                        color: diff > 0 ? "#eab308" : "#ef4444",
-                        fontWeight: "700",
-                      }}
+                      className={`stat-diff-badge ${diff > 0 ? "surplus" : "shortage"}`}
                     >
-                      {diff > 0 ? "излишек" : "минус"}
+                      {diff > 0 ? `+${diff} ₽` : `${diff} ₽`}
                     </span>
                   )}
                 </div>
               ) : (
-                <span
-                  style={{
-                    fontSize: "10px",
-                    color: "#1e293b",
-                    textAlign: "center",
-                    width: "100%",
-                    fontWeight: "600",
-                  }}
-                >
-                  нет смен
-                </span>
+                <span className="cell-empty-notice">нет смен</span>
               )}
             </div>
           );

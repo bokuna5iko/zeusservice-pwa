@@ -16,14 +16,7 @@ const AnalyticsTab = ({ onSelectArchiveDate }) => {
           alignItems: "center",
           marginBottom: "20px",
         }}
-      >
-        <h2 style={{ fontSize: "1.3rem", fontWeight: "700" }}>
-          📅 Интерактивная календарная сетка закрытых смен
-        </h2>
-        <span style={{ color: "#64748b", fontSize: "0.85rem" }}>
-          Хаб истории автомойки ZEUS AUTO
-        </span>
-      </div>
+      ></div>
 
       {loading ? (
         <div
