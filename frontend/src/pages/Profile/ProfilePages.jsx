@@ -112,7 +112,9 @@ const ProfilePage = () => {
       } else {
         const errorData = await response.json();
         console.error("❌ Ошибка:", errorData);
-        alert(`Ошибка сохранения: ${errorData.message || "Неизвестная ошибка"}`);
+        alert(
+          `Ошибка сохранения: ${errorData.message || "Неизвестная ошибка"}`,
+        );
       }
     } catch (error) {
       console.error("❌ Критическая ошибка:", error);
@@ -208,7 +210,7 @@ const ProfilePage = () => {
                       value={newCarBrand}
                       onChange={(e) => setNewCarBrand(e.target.value)}
                       className="profile-input car-input"
-                      placeholder="Например: Toyota Camry А123ВС"
+                      placeholder="Например: Toyota Camry"
                       maxLength={40}
                       autoFocus
                     />
