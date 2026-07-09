@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.3.2",
+    "antd": "^6.5.0",
     "axios": "^1.16.0",
     "html5-qrcode": "^2.3.8",
     "qrcode.react": "^4.2.0",

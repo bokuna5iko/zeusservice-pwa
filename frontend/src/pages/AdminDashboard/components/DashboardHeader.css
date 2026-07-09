@@ -1,106 +1,140 @@
-/* 🌟 КНОПКА ОБНОВЛЕНИЯ ПУЛЬТА */
-.dashboard-header-controls {
-  display: flex;
-  justify-content: flex-end;
-  padding: 12px 16px;
-  background: rgba(15, 23, 42, 0.5);
-  border-bottom: 1px solid rgba(56, 189, 248, 0.1);
-}
+/* src/pages/AdminDashboard/components/DashboardHeader.css */
 
-.pwa-update-btn {
+.admin-dashboard-header {
+  height: 70px !important;
+  background-color: #0f172a !important; /* Глубокий Slate 900 */
+  border-bottom: 1px solid #1e293b;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 20px;
-  border: 2px solid;
-  border-radius: 12px;
-  font-size: 14px;
+  justify-content: space-between;
+  padding: 0 24px !important;
+  line-height: normal !important;
+}
+
+/* ЛЕВАЯ ЗОНА: ЗАГОЛОВОК И СТАТУС */
+.header-left-zone {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-tab-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.header-shift-status-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.header-shift-status-badge.open {
+  background: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.header-shift-status-badge.closed,
+.header-shift-status-badge.not_started {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.header-shift-status-badge.archive {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* ПРАВАЯ ЗОНА: ОБНОВЛЕНИЯ И АВАТАР */
+.header-right-zone {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Новая интерактивная кнопка обновления в шапке */
+.pwa-update-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
+  transition: all 0.25s ease;
 }
 
-.pwa-update-btn i {
-  font-size: 16px;
+.pwa-update-action-btn.up-to-date {
+  color: #64748b;
+  cursor: default;
 }
 
-/* 🌟 Состояние: пульт актуален (неактивная зелёная кнопка) */
-.pwa-update-btn.up-to-date {
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.3);
+.pwa-update-action-btn.up-to-date .update-icon-green {
   color: #10b981;
-  cursor: not-allowed;
-  opacity: 0.6;
 }
 
-/* 🌟 Состояние: требуется обновление (активная оранжевая кнопка) */
-.pwa-update-btn.needs-update {
-  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
-  border-color: #f59e0b;
-  color: white;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-  animation: pulse-update 2s ease-in-out infinite;
+.pwa-update-action-btn.needs-update {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px dashed rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
 }
 
-.pwa-update-btn.needs-update:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+.pwa-update-action-btn.needs-update:hover {
+  background: rgba(245, 158, 11, 0.2);
+  transform: translateY(-1px);
 }
 
-.pwa-update-btn.needs-update:active {
-  transform: translateY(0);
+/* Профиль администратора */
+.header-admin-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 1px solid #1e293b;
+  padding-left: 20px;
+  height: 32px;
 }
 
-/* 🌟 Красный бейдж-уведомление на кнопке */
-.update-badge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  width: 20px;
-  height: 20px;
-  background: #ef4444;
-  color: white;
+.header-avatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+  color: #020617;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
   font-weight: 700;
-  animation: bounce-badge 1s ease-in-out infinite;
+  font-size: 0.9rem;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
 }
 
-@keyframes pulse-update {
-  0%,
-  100% {
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-  }
-  50% {
-    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
-  }
+.header-admin-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #cbd5e1;
 }
 
-@keyframes bounce-badge {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-}
-
-/* 🌟 УВЕДОМЛЕНИЕ ОБ ОБНОВЛЕНИИ */
+/* СМАРТ-БАННЕР УВЕДОМЛЕНИЙ (Сохраняем ваш крутой градиент) */
 .update-notification-banner {
   position: relative;
   background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
   border-radius: 12px;
   padding: 16px 20px;
-  margin: 16px;
-  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);
+  margin: 16px 24px 0 24px; /* Симметричные отступы внутри рабочей области */
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25);
   overflow: hidden;
-  animation: slideInDown 0.4s ease, pulse-glow 2s ease-in-out infinite;
-  z-index: 1000;
+  animation: slideInDown 0.3s ease-out;
 }
 
 .update-banner-glow {
@@ -111,17 +145,17 @@
   height: 200%;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.15) 0%,
     transparent 70%
   );
-  animation: shimmer 3s linear infinite;
+  animation: headerShimmer 4s linear infinite;
   pointer-events: none;
 }
 
 @keyframes slideInDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
@@ -129,17 +163,7 @@
   }
 }
 
-@keyframes pulse-glow {
-  0%,
-  100% {
-    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);
-  }
-  50% {
-    box-shadow: 0 8px 32px rgba(245, 158, 11, 0.5);
-  }
-}
-
-@keyframes shimmer {
+@keyframes headerShimmer {
   0% {
     transform: rotate(0deg);
   }
@@ -158,18 +182,15 @@
 
 .update-banner-icon {
   flex-shrink: 0;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.update-banner-icon i {
-  font-size: 24px;
   color: white;
+  font-size: 1.1rem;
 }
 
 .update-banner-text {
@@ -179,14 +200,13 @@
 
 .update-banner-text strong {
   display: block;
-  font-size: 16px;
-  margin-bottom: 4px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 15px;
+  margin-bottom: 2px;
 }
 
 .update-banner-text p {
-  font-size: 13px;
-  opacity: 0.95;
+  font-size: 0.85rem;
+  opacity: 0.9;
   margin: 0;
   line-height: 1.4;
 }
@@ -194,41 +214,35 @@
 .update-banner-btn {
   flex-shrink: 0;
   background: white;
-  color: #f59e0b;
+  color: #f97316;
   border: none;
-  padding: 12px 24px;
-  border-radius: 10px;
+  padding: 10px 20px;
+  border-radius: 8px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 0.85rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .update-banner-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-.update-banner-btn i {
-  font-size: 16px;
-}
-
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .update-banner-content {
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
   }
-
-  .update-banner-text {
-    width: 100%;
-    margin-bottom: 12px;
-  }
-
   .update-banner-btn {
     width: 100%;
     justify-content: center;
   }
+  .update-btn-text {
+    display: none;
+  } /* Скрываем текст кнопки на планшетах, оставляя только иконку */
 }

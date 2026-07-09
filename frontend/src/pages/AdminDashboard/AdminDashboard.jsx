@@ -1,5 +1,6 @@
 // src/pages/AdminDashboard/AdminDashboard.jsx
 import React from "react";
+import { Layout, ConfigProvider, theme } from "antd";
 import {
   AdminDashboardProvider,
   useAdminDashboard,
@@ -24,7 +25,8 @@ import ShiftReportModal from "./components/modals/ShiftReportModal";
 import "./AdminDashboard.css";
 import "./Tabs/WorkersTab.css";
 
-// Внутренний контейнер, который рендерит верстку и имеет доступ к useAdminDashboard()
+const { Content } = Layout;
+
 const DashboardContent = () => {
   const {
     activeTab,
@@ -42,21 +44,16 @@ const DashboardContent = () => {
     setCurrentShiftRaw,
     setIsArchiveMode,
     setActiveTab,
-    setArchivedShiftData,
   } = useAdminDashboard();
 
-  // 🌟 ИСПРАВЛЕНО: Закрыли синтаксис try/catch и добавили мгновенную реактивность переключения экранов
   const handleOpenShift = async () => {
     try {
       const res = await api.openWorkShift();
       alert("Смена успешно открыта!");
 
-      // Если бэк вернул объект созданной смены, записываем его в стейт пульта
       if (res && res.data && res.data.shift) {
         setCurrentShiftRaw(res.data.shift);
       }
-
-      // Переключаем визуальное состояние АРМ на "open", чтобы зарендерить таблицу заездов
       setShiftStatus("open");
     } catch (err) {
       console.error("ПОЛНАЯ ОШИБКА ОТКРЫТИЯ СМЕНЫ:", err);
@@ -66,7 +63,6 @@ const DashboardContent = () => {
     }
   };
 
-  // Коллбэк успешной сдачи кассы
   const handleArchiveSuccess = (closedShift) => {
     setShowCloseReportModal(false);
     setShiftStatus("closed");
@@ -74,17 +70,9 @@ const DashboardContent = () => {
     alert("Смена успешно заархивирована! Касса заблокирована до утра.");
   };
 
-  // Вход в архивный просмотр
   const handleEnterArchiveReadOnly = (shift) => {
-    setArchivedShiftData(shift);
-    setIsArchiveMode(true);
     setActiveTab("visits");
-  };
-
-  // Выход из архива
-  const handleExitArchiveMode = () => {
-    setIsArchiveMode(false);
-    setArchivedShiftData(null);
+    setIsArchiveMode(true);
   };
 
   if (shiftStatus === "loading") {
@@ -94,106 +82,106 @@ const DashboardContent = () => {
   }
 
   return (
-    <div className="admin-dashboard-layout">
-      {/* 🧭 НАШ КРАСИВЫЙ САЙДБАР */}
-      <DashboardSidebar />
+    <ConfigProvider
+      theme={{
+        algorithm: theme.darkAlgorithm,
+        token: {
+          colorBgContainer: "#0f172a",
+          colorBgLayout: "#020617",
+          colorPrimary: "#38bdf8",
+          borderRadiusLG: 12,
+        },
+        components: {
+          Layout: {
+            siderBg: "#0f172a",
+            triggerBg: "#1e293b",
+          },
+          Menu: {
+            darkItemBg: "#0f172a",
+            darkItemActiveBg: "#1e293b",
+          },
+        },
+      }}
+    >
+      <Layout
+        style={{ minHeight: "100vh" }}
+        className="admin-dashboard-container"
+      >
+        {/* 🧭 СВОРАЧИВАЕМЫЙ САЙДБАР КАК ОТДЕЛЬНЫЙ КОМПОНЕНТ */}
+        <DashboardSidebar />
 
-      <div className="dashboard-main-container">
-        {/* КРИТИЧЕСКАЯ ПЛАШКА ДЛЯ РЕЖИМА АРХИВА */}
-        {isArchiveMode && (
-          <div
-            style={{
-              background: "#eab308",
-              color: "#020617",
-              padding: "10px 24px",
-              fontWeight: "800",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              fontSize: "14px",
-            }}
-          >
-            <span>
-              ⚠️ ПРОСМОТР АРХИВНОЙ СМЕНЫ ОТ{" "}
-              {new Date(archivedShiftData.shift_date).toLocaleDateString(
-                "ru-RU",
-              )}{" "}
-              — ИЗМЕНЕНИЯ ЗАБЛОКИРОВАНЫ
-            </span>
-            <button
-              onClick={handleExitArchiveMode}
-              style={{
-                background: "#020617",
-                color: "#eab308",
-                border: "none",
-                padding: "6px 14px",
-                borderRadius: "6px",
-                fontWeight: "700",
-                cursor: "pointer",
-              }}
-            >
-              Вернуться в текущую смену ↩️
-            </button>
-          </div>
-        )}
-
-        {/* 👑 НАША ЧИСТАЯ ШАПКА */}
-        <DashboardHeader />
-
-        {/* 📲 ДИНАМИЧЕСКИЙ ХАБ ВКЛАДОК */}
-        <main className="dashboard-content-viewport">
-          {activeTab === "visits" && (
-            <VisitsTab
-              shiftStatus={isArchiveMode ? "closed" : shiftStatus}
-              initialShiftData={
-                isArchiveMode
-                  ? {
-                      id: archivedShiftData.id,
-                      shift_date: archivedShiftData.shift_date,
-                      cash_total: archivedShiftData.cash_total,
-                      card_total: archivedShiftData.card_total,
-                      expenses_total: archivedShiftData.expenses_total,
-                    }
-                  : currentShiftRaw
-              }
-              onOpenShift={handleOpenShift}
-              onCloseShiftSuccess={() => setShiftStatus("closed")}
-            />
+        <Layout className="admin-main-layout">
+          {isArchiveMode && (
+            <div className="archive-top-sticky-banner">
+              <span>
+                ⚠️ ПРОСМОТР АРХИВНОЙ СМЕНЫ ОТ{" "}
+                {new Date(archivedShiftData?.shift_date).toLocaleDateString(
+                  "ru-RU",
+                )}{" "}
+                — ИЗМЕНЕНИЯ ЗАБЛОКИРОВАНЫ
+              </span>
+            </div>
           )}
-          {activeTab === "workers" && (
-            <WorkersTab shiftStatus={isArchiveMode ? "closed" : shiftStatus} />
-          )}
-          {activeTab === "simulator" && <SimulatorTab />}
-          {activeTab === "archive" && (
-            <AnalyticsTab onSelectArchiveDate={handleEnterArchiveReadOnly} />
-          )}
-        </main>
-      </div>
 
-      {/* 🪟 УПРАВЛЯЮЩИЕ МОДАЛКИ СМЕННОГО ЦИКЛА */}
-      <ForgottenLockModal
-        isOpen={showForgottenModal}
-        shiftData={currentShiftRaw}
-        onTriggerClose={() => {
-          const shiftId = currentShiftRaw?.id || targetClosingShiftId;
-          if (shiftId) {
-            setTargetClosingShiftId(shiftId);
-            setShowForgottenModal(false);
-            setShowCloseReportModal(true);
-          }
-        }}
-      />
-      <ShiftReportModal
-        isOpen={showCloseReportModal}
-        shiftId={targetClosingShiftId}
-        onClose={() => setShowCloseReportModal(false)}
-        onArchiveSuccess={handleArchiveSuccess}
-      />
-    </div>
+          {/* 👑 НАША ЧИСТАЯ ШАПКА */}
+          <DashboardHeader />
+
+          {/* 📲 ДИНАМИЧЕСКИЙ ХАБ ВКЛАДОК */}
+          <Content className="dashboard-content-viewport admin-tab-content-wrapper">
+            {activeTab === "visits" && (
+              <VisitsTab
+                shiftStatus={isArchiveMode ? "closed" : shiftStatus}
+                initialShiftData={
+                  isArchiveMode
+                    ? {
+                        id: archivedShiftData?.id,
+                        shift_date: archivedShiftData?.shift_date,
+                        cash_total: archivedShiftData?.cash_total,
+                        card_total: archivedShiftData?.card_total,
+                        expenses_total: archivedShiftData?.expenses_total,
+                      }
+                    : currentShiftRaw
+                }
+                onOpenShift={handleOpenShift}
+                onCloseShiftSuccess={() => setShiftStatus("closed")}
+              />
+            )}
+            {activeTab === "workers" && (
+              <WorkersTab
+                shiftStatus={isArchiveMode ? "closed" : shiftStatus}
+              />
+            )}
+            {activeTab === "simulator" && <SimulatorTab />}
+            {activeTab === "archive" && (
+              <AnalyticsTab onSelectArchiveDate={handleEnterArchiveReadOnly} />
+            )}
+          </Content>
+        </Layout>
+
+        {/* 🪟 УПРАВЛЯЮЩИЕ МОДАЛКИ СМЕННОГО ЦИКЛА */}
+        <ForgottenLockModal
+          isOpen={showForgottenModal}
+          shiftData={currentShiftRaw}
+          onTriggerClose={() => {
+            const shiftId = currentShiftRaw?.id || targetClosingShiftId;
+            if (shiftId) {
+              setTargetClosingShiftId(shiftId);
+              setShowForgottenModal(false);
+              setShowCloseReportModal(true);
+            }
+          }}
+        />
+        <ShiftReportModal
+          isOpen={showCloseReportModal}
+          shiftId={targetClosingShiftId}
+          onClose={() => setShowCloseReportModal(false)}
+          onArchiveSuccess={handleArchiveSuccess}
+        />
+      </Layout>
+    </ConfigProvider>
   );
 };
 
-// Главная точка входа оборачивает все внутренности в провайдер данных context
 const AdminDashboard = (props) => {
   return (
     <AdminDashboardProvider pwaProps={props}>

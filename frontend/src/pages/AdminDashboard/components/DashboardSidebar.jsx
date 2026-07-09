@@ -1,19 +1,28 @@
 // src/pages/AdminDashboard/components/DashboardSidebar.jsx
-import React from "react";
+import React, { useState } from "react";
+import { Layout, Menu } from "antd";
+import {
+  CalendarOutlined,
+  TeamOutlined,
+  ThunderboltOutlined,
+  HistoryOutlined,
+  PoweroffOutlined,
+  ClockCircleOutlined,
+  ArrowLeftOutlined,
+} from "@ant-design/icons";
 import { useAdminDashboard } from "../context/AdminDashboardContext";
 
+const { Sider } = Layout;
+
 const DashboardSidebar = () => {
-  // Забираем нужные стейты и методы напрямую из контекста
   const {
     activeTab,
     setActiveTab,
     currentTime,
     shiftStatus,
-    setShiftStatus,
     currentShiftRaw,
     isArchiveMode,
     setIsArchiveMode,
-    archivedShiftData,
     setArchivedShiftData,
     targetClosingShiftId,
     setTargetClosingShiftId,
@@ -21,7 +30,48 @@ const DashboardSidebar = () => {
     setShowCloseReportModal,
   } = useAdminDashboard();
 
-  // Инициация вечернего закрытия смены (оригинальная логика)
+  const [collapsed, setCollapsed] = useState(false);
+
+  // Стандартное меню для повседневной работы пульта
+  const normalMenuItems = [
+    {
+      key: "visits",
+      label: "Лента визитов",
+      icon: <CalendarOutlined />,
+    },
+    {
+      key: "workers",
+      label: "Сотрудники",
+      icon: <TeamOutlined />,
+    },
+    {
+      key: "simulator",
+      label: "Симулятор PWA",
+      icon: <ThunderboltOutlined />,
+    },
+    {
+      key: "archive",
+      label: "Архив смен",
+      icon: <HistoryOutlined />,
+    },
+  ];
+
+  // Специальное меню для режима просмотра архива (сохраняет структуру Ant Design)
+  const archiveMenuItems = [
+    {
+      key: "visits",
+      label: "Лента заездов (Архив)",
+      icon: <HistoryOutlined />,
+      className: "archive-menu-item-active", // Кастомный класс для желтой подсветки
+    },
+    {
+      key: "exit_archive",
+      label: "Выйти из архива",
+      icon: <ArrowLeftOutlined />,
+      className: "archive-menu-item-exit",
+    },
+  ];
+
   const handleTriggerCloseShift = () => {
     const shiftId = currentShiftRaw?.id || targetClosingShiftId;
     if (!shiftId) return;
@@ -32,144 +82,87 @@ const DashboardSidebar = () => {
       )
     ) {
       setTargetClosingShiftId(shiftId);
-      setShowForgottenModal(false); // Закрываем утреннюю блокировку, если закрывали её
-      setShowCloseReportModal(true); // Открываем форму ввода нала
+      setShowForgottenModal(false);
+      setShowCloseReportModal(true);
     }
   };
 
-  // Выход из архива назад в реальность
   const handleExitArchiveMode = () => {
     setIsArchiveMode(false);
     setArchivedShiftData(null);
   };
 
+  // Обработка кликов по меню
+  const handleMenuClick = ({ key }) => {
+    if (key === "exit_archive") {
+      handleExitArchiveMode();
+    } else {
+      setActiveTab(key);
+    }
+  };
+
   return (
-    <aside
-      className="dashboard-sidebar"
-      style={isArchiveMode ? { borderRight: "2px solid #eab308" } : {}}
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={(value) => setCollapsed(value)}
+      width={280}
+      breakpoint="lg"
+      className={`admin-dashboard-sider ${isArchiveMode ? "sider-archive-mode" : ""}`}
     >
-      <div className="sidebar-brand">
-        <h2>
-          ZEUS <span>AUTO</span>
-        </h2>
-        <span className="brand-badge">АРМ Администратора 2.0</span>
-      </div>
-
-      {/* НАВИГАЦИОННОЕ МЕНЮ (МЕНЯЕТСЯ ЕСЛИ МЫ В РЕЖИМЕ АРХИВА) */}
-      <nav className="sidebar-menu">
-        {isArchiveMode ? (
-          <div
-            style={{
-              padding: "10px",
-              background: "rgba(234, 179, 8, 0.05)",
-              border: "1px dashed #eab308",
-              borderRadius: "12px",
-              textAlign: "center",
-            }}
-          >
-            <span
-              style={{
-                fontSize: "12px",
-                color: "#eab308",
-                fontWeight: "700",
-                display: "block",
-                marginBottom: "10px",
-              }}
-            >
-              ⚠️ РЕЖИМ АРХИВА
+      <div className="sider-flex-wrapper">
+        {/* ВЕРХНЯЯ ЧАСТЬ: ЛОГОТИП И НАВИГАЦИЯ */}
+        <div className="sider-top-content">
+          <div className="admin-sidebar-logo-container">
+            <span className="admin-sidebar-logo-text">
+              {collapsed ? "⚡" : "ZEUS AUTO ⚡"}
             </span>
-            <button
-              className="menu-item-btn active"
-              style={{
-                width: "100%",
-                justifyContent: "center",
-                background: "#eab308",
-                color: "#020617",
-              }}
-            >
-              <i className="fas fa-history"></i> Лента заездов
-            </button>
-            <button
-              onClick={handleExitArchiveMode}
-              className="sidebar-close-shift-btn"
-              style={{
-                marginTop: "16px",
-                background: "#1e293b",
-                borderColor: "#38bdf8",
-                color: "#38bdf8",
-              }}
-            >
-              <i className="fas fa-arrow-left"></i> Выйти из архива
-            </button>
           </div>
-        ) : (
-          <>
-            <button
-              className={`menu-item-btn ${activeTab === "visits" ? "active" : ""}`}
-              onClick={() => setActiveTab("visits")}
-            >
-              <i className="fas fa-list-alt"></i> <span>Лента визитов</span>
-            </button>
-            <button
-              className={`menu-item-btn ${activeTab === "workers" ? "active" : ""}`}
-              onClick={() => setActiveTab("workers")}
-            >
-              <i className="fas fa-user-friends"></i>{" "}
-              <span>Работа с персоналом</span>
-            </button>
-            <button
-              className={`menu-item-btn ${activeTab === "simulator" ? "active" : ""}`}
-              onClick={() => setActiveTab("simulator")}
-            >
-              <i className="fas fa-mobile-alt"></i>{" "}
-              <span>Мобильная админка</span>
-            </button>
 
-            {/* Кнопка перехода в Архив смен в самом низу меню */}
-            <button
-              className={`menu-item-btn ${activeTab === "archive" ? "active" : ""}`}
-              onClick={() => setActiveTab("archive")}
-              style={{
-                marginTop: "auto",
-                borderTop: "1px solid #1e293b",
-                paddingTop: "20px",
-                color: activeTab === "archive" ? "#38bdf8" : "#64748b",
-              }}
-            >
-              <i className="fas fa-archive"></i>{" "}
-              <span style={{ fontWeight: "700" }}>
-                📦 Архив смен (Календарь)
-              </span>
-            </button>
-          </>
-        )}
-      </nav>
+          {isArchiveMode && !collapsed && (
+            <div className="sider-archive-badge-text">⚠️ РЕЖИМ ПРОСМОТРА</div>
+          )}
 
-      <div className="sidebar-footer">
-        {shiftStatus === "open" && !isArchiveMode && (
-          <button
-            className="sidebar-close-shift-btn"
-            onClick={handleTriggerCloseShift}
-          >
-            <i className="fas fa-power-off"></i> Закрыть смену (22:00)
-          </button>
-        )}
-        <div className="live-clock" style={{ marginTop: "12px" }}>
-          <i className="far fa-clock"></i>{" "}
-          <span>{currentTime.toLocaleTimeString("ru-RU")}</span>
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[activeTab]}
+            items={isArchiveMode ? archiveMenuItems : normalMenuItems}
+            onClick={handleMenuClick}
+          />
         </div>
-        <div className="live-date">
-          <span>
-            {currentTime.toLocaleDateString("ru-RU", {
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
+
+        {/* НИЖНЯЯ ЧАСТЬ: КОНТРОЛЬ СМЕНЫ И ЧАСЫ */}
+        <div className="sider-footer-content">
+          {shiftStatus === "open" && !isArchiveMode && (
+            <button
+              className="sider-close-shift-action-btn"
+              onClick={handleTriggerCloseShift}
+            >
+              <PoweroffOutlined /> {!collapsed && "Закрыть смену (22:00)"}
+            </button>
+          )}
+
+          <div className="sider-live-clock-wrapper">
+            <ClockCircleOutlined className="clock-neon-icon" />
+            {!collapsed && (
+              <div className="clock-text-block">
+                <span className="clock-time">
+                  {currentTime.toLocaleTimeString("ru-RU")}
+                </span>
+                <span className="clock-date">
+                  {currentTime.toLocaleDateString("ru-RU", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                  })}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </aside>
+    </Sider>
   );
 };
 
