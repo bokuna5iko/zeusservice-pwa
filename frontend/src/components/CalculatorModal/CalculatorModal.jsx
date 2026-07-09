@@ -26,7 +26,7 @@ const CalculatorModal = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    setSelectedServiceId("");
+    setSelectedServiceId("none"); // По умолчанию базовая услуга не выбрана
     setSelectedAddons([]);
     setFinalPrice(0);
     setIsManualPrice(false);
@@ -80,7 +80,8 @@ const CalculatorModal = ({
     if (isManualPrice) return;
 
     let baseAmount = 0;
-    if (selectedServiceId) {
+    // Если выбрана конкретная услуга (и это не "none"), ищем её цену
+    if (selectedServiceId && selectedServiceId !== "none") {
       const currentService = allServices.find(
         (s) => s.id === parseInt(selectedServiceId),
       );
@@ -120,20 +121,20 @@ const CalculatorModal = ({
 
   const handleSubmit = async () => {
     console.log("=== 🔍 КЛИК НА ФРОНТЕНДЕ: handleSubmit в калькуляторе ===");
-    console.log("isGuest:", isGuest, "clientData:", clientData);
-    console.log(
-      "selectedServiceId:",
-      selectedServiceId,
-      "selectedAddons:",
-      selectedAddons,
-    );
 
     if (!isGuest && !clientData?.id) {
       alert("Ошибка: Данные клиента не загружены (отсутствует ID)");
       return;
     }
-    if (!selectedServiceId && !isManualPrice) {
-      alert("Выберите основную услугу или введите цену вручную");
+
+    // Проверяем, набран ли хоть какой-то чек
+    const hasMainService = selectedServiceId && selectedServiceId !== "none";
+    const hasAddons = selectedAddons.length > 0;
+
+    if (!hasMainService && !hasAddons && !isManualPrice) {
+      alert(
+        "Выберите основную услугу, хотя бы одну дополнительную услугу или введите цену вручную",
+      );
       return;
     }
 
@@ -149,12 +150,13 @@ const CalculatorModal = ({
         },
         body: JSON.stringify({
           userId: isGuest ? null : clientData.id,
-          serviceId: selectedServiceId ? parseInt(selectedServiceId) : null,
+          // Если основной услуги нет, отправляем null на бэкенд
+          serviceId: hasMainService ? parseInt(serviceServiceId) : null,
           payment_type: paymentType,
           is_guest: isGuest,
           manual_price: isManualPrice ? finalPrice : null,
           manual_car_brand: manualCarBrand.trim() || null,
-          additional_services: selectedAddons, // 🌟 Отправляем массив доп. услуг на бэкенд!
+          additional_services: selectedAddons,
         }),
       });
 
@@ -271,7 +273,9 @@ const CalculatorModal = ({
                     setIsManualPrice(false);
                   }}
                 >
-                  <option value="">-- Нажмите для выбора услуги --</option>
+                  <option value="none">
+                    -- Без основной услуги (только допы) --
+                  </option>
                   {filteredMainServices.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.service_name} ({s.base_price} ₽)
@@ -281,45 +285,41 @@ const CalculatorModal = ({
               </div>
 
               {/* 🌟 ДОБАВЛЕНО: Блок выбора дополнительных услуг (Пункт 2 ТЗ) */}
-              {!isManualPrice &&
-                selectedServiceId &&
-                availableAddons.length > 0 && (
-                  <div className="calc-field-group pwa-addons-section">
-                    <label className="addons-section-title">
-                      <i className="fas fa-plus-circle text-cyan"></i>{" "}
-                      Дополнительные услуги
-                    </label>
-                    <div className="pwa-addons-grid">
-                      {availableAddons.map((addon) => {
-                        const isChecked = Array.isArray(window.temp)
-                          ? false
-                          : !!selectedAddons.some(
-                              (item) => item.id === addon.id,
-                            );
-                        return (
-                          <label
-                            key={addon.id}
-                            className={`pwa-addon-card-label ${isChecked ? "checked" : ""}`}
-                          >
-                            <div className="addon-checkbox-left">
-                              <input
-                                type="checkbox"
-                                checked={isChecked}
-                                onChange={() => handleToggleAddon(addon)}
-                              />
-                              <span className="addon-name">
-                                {addon.service_name}
-                              </span>
-                            </div>
-                            <span className="addon-price">
-                              +{addon.base_price} ₽
+              {!isManualPrice && availableAddons.length > 0 && (
+                <div className="calc-field-group pwa-addons-section">
+                  <label className="addons-section-title">
+                    <i className="fas fa-plus-circle text-cyan"></i>{" "}
+                    Дополнительные услуги
+                  </label>
+                  <div className="pwa-addons-grid">
+                    {availableAddons.map((addon) => {
+                      const isChecked = Array.isArray(window.temp)
+                        ? false
+                        : !!selectedAddons.some((item) => item.id === addon.id);
+                      return (
+                        <label
+                          key={addon.id}
+                          className={`pwa-addon-card-label ${isChecked ? "checked" : ""}`}
+                        >
+                          <div className="addon-checkbox-left">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => handleToggleAddon(addon)}
+                            />
+                            <span className="addon-name">
+                              {addon.service_name}
                             </span>
-                          </label>
-                        );
-                      })}
-                    </div>
+                          </div>
+                          <span className="addon-price">
+                            +{addon.base_price} ₽
+                          </span>
+                        </label>
+                      );
+                    })}
                   </div>
-                )}
+                </div>
+              )}
 
               <div className="manual-price-checkbox-row">
                 <label>
