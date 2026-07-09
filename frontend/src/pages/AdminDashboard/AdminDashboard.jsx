@@ -44,6 +44,8 @@ const DashboardContent = () => {
     setCurrentShiftRaw,
     setIsArchiveMode,
     setActiveTab,
+    setArchivedShiftData,
+    handleExitArchiveMode, // 🌟 ВОЗВРАЩЕНО: Деструктуризация метода сброса архива
   } = useAdminDashboard();
 
   const handleOpenShift = async () => {
@@ -70,9 +72,11 @@ const DashboardContent = () => {
     alert("Смена успешно заархивирована! Касса заблокирована до утра.");
   };
 
+  // Вход в архивный просмотр
   const handleEnterArchiveReadOnly = (shift) => {
-    setActiveTab("visits");
+    setArchivedShiftData(shift);
     setIsArchiveMode(true);
+    setActiveTab("visits");
   };
 
   if (shiftStatus === "loading") {
