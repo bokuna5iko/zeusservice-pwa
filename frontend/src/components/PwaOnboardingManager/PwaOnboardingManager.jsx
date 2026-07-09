@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 import "./PwaOnboardingManager.css";
 
 const PwaOnboardingManager = ({ forceOpenPlatform = null }) => {
-  const [visible, setVisbile] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [platform, setPlatform] = useState(null); // 'android' | 'ios' | null
 
   useEffect(() => {
-    // 1. Проверяем режим отображения. Если уже запущено как PWA (standalone) — полностью блокируем баннеры
+    // 1. Проверяем режим отображения. Если уже запущено как PWA (standalone) — блокируем баннеры
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
       window.navigator.standalone;
@@ -18,7 +18,7 @@ const PwaOnboardingManager = ({ forceOpenPlatform = null }) => {
     if (dismissedTime && !forceOpenPlatform) {
       const diffDays =
         (Date.now() - Number(dismissedTime)) / (1000 * 60 * 60 * 24);
-      if (diffDays < 7) return; // Если прошло меньше 7 дней — не рендеримся
+      if (diffDays < 7) return;
     }
 
     // 3. Вычисляем платформу пользователя
@@ -39,10 +39,10 @@ const PwaOnboardingManager = ({ forceOpenPlatform = null }) => {
 
     setPlatform(currentPlatform);
 
-    // 4. Запускаем умный таймер задержки в 1.5 секунды перед плавным показом (Вариант Б ТЗ)
+    // 4. Запускаем умный таймер задержки показа
     const timer = setTimeout(
       () => {
-        setVisbile(true);
+        setVisible(true);
       },
       forceOpenPlatform ? 50 : 1500,
     );
@@ -51,8 +51,7 @@ const PwaOnboardingManager = ({ forceOpenPlatform = null }) => {
   }, [forceOpenPlatform]);
 
   const handleDismiss = () => {
-    setVisbile(false);
-    // Фиксируем таймстамп закрытия на 7 дней
+    setVisible(false);
     if (!forceOpenPlatform) {
       localStorage.setItem("zeus_pwa_prompt_dismissed", Date.now().toString());
     }
@@ -65,9 +64,8 @@ const PwaOnboardingManager = ({ forceOpenPlatform = null }) => {
       const { outcome } = await promptEvent.userChoice;
       console.log(`Результат установки Android PWA: ${outcome}`);
       window.deferredPrompt = null;
-      setVisbile(false);
+      setVisible(false);
     } else {
-      // Запасной сценарий, если браузер сжёг или ещё не сгенерировал нативный промпт
       alert(
         "Для установки нажмите на три точки (меню) в правом верхнем углу браузера и выберите «Добавить на гл. экран» или «Установить».",
       );
@@ -78,23 +76,33 @@ const PwaOnboardingManager = ({ forceOpenPlatform = null }) => {
   if (!platform || !visible) return null;
 
   return (
-    <>
-      {/* 🤖 СЦЕНАРИЙ АНДРОИД: Bottom Sheet (Выезжающая шторка) */}
+    // 🌟 ОВЕРЛЕЙ-ЗАДНИК: Заблюривает всё приложение принудительно
+    <div
+      className="pwa-onboarding-blur-overlay animate-fade-in"
+      onClick={handleDismiss}
+    >
+      {/* 🤖 СЦЕНАРИЙ АНДРОИД: Центрированная карточка установки */}
       {platform === "android" && (
-        <div className="pwa-android-sheet animate-slide-up">
-          <div className="pwa-sheet-neon-edge"></div>
-          <div className="pwa-sheet-body">
-            <h3>Добавить Zeus Auto на экран "Домой"</h3>
+        <div
+          className="pwa-center-modal animate-scale-up"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="pwa-modal-neon-edge"></div>
+          <div className="pwa-modal-body">
+            <div className="pwa-app-icon-container">
+              <i className="fas fa-layer-group text-cyan"></i>
+            </div>
+            <h3>Установка Zeus Auto</h3>
             <p>
               Карта лояльности будет открываться мгновенно даже без интернета, а
-              приложение вовремя предупредит об акциях и очередях.
+              приложение вовремя предупредит об акциях и очередях на мойке.
             </p>
             <button
               type="button"
               className="btn-pwa-install-android"
               onClick={handleAndroidInstall}
             >
-              Установить приложение
+              Установить на экран
             </button>
             <button
               type="button"
@@ -107,37 +115,50 @@ const PwaOnboardingManager = ({ forceOpenPlatform = null }) => {
         </div>
       )}
 
-      {/* 🍏 СЦЕНАРИЙ iOS: Floating Safari-подсказка со стрелочкой вниз */}
+      {/* 🍏 СЦЕНАРИЙ iOS: Плавающий Safari-баннер со стрелочкой к нижней панели */}
       {platform === "ios" && (
-        <div className="pwa-ios-banner animate-fade-in">
-          <button
-            type="button"
-            className="pwa-ios-close-btn"
-            onClick={handleDismiss}
+        <div className="pwa-ios-fullscreen-wrapper" onClick={handleDismiss}>
+          <div
+            className="pwa-ios-banner-fixed animate-slide-up-ios"
+            onClick={(e) => e.stopPropagation()}
           >
-            &times;
-          </button>
-          <p className="pwa-ios-instruction">
-            Установите приложение в 2 клика для мгновенного доступа к карте
-          </p>
+            <button
+              type="button"
+              className="pwa-ios-close-btn"
+              onClick={handleDismiss}
+            >
+              &times;
+            </button>
+            <h3>Установка на iPhone / iPad</h3>
+            <p className="pwa-ios-instruction">
+              Добавьте приложение на экран «Домой» в 2 простых шага:
+            </p>
 
-          {/* Минималистичный CSS-степпер "Живая иконка" (Пункт 4 ТЗ) */}
-          <div className="pwa-ios-steps">
-            <div className="pwa-ios-step step-pulse">
-              <i className="fas fa-share-square"></i>
-              <span>1. Нажмите «Поделиться»</span>
+            <div className="pwa-ios-steps">
+              <div className="pwa-ios-step step-pulse">
+                <div className="step-number-icon">1</div>
+                <i className="fas fa-share-square"></i>
+                <span>
+                  Нажмите кнопку <strong>«Поделиться»</strong> на нижней панели
+                  Safari.
+                </span>
+              </div>
+              <div className="pwa-ios-step">
+                <div className="step-number-icon">2</div>
+                <i className="fas fa-plus-square"></i>
+                <span>
+                  Прокрутите меню и выберите <strong>«На экран "Домой"»</strong>
+                  .
+                </span>
+              </div>
             </div>
-            <div className="pwa-ios-step">
-              <i className="fas fa-plus-square"></i>
-              <span>2. Выберите «На экран Домой»</span>
-            </div>
+
+            {/* Треугольный маркер-указатель, смотрящий строго вниз на кнопку Safari */}
+            <div className="pwa-ios-pointer-arrow"></div>
           </div>
-
-          {/* Треугольный маркер-указатель, смотрящий строго вниз на кнопку Safari */}
-          <div className="pwa-ios-pointer-arrow"></div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

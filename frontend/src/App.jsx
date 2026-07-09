@@ -28,6 +28,9 @@ import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 // Импортируем блокировщик для форсированного сброса пароля
 import ForceResetPasswordModal from "./components/modals/ForceResetPasswordModal";
 
+// Импортируем менеджер онбординга PWA
+import PwaOnboardingManager from "./components/PwaOnboardingManager/PwaOnboardingManager";
+
 function App() {
   const { user, activePage, mustResetPassword } = useContext(AuthContext);
 
@@ -138,6 +141,9 @@ function App() {
   return (
     <div className="app-shell">
       <ForceResetPasswordModal />
+
+      {/* 🌟 ГЛОБАЛЬНЫЙ МЕНЕДЖЕР УСТАНОВКИ PWA (Абсолютный верхний слой) */}
+      <PwaOnboardingManager />
 
       {/* Оболочка телефона */}
       <div className="app-main" style={{ position: "relative" }}>
