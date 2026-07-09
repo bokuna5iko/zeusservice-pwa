@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "./PwaOnboardingManager.css";
 
-const PwaOnboardingManager = ({ forceOpenPlatform = null }) => {
+const PwaOnboardingManager = ({ forceOpenPlatform = null, onClose = null }) => {
   const [visible, setVisible] = useState(false);
   const [platform, setPlatform] = useState(null); // 'android' | 'ios' | null
 
