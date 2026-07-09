@@ -81,26 +81,34 @@ export const useVisitsData = (shiftStatus, initialShiftData) => {
     if (shiftStatus !== "open") return;
     fetchTodayVisits();
 
-    const socketUrl =
-      window.location.hostname === "localhost"
-        ? "http://localhost:3000"
-        : window.location.origin;
+    // Используем относительный путь для socket.io
+    const socketUrl = window.location.origin;
 
     const socket = io(socketUrl, {
       path: "/socket.io",
       transports: ["websocket", "polling"],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 5,
     });
 
     socket.on("connect", () => {
+      console.log("✅ Socket.io подключен успешно");
       socket.emit("join_admin_room");
+    });
+
+    socket.on("connect_error", (error) => {
+      console.error("❌ Ошибка подключения Socket.io:", error.message);
     });
 
     socket.on("visit_update", (data) => {
       if (data.action === "create" && data.visit) {
         setVisits((prevVisits) => [...prevVisits, data.visit]);
+
         const isCash =
           data.visit.manual_payment_type === "Наличные" ||
           data.visit.manual_payment_type === "Нал";
+
         setLiveShiftData((prev) => ({
           ...prev,
           cash: isCash ? prev.cash + data.visit.price : prev.cash,
