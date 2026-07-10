@@ -24,7 +24,12 @@ const isAdmin = (req, res, next) => {
 router.get("/stats/today-count", adminController.getTodayCount);
 router.get("/stats/last-visits", adminController.getLastVisits);
 router.get("/services", adminController.getAllServices);
-router.get("/history", adminController.getAdminHistory);
+router.get(
+  "/history",
+  authenticateToken,
+  isAdmin,
+  adminController.getAdminHistory,
+);
 
 router.post(
   "/visits/add",
@@ -67,6 +72,15 @@ router.get(
   authenticateToken,
   isAdmin,
   archiveController.getClientArchive,
+);
+
+// Точечное редактирование полей заезда администратором (Умные формы)
+// Полный путь: PATCH /api/admin/visits/update/:id
+router.patch(
+  "/visits/update/:id",
+  authenticateToken,
+  isAdmin,
+  adminController.updateVisit,
 );
 
 module.exports = router;

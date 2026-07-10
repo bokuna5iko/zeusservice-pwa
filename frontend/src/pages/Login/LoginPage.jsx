@@ -18,7 +18,7 @@ const LoginPage = ({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState(""); // Опциональный телефон для регистрации
+  const [phone, setPhone] = useState(""); // Поле скрыто на фронтенде, по умолчанию пустая строка
 
   const { login, register, loading, error } = useContext(AuthContext);
 
@@ -27,7 +27,8 @@ const LoginPage = ({
 
     if (isRegister) {
       if (register) {
-        register({ name, username, password, phone: phone || null });
+        // 🌟 ИСПРАВЛЕНО: Передаем пустую строку или null, чтобы на бэке сработал NULL-предохранитель
+        register({ name, username, password, phone: phone.trim() || null });
       }
     } else {
       if (login) {
@@ -181,12 +182,14 @@ const LoginPage = ({
                 />
               </div>
 
+              {/* 🌟 ИСПРАВЛЕНО: Инпут телефона полностью скрыт с экрана (display: "none"), 
+                  чтобы не собирать ПДн и не усложнять регистрацию на этапе релиза */}
               {isRegister && (
-                <div className="input-wrapper">
+                <div className="input-wrapper" style={{ display: "none" }}>
                   <i className="fas fa-phone"></i>
                   <input
                     type="text"
-                    placeholder="Телефон (необязательно)"
+                    placeholder="Телефон"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     disabled={loading}

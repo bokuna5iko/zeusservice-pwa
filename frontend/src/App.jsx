@@ -22,10 +22,19 @@ import AdminStatistics from "./pages/AdminStatistics/AdminStatistics.jsx";
 import WorkerShiftsPage from "./pages/WorkerShifts/WorkerShiftsPage.jsx";
 import AdminShiftsPage from "./pages/AdminShifts/AdminShiftsPage.jsx";
 
-function App() {
-  const { user, activePage } = useContext(AuthContext);
+// Главный компонент десктопного пульта управления
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 
-  // 🌟 СМАРТ-ОБНОВЛЕНИЯ: Инициализируем хуки плагина PWA с автопроверкой каждые 10 секунд
+// Импортируем блокировщик для форсированного сброса пароля
+import ForceResetPasswordModal from "./components/modals/ForceResetPasswordModal";
+
+// Импортируем менеджер онбординга PWA
+import PwaOnboardingManager from "./components/PwaOnboardingManager/PwaOnboardingManager";
+
+function App() {
+  const { user, activePage, mustResetPassword } = useContext(AuthContext);
+
+  // СМАРТ-ОБНОВЛЕНИЯ: Инициализируем хуки плагина PWA с автопроверкой каждые 10 секунд
   const {
     needRefresh: [needRefresh],
     updateServiceWorker,
@@ -44,6 +53,36 @@ function App() {
   const [showHintBanner, setShowHintBanner] = useState(false); // Выезжающая плашка
   const [isSpinning, setIsSpinning] = useState(false); // Бешеное вращение при клике
 
+  // Стейт контроля адаптивности под ПК/Планшеты в реальном времени
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  // 🌟 ДОБАВЛЕНО: Глобальная ловушка нативного события установки для Android/Chrome
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      // Блокируем нативное всплывающее окно браузера по умолчанию
+      e.preventDefault();
+      // Сохраняем событие в глобальный объект window, чтобы менеджер шторки мог вызвать .prompt()
+      window.deferredPrompt = e;
+      console.log(
+        "✅ Событие beforeinstallprompt успешно перехвачено и сохранено.",
+      );
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    return () =>
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt,
+      );
+  }, []);
+
+  // Эффект отслеживания изменения ширины экрана
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Эффект отслеживания появления новой версии (UX-подсказка на 5 секунд)
   useEffect(() => {
     if (needRefresh) {
@@ -59,11 +98,10 @@ function App() {
   const handlePwaUpdate = () => {
     if (!needRefresh || isSpinning) return;
 
-    setIsSpinning(true); // Включаем непрерывное быстрое вращение иконки
+    setIsSpinning(true);
 
-    // Небольшая задержка перед перезагрузкой для сочного визуального отклика
     setTimeout(() => {
-      updateServiceWorker(true); // Очистка старого кэша и жесткий перезапуск страницы воркером
+      updateServiceWorker(true);
     }, 600);
   };
 
@@ -72,7 +110,6 @@ function App() {
     return (
       <div className="app-shell">
         <main className="app-main" style={{ position: "relative" }}>
-          {/* 🌟 ПЕРЕДАЕМ СМАРТ-ОБНОВЛЕНИЯ ВНУТРЬ СТРАНИЦЫ ЛОГИНА */}
           <LoginPage
             needRefresh={needRefresh}
             showHintBanner={showHintBanner}
@@ -85,12 +122,32 @@ function App() {
     );
   }
 
-  // Условие для авторизованного пользователя
+  // Условие для умного десктопного роутинга + Защита со сбросом пароля
+  if (user.role === "admin" && windowWidth >= 1024) {
+    return (
+      <>
+        <ForceResetPasswordModal />
+        <AdminDashboard
+          needRefresh={needRefresh}
+          showHintBanner={showHintBanner}
+          isSpinning={isSpinning}
+          handlePwaUpdate={handlePwaUpdate}
+        />
+      </>
+    );
+  }
+
+  // Условие для стандартного мобильного PWA (Экран < 1024px или для клиентов)
   return (
     <div className="app-shell">
+      <ForceResetPasswordModal />
+
+      {/* 🌟 ГЛОБАЛЬНЫЙ МЕНЕДЖЕР УСТАНОВКИ PWA (Абсолютный верхний слой) */}
+      <PwaOnboardingManager />
+
       {/* Оболочка телефона */}
       <div className="app-main" style={{ position: "relative" }}>
-        {/* 🌟 ВСПЛЫВАЮЩАЯ UX-ПОДСКАЗКА: Выезжает из-под шапки при фиксации новой версии */}
+        {/* ВСПЛЫВАЮЩАЯ UX-ПОДСКАЗКА: Выезжает из-под шапки при фиксации новой версии */}
         <div
           className={`pwa-smart-hint-banner ${showHintBanner ? "slide-down" : ""}`}
         >
@@ -112,19 +169,18 @@ function App() {
               ZEUS <span>AUTO</span>
             </span>
 
-            {/* 🌟 ГЛОБАЛЬНЫЙ СМАРТ-ИНДИКАТОР ОБНОВЛЕНИЙ В ШАПКЕ */}
+            {/* ГЛОБАЛЬНЫЙ СМАРТ-ИНДИКАТОР ОБНОВЛЕНИЙ В ШАПКЕ */}
             <button
               className={`global-smart-update-btn ${needRefresh ? "update-available" : ""} ${isSpinning ? "rapid-spinning" : ""}`}
               disabled={!needRefresh || isSpinning}
               onClick={handlePwaUpdate}
               title={
                 needRefresh
-                  ? "Доступно свежее обновление!"
+                  ? "Доступно свежее update-обновление!"
                   : "Приложение актуальной версии"
               }
             >
               <i className="fas fa-sync-alt"></i>
-              {/* Пульсирующая оранжево-красная точка в углу кнопки */}
               {needRefresh && (
                 <span className="notification-pulsing-dot"></span>
               )}

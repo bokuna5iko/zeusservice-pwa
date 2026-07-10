@@ -38,7 +38,7 @@ apiService.interceptors.response.use(
 export const api = {
   login: (phone) => apiService.post("/auth/login", { phone }),
   getProfile: () => apiService.get("/user/me"),
-  getServices: () => apiService.get("/services"),
+  getServices: () => apiService.get("/admin/services"),
   getUserHistory: () => apiService.get("/user/history"),
   addVisit: (userId, serviceId) =>
     apiService.post("/visits/add", { userId, serviceId }),
@@ -60,6 +60,44 @@ export const api = {
   getAdminCalendar: () => apiService.get("/shifts/admin/calendar"),
   batchUpdateShifts: (changes) =>
     apiService.post("/shifts/admin/batch-update", { changes }),
+
+  // 🌟 ДОБАВЛЕНО: Методы АРМ Пульта Управления (Операционные Смены и Расходы)
+  getWorkShiftStatus: () => apiService.get("/work-shifts/status"),
+  openWorkShift: () => apiService.post("/work-shifts/open"),
+  closeWorkShift: () => apiService.post("/work-shifts/close"),
+  addWorkShiftExpense: (amount, description) =>
+    apiService.post("/work-shifts/expenses", { amount, description }),
+
+  // Роуты модуля Архива смен и Сверки кассы
+  getPreCloseReport: (shiftId) =>
+    apiService.get(`/work-shifts/pre-close-report/${shiftId}`),
+  closeWorkShiftWithReport: (payload) =>
+    apiService.post("/work-shifts/close", payload),
+  getArchiveCalendar: () => apiService.get("/work-shifts/archive/calendar"),
+
+  // 🌟 ИСПРАВЛЕНО: Универсальный метод расходов с защитой от кэширования браузера (304 Not Modified)
+  getTodayExpenses: (shiftId) => {
+    return apiService.get("/work-shifts/expenses/today", {
+      params: {
+        shiftId: shiftId || undefined,
+        _: Date.now(), // Уникальный таймстамп заставит браузер всегда делать свежий запрос в сеть!
+      },
+    });
+  },
+
+  // Получить список всех заездов за текущий операционный день
+  getTodayVisits: (date) =>
+    apiService.get(
+      date ? `/admin/visits/today?date=${date}` : "/admin/visits/today",
+    ),
+
+  // Точечное редактирование полей визита администратором (PATCH)
+  updateVisitFields: (visitId, fields) =>
+    apiService.patch(`/admin/visits/update/${visitId}`, fields),
+
+  // Смена временного пароля на постоянный с хэшированием в БД
+  changePassword: (newPassword) =>
+    apiService.post("/user/change-password", { newPassword }),
 };
 
 export default apiService;

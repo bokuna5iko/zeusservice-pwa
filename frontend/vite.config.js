@@ -52,13 +52,14 @@ export default defineConfig({
           // 🔄 СМАРТ-КЭШ ИСТОРИИ АДМИНА: Стратегия Stale-While-Revalidate
           {
             urlPattern: ({ url }) => url.pathname === "/api/admin/visits/today",
-            handler: "StaleWhileRevalidate",
+            handler: "NetworkFirst",
             options: {
               cacheName: "admin-visits-today",
               expiration: {
                 maxEntries: 1, // Нам нужен только 1 слепок текущего дня
-                maxAgeSeconds: 60 * 60 * 24, // Храним историю ровно сутки
-              },
+                maxAgeSeconds: 60 * 60 * 4, // Храним историю ровно  24 часа
+             },
+	      networkTimeoutSeconds: 3,  // Если сеть не ответила за 3 сек — берём из кэша
             },
           },
           // 🛑 СТРАТЕГИЯ NETWORK ONLY: Полный запрет на кэширование остальных эндпоинтов (авторизация, создание визитов)

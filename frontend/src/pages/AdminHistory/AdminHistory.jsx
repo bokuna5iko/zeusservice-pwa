@@ -1,4 +1,6 @@
+// src/pages/AdminHistory/AdminHistory.jsx
 import React, { useState, useEffect } from "react";
+import { api } from "../../api/apiService"; // 🌟 Импортируем наш готовый центральный сервис API
 import "./AdminHistory.css";
 
 const AdminHistory = () => {
@@ -10,28 +12,16 @@ const AdminHistory = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        // 🌟 ИСПРАВЛЕНО: Используем единый ключ токена accessToken
-        const token = localStorage.getItem("accessToken");
+        setLoading(true);
 
-        // 🌟 ИСПРАВЛЕНО: Стучимся на выделенный эндпоинт сегодняшней истории визитов
-        const response = await fetch("/api/admin/visits/today", {
-          headers: {
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-        });
+        // 🌟 ИСПРАВЛЕНО: Заменили сырой fetch на наш Axios-метод.
+        // Он автоматически прокинет токен из localStorage и корректно обработает 304 статус от Workbox
+        const response = await api.getTodayVisits();
+        const dbVisits = response.data || [];
 
-        if (response.ok) {
-          const data = await response.json();
-          setVisits(data);
-        } else if (response.status === 304) {
-          // ТЗ Выполнено: Изменений в базе нет, браузер и Workbox бесшовно оставили данные из кэша
-          console.log("Данные не изменились (304). Используем актуальный кэш.");
-        } else {
-          console.error("Ошибка при получении утренней истории визитов");
-        }
+        setVisits(dbVisits);
       } catch (error) {
-        // ТЗ Выполнено: В случае падения интернета (NetworkError), этот блок поймает ошибку,
-        // но экран не упадет, так как StaleWhileRevalidate уже мгновенно вывел прошлый слепок данных на экран!
+        // Блок поймает критический сбой сети, но приложение не упадёт
         console.warn(
           "Оффлайн-режим или сбой сети. Выведен локальный слепок истории:",
           error,
@@ -57,6 +47,12 @@ const AdminHistory = () => {
     const serviceName = (visit.service_name || "").toLowerCase();
     const clientPhone = (visit.phone || "").toLowerCase();
     const clientName = (visit.name || "").toLowerCase();
+    const manualBrand = (visit.manual_car_brand || "").toLowerCase();
+    const profileBrand = (
+      visit.user_car_brand ||
+      visit.car_brand ||
+      ""
+    ).toLowerCase();
 
     const dateFormatted = visit.created_at
       ? new Date(visit.created_at).toLocaleDateString("ru-RU")
@@ -66,6 +62,8 @@ const AdminHistory = () => {
       serviceName.includes(term) ||
       clientPhone.includes(term) ||
       clientName.includes(term) ||
+      manualBrand.includes(term) ||
+      profileBrand.includes(term) ||
       dateFormatted.includes(term)
     );
   });
@@ -96,7 +94,7 @@ const AdminHistory = () => {
             <input
               type="text"
               className="admin-search-input"
-              placeholder="Поиск по услуге, телефону, имени или дате..."
+              placeholder="Поиск по услуге, телефону, марке, имени или дате..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -111,9 +109,9 @@ const AdminHistory = () => {
           </div>
         </div>
 
-        {/* КОНТЕЙНЕР №2: Лента визитов (Аккордеон) */}
-        <div className="content-group-box admin-history-list-box">
-          <h3 className="section-title-history">История заездов за неделю</h3>
+        {/* КОНТЕЙНЕР №2: Lента визитов (Аккордеон) */}
+        <div className="content-group-box filter-container">
+          <h3 className="section-title-history">История заездов за сегодня</h3>
 
           {loading ? (
             <div className="admin-data-placeholder">
@@ -147,7 +145,7 @@ const AdminHistory = () => {
                           {visit.service_name || visit.service_type || "Услуга"}
                         </span>
                         <span className="admin-visit-price">
-                          {visit.price} ₽
+                          {visit.amount || visit.price} ₽
                         </span>
                       </div>
 
@@ -168,14 +166,26 @@ const AdminHistory = () => {
                           {isGuest ? (
                             <span className="guest-badge-pill">Гость</span>
                           ) : (
-                            <span className="car-brand-pill">
-                              {visit.car_brand || "Авто"}
+                            <span
+                              className="car-brand-pill"
+                              style={{ whiteSpace: "nowrap" }}
+                            >
+                              {(() => {
+                                const profileBrand =
+                                  visit.user_car_brand || visit.car_brand; // Из профиля клиента
+                                const manualBrand = visit.manual_car_brand; // От администратора при заезде
+
+                                if (profileBrand && manualBrand) {
+                                  return `${profileBrand} (${manualBrand})`;
+                                }
+                                return profileBrand || manualBrand || "Авто";
+                              })()}
                             </span>
                           )}
                         </div>
                       </div>
 
-                      {/* ПОДБЛОК 3: Независимая стрелка-индикатор (позиционируется абсолютно через CSS) */}
+                      {/* ПОДБЛОК 3: Независимая стрелка-индикатор */}
                       <i
                         className={`fas fa-chevron-down admin-accordion-arrow ${isExpanded ? "rotate" : ""}`}
                       ></i>
@@ -193,6 +203,28 @@ const AdminHistory = () => {
                           </div>
                         ) : (
                           <div className="client-info-list">
+                            <div className="detail-row-item">
+                              <span className="detail-item-label">
+                                Автомобиль:
+                              </span>
+                              <span
+                                className="detail-item-value"
+                                style={{ fontWeight: "700", color: "#38bdf8" }}
+                              >
+                                {(() => {
+                                  const profileBrand =
+                                    visit.user_car_brand || visit.car_brand;
+                                  const manualBrand = visit.manual_car_brand;
+                                  if (profileBrand && manualBrand) {
+                                    return `${profileBrand} (${manualBrand})`;
+                                  }
+                                  return (
+                                    profileBrand || manualBrand || "Не указан"
+                                  );
+                                })()}
+                              </span>
+                            </div>
+
                             <div className="detail-row-item">
                               <span className="detail-item-label">
                                 ID Клиента:

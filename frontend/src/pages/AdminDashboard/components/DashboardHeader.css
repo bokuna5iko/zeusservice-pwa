@@ -1,0 +1,293 @@
+/* src/pages/AdminDashboard/components/DashboardHeader.css */
+
+.admin-dashboard-header {
+  height: 70px !important;
+  background-color: #0f172a !important; /* Глубокий Slate 900 */
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px !important;
+  line-height: normal !important;
+}
+
+/* ЛЕВАЯ ЗОНА: ЗАГОЛОВОК И СТАТУС */
+.header-left-zone {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-tab-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.header-shift-status-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.header-shift-status-badge.open {
+  background: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.header-shift-status-badge.closed,
+.header-shift-status-badge.not_started {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.header-shift-status-badge.archive {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* ПРАВАЯ ЗОНА: ОБНОВЛЕНИЯ И АВАТАР */
+.header-right-zone {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Новая интерактивная кнопка обновления в шапке */
+.pwa-update-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.pwa-update-action-btn.up-to-date {
+  color: #64748b;
+  cursor: default;
+}
+
+.pwa-update-action-btn.up-to-date .update-icon-green {
+  color: #10b981;
+}
+
+.pwa-update-action-btn.needs-update {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px dashed rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+}
+
+.pwa-update-action-btn.needs-update:hover {
+  background: rgba(245, 158, 11, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Профиль администратора */
+.header-admin-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 1px solid #1e293b;
+  padding-left: 20px;
+  height: 32px;
+}
+
+.header-avatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+  color: #020617;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+.header-admin-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+/* СМАРТ-БАННЕР УВЕДОМЛЕНИЙ (Сохраняем ваш крутой градиент) */
+.update-notification-banner {
+  position: relative;
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 16px 24px 0 24px; /* Симметричные отступы внутри рабочей области */
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25);
+  overflow: hidden;
+  animation: slideInDown 0.3s ease-out;
+}
+
+.update-banner-glow {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 70%
+  );
+  animation: headerShimmer 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes headerShimmer {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.update-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.update-banner-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.1rem;
+}
+
+.update-banner-text {
+  flex: 1;
+  color: white;
+}
+
+.update-banner-text strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.update-banner-text p {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.update-banner-btn {
+  flex-shrink: 0;
+  background: white;
+  color: #f97316;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.update-banner-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .update-banner-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .update-banner-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .update-btn-text {
+    display: none;
+  } /* Скрываем текст кнопки на планшетах, оставляя только иконку */
+}
+
+/* Специальный класс хедера при включенном архиве */
+.admin-dashboard-header.header-archive-active {
+  border-bottom: 1px solid rgba(234, 179, 8, 0.4) !important; /* Подсвечиваем низ хедера желтым */
+  box-shadow: 0 4px 20px rgba(234, 179, 8, 0.05);
+}
+
+/* Контейнер встроенного архивного уведомления */
+.header-archive-alert-inline {
+  display: flex;
+  align-items: center;
+  background: rgba(234, 179, 8, 0.06);
+  border: 1px dashed rgba(234, 179, 8, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  animation: headerFadeIn 0.25s ease-out;
+}
+
+.archive-inline-text {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #eab308;
+  letter-spacing: 0.02em;
+}
+
+.archive-inline-date {
+  color: #ffffff;
+  background: #eab308;
+  color: #020617;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+  margin: 0 4px;
+}
+
+@keyframes headerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

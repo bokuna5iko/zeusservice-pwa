@@ -8,6 +8,12 @@ const {
 const authController = require("../controllers/authController");
 const visitController = require("../controllers/visitController");
 const userController = require("../controllers/userController");
+// Смена временного пароля на постоянный (с хэшированием)
+router.post(
+  "/change-password",
+  authenticateToken,
+  userController.changePassword,
+);
 
 // Профиль (доступен всем залогиненным)
 router.get("/me", authenticateToken, authController.getMe);

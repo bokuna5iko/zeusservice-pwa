@@ -5,6 +5,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import "./HomePage.css";
 import PointsGrid from "../../components/PointsGrid/PointsGrid";
 import PackageCards from "../../components/PackageCards/PackageCards"; // Импортируем блок пакетов
+import PwaOnboardingManager from "../../components/PwaOnboardingManager/PwaOnboardingManager";
 
 const HomePage = () => {
   const { user, refreshProfile } = useContext(AuthContext);
@@ -126,9 +127,12 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* КОНТЕЙНЕР №2 Выгодные пакеты (В разработке) */}
+        {/* КОНТЕЙНЕР №3 Выгодные пакеты */}
         <PackageCards />
       </div>
+
+      {/* 🌟 ИСПРАВЛЕНО: Теперь менеджер онбординга на месте и отработает в браузере ровно через 1.5 сек! */}
+      <PwaOnboardingManager />
 
       {/* Модальное окно для увеличенного QR */}
       {isZoomed && (
