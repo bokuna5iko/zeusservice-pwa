@@ -1,11 +1,7 @@
 // src/pages/AdminDashboard/components/DashboardHeader.jsx
 import React from "react";
 import { Layout, Badge, Tooltip } from "antd";
-import {
-  SyncOutlined,
-  CheckCircleOutlined,
-  InfoCircleOutlined,
-} from "@ant-design/icons";
+import { SyncOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import { useAdminDashboard } from "../context/AdminDashboardContext";
 import "./DashboardHeader.css";
 
@@ -16,6 +12,7 @@ const DashboardHeader = () => {
     activeTab,
     shiftStatus,
     isArchiveMode,
+    archivedShiftData,
     needRefresh,
     isSpinning,
     handlePwaUpdate,
@@ -39,19 +36,31 @@ const DashboardHeader = () => {
 
   return (
     <>
-      <Header className="admin-dashboard-header">
-        {/* Левая часть: Название вкладки и индикатор состояния смены */}
+      <Header
+        className={`admin-dashboard-header ${isArchiveMode ? "header-archive-active" : ""}`}
+      >
+        {/* Левая часть: Динамический заголовок ИЛИ красивый Архивный статус */}
         <div className="header-left-zone">
-          <h2 className="header-tab-title">{getTabTitle()}</h2>
-          <div
-            className={`header-shift-status-badge ${isArchiveMode ? "archive" : shiftStatus}`}
-          >
-            {isArchiveMode
-              ? "Архив"
-              : shiftStatus === "open"
-                ? "Смена открыта"
-                : "Смена закрыта"}
-          </div>
+          {isArchiveMode ? (
+            <div className="header-archive-alert-inline">
+              <span className="archive-inline-text">
+                ⚠️ ПРОСМОТР АРХИВНОЙ СМЕНЫ ОТ{" "}
+                <span className="archive-inline-date">
+                  {new Date(archivedShiftData?.shift_date).toLocaleDateString(
+                    "ru-RU",
+                  )}
+                </span>{" "}
+                — ИЗМЕНЕНИЯ ЗАБЛОКИРОВАНЫ
+              </span>
+            </div>
+          ) : (
+            <>
+              <h2 className="header-tab-title">{getTabTitle()}</h2>
+              <div className={`header-shift-status-badge ${shiftStatus}`}>
+                {shiftStatus === "open" ? "Смена открыта" : "Смена закрыта"}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Правая часть: Контролы обновления и профиль */}
@@ -93,7 +102,7 @@ const DashboardHeader = () => {
         </div>
       </Header>
 
-      {/* СМАРТ-БАННЕР УВЕДОМЛЕНИЙ ОБ ОБНОВЛЕНИИ (Опускается ниже хедера при необходимости) */}
+      {/* СМАРТ-БАННЕР УВЕДОМЛЕНИЙ ОБ ОБНОВЛЕНИИ */}
       {needRefresh && (
         <div className="update-notification-banner">
           <div className="update-banner-content">

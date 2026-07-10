@@ -246,3 +246,48 @@
     display: none;
   } /* Скрываем текст кнопки на планшетах, оставляя только иконку */
 }
+
+/* Специальный класс хедера при включенном архиве */
+.admin-dashboard-header.header-archive-active {
+  border-bottom: 1px solid rgba(234, 179, 8, 0.4) !important; /* Подсвечиваем низ хедера желтым */
+  box-shadow: 0 4px 20px rgba(234, 179, 8, 0.05);
+}
+
+/* Контейнер встроенного архивного уведомления */
+.header-archive-alert-inline {
+  display: flex;
+  align-items: center;
+  background: rgba(234, 179, 8, 0.06);
+  border: 1px dashed rgba(234, 179, 8, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  animation: headerFadeIn 0.25s ease-out;
+}
+
+.archive-inline-text {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #eab308;
+  letter-spacing: 0.02em;
+}
+
+.archive-inline-date {
+  color: #ffffff;
+  background: #eab308;
+  color: #020617;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+  margin: 0 4px;
+}
+
+@keyframes headerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

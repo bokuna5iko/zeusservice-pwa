@@ -115,22 +115,10 @@ const DashboardContent = () => {
         <DashboardSidebar />
 
         <Layout className="admin-main-layout">
-          {isArchiveMode && (
-            <div className="archive-top-sticky-banner">
-              <span>
-                ⚠️ ПРОСМОТР АРХИВНОЙ СМЕНЫ ОТ{" "}
-                {new Date(archivedShiftData?.shift_date).toLocaleDateString(
-                  "ru-RU",
-                )}{" "}
-                — ИЗМЕНЕНИЯ ЗАБЛОКИРОВАНЫ
-              </span>
-            </div>
-          )}
-
           {/* 👑 НАША ЧИСТАЯ ШАПКА */}
           <DashboardHeader />
 
-          {/* 📲 ДИНАМИЧЕСКИЙ ХАБ ВКЛАДОК */}
+          {/* 📲 ЕДИНСТВЕННЫЙ И ПРАВИЛЬНЫЙ ДИНАМИЧЕСКИЙ ХАБ ВКЛАДОК */}
           <Content className="dashboard-content-viewport admin-tab-content-wrapper">
             {activeTab === "visits" && (
               <VisitsTab
