@@ -1,4 +1,75 @@
 /* src/pages/AdminDashboard/Tabs/WorkersTab.css */
+/* --- СТИЛИ НАВИГАЦИИ ПО ПОДТАБАМ ПЕРСОНАЛА --- */
+.arm-subtabs-navigation-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: #0f172a;
+  padding: 6px;
+  border-radius: 10px;
+  border: 1px solid #1e293b;
+  width: max-content;
+}
+
+.arm-subtab-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.arm-subtab-btn i {
+  font-size: 1rem;
+}
+
+.arm-subtab-btn:hover {
+  color: #e2e8f0;
+  background: rgba(30, 41, 59, 0.5);
+}
+
+/* Активный подтаб с неоновым бирюзовым маркером */
+.arm-subtab-btn.active-subtab {
+  background: #1e293b;
+  color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+/* Красный круглый алерт-счетчик для новых фотоотчетов */
+.subtab-counter-alert {
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-left: 4px;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+/* Плавный въезд вкладок */
+.fade-in {
+  animation: fadeInWorkersTab 0.2s ease-out forwards;
+}
+
+@keyframes fadeInWorkersTab {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .workers-tab-viewport {
   display: flex;

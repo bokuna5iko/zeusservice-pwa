@@ -1,0 +1,418 @@
+/* src/pages/AdminDashboard/components/WorkerTabs.css */
+
+.tab-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+
+.tab-header-flex h2 {
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.live-badge-pulse {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  animation: pwa-icon-pulse 2s infinite ease-in-out;
+}
+
+/* Лента карточек фотоотчетов */
+.reports-feed-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.report-card-box {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.report-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.report-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.report-avatar-stub {
+  background: #1e293b;
+  color: #38bdf8;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.report-user-info h4 {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.role-tag-sub {
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+.report-time-sub {
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+.status-badge-pending {
+  background: rgba(234, 179, 8, 0.1);
+  color: #facc15;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.report-text-comment {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+/* Сетка фотографий */
+.report-images-grid {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.report-img-wrapper {
+  position: relative;
+  width: 120px;
+  height: 90px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #1e293b;
+  cursor: pointer;
+}
+
+.report-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.img-zoom-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(2, 6, 23, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  color: #ffffff;
+}
+
+.report-img-wrapper:hover .img-zoom-overlay {
+  opacity: 1;
+}
+
+/* Кнопки футера карточки */
+.standard-action-footer-btns {
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid #1e293b;
+  padding-top: 14px;
+}
+
+.btn-report-approve {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-report-reject {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Текстовый блок отклонения */
+.reject-reason-action-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  border-top: 1px solid #1e293b;
+  padding-top: 14px;
+}
+
+.reject-reason-input {
+  background: #020617;
+  border: 1px solid #1e293b;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.reject-reason-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-send-reject {
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-cancel-reject {
+  background: transparent;
+  color: #64748b;
+  border: none;
+  cursor: pointer;
+}
+
+/* Нативное затухание отработанных карточек */
+.fade-out-status {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.all-checked-notice {
+  text-align: center;
+  padding: 40px;
+}
+
+.all-checked-notice i {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.all-checked-notice h3 {
+  color: #ffffff;
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+}
+
+.all-checked-notice p {
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
+.reset-demo-btn {
+  background: #1e293b;
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Lightbox-экраны */
+.pwa-lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(2, 6, 23, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 1000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-content-box {
+  position: relative;
+  max-width: 90%;
+  max-height: 80%;
+}
+
+.lightbox-main-img {
+  max-width: 100%;
+  max-height: 100vh;
+  border-radius: 12px;
+  border: 1px solid #1e293b;
+}
+
+.lightbox-close-btn {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* Финансовые баджи и Справочник */
+.fin-summary-pills {
+  display: flex;
+  gap: 10px;
+}
+
+.fin-pill {
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.worker-name-cell-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.worker-name-txt {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.worker-badge-icons-row {
+  display: flex;
+  gap: 4px;
+}
+
+.category-tag-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.category-tag-badge.stakhanov-neon {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+.category-tag-badge.linear-gray {
+  background: #1e293b;
+  color: #94a3b8;
+}
+
+.bugs-count-indicator {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.bugs-count-indicator.zero-bugs-green {
+  color: #4ade80;
+}
+
+.bugs-count-indicator.has-bugs-red {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Интерактивный Кастомный Переключатель (Switch) */
+.toggle-switch-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arm-switch-label {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 20px;
+}
+
+.arm-switch-label input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.arm-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #1e293b;
+  transition: 0.2s;
+  border-radius: 20px;
+  border: 1px solid #334155;
+}
+
+.arm-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #94a3b8;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+.arm-switch-label input:checked + .arm-switch-slider {
+  background-color: rgba(168, 85, 247, 0.3);
+  border-color: #a855f7;
+}
+
+.arm-switch-label input:checked + .arm-switch-slider:before {
+  transform: translateX(18px);
+  background-color: #c084fc;
+}
+
+.switch-sub-text {
+  font-size: 0.75rem;
+  color: #64748b;
+}
