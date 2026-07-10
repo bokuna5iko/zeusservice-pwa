@@ -547,7 +547,7 @@
 }
 
 /* СБРОС МОБИЛЬНЫХ ОГРАНИЧЕНИЙ ДЛЯ КАРТОЧЕК НА ПУЛЬТЕ */
-.content-group-box {
+:not(.modal-overlay) .content-group-box {
   width: 100% !important;
   max-width: none !important;
   padding: 20px !important;
@@ -771,4 +771,13 @@
   .stat-revenue {
     font-size: 11px;
   }
+}
+
+/* Фикс конфликта ширины модальных окон редактирования и закрытия */
+.modal-overlay .compact-edit-modal,
+.modal-overlay .modal-content,
+.modal-overlay .content-group-box {
+  width: 100% !important;
+  max-width: 460px !important; /* Тот самый комфортный размер */
+  margin: auto !important;
 }
