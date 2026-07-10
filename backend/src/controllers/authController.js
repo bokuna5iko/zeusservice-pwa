@@ -109,8 +109,8 @@ exports.getMe = async (req, res) => {
         visit_count: user.visit_count,
         total_visits: user.total_visits,
         created_at: user.created_at,
-        car_brand: user.car_brand || null,  // 🌟 Добавлено
-        avatar_url: user.avatar_url || "1.png",  // 🌟 Добавлено
+        car_brand: user.car_brand || null, // 🌟 Добавлено
+        avatar_url: user.avatar_url || "1.png", // 🌟 Добавлено
       },
     });
   } catch (err) {
@@ -174,11 +174,12 @@ exports.register = async (req, res) => {
         visit_count: newUser.visit_count,
         total_visits: newUser.total_visits,
         created_at: newUser.created_at,
-        car_brand: user.car_brand || null,  // 🌟 Добавлено
-        avatar_url: user.avatar_url || "1.png",  // 🌟 Добавлено
+        car_brand: newUser.car_brand || null, // 🌟 ИСПРАВЛЕНО: обращение к newUser вместо упавшего user
+        avatar_url: newUser.avatar_url || "1.png", // 🌟 ИСПРАВЛЕНО: обращение к newUser вместо упавшего user
       },
     });
   } catch (err) {
+    await db.query("ROLLBACK").catch(() => {}); // На случай, если в будущем обернешь в транзакцию
     console.error("Ошибка в authController (register):", err);
     res.status(500).json({ message: "Ошибка сервера при регистрации" });
   }
