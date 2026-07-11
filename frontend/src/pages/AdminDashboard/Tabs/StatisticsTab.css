@@ -1,0 +1,412 @@
+/* src/pages/AdminDashboard/Tabs/AnalyticsTab.css */
+
+.analytics-main-viewport {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.analytics-fade-in-wrapper {
+  animation: fadeInAnalytics 0.25s ease-out forwards;
+}
+
+.analytics-section-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.analytics-section-title-row h3 {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* Переключатели периодов и фильтров */
+.period-pills-selector {
+  display: flex;
+  gap: 6px;
+  background: #0f172a;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #1e293b;
+}
+
+.period-pills-selector button {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.period-pills-selector button.active-pill {
+  background: #1e293b;
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+/* Сетка KPI */
+.analytics-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.kpi-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top-width: 3px !important;
+}
+
+.border-cyan {
+  border-top-color: #00ffcc !important;
+}
+.border-purple {
+  border-top-color: #a855f7 !important;
+}
+.border-blue {
+  border-top-color: #38bdf8 !important;
+}
+
+.kpi-title {
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.kpi-value-highlight {
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.kpi-sub-trend {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.kpi-sub-text {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+/* CSS Столбчатый график */
+.analytics-chart-box h4,
+.analytics-left-card h4,
+.analytics-right-card h4,
+.table-caption-flex h4 {
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.css-bar-chart-canvas {
+  height: 200px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 20px 10px 0 10px;
+  background: #020617;
+  border-radius: 12px;
+  border: 1px solid #1e293b;
+}
+
+.chart-column-bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bar-pillar-fill {
+  width: 30px;
+  background: linear-gradient(180deg, #1e293b 0%, rgba(56, 189, 248, 0.1) 100%);
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  transition:
+    height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.3s;
+  cursor: pointer;
+}
+
+.chart-column-bar-group:hover .bar-pillar-fill {
+  background: linear-gradient(180deg, #38bdf8 0%, rgba(0, 255, 204, 0.2) 100%);
+}
+
+.neon-bar-glowing-top {
+  height: 3px;
+  width: 100%;
+  background: #00ffcc;
+  box-shadow: 0 0 10px #00ffcc;
+  border-radius: 4px 4px 0 0;
+}
+
+.bar-axis-label {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin-top: 8px;
+}
+
+.bar-value-tooltip {
+  position: absolute;
+  top: -25px;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  color: #38bdf8;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.chart-column-bar-group:hover .bar-value-tooltip {
+  opacity: 1;
+}
+
+/* Двухколоночный слой */
+.analytics-two-columns-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 16px;
+}
+
+/* Псевдо-круговой график услуг */
+.pseudo-pie-chart-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 10px 0;
+}
+
+.pseudo-pie-donut {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient(#00ffcc 0% 60%, #38bdf8 60% 85%, #a855f7 85% 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.donut-center-text {
+  width: 86px;
+  height: 86px;
+  background: #0f172a;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-center-text span {
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.donut-center-text label {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.pie-legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-item {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot-cyan {
+  width: 8px;
+  height: 8px;
+  background: #00ffcc;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #00ffcc;
+}
+.dot-blue {
+  width: 8px;
+  height: 8px;
+  background: #38bdf8;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #38bdf8;
+}
+.dot-purple {
+  width: 8px;
+  height: 8px;
+  background: #a855f7;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #a855f7;
+}
+
+/* Рейтинг марок машин */
+.rating-bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rating-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rating-bar-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.rating-bar-track-bg {
+  height: 6px;
+  background: #020617;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #1e293b;
+}
+
+.rating-bar-fill-progress {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease-out;
+}
+
+.bg-cyan {
+  background: #00ffcc;
+  box-shadow: 0 0 8px #00ffcc;
+}
+.bg-blue {
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+}
+.bg-purple {
+  background: #a855f7;
+  box-shadow: 0 0 8px #a855f7;
+}
+
+/* Лидерборд - Подиум эффективности */
+.podium-top-masters-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 16px;
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 24px 20px;
+}
+
+.podium-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 160px;
+}
+
+.gold-place {
+  height: 130px;
+  border-color: rgba(250, 204, 21, 0.3);
+  box-shadow: 0 0 15px rgba(250, 204, 21, 0.05);
+}
+.silver-place {
+  height: 105px;
+  border-color: rgba(148, 163, 184, 0.3);
+}
+.bronze-place {
+  height: 95px;
+  border-color: rgba(180, 83, 9, 0.3);
+}
+
+.podium-medal {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.gold-place .podium-medal {
+  color: #facc15;
+}
+.silver-place .podium-medal {
+  color: #94a3b8;
+}
+.bronze-place .podium-medal {
+  color: #b45309;
+}
+
+.podium-card h4 {
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.podium-kpi {
+  color: #38bdf8;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.podium-card label {
+  color: #64748b;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* Сортируемая таблица */
+.sortable-th-header {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+}
+.sortable-th-header:hover {
+  color: #38bdf8 !important;
+}
+.sortable-th-header i {
+  font-size: 11px;
+  margin-left: 4px;
+  color: #64748b;
+}
+
+@keyframes fadeInAnalytics {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

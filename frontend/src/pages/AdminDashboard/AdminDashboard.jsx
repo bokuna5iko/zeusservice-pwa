@@ -15,6 +15,8 @@ import VisitsTab from "./Tabs/VisitsTab.jsx";
 import WorkersTab from "./Tabs/WorkersTab.jsx";
 import SimulatorTab from "./Tabs/SimulatorTab.jsx";
 import AnalyticsTab from "./Tabs/AnalyticsTab.jsx";
+// 🌟 ДОБАВЛЕНО: Импортируем нашу новую продвинутую BI-панель статистики
+import StatisticsTab from "./Tabs/StatisticsTab.jsx";
 
 import { api } from "../../api/apiService";
 
@@ -144,6 +146,11 @@ const DashboardContent = () => {
               />
             )}
             {activeTab === "simulator" && <SimulatorTab />}
+
+            {/* 🌟 ДОБАВЛЕНО: Рендер нового таба профессиональной аналитики */}
+            {activeTab === "stats" && <StatisticsTab />}
+
+            {/* Старый архивный календарь дат по-прежнему работает независимо */}
             {activeTab === "archive" && (
               <AnalyticsTab onSelectArchiveDate={handleEnterArchiveReadOnly} />
             )}
