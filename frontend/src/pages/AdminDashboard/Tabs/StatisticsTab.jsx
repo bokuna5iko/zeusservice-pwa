@@ -1,9 +1,10 @@
 // src/pages/AdminDashboard/Tabs/StatisticsTab.jsx
 import React, { useState } from "react";
-import FinanceSubTab from "./FinanceSubTab";
-import VisitsSubTab from "./VisitsSubTab";
-import EfficiencySubTab from "./EfficiencySubTab";
-import "./StatisticsTab.css"; // Переименовали файл стилей тоже!
+// 🌟 ИСПРАВЛЕНО: Явно добавили расширения .jsx для стабильной сборки на Linux-сервере
+import FinanceSubTab from "./FinanceSubTab.jsx";
+import VisitsSubTab from "./VisitsSubTab.jsx";
+import EfficiencySubTab from "./EfficiencySubTab.jsx";
+import "./StatisticsTab.css";
 
 const StatisticsTab = () => {
   // 'finance' | 'visits' | 'efficiency'
