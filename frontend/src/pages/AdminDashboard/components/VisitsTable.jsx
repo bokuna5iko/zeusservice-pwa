@@ -14,8 +14,8 @@ const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
 
   return (
     <section className="visits-table-wrapper content-group-box">
-      {/* 🌟 ДОБАВЛЕНО: Специальная обертка для изоляции и прокрутки таблицы */}
-      <div className="arm-table-scroll-area">
+      {/* 🌟 ОБНОВЛЕНО: Добавлен класс custom-scroll для активации локального скролла */}
+      <div className="arm-table-scroll-area custom-scroll">
         <table className="arm-table">
           <thead>
             <tr>
