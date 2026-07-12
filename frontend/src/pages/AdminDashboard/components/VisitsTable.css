@@ -184,135 +184,135 @@
 /* СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА ОТМЕНЫ ЗАЕЗДА (CANCEL MODAL)
 /* ==================================================== */
 
-/* Затемняющий фон на весь экран */
+/* ====================================================
+/* СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА ОТМЕНЫ ЗАЕЗДА (ФИНАЛ)
+/* ==================================================== */
+
 .modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(
-    2,
-    6,
-    23,
-    0.75
-  ); /* Глубокий темный полупрозрачный фон */
-  backdrop-filter: blur(4px); /* Легкое размытие заднего плана */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999; /* Поверх всех элементов интерфейса */
-  animation: fadeInModal 0.2s ease-out;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(2, 6, 23, 0.8) !important; /* Плотный темный фон */
+  backdrop-filter: blur(4px);
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 99999 !important;
 }
 
-/* Само модальное окно */
 .modal-window {
-  background: var(--bg-box, #1e293b); /* Тёмный фон в цвет блоков темы */
-  border: 1px solid #334155;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.5),
-    0 10px 10px -5px rgba(0, 0, 0, 0.4);
-  animation: scaleUpModal 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #1e293b !important; /* Фиксируем темный благородный фон */
+  border: 1px solid #334155 !important;
+  border-radius: 12px !important;
+  padding: 24px !important;
+  width: 100% !important;
+  max-width: 440px !important; /* Жестко ограничиваем ширину, чтобы не растягивалась */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+  box-sizing: border-box !important;
 }
 
-/* Шапка модалки */
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  border-bottom: 1px solid #334155;
-  padding-bottom: 12px;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 16px !important;
+  border-bottom: 1px solid #334155 !important;
+  padding-bottom: 12px !important;
 }
 
 .modal-header h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #f8fafc;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: #f8fafc !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
 }
 
-/* Кнопка-крестик закрытия в шапке */
 .modal-close-x {
-  background: transparent;
-  border: none;
-  color: #94a3b8;
-  font-size: 24px;
-  cursor: pointer;
-  transition: color 0.15s ease;
-  line-height: 1;
+  background: transparent !important;
+  border: none !important;
+  color: #94a3b8 !important;
+  font-size: 24px !important;
+  cursor: pointer !important;
+  line-height: 1 !important;
+  padding: 0 !important;
 }
 
 .modal-close-x:hover {
-  color: #f1f5f9;
+  color: #f1f5f9 !important;
 }
 
-/* Группы полей формы ввода */
+/* Форма и поля */
+.modal-body-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
 .form-field-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 16px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
 }
 
 .form-field-group label {
-  font-size: 13px;
-  font-weight: 500;
-  color: #cbd5e1;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #cbd5e1 !important;
+  text-align: left !important;
 }
 
-/* Поля ввода (селект и текстовое поле) */
-.modal-input-field {
-  width: 100%;
-  padding: 10px 12px;
-  background-color: #0f172a !important; /* Очень темное поле ввода */
-  color: #f8fafc !important;
-  border: 1px solid #475569 !important;
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 14px;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.modal-input-field:focus {
-  outline: none;
-  border-color: #ef4444 !important; /* Красное свечение при фокусе, так как это окно отмены */
-  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
-}
-
-/* Нижняя панель с кнопками */
+/* Кнопки управления (Приводим в идеальный вид) */
 .modal-footer-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
-  border-top: 1px solid #334155;
-  padding-top: 16px;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  margin-top: 10px !important;
+  border-top: 1px solid #334155 !important;
+  padding-top: 16px !important;
 }
 
-/* Анимации появления */
-@keyframes fadeInModal {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+/* Кнопка Отмена */
+.modal-footer-actions .btn-secondary {
+  background: #334155 !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #475569 !important;
+  padding: 10px 18px !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
 }
 
-@keyframes scaleUpModal {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+.modal-footer-actions .btn-secondary:hover {
+  background: #475569 !important;
+  border-color: #64748b !important;
+}
+
+/* Кнопка зафиксировать отказ */
+.modal-footer-actions .btn-danger {
+  background: #dc2626 !important; /* Насыщенный красный */
+  color: #ffffff !important;
+  border: none !important;
+  padding: 10px 20px !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.modal-footer-actions .btn-danger:hover {
+  background: #b91c1c !important; /* Темно-красный при наведении */
+}
+
+.modal-footer-actions button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
 }
