@@ -9,6 +9,7 @@ import {
   PoweroffOutlined,
   ClockCircleOutlined,
   ArrowLeftOutlined,
+  BarChartOutlined, // 🌟 ДОБАВЛЕНО: Иконка для раздела статистики
 } from "@ant-design/icons";
 import { useAdminDashboard } from "../context/AdminDashboardContext";
 
@@ -43,6 +44,11 @@ const DashboardSidebar = () => {
       key: "workers",
       label: "Сотрудники",
       icon: <TeamOutlined />,
+    },
+    {
+      key: "stats", // 🌟 ДОБАВЛЕНО: Ключ совпадает с роутом в AdminDashboard
+      label: "Статистика",
+      icon: <BarChartOutlined />,
     },
     {
       key: "simulator",
