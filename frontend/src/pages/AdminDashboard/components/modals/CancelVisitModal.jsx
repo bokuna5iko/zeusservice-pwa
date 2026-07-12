@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import "./CancelVisitModal.css"; // Импортируем, если вынес отдельно
-
 const CancelVisitModal = ({ isOpen, onClose, visit, onSave, loading }) => {
   const [reason, setReason] = useState("");
   const [comment, setComment] = useState("");

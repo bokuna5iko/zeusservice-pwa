@@ -179,3 +179,140 @@
   cursor: not-allowed;
   font-weight: bold;
 }
+
+/* ====================================================
+/* СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА ОТМЕНЫ ЗАЕЗДА (CANCEL MODAL)
+/* ==================================================== */
+
+/* Затемняющий фон на весь экран */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(
+    2,
+    6,
+    23,
+    0.75
+  ); /* Глубокий темный полупрозрачный фон */
+  backdrop-filter: blur(4px); /* Легкое размытие заднего плана */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Поверх всех элементов интерфейса */
+  animation: fadeInModal 0.2s ease-out;
+}
+
+/* Само модальное окно */
+.modal-window {
+  background: var(--bg-box, #1e293b); /* Тёмный фон в цвет блоков темы */
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.5),
+    0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  animation: scaleUpModal 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Шапка модалки */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 12px;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Кнопка-крестик закрытия в шапке */
+.modal-close-x {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  line-height: 1;
+}
+
+.modal-close-x:hover {
+  color: #f1f5f9;
+}
+
+/* Группы полей формы ввода */
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.form-field-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+/* Поля ввода (селект и текстовое поле) */
+.modal-input-field {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: #0f172a !important; /* Очень темное поле ввода */
+  color: #f8fafc !important;
+  border: 1px solid #475569 !important;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.modal-input-field:focus {
+  outline: none;
+  border-color: #ef4444 !important; /* Красное свечение при фокусе, так как это окно отмены */
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+/* Нижняя панель с кнопками */
+.modal-footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  border-top: 1px solid #334155;
+  padding-top: 16px;
+}
+
+/* Анимации появления */
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUpModal {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
