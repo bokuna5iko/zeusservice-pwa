@@ -143,3 +143,39 @@
   font-weight: 700;
   color: #f8fafc;
 }
+
+/* Стилизация для отмененного визита */
+.arm-table tr.row-cancelled {
+  background-color: rgba(
+    239,
+    68,
+    68,
+    0.08
+  ) !important; /* Мягкий полупрозрачный красный фон */
+  color: #94a3b8; /* Блеклый цвет текста */
+}
+
+.arm-table tr.row-cancelled:hover {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+}
+
+/* Метка причины отмены рядом с услугой */
+.cancel-reason-tag {
+  display: inline-block;
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Отключенная кнопка отмены после её применения */
+.cancel-row-btn.cancelled-active {
+  color: #ef4444 !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+  font-weight: bold;
+}

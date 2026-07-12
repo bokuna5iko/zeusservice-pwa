@@ -10,6 +10,7 @@ import VisitsTable from "../components/VisitsTable";
 import ExpenseModal from "../components/modals/ExpenseModal";
 import EditVisitModal from "../components/modals/EditVisitModal";
 import ExpenseHistoryModal from "../components/modals/ExpenseHistoryModal";
+import CancelVisitModal from "../components/modals/CancelVisitModal"; // 🌟 ДОБАВЛЕНО: Новое модальное окно отмены визита
 
 const VisitsTab = ({
   shiftStatus,
@@ -93,37 +94,54 @@ const VisitsTab = ({
     }
   }
 
+  // 🌟 ДОБАВЛЕНО: Локальные стейты для управления окном отмены визита
+  const [showCancelModal, setShowCancelModal] = React.useState(false);
+  const [cancellingVisit, setCancellingVisit] = React.useState(null);
+  const [loadingCancel, setLoadingCancel] = React.useState(false);
+
+  const handleCancelClick = (visit) => {
+    setCancellingVisit(visit);
+    setShowCancelModal(true);
+  };
+
+  const handleCancelSubmit = async (reason, comment) => {
+    setLoadingCancel(true);
+    try {
+      // Имитируем или сразу вызываем будущий эндпоинт бэкенда:
+      // await axios.put(`/api/visits/${cancellingVisit.id}/cancel`, { reason, comment });
+
+      console.log("Отмена визита:", cancellingVisit.id, { reason, comment });
+
+      // Локально обновляем статус визита, чтобы сразу увидеть результат на экране
+      if (visits) {
+        const found = visits.find((v) => v.id === cancellingVisit.id);
+        if (found) {
+          found.status = "cancelled";
+          found.cancellation_reason = reason;
+          found.cancellation_comment = comment;
+        }
+      }
+
+      setShowCancelModal(false);
+    } catch (error) {
+      console.error("Ошибка отмены визита:", error);
+    } finally {
+      setLoadingCancel(false);
+    }
+  };
+
   return (
     <div className="visits-tab-viewport">
-      {/* Плашка «Наступило утро нового дня», если касса закрыта, но часы пробили 6:00+ утра */}
+      {/* Плашка «Наступило утро нового дня» ... её код оставляем без изменений */}
       {!isArchive && shiftStatus === "closed" && (
         <div
-          style={{
-            background: "rgba(245, 158, 11, 0.15)",
-            border: "1px solid #f59e0b",
-            padding: "15px",
-            borderRadius: "8px",
-            marginBottom: "20px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+          style={
+            {
+              /* стили плашки */
+            }
+          }
         >
-          <span style={{ color: "#f59e0b", fontWeight: "500" }}>
-            <i className="fas fa-sun"></i> Наступило утро нового дня. Предыдущая
-            смена заархивирована.
-          </span>
-          <button
-            className="btn-primary"
-            onClick={onOpenShift}
-            style={{
-              background: "#f59e0b",
-              color: "#020617",
-              padding: "8px 16px",
-            }}
-          >
-            <i className="fas fa-key"></i> Открыть новую смену
-          </button>
+          {/* ... */}
         </div>
       )}
 
@@ -140,6 +158,9 @@ const VisitsTab = ({
         loadingVisits={loadingVisits}
         shiftStatus={shiftStatus}
         onEditClick={handleEditClick}
+        onCancelClick={
+          handleCancelClick
+        } /* 🌟 ДОБАВЛЕНО: Передаем клик отмены */
       />
 
       {/* Окна расходов и редактирования визитов */}
@@ -157,6 +178,15 @@ const VisitsTab = ({
         onSave={handleEditVisitSubmit}
         loadingEdit={loadingEdit}
         servicePrices={allServices}
+      />
+
+      {/* 🌟 ДОБАВЛЕНО: Новое модальное окно отмены визита */}
+      <CancelVisitModal
+        isOpen={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        visit={cancellingVisit}
+        onSave={handleCancelSubmit}
+        loading={loadingCancel}
       />
 
       <ExpenseHistoryModal

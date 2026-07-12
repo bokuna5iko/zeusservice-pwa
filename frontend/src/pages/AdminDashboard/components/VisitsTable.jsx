@@ -3,7 +3,14 @@ import React from "react";
 import AddonPopoverBadge from "./AddonPopoverBadge";
 import "./VisitsTable.css";
 
-const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
+// 🌟 ОБНОВЛЕНО: В пропсы добавлен onCancelClick для вызова модалки отказа
+const VisitsTable = ({
+  visits,
+  loadingVisits,
+  shiftStatus,
+  onEditClick,
+  onCancelClick,
+}) => {
   const formatTime = (dateString) => {
     if (!dateString) return "—";
     const date = new Date(dateString);
@@ -67,8 +74,14 @@ const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
                   ? v.manual_client_name || "Гость"
                   : v.name || v.client_name || v.manual_client_name || "Клиент";
 
+                // 🌟 ДОБАВЛЕНО: Проверяем, отменен ли визит
+                const isCancelled = v.status === "cancelled";
+
                 return (
-                  <tr key={v.id || index} className="fade-in">
+                  <tr
+                    key={v.id || index}
+                    className={`fade-in ${isCancelled ? "row-cancelled" : ""}`}
+                  >
                     <td>
                       <div className="table-index-cell">
                         <span style={{ fontWeight: "600" }}>{index + 1}</span>
@@ -78,8 +91,21 @@ const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
                       </div>
                     </td>
 
-                    <td style={{ fontWeight: "600" }}>{carBrandDisplay}</td>
-                    <td>{clientNameDisplay}</td>
+                    <td
+                      style={{
+                        fontWeight: "600",
+                        textDecoration: isCancelled ? "line-through" : "none",
+                      }}
+                    >
+                      {carBrandDisplay}
+                    </td>
+                    <td
+                      style={{
+                        textDecoration: isCancelled ? "line-through" : "none",
+                      }}
+                    >
+                      {clientNameDisplay}
+                    </td>
                     <td>
                       {v.manual_client_phone ||
                         v.client_phone ||
@@ -89,17 +115,36 @@ const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
 
                     <td>
                       <div className="service-cell-container">
-                        <span>
+                        <span
+                          style={{
+                            textDecoration: isCancelled
+                              ? "line-through"
+                              : "none",
+                          }}
+                        >
                           {v.manual_service_name ||
                             v.service_name ||
                             v.service_type ||
                             "—"}
                         </span>
                         <AddonPopoverBadge addons={v.additional_services} />
+
+                        {/* 🌟 ДОБАВЛЕНО: Компактный тег с причиной отмены, если статус отменен */}
+                        {isCancelled && v.cancellation_reason && (
+                          <span
+                            className="cancel-reason-tag"
+                            title={v.cancellation_comment}
+                          >
+                            ❌ {v.cancellation_reason}
+                          </span>
+                        )}
                       </div>
                     </td>
 
-                    <td className="table-amount-bold">
+                    <td
+                      className="table-amount-bold"
+                      style={{ color: isCancelled ? "#94a3b8" : "inherit" }}
+                    >
                       {Number(v.amount ?? v.price ?? 0)} ₽
                     </td>
 
@@ -115,16 +160,23 @@ const VisitsTable = ({ visits, loadingVisits, shiftStatus, onEditClick }) => {
                     <td>{v.manual_payment_type || v.payment_type || "—"}</td>
                     <td>
                       <div className="table-actions-cell">
+                        {/* Кнопка изменения: блокируется, если смена закрыта или заезд уже отменен */}
                         <button
                           className="edit-row-btn"
-                          disabled={shiftStatus === "closed"}
+                          disabled={shiftStatus === "closed" || isCancelled}
                           onClick={() => onEditClick(v)}
                         >
                           <i className="fas fa-edit"></i>
                         </button>
+
+                        {/* 🌟 ОБНОВЛЕНО: Крестик теперь интерактивный и вызывает окно отмены */}
                         <button
-                          className="cancel-row-btn"
-                          disabled={shiftStatus === "closed"}
+                          className={`cancel-row-btn ${isCancelled ? "cancelled-active" : ""}`}
+                          disabled={shiftStatus === "closed" || isCancelled}
+                          onClick={() => onCancelClick(v)}
+                          title={
+                            isCancelled ? "Заезд отменен" : "Отменить заезд"
+                          }
                         >
                           &times;
                         </button>
