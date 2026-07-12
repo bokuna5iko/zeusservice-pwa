@@ -11,10 +11,14 @@
             "id": "c6a32a8d05138e2e",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "Новая вкладка"
+              "title": "PGAdmin&postgreSQL"
             }
           }
         ]
@@ -189,6 +193,8 @@
   },
   "active": "c6a32a8d05138e2e",
   "lastOpenFiles": [
+    "Projzeus/📚Docs/Tutorials/BD terminal Guiede/Export db.md",
+    "Projzeus/📚Docs/Tutorials/BD terminal Guiede",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Пульт управления/Техническое ТЗ.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Пульт управления/Смены и его логика.md",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Пульт управления/Идейное ТЗ.md",
@@ -226,14 +232,12 @@
     "Projzeus/🗺RoadMap/Versions/v0.1/zeus-auto-pwa-canvas.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.1/Readme-v0.1.md",
     "Projzeus/📚Docs/Tutorials/porj react arh/Без названия.md",
-    "Projzeus/📚Docs/Tutorials/Errors in vscode/node server.js.md",
     "Projzeus/📚Docs/Tutorials/AI/LLM",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/PWA Logic",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Business Logic (JS)",
     "Projzeus/🧠Brainstorm/Server logic/TODO",
-    "Projzeus/🧠Brainstorm/Server logic/Technology",
-    "Projzeus/🧠Brainstorm/Server logic/Hardware"
+    "Projzeus/🧠Brainstorm/Server logic/Technology"
   ]
 }
