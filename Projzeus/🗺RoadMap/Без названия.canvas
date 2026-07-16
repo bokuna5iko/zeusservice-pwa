@@ -1,6 +1,6 @@
 {
 	"nodes":[
-		{"id":"437d99b664ca6086","x":-540,"y":-480,"width":1440,"height":1200,"color":"6","type":"group","label":"Выбор услуг"},
+		{"id":"437d99b664ca6086","x":-540,"y":-480,"width":1700,"height":1200,"color":"6","type":"group","label":"Выбор услуг"},
 		{"id":"2eeaa6a01f4055b0","x":-450,"y":-207,"width":1225,"height":100,"color":"3","type":"group","label":"Способ мойки на 2 этапе (зона протирки)"},
 		{"id":"7ed57403a0f3420b","x":-340,"y":-420,"width":935,"height":100,"color":"3","type":"group","label":"Способ мойки на 1 этапе (ствол)"},
 		{"id":"8380f78ff5418155","x":-320,"y":-400,"width":250,"height":60,"type":"text","text":"Стандартная мойка"},
@@ -10,9 +10,10 @@
 		{"id":"c67dc6e1108aeb83","type":"text","text":"Комплекс","x":505,"y":-187,"width":250,"height":60},
 		{"id":"6ee98be8fae5adc4","x":325,"y":-400,"width":250,"height":60,"type":"text","text":"2-х фазная мойка"},
 		{"id":"622a5be6fa017c72","x":20,"y":20,"width":250,"height":60,"color":"1","type":"text","text":"Выбор доп.услуг"},
-		{"id":"6b4eda99b330d5af","x":-305,"y":240,"width":110,"height":60,"type":"text","text":"Влажная уборка"},
-		{"id":"7e20c39ded2e4d49","x":20,"y":240,"width":250,"height":60,"type":"text","text":"Пылесос салона"},
-		{"id":"659979558e489e90","type":"text","text":"Влажная уборка","x":195,"y":166,"width":110,"height":60}
+		{"id":"6b4eda99b330d5af","x":-485,"y":241,"width":110,"height":60,"type":"text","text":"Влажная уборка"},
+		{"id":"659979558e489e90","type":"text","text":"Палироль","x":-305,"y":241,"width":125,"height":60},
+		{"id":"7e20c39ded2e4d49","x":-50,"y":241,"width":250,"height":60,"type":"text","text":"Пылесос салона"},
+		{"id":"f06cd8a4d580800f","x":270,"y":241,"width":250,"height":60,"type":"text","text":"Пылесос багажника"}
 	],
 	"edges":[
 		{"id":"f2376cc918ef448f","fromNode":"8380f78ff5418155","fromSide":"bottom","toNode":"a76b81857318967b","toSide":"top"},
@@ -22,6 +23,11 @@
 		{"id":"23e37e30dd996d31","fromNode":"a76b81857318967b","fromSide":"bottom","toNode":"622a5be6fa017c72","toSide":"top"},
 		{"id":"b4e844d66ca6cc2c","fromNode":"622a5be6fa017c72","fromSide":"bottom","toNode":"6b4eda99b330d5af","toSide":"top"},
 		{"id":"6027ade186c4bc24","fromNode":"622a5be6fa017c72","fromSide":"bottom","toNode":"7e20c39ded2e4d49","toSide":"top"},
-		{"id":"8a5855c4063c640b","fromNode":"57e48e3442996be2","fromSide":"bottom","toNode":"622a5be6fa017c72","toSide":"top"}
+		{"id":"8a5855c4063c640b","fromNode":"57e48e3442996be2","fromSide":"bottom","toNode":"622a5be6fa017c72","toSide":"top"},
+		{"id":"c7d570b3f9583deb","fromNode":"6b4eda99b330d5af","fromSide":"right","toNode":"659979558e489e90","toSide":"left"},
+		{"id":"68b7b6171f854ca9","fromNode":"659979558e489e90","fromSide":"left","toNode":"6b4eda99b330d5af","toSide":"right"},
+		{"id":"e533ad54afe875da","fromNode":"622a5be6fa017c72","fromSide":"bottom","toNode":"659979558e489e90","toSide":"top"},
+		{"id":"855c3f0d84efff9e","fromNode":"f06cd8a4d580800f","fromSide":"left","toNode":"7e20c39ded2e4d49","toSide":"right"},
+		{"id":"afebcdb16706912d","fromNode":"7e20c39ded2e4d49","fromSide":"right","toNode":"f06cd8a4d580800f","toSide":"left"}
 	]
 }
