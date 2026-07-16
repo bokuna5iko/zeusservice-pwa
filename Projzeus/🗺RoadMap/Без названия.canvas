@@ -3,9 +3,9 @@
 		{"id":"437d99b664ca6086","x":-1840,"y":-1040,"width":4520,"height":2960,"color":"6","type":"group","label":"Выбор услуг"},
 		{"id":"3284084b73797dcf","x":-1800,"y":1010,"width":1350,"height":299,"color":"4","type":"group","label":"Стандарт (кузов + коврики)"},
 		{"id":"3f821e1521786996","x":1008,"y":1010,"width":758,"height":329,"color":"4","type":"group","label":"Комплекс"},
+		{"id":"e21cb8bcc690bb8b","x":-794,"y":0,"width":689,"height":240,"color":"4","type":"group","label":"Доп услуги на 1 этапе"},
 		{"id":"2eeaa6a01f4055b0","x":-450,"y":440,"width":1225,"height":100,"color":"3","type":"group","label":"Способ мойки на 2 этапе (зона протирки)"},
 		{"id":"7ed57403a0f3420b","x":-305,"y":-420,"width":935,"height":100,"color":"3","type":"group","label":"Способ мойки на 1 этапе (ствол)"},
-		{"id":"e21cb8bcc690bb8b","x":-779,"y":40,"width":658,"height":100,"color":"4","type":"group","label":"Группа без названия"},
 		{"id":"6ee98be8fae5adc4","x":283,"y":-400,"width":250,"height":60,"type":"text","text":"2-х фазная мойка"},
 		{"id":"8380f78ff5418155","x":-70,"y":-400,"width":250,"height":60,"type":"text","text":"Стандартная мойка"},
 		{"id":"ee3db1434af44fb3","type":"text","text":"Пылесос салона","x":1028,"y":1259,"width":250,"height":60},
@@ -24,18 +24,17 @@
 		{"id":"93e4752fc88d6cb5","x":193,"y":460,"width":250,"height":60,"type":"text","text":"Комплекс"},
 		{"id":"a76b81857318967b","x":-175,"y":460,"width":250,"height":60,"type":"text","text":"Кузов коврики"},
 		{"id":"3ea6b20d7fe202d4","x":-425,"y":-160,"width":250,"height":60,"color":"1","type":"text","text":"Доп услуги"},
-		{"id":"1a5363e81043ff5e","x":-759,"y":60,"width":250,"height":60,"type":"text","text":"Удаление мошек"},
-		{"id":"7c72caf3c6ad6986","x":-391,"y":60,"width":250,"height":60,"type":"text","text":"Удаление битума"}
+		{"id":"1a5363e81043ff5e","x":-755,"y":20,"width":250,"height":60,"type":"text","text":"Удаление мошек"},
+		{"id":"7c72caf3c6ad6986","x":-426,"y":20,"width":250,"height":60,"type":"text","text":"Удаление битума"},
+		{"id":"b1b51dfbc7db2f4f","x":-755,"y":120,"width":250,"height":60,"type":"text","text":"Мойка двигателя"},
+		{"id":"251dc5e4e8236597","x":-426,"y":120,"width":250,"height":60,"type":"text","text":"Мойка ражиатора"}
 	],
 	"edges":[
 		{"id":"23e37e30dd996d31","fromNode":"a76b81857318967b","fromSide":"bottom","toNode":"622a5be6fa017c72","toSide":"top"},
-		{"id":"b4e844d66ca6cc2c","fromNode":"622a5be6fa017c72","fromSide":"bottom","toNode":"6b4eda99b330d5af","toSide":"top"},
 		{"id":"c7d570b3f9583deb","fromNode":"6b4eda99b330d5af","fromSide":"right","toNode":"659979558e489e90","toSide":"left"},
 		{"id":"68b7b6171f854ca9","fromNode":"659979558e489e90","fromSide":"left","toNode":"6b4eda99b330d5af","toSide":"right"},
-		{"id":"e533ad54afe875da","fromNode":"622a5be6fa017c72","fromSide":"bottom","toNode":"659979558e489e90","toSide":"top"},
 		{"id":"855c3f0d84efff9e","fromNode":"f06cd8a4d580800f","fromSide":"left","toNode":"7e20c39ded2e4d49","toSide":"right"},
 		{"id":"afebcdb16706912d","fromNode":"7e20c39ded2e4d49","fromSide":"right","toNode":"f06cd8a4d580800f","toSide":"left"},
-		{"id":"151d10404cd45438","fromNode":"622a5be6fa017c72","fromSide":"bottom","toNode":"3acca00451da5737","toSide":"top"},
 		{"id":"de73d2d55b8518e9","fromNode":"3acca00451da5737","fromSide":"bottom","toNode":"7e20c39ded2e4d49","toSide":"top"},
 		{"id":"81375983e280a369","fromNode":"3acca00451da5737","fromSide":"bottom","toNode":"f06cd8a4d580800f","toSide":"top"},
 		{"id":"9aed25672e0515f4","fromNode":"ee3db1434af44fb3","fromSide":"right","toNode":"0bdec4304fd776dd","toSide":"left"},
@@ -48,9 +47,9 @@
 		{"id":"62a6c77f76b0f2e9","fromNode":"7ed57403a0f3420b","fromSide":"bottom","toNode":"2eeaa6a01f4055b0","toSide":"top"},
 		{"id":"3cc2f23ec585a558","fromNode":"93e4752fc88d6cb5","fromSide":"bottom","toNode":"fb174e68dea185ac","toSide":"top"},
 		{"id":"88716fbe27d38570","fromNode":"fb174e68dea185ac","fromSide":"bottom","toNode":"cab6475bd5a84ef0","toSide":"top"},
-		{"id":"82c9c2c62c7d54f9","fromNode":"622a5be6fa017c72","fromSide":"bottom","toNode":"ca6197a19d836c8f","toSide":"top"},
 		{"id":"1c034c411838b9a6","fromNode":"7ed57403a0f3420b","fromSide":"bottom","toNode":"3ea6b20d7fe202d4","toSide":"top"},
-		{"id":"4ae1b836402f948b","fromNode":"3ea6b20d7fe202d4","fromSide":"bottom","toNode":"1a5363e81043ff5e","toSide":"top"},
-		{"id":"7a241cd4b18f5f64","fromNode":"3ea6b20d7fe202d4","fromSide":"bottom","toNode":"7c72caf3c6ad6986","toSide":"top"}
+		{"id":"77e9f8167ccd5a44","fromNode":"3ea6b20d7fe202d4","fromSide":"bottom","toNode":"e21cb8bcc690bb8b","toSide":"top"},
+		{"id":"6a68e4f9ccb3b201","fromNode":"e21cb8bcc690bb8b","fromSide":"bottom","toNode":"2eeaa6a01f4055b0","toSide":"top"},
+		{"id":"e0eacf19f615431d","fromNode":"622a5be6fa017c72","fromSide":"bottom","toNode":"3284084b73797dcf","toSide":"top"}
 	]
 }
