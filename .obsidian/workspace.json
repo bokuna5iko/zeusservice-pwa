@@ -11,14 +11,17 @@
             "id": "c6a32a8d05138e2e",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "canvas",
               "state": {
-                "file": "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
-                "mode": "source",
-                "source": false
+                "file": "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
+                "viewState": {
+                  "x": -10.667254987063561,
+                  "y": 1070.8940734516245,
+                  "zoom": -1.2607525627732434
+                }
               },
-              "icon": "lucide-file",
-              "title": "PGAdmin&postgreSQL"
+              "icon": "lucide-layout-dashboard",
+              "title": "Global-Map"
             }
           }
         ]
@@ -193,6 +196,7 @@
   },
   "active": "c6a32a8d05138e2e",
   "lastOpenFiles": [
+    "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
     "Projzeus/📚Docs/Tutorials/BD terminal Guiede/Export db.md",
     "Projzeus/📚Docs/Tutorials/BD terminal Guiede",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Пульт управления/Техническое ТЗ.md",
@@ -231,7 +235,6 @@
     "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.1/zeus-auto-pwa-canvas.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.1/Readme-v0.1.md",
-    "Projzeus/📚Docs/Tutorials/porj react arh/Без названия.md",
     "Projzeus/📚Docs/Tutorials/AI/LLM",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server",
