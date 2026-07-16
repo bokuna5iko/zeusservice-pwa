@@ -11,17 +11,14 @@
             "id": "c6a32a8d05138e2e",
             "type": "leaf",
             "state": {
-              "type": "canvas",
+              "type": "markdown",
               "state": {
-                "file": "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
-                "viewState": {
-                  "x": -10.667254987063561,
-                  "y": 1070.8940734516245,
-                  "zoom": -1.2607525627732434
-                }
+                "file": "Экоситема Zeus Family.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-layout-dashboard",
-              "title": "Global-Map"
+              "icon": "lucide-file",
+              "title": "Экоситема Zeus Family"
             }
           }
         ]
@@ -196,6 +193,9 @@
   },
   "active": "c6a32a8d05138e2e",
   "lastOpenFiles": [
+    "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
+    "Экоситема Zeus Family.md",
+    "PWA Auto.md",
     "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
     "Projzeus/📚Docs/Tutorials/BD terminal Guiede/Export db.md",
     "Projzeus/📚Docs/Tutorials/BD terminal Guiede",
@@ -226,15 +226,11 @@
     "Projzeus/🧠Brainstorm/Server logic/TODO/06.2026.canvas",
     "Projzeus/🧠Brainstorm/Server logic/Technology/Status.md",
     "Projzeus/🧠Brainstorm/Server logic/Technology/Stagging Server.md",
-    "Projzeus/🧠Brainstorm/Server logic/Technology/Prod server.md",
     "Projzeus/🧠Brainstorm/Server logic/Hardware/Hardware.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/zeus-auto-pwa-canvas-v2.canvas",
     "Projzeus/🗺RoadMap/Versions/v0.2/Untitled.canvas",
-    "Projzeus/🗺RoadMap/Versions/v0.2/Readme-v0.2.md",
     "Projzeus/🗺RoadMap/Versions/v0.2/Map.canvas",
-    "Projzeus/🗺RoadMap/Versions/v0.1/zeus-auto-pwa-canvas.canvas",
-    "Projzeus/🗺RoadMap/Versions/v0.1/Readme-v0.1.md",
     "Projzeus/📚Docs/Tutorials/AI/LLM",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Frontend",
     "Projzeus/🧠Brainstorm/📱Progressive Web App/Server",
