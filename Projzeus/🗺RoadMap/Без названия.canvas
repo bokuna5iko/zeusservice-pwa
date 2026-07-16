@@ -1,8 +1,10 @@
 {
 	"nodes":[
 		{"id":"437d99b664ca6086","x":-1060,"y":-480,"width":2508,"height":1200,"color":"6","type":"group","label":"Выбор услуг"},
-		{"id":"2eeaa6a01f4055b0","x":-400,"y":-220,"width":1225,"height":100,"color":"3","type":"group","label":"Способ мойки на 2 этапе (зона протирки)"},
+		{"id":"3284084b73797dcf","x":-1005,"y":380,"width":1350,"height":299,"color":"4","type":"group","label":"Стандарт (кузов + коврики)"},
+		{"id":"2eeaa6a01f4055b0","x":-418,"y":-80,"width":1225,"height":100,"color":"3","type":"group","label":"Способ мойки на 2 этапе (зона протирки)"},
 		{"id":"7ed57403a0f3420b","x":-305,"y":-420,"width":935,"height":100,"color":"3","type":"group","label":"Способ мойки на 1 этапе (ствол)"},
+		{"id":"3f821e1521786996","x":440,"y":350,"width":758,"height":329,"type":"group","label":"Группа без названия"},
 		{"id":"6b4eda99b330d5af","x":-985,"y":400,"width":110,"height":60,"type":"text","text":"Влажная уборка"},
 		{"id":"659979558e489e90","type":"text","text":"Палироль","x":-805,"y":400,"width":125,"height":60},
 		{"id":"5e3540fd5a0aad5e","x":-570,"y":400,"width":250,"height":60,"type":"text","text":"Стёкла"},
@@ -13,13 +15,13 @@
 		{"id":"fb174e68dea185ac","type":"text","text":"Выбор доп.услуг","x":678,"y":180,"width":250,"height":60,"color":"1"},
 		{"id":"6ee98be8fae5adc4","x":283,"y":-400,"width":250,"height":60,"type":"text","text":"2-х фазная мойка"},
 		{"id":"8380f78ff5418155","x":-70,"y":-400,"width":250,"height":60,"type":"text","text":"Стандартная мойка"},
-		{"id":"a76b81857318967b","x":-125,"y":-200,"width":250,"height":60,"type":"text","text":"Кузов коврики"},
-		{"id":"93e4752fc88d6cb5","x":243,"y":-200,"width":250,"height":60,"type":"text","text":"Комплекс"},
 		{"id":"ee3db1434af44fb3","type":"text","text":"Пылесос салона","x":460,"y":599,"width":250,"height":60},
 		{"id":"0bdec4304fd776dd","type":"text","text":"Пылесос багажника","x":840,"y":599,"width":250,"height":60},
 		{"id":"1b4e984275b4bf4d","type":"text","text":"Пылесос","x":585,"y":370,"width":250,"height":60},
 		{"id":"cab6475bd5a84ef0","x":928,"y":370,"width":250,"height":60,"type":"text","text":"Полировка фар"},
-		{"id":"ca6197a19d836c8f","type":"text","text":"Полировка фар","x":75,"y":400,"width":250,"height":60}
+		{"id":"ca6197a19d836c8f","type":"text","text":"Полировка фар","x":75,"y":400,"width":250,"height":60},
+		{"id":"a76b81857318967b","x":-143,"y":-60,"width":250,"height":60,"type":"text","text":"Кузов коврики"},
+		{"id":"93e4752fc88d6cb5","x":225,"y":-60,"width":250,"height":60,"type":"text","text":"Комплекс"}
 	],
 	"edges":[
 		{"id":"23e37e30dd996d31","fromNode":"a76b81857318967b","fromSide":"bottom","toNode":"622a5be6fa017c72","toSide":"top"},
