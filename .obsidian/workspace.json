@@ -15,9 +15,9 @@
               "state": {
                 "file": "Projzeus/🗺RoadMap/Без названия.canvas",
                 "viewState": {
-                  "x": 22.523230766444556,
-                  "y": -89.66941258568875,
-                  "zoom": -1.2373552259586746
+                  "x": 1065.8348262422567,
+                  "y": 832.0666844462497,
+                  "zoom": -0.8101057513040834
                 }
               },
               "icon": "lucide-layout-dashboard",
@@ -81,7 +81,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 296.5
+    "width": 200
   },
   "right": {
     "id": "6805bcb3588c6415",
@@ -180,7 +180,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200
   },
   "left-ribbon": {
     "hiddenItems": {
