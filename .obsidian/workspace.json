@@ -11,14 +11,17 @@
             "id": "c6a32a8d05138e2e",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "canvas",
               "state": {
-                "file": "Экоситема Zeus Family.md",
-                "mode": "source",
-                "source": false
+                "file": "Projzeus/🗺RoadMap/Без названия.canvas",
+                "viewState": {
+                  "x": 159.8890127941395,
+                  "y": 16.5092690970233,
+                  "zoom": -0.777947211722533
+                }
               },
-              "icon": "lucide-file",
-              "title": "Экоситема Zeus Family"
+              "icon": "lucide-layout-dashboard",
+              "title": "Без названия"
             }
           }
         ]
@@ -194,6 +197,7 @@
   "active": "c6a32a8d05138e2e",
   "lastOpenFiles": [
     "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
+    "Projzeus/🗺RoadMap/Без названия.canvas",
     "Экоситема Zeus Family.md",
     "PWA Auto.md",
     "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",

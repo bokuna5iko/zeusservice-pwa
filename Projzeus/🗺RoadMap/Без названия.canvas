@@ -1,0 +1,21 @@
+{
+	"nodes":[
+		{"id":"437d99b664ca6086","x":-540,"y":-480,"width":1440,"height":820,"color":"6","type":"group","label":"Выбор услуг"},
+		{"id":"8380f78ff5418155","x":-320,"y":-400,"width":250,"height":60,"type":"text","text":"Стандартная мойка"},
+		{"id":"a76b81857318967b","x":-430,"y":-187,"width":250,"height":60,"type":"text","text":"Кузов коврики"},
+		{"id":"93e4752fc88d6cb5","x":-125,"y":-187,"width":250,"height":60,"type":"text","text":"Комплекс"},
+		{"id":"57e48e3442996be2","type":"text","text":"Кузов коврики","x":200,"y":-187,"width":250,"height":60},
+		{"id":"c67dc6e1108aeb83","type":"text","text":"Комплекс","x":505,"y":-187,"width":250,"height":60},
+		{"id":"6ee98be8fae5adc4","x":325,"y":-400,"width":250,"height":60,"type":"text","text":"2-х фазная мойка"},
+		{"id":"622a5be6fa017c72","x":-320,"y":-40,"width":250,"height":60,"color":"1","type":"text","text":"Выбор доп.услуг"},
+		{"id":"6b4eda99b330d5af","x":-375,"y":120,"width":250,"height":60,"type":"text","text":"Влажная уборка"}
+	],
+	"edges":[
+		{"id":"f2376cc918ef448f","fromNode":"8380f78ff5418155","fromSide":"bottom","toNode":"a76b81857318967b","toSide":"top"},
+		{"id":"c79fe4e38b85b160","fromNode":"8380f78ff5418155","fromSide":"bottom","toNode":"93e4752fc88d6cb5","toSide":"top"},
+		{"id":"f39f66405cb7906d","fromNode":"6ee98be8fae5adc4","fromSide":"bottom","toNode":"57e48e3442996be2","toSide":"top"},
+		{"id":"3098d0d8aad41558","fromNode":"6ee98be8fae5adc4","fromSide":"bottom","toNode":"c67dc6e1108aeb83","toSide":"top"},
+		{"id":"23e37e30dd996d31","fromNode":"a76b81857318967b","fromSide":"bottom","toNode":"622a5be6fa017c72","toSide":"top"},
+		{"id":"b4e844d66ca6cc2c","fromNode":"622a5be6fa017c72","fromSide":"bottom","toNode":"6b4eda99b330d5af","toSide":"top"}
+	]
+}
