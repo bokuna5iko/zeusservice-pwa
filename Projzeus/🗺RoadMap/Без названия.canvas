@@ -12,7 +12,7 @@
 		{"id":"1b4e984275b4bf4d","type":"text","text":"Пылесос","x":1153,"y":1030,"width":250,"height":60},
 		{"id":"0bdec4304fd776dd","type":"text","text":"Пылесос багажника","x":1408,"y":1259,"width":250,"height":60},
 		{"id":"cab6475bd5a84ef0","x":1496,"y":1030,"width":250,"height":60,"type":"text","text":"Полировка фар"},
-		{"id":"659979558e489e90","type":"text","text":"Палироль","x":-1600,"y":1030,"width":125,"height":60},
+		{"id":"659979558e489e90","type":"text","text":"Полироль","x":-1600,"y":1030,"width":120,"height":60},
 		{"id":"5e3540fd5a0aad5e","x":-1365,"y":1030,"width":250,"height":60,"type":"text","text":"Стёкла"},
 		{"id":"7e20c39ded2e4d49","x":-1170,"y":1229,"width":250,"height":60,"type":"text","text":"Пылесос салона"},
 		{"id":"f06cd8a4d580800f","x":-845,"y":1229,"width":250,"height":60,"type":"text","text":"Пылесос багажника"},
