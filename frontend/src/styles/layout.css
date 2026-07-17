@@ -138,25 +138,21 @@
 }
 
 /* Настраиваем ширину всей полосы прокрутки */
+/*
 ::-webkit-scrollbar {
-  width: 8px; /* ширина вертикального скролла */
-  height: 8px; /* высота горизонтального скролла */
+  width: 8px;
+  height: 8px;
 }
-
-/* Настраиваем саму дорожку, по которой ползает бегунок */
 ::-webkit-scrollbar-track {
-  background: #1e1e24; /* темный фон под цвет темы автомойки */
+  background: #1e1e24;
   border-radius: 4px;
 }
-
-/* Настраиваем сам бегунок (полоску, которую таскаем) */
 ::-webkit-scrollbar-thumb {
-  background: #4a5568; /* серый цвет бегунка */
-  border-radius: 4px; /* скругление */
-  border: 2px solid #1e1e24; /* отступ вокруг бегунка */
+  background: #4a5568;
+  border-radius: 4px;
+  border: 2px solid #1e1e24;
 }
-
-/* Эффект при наведении на полосу */
 ::-webkit-scrollbar-thumb:hover {
-  background: #718096; /* делаем ярче при наведении */
+  background: #718096;
 }
+*/

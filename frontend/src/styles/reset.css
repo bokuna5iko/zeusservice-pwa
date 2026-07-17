@@ -1,89 +1,128 @@
 /* src/styles/reset.css */
 
-* {
-  box-sizing: border-box;
+/* ========================================== */
+/* 1. БАЗОВЫЙ СБРОС (Обязательно для устранения "белого квадрата") */
+/* ========================================== */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent; /* Убирает синюю подсветку при тапе на мобильных */
 }
 
-/* 1. ГЛОБАЛЬНОЕ СКРЫТИЕ СКРОЛЛБАРОВ (для структуры приложения) */
+/* ========================================== */
+/* 2. ГЛОБАЛЬНЫЕ НАСТРОЙКИ СТРАНИЦЫ (Шрифт и Фон) */
+/* ========================================== */
+html,
+body {
+  height: 100%;
+  width: 100%;
+
+  /* 👇 ВЕРНИ СЮДА СВОЙ ШРИФТ, если он отличается */
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+
+  /* 👇 ВЕРНИ СЮДА СВОЙ ЦВЕТ ФОНА (например, #121212 для темной темы или #ffffff для светлой) */
+  background-color: #0f172a;
+  color: #ffffff; /* Или твой основной цвет текста */
+
+  /* Запрет горизонтального скролла всей страницы */
+  overflow-x: hidden;
+}
+
+#root,
+.app-shell,
+.app-main {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================================== */
+/* 3. ГИБКОЕ УПРАВЛЕНИЕ СКРОЛЛБАРАМИ */
+/* ========================================== */
+
+/* А. Скрываем скроллбар ВЕЗДЕ по умолчанию (для WebKit и Firefox) */
 html,
 body,
-#root,
-.app-main,
 .app-shell,
+.app-main,
+.page-content,
 [class*="-page"] {
-  scrollbar-width: none !important; /* Для Firefox */
-  -ms-overflow-style: none !important; /* Для IE/Edge */
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE/Edge */
 }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar,
-.app-main::-webkit-scrollbar,
-#root::-webkit-scrollbar,
-[class*="-page"]::-webkit-scrollbar {
+/* Скрываем полосу прокрутки для ВСЕХ элементов в WebKit, НО только саму полосу */
+*::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
 }
 
-/* Настройки для плавного тач-скролла пальцем */
-body,
-.app-main,
-.admin-home-page {
-  -webkit-overflow-scrolling: touch !important;
-  overscroll-behavior-y: none !important;
-}
-
-body {
-  background-color: var(--bg-color);
-  font-family:
-    "Inter",
-    -apple-system,
-    sans-serif;
-  color: var(--text-main);
-  line-height: 1.5;
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-}
-
-#root {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-/* 2. КЛАСС ДЛЯ ВИНТАЖНЫХ И БУДУЩИХ КОНТЕЙНЕРОВ (Лента визитов, таблицы и т.д.) */
+/* Б. РАЗРЕШАЕМ и стилизуем скроллбар ТОЛЬКО там, где есть класс .custom-scroll */
 .custom-scroll {
-  /* Включаем прокрутку, если контент не влазит */
   overflow-y: auto !important;
-
-  /* Включаем отображение тонкого скроллбара в Firefox */
-  scrollbar-width: thin !important;
-  scrollbar-color: #4a5568 rgba(0, 0, 0, 0.05) !important;
+  scrollbar-width: thin !important; /* Firefox */
+  scrollbar-color: #4a5568 rgba(255, 255, 255, 0.1) !important; /* Firefox */
 }
 
-/* Возвращаем и стилизуем скроллбар для WebKit (Chrome, Safari, Edge) внутри этого класса */
+/* Возвращаем полосу только для элементов с классом .custom-scroll */
 .custom-scroll::-webkit-scrollbar {
   display: block !important;
-  width: 6px !important; /* Аккуратная тонкая полоска */
-  height: 6px !important; /* Для горизонтального скролла, если будет широкая таблица */
+  width: 6px !important;
+  height: 6px !important;
 }
 
-/* Дорожка ползунка */
 .custom-scroll::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
   border-radius: 4px !important;
 }
 
-/* Сам бегунок */
 .custom-scroll::-webkit-scrollbar-thumb {
-  background-color: #4a5568 !important; /* Серый цвет под темную тему */
+  background-color: #4a5568 !important;
   border-radius: 10px !important;
 }
 
-/* Эффект при наведении на бегунок */
 .custom-scroll::-webkit-scrollbar-thumb:hover {
   background-color: #718096 !important;
+}
+
+/* ========================================== */
+/* 4. ДОПОЛНИТЕЛЬНЫЕ ПОЛЕЗНЫЕ СБРОСЫ */
+/* ========================================== */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit; /* Наследует шрифт от body, чтобы не сбивался */
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
 }
