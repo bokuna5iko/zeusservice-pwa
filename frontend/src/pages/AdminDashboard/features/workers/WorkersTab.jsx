@@ -1,10 +1,10 @@
 // src/pages/AdminDashboard/Tabs/WorkersTab.jsx
 import React, { useState } from "react";
-import { useWorkersData, WORKER_PERCENT } from "../hooks/useWorkersData";
+import { useWorkersData, WORKER_PERCENT } from "./hooks/useWorkersData";
 
 // 🌟 ДОБАВЛЕНО: Импортируем наши новые модули контроля персонала
-import WorkerPhotosTab from "../components/WorkerPhotosTab";
-import WorkerFinancesTab from "../components/WorkerFinancesTab";
+import WorkerPhotosTab from "./WorkerPhotosTab";
+import WorkerFinancesTab from "./WorkerFinancesTab";
 
 const WorkersTab = () => {
   // Подключаем наш изолированный хук логики персонала

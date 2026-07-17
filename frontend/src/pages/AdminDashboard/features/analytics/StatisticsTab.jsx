@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 // 🌟 ИСПРАВЛЕНО: Явно добавили расширения .jsx для стабильной сборки на Linux-сервере
 import FinanceSubTab from "./FinanceSubTab.jsx";
-import VisitsSubTab from "./VisitsSubTab.jsx";
+import VisitsSubTab from "../visits/VisitsSubTab.jsx";
 import EfficiencySubTab from "./EfficiencySubTab.jsx";
 import "./StatisticsTab.css";
 

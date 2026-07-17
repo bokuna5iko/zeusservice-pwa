@@ -6,26 +6,26 @@ import {
   useAdminDashboard,
 } from "./context/AdminDashboardContext";
 
-// Импортируем наши новые раздробленные UI-компоненты
-import DashboardSidebar from "./components/DashboardSidebar";
-import DashboardHeader from "./components/DashboardHeader";
+// 🔄 ОБНОВЛЕНО: Импорты из новой структуры shared/
+import DashboardSidebar from "./shared/DashboardSidebar/DashboardSidebar";
+import DashboardHeader from "./shared/DashboardHeader/DashboardHeader";
 
-// Импортируем операционные вкладки пульта
-import VisitsTab from "./Tabs/VisitsTab.jsx";
-import WorkersTab from "./Tabs/WorkersTab.jsx";
-import SimulatorTab from "./Tabs/SimulatorTab.jsx";
-import AnalyticsTab from "./Tabs/AnalyticsTab.jsx";
-// 🌟 ДОБАВЛЕНО: Импортируем нашу новую продвинутую BI-панель статистики
-import StatisticsTab from "./Tabs/StatisticsTab.jsx";
+// 🔄 ОБНОВЛЕНО: Импорты операционных вкладок из features/
+import VisitsTab from "./features/visits/VisitsTab";
+import WorkersTab from "./features/workers/WorkersTab";
+import SimulatorTab from "./features/simulator/SimulatorTab";
+import AnalyticsTab from "./features/analytics/AnalyticsTab";
+import StatisticsTab from "./features/analytics/StatisticsTab";
 
 import { api } from "../../api/apiService";
 
-// Импортируем защитные модалки управления сменными циклами
-import ForgottenLockModal from "./components/modals/ForgottenLockModal";
-import ShiftReportModal from "./components/modals/ShiftReportModal";
+// 🔄 ОБНОВЛЕНО: Импорты модалок из shared/modals/
+import ForgottenLockModal from "./shared/modals/ForgottenLockModal";
+import ShiftReportModal from "./shared/modals/ShiftReportModal";
 
 import "./AdminDashboard.css";
-import "./Tabs/WorkersTab.css";
+// 🔄 ОБНОВЛЕНО: Путь к CSS воркеров
+import "./features/workers/WorkersTab.css";
 
 const { Content } = Layout;
 
@@ -47,7 +47,7 @@ const DashboardContent = () => {
     setIsArchiveMode,
     setActiveTab,
     setArchivedShiftData,
-    handleExitArchiveMode, // 🌟 ВОЗВРАЩЕНО: Деструктуризация метода сброса архива
+    handleExitArchiveMode,
   } = useAdminDashboard();
 
   const handleOpenShift = async () => {
@@ -74,7 +74,6 @@ const DashboardContent = () => {
     alert("Смена успешно заархивирована! Касса заблокирована до утра.");
   };
 
-  // Вход в архивный просмотр
   const handleEnterArchiveReadOnly = (shift) => {
     setArchivedShiftData(shift);
     setIsArchiveMode(true);

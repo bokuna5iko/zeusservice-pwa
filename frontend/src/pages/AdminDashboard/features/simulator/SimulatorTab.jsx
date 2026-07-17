@@ -1,6 +1,6 @@
 // src/pages/AdminDashboard/Tabs/SimulatorTab.jsx
 import React from "react";
-import { useSimulatorState } from "../hooks/useSimulatorState";
+import { useSimulatorState } from "./hooks/useSimulatorState";
 import "./SimulatorTab.css";
 
 const SimulatorTab = () => {

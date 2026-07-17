@@ -1,6 +1,6 @@
 // src/pages/AdminDashboard/components/modals/EditVisitModal.jsx
 import React from "react";
-import { useEditVisit } from "../../hooks/useEditVisit";
+import { useEditVisit } from "../../features/visits/hooks/useEditVisit";
 import "./EditVisitModal.css";
 
 const EditVisitModal = ({

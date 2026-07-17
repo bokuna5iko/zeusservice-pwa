@@ -11,7 +11,7 @@ import {
   ArrowLeftOutlined,
   BarChartOutlined, // 🌟 ДОБАВЛЕНО: Иконка для раздела статистики
 } from "@ant-design/icons";
-import { useAdminDashboard } from "../context/AdminDashboardContext";
+import { useAdminDashboard } from "../../context/AdminDashboardContext";
 
 const { Sider } = Layout;
 

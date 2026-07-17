@@ -2,7 +2,7 @@
 import React from "react";
 import { Layout, Badge, Tooltip } from "antd";
 import { SyncOutlined, CheckCircleOutlined } from "@ant-design/icons";
-import { useAdminDashboard } from "../context/AdminDashboardContext";
+import { useAdminDashboard } from "../../context/AdminDashboardContext";
 import "./DashboardHeader.css";
 
 const { Header } = Layout;
