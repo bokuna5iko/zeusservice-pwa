@@ -1,7 +1,7 @@
 // src/pages/AdminDashboard/Tabs/AnalyticsTab.jsx
 import React from "react";
-import { useAnalyticsData } from "../hooks/useAnalyticsData";
-import ArchiveCalendarGrid from "../components/ArchiveCalendarGrid"; // 🚀 Импортируем наш новый календарь
+import { useAnalyticsData } from "./hooks/useAnalyticsData";
+import ArchiveCalendarGrid from "./components/ArchiveCalendarGrid"; // 🚀 Импортируем наш новый календарь
 
 const AnalyticsTab = ({ onSelectArchiveDate }) => {
   // Подключаем наш изолированный хук логики архивного календаря

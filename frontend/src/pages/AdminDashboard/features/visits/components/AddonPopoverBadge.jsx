@@ -1,7 +1,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 // Импортируем созданный хук!
-import { useVisitsTableState } from "../hooks/useVisitsTableState";
+import { useVisitsTableState } from "../../../hooks/useVisitsTableState";
 
 const AddonPopoverBadge = ({ addons }) => {
   // Забираем из него стейты и методы

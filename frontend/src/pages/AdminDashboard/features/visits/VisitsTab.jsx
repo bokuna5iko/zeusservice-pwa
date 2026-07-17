@@ -1,16 +1,16 @@
 // src/pages/AdminDashboard/Tabs/VisitsTab.jsx
 import React from "react";
-import { useVisitsData } from "../hooks/useVisitsData";
+import { useVisitsData } from "./hooks/useVisitsData";
 
 // Импортируем визуальные компоненты блоков
-import CashDashboard from "../components/CashDashboard";
-import VisitsTable from "../components/VisitsTable";
+import CashDashboard from "./components/CashDashboard";
+import VisitsTable from "./components/VisitsTable";
 
 // Импортируем компоненты модальных окон
-import ExpenseModal from "../components/modals/ExpenseModal";
-import EditVisitModal from "../components/modals/EditVisitModal";
-import ExpenseHistoryModal from "../components/modals/ExpenseHistoryModal";
-import CancelVisitModal from "../components/modals/CancelVisitModal"; // 🌟 ДОБАВЛЕНО: Новое модальное окно отмены визита
+import ExpenseModal from "../../shared/modals/ExpenseModal";
+import EditVisitModal from "../../shared/modals/EditVisitModal";
+import ExpenseHistoryModal from "../../shared/modals/ExpenseHistoryModal";
+import CancelVisitModal from "../../shared/modals/CancelVisitModal"; // 🌟 ДОБАВЛЕНО: Новое модальное окно отмены визита
 
 const VisitsTab = ({
   shiftStatus,

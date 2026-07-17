@@ -1,6 +1,6 @@
 // src/pages/AdminDashboard/hooks/useAnalyticsData.js
 import { useState, useEffect } from "react";
-import { api } from "../../../api/apiService";
+import { api } from "../../../../../api/apiService";
 
 export const useAnalyticsData = () => {
   const [calendarShifts, setCalendarShifts] = useState([]);
