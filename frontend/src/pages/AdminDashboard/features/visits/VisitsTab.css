@@ -1,0 +1,184 @@
+.visits-tab-viewport {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+.cash-dashboard-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.cash-mini-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 160px;
+}
+.card-label {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.card-num {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+.color-cyan {
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+.color-red {
+  color: #f87171;
+}
+.dashboard-add-expense-btn {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px dashed #f87171;
+  color: #f87171;
+  padding: 16px 24px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  transition: all 0.2s ease;
+}
+.dashboard-add-expense-btn:hover {
+  background: #f87171;
+  color: #020617;
+}
+.visits-table-wrapper {
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: 16px !important;
+}
+.arm-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+.arm-table th {
+  background: #0f172a;
+  padding: 16px;
+  color: #94a3b8;
+  font-weight: 700;
+  border-bottom: 2px solid #1e293b;
+}
+.arm-table td {
+  padding: 16px;
+  border-bottom: 1px solid #1e293b;
+  color: #e2e8f0;
+}
+.table-empty-notice {
+  text-align: center;
+  color: #475569;
+  font-weight: 600;
+  padding: 40px !important;
+}
+.action-step-badge {
+  background: #1e293b;
+  color: #38bdf8;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.table-actions-cell {
+  display: flex;
+  gap: 8px;
+}
+.edit-row-btn,
+.cancel-row-btn {
+  background: #1e293b;
+  border: none;
+  color: #94a3b8;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.edit-row-btn:hover {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+}
+.cancel-row-btn:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  font-size: 1.2rem;
+}
+.shift-lock-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+}
+.lock-card {
+  max-width: 420px;
+  text-align: center;
+  padding: 40px 30px !important;
+  border-radius: 20px !important;
+}
+.lock-icon-circle {
+  width: 64px;
+  height: 64px;
+  background: rgba(100, 116, 139, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 1.6rem;
+  margin: 0 auto 20px;
+}
+.lock-card h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.4rem;
+  color: #f8fafc;
+}
+.lock-card p {
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 30px 0;
+}
+.open-shift-big-btn {
+  background: #38bdf8;
+  color: #020617;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+  transition: all 0.2s ease;
+}
+.open-shift-big-btn:hover {
+  transform: scale(1.02);
+}
+
+/* СБРОС МОБИЛЬНЫХ ОГРАНИЧЕНИЙ ДЛЯ КАРТОЧЕК НА ПУЛЬТЕ */
+:not(.modal-overlay) .content-group-box {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 20px !important;
+  box-shadow: none !important;
+}

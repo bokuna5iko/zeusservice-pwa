@@ -2,6 +2,8 @@
 import React from "react";
 import { useVisitsData } from "./hooks/useVisitsData";
 
+import "./VisitsTab.css";
+
 // Импортируем визуальные компоненты блоков
 import CashDashboard from "./components/CashDashboard";
 import VisitsTable from "./components/VisitsTable";

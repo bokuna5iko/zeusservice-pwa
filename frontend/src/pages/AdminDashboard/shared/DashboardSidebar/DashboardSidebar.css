@@ -1,0 +1,176 @@
+/* Кастомная доработка сайдбара Ant Design */
+.admin-dashboard-sider {
+  border-right: 1px solid #1e293b;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s;
+}
+.admin-dashboard-sider .ant-layout-sider-children {
+  height: 100% !important;
+}
+.sider-flex-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 48px);
+  padding: 0 0 16px 0;
+}
+.sider-top-content {
+  flex-grow: 1;
+}
+.admin-sidebar-logo-container {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #1e293b;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.admin-sidebar-logo-text {
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+  color: #38bdf8;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+.sider-footer-content {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sider-close-shift-action-btn {
+  width: 100%;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px dashed #f87171;
+  color: #f87171;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.sider-close-shift-action-btn:hover {
+  background: #ef4444;
+  color: #020617;
+  border-style: solid;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.3);
+}
+.sider-live-clock-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: rgba(30, 41, 59, 0.4);
+  border-radius: 8px;
+  border: 1px solid #1e293b;
+}
+.clock-neon-icon {
+  color: #38bdf8;
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.4));
+}
+.clock-text-block {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.clock-time {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+.clock-date {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: capitalize;
+}
+.sider-archive-alert-box {
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.archive-box-title {
+  font-size: 11px;
+  color: #eab308;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-bottom: 4px;
+}
+.archive-active-tab-mock {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #eab308;
+  color: #020617;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.archive-exit-action-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #1e293b;
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.archive-exit-action-btn:hover {
+  background: #38bdf8;
+  color: #020617;
+}
+.sider-archive-badge-text {
+  font-size: 11px;
+  color: #eab308;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-bottom: 12px;
+  animation: fadeInShift 0.2s ease-out;
+}
+.ant-menu-item.archive-menu-item-active {
+  background-color: #eab308 !important;
+  color: #020617 !important;
+}
+.ant-menu-item.archive-menu-item-active .ant-menu-item-icon {
+  color: #020617 !important;
+}
+.ant-menu-item.archive-menu-item-active:hover {
+  background-color: #f59e0b !important;
+}
+.ant-menu-item.archive-menu-item-exit {
+  border: 1px dashed rgba(56, 189, 248, 0.4) !important;
+  color: #38bdf8 !important;
+  margin-top: 12px !important;
+}
+.ant-menu-item.archive-menu-item-exit .ant-menu-item-icon {
+  color: #38bdf8 !important;
+}
+.ant-menu-item.archive-menu-item-exit:hover {
+  background-color: rgba(56, 189, 248, 0.1) !important;
+  color: #38bdf8 !important;
+}

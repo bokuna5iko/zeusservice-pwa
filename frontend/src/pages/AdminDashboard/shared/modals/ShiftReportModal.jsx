@@ -1,5 +1,6 @@
 // src/pages/AdminDashboard/components/modals/ShiftReportModal.jsx
 import React from "react";
+import "./ModalStyles.css"; // Путь зависит от того, где лежит файл. Если модалка в shared/modals/, то просто: import "./ModalStyles.css";
 import { useShiftReport } from "../../hooks/useShiftReport";
 
 const ShiftReportModal = ({ isOpen, shiftId, onClose, onArchiveSuccess }) => {
