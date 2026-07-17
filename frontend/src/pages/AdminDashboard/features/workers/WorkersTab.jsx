@@ -1,43 +1,28 @@
-// src/pages/AdminDashboard/Tabs/WorkersTab.jsx
+// src/pages/AdminDashboard/features/workers/WorkersTab.jsx
 import React, { useState } from "react";
 import { useWorkersData, WORKER_PERCENT } from "./hooks/useWorkersData";
 
-// 🌟 ДОБАВЛЕНО: Импортируем наши новые модули контроля персонала
+// 🌟 Импортируем выделенный компонент навигации
+import WorkersSubTabsNav from "./WorkersSubTabsNav";
+
+// 🌟 Импортируем компоненты подтабов
 import WorkerPhotosTab from "./WorkerPhotosTab";
 import WorkerFinancesTab from "./WorkerFinancesTab";
 
-const WorkersTab = () => {
-  // Подключаем наш изолированный хук логики персонала
-  const { workers, toggleWorkerStatus } = useWorkersData();
+// 🌟 Импортируем ТОЛЬКО нужный CSS для этого файла
+import "./WorkersTab.css";
 
-  // 🌟 ДОБАВЛЕНО: Стейт управления внутренними подтабами
-  // 'current' - Текущая смена, 'photos' - Фотоотчеты, 'finances' - База и Расчет
+const WorkersTab = () => {
+  const { workers, toggleWorkerStatus } = useWorkersData();
   const [activeSubTab, setActiveSubTab] = useState("current");
 
   return (
     <div className="workers-main-hub-viewport">
-      {/* 🌟 ДОБАВЛЕНО: Горизонтальное неоновое меню подтабов */}
-      <div className="arm-subtabs-navigation-bar">
-        <button
-          className={`arm-subtab-btn ${activeSubTab === "current" ? "active-subtab" : ""}`}
-          onClick={() => setActiveSubTab("current")}
-        >
-          <i className="fas fa-id-card"></i> Текущая смена
-        </button>
-        <button
-          className={`arm-subtab-btn ${activeSubTab === "photos" ? "active-subtab" : ""}`}
-          onClick={() => setActiveSubTab("photos")}
-        >
-          <i className="fas fa-camera"></i> Лента Контроля
-          <span className="subtab-counter-alert">3</span>
-        </button>
-        <button
-          className={`arm-subtab-btn ${activeSubTab === "finances" ? "active-subtab" : ""}`}
-          onClick={() => setActiveSubTab("finances")}
-        >
-          <i className="fas fa-wallet"></i> Рейтинг и Касса
-        </button>
-      </div>
+      {/* 🌟 Чистая навигация, вынесенная в отдельный компонент */}
+      <WorkersSubTabsNav
+        activeSubTab={activeSubTab}
+        setActiveSubTab={setActiveSubTab}
+      />
 
       {/* РЕНДЕР ПОДТАБА №1: ТЕКУЩАЯ СМЕНА */}
       {activeSubTab === "current" && (
@@ -91,7 +76,6 @@ const WorkersTab = () => {
                 </thead>
                 <tbody>
                   {workers.map((w) => {
-                    // Расчет индивидуальной зарплаты на основе % выработки
                     const dailySalary = Math.round(
                       (w.totalVolume * WORKER_PERCENT) / 100,
                     );
@@ -127,14 +111,14 @@ const WorkersTab = () => {
         </div>
       )}
 
-      {/* 🌟 РЕНДЕР ПОДТАБА №2: ФОТООТЧЕТЫ */}
+      {/* РЕНДЕР ПОДТАБА №2: ФОТООТЧЕТЫ */}
       {activeSubTab === "photos" && (
         <div className="fade-in">
           <WorkerPhotosTab />
         </div>
       )}
 
-      {/* 🌟 РЕНДЕР ПОДТАБА №3: БАЗА И РАСЧЕТ */}
+      {/* РЕНДЕР ПОДТАБА №3: БАЗА И РАСЧЕТ */}
       {activeSubTab === "finances" && (
         <div className="fade-in">
           <WorkerFinancesTab />

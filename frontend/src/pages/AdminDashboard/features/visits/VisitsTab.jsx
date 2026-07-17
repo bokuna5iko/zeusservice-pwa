@@ -1,18 +1,19 @@
-// src/pages/AdminDashboard/Tabs/VisitsTab.jsx
+// src/pages/AdminDashboard/features/visits/VisitsTab.jsx
 import React from "react";
 import { useVisitsData } from "./hooks/useVisitsData";
+import { useVisitModals } from "./hooks/useVisitModals"; // 🌟 НОВЫЙ ХУК
 
 import "./VisitsTab.css";
 
-// Импортируем визуальные компоненты блоков
+// Визуальные компоненты блоков
 import CashDashboard from "./components/CashDashboard";
 import VisitsTable from "./components/VisitsTable";
 
-// Импортируем компоненты модальных окон
+// Компоненты модальных окон
 import ExpenseModal from "../../shared/modals/ExpenseModal";
 import EditVisitModal from "../../shared/modals/EditVisitModal";
 import ExpenseHistoryModal from "../../shared/modals/ExpenseHistoryModal";
-import CancelVisitModal from "../../shared/modals/CancelVisitModal"; // 🌟 ДОБАВЛЕНО: Новое модальное окно отмены визита
+import CancelVisitModal from "../../shared/modals/CancelVisitModal";
 
 const VisitsTab = ({
   shiftStatus,
@@ -20,7 +21,7 @@ const VisitsTab = ({
   onOpenShift,
   onCloseShiftSuccess,
 }) => {
-  // 1. Подключаем наш мощный и чистый кастомный хук бизнес-логики (содержит 13 внутренних хуков)
+  // 1. Бизнес-логика и данные (оставляем нетронутым, чтобы не сломать 13 внутренних хуков)
   const {
     liveShiftData,
     visits,
@@ -43,25 +44,25 @@ const VisitsTab = ({
     handleAddExpenseSubmit,
   } = useVisitsData(shiftStatus, initialShiftData);
 
-  // 🌟 ИСПРАВЛЕНО: Перенесли локальные стейты в самый верх компонента.
-  // Теперь правила хуков строго соблюдены, React всегда видит стабильные 17 хуков!
-  const [showCancelModal, setShowCancelModal] = React.useState(false);
-  const [cancellingVisit, setCancellingVisit] = React.useState(null);
-  const [loadingCancel, setLoadingCancel] = React.useState(false);
+  // 2. UI-логика модальных окон (теперь чистая и изолированная)
+  const {
+    showCancelModal,
+    cancellingVisit,
+    loadingCancel,
+    setLoadingCancel,
+    openCancelModal,
+    closeCancelModal,
+  } = useVisitModals();
 
   const isArchive = !!initialShiftData?.shift_date;
 
-  const handleCancelClick = (visit) => {
-    setCancellingVisit(visit);
-    setShowCancelModal(true);
-  };
-
+  // 3. Бизнес-логика отмены (остается здесь, так как ей нужен доступ к массиву visits из useVisitsData)
   const handleCancelSubmit = async (reason, comment) => {
     setLoadingCancel(true);
     try {
       console.log("Отмена визита:", cancellingVisit.id, { reason, comment });
 
-      // Локально обновляем статус визита, чтобы сразу увидеть результат на экране
+      // Локальное обновление для мгновенного UI-отклика
       if (visits) {
         const found = visits.find((v) => v.id === cancellingVisit.id);
         if (found) {
@@ -70,8 +71,7 @@ const VisitsTab = ({
           found.cancellation_comment = comment;
         }
       }
-
-      setShowCancelModal(false);
+      closeCancelModal();
     } catch (error) {
       console.error("Ошибка отмены визита:", error);
     } finally {
@@ -79,11 +79,10 @@ const VisitsTab = ({
     }
   };
 
-  // 🌟 ТЕПЕРЬ РАННИЕ ВОЗВРАТЫ НАХОДЯТСЯ СТРОГО ПОД ВСЕМИ ОБЪЯВЛЕННЫМИ ХУКАМИ
+  // 4. Ранний возврат (Экран блокировки)
   if (!isArchive) {
     if (shiftStatus === "not_started" || shiftStatus === "closed") {
       const currentHour = new Date().getHours();
-      // Если смена закрыта, но уже наступило 6 утра — система разрешит открыть новую смену кнопкой на плашке
       const isNewDayReady = shiftStatus === "closed" && currentHour >= 6;
 
       if (!isNewDayReady) {
@@ -130,13 +129,9 @@ const VisitsTab = ({
     }
   }
 
+  // 5. Основной рендер (Чистый оркестратор)
   return (
     <div className="visits-tab-viewport">
-      {/* Плашка «Наступило утро нового дня» */}
-      {!isArchive && shiftStatus === "closed" && (
-        <div style={{}}>{/* ... */}</div>
-      )}
-
       {/* Финансовый Дашборд */}
       <CashDashboard
         liveShiftData={liveShiftData}
@@ -150,10 +145,12 @@ const VisitsTab = ({
         loadingVisits={loadingVisits}
         shiftStatus={shiftStatus}
         onEditClick={handleEditClick}
-        onCancelClick={handleCancelClick} /* Передаем клик отмены */
+        onCancelClick={
+          openCancelModal
+        } /* 🌟 Теперь передаем чистую функцию из хука */
       />
 
-      {/* Окна расходов и редактирования визитов */}
+      {/* --- МОДАЛЬНЫЕ ОКНА --- */}
       <ExpenseModal
         isOpen={showExpenseModal}
         onClose={() => setShowExpenseModal(false)}
@@ -170,10 +167,9 @@ const VisitsTab = ({
         servicePrices={allServices}
       />
 
-      {/* Новое модальное окно отмены визита */}
       <CancelVisitModal
         isOpen={showCancelModal}
-        onClose={() => setShowCancelModal(false)}
+        onClose={closeCancelModal} /* 🌟 Чистая функция закрытия */
         visit={cancellingVisit}
         onSave={handleCancelSubmit}
         loading={loadingCancel}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./WorkerTabs.css";
+import "./WorkerFinancesTab.css";
 
 const INITIAL_TEAM = [
   {

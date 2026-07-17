@@ -1,0 +1,126 @@
+/* src/pages/AdminDashboard/features/workers/WorkerFinancesTab.css */
+
+.fin-summary-pills {
+  display: flex;
+  gap: 10px;
+}
+
+.fin-pill {
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.worker-name-cell-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.worker-name-txt {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.worker-badge-icons-row {
+  display: flex;
+  gap: 4px;
+}
+
+.category-tag-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.category-tag-badge.stakhanov-neon {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+.category-tag-badge.linear-gray {
+  background: #1e293b;
+  color: #94a3b8;
+}
+
+.bugs-count-indicator {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.bugs-count-indicator.zero-bugs-green {
+  color: #4ade80;
+}
+
+.bugs-count-indicator.has-bugs-red {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Переключатель (Switch) */
+.toggle-switch-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arm-switch-label {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 20px;
+}
+
+.arm-switch-label input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.arm-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #1e293b;
+  transition: 0.2s;
+  border-radius: 20px;
+  border: 1px solid #334155;
+}
+
+.arm-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #94a3b8;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+.arm-switch-label input:checked + .arm-switch-slider {
+  background-color: rgba(168, 85, 247, 0.3);
+  border-color: #a855f7;
+}
+
+.arm-switch-label input:checked + .arm-switch-slider:before {
+  transform: translateX(18px);
+  background-color: #c084fc;
+}
+
+.switch-sub-text {
+  font-size: 0.75rem;
+  color: #64748b;
+}
