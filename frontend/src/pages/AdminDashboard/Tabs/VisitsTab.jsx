@@ -18,7 +18,7 @@ const VisitsTab = ({
   onOpenShift,
   onCloseShiftSuccess,
 }) => {
-  // Подключаем наш мощный и чистый кастомный хук бизнес-логики
+  // 1. Подключаем наш мощный и чистый кастомный хук бизнес-логики (содержит 13 внутренних хуков)
   const {
     liveShiftData,
     visits,
@@ -41,9 +41,43 @@ const VisitsTab = ({
     handleAddExpenseSubmit,
   } = useVisitsData(shiftStatus, initialShiftData);
 
+  // 🌟 ИСПРАВЛЕНО: Перенесли локальные стейты в самый верх компонента.
+  // Теперь правила хуков строго соблюдены, React всегда видит стабильные 17 хуков!
+  const [showCancelModal, setShowCancelModal] = React.useState(false);
+  const [cancellingVisit, setCancellingVisit] = React.useState(null);
+  const [loadingCancel, setLoadingCancel] = React.useState(false);
+
   const isArchive = !!initialShiftData?.shift_date;
 
-  // Если мы НЕ в архиве и смена не активна — выводим аккуратную карточку блокировки дня
+  const handleCancelClick = (visit) => {
+    setCancellingVisit(visit);
+    setShowCancelModal(true);
+  };
+
+  const handleCancelSubmit = async (reason, comment) => {
+    setLoadingCancel(true);
+    try {
+      console.log("Отмена визита:", cancellingVisit.id, { reason, comment });
+
+      // Локально обновляем статус визита, чтобы сразу увидеть результат на экране
+      if (visits) {
+        const found = visits.find((v) => v.id === cancellingVisit.id);
+        if (found) {
+          found.status = "cancelled";
+          found.cancellation_reason = reason;
+          found.cancellation_comment = comment;
+        }
+      }
+
+      setShowCancelModal(false);
+    } catch (error) {
+      console.error("Ошибка отмены визита:", error);
+    } finally {
+      setLoadingCancel(false);
+    }
+  };
+
+  // 🌟 ТЕПЕРЬ РАННИЕ ВОЗВРАТЫ НАХОДЯТСЯ СТРОГО ПОД ВСЕМИ ОБЪЯВЛЕННЫМИ ХУКАМИ
   if (!isArchive) {
     if (shiftStatus === "not_started" || shiftStatus === "closed") {
       const currentHour = new Date().getHours();
@@ -94,55 +128,11 @@ const VisitsTab = ({
     }
   }
 
-  // 🌟 ДОБАВЛЕНО: Локальные стейты для управления окном отмены визита
-  const [showCancelModal, setShowCancelModal] = React.useState(false);
-  const [cancellingVisit, setCancellingVisit] = React.useState(null);
-  const [loadingCancel, setLoadingCancel] = React.useState(false);
-
-  const handleCancelClick = (visit) => {
-    setCancellingVisit(visit);
-    setShowCancelModal(true);
-  };
-
-  const handleCancelSubmit = async (reason, comment) => {
-    setLoadingCancel(true);
-    try {
-      // Имитируем или сразу вызываем будущий эндпоинт бэкенда:
-      // await axios.put(`/api/visits/${cancellingVisit.id}/cancel`, { reason, comment });
-
-      console.log("Отмена визита:", cancellingVisit.id, { reason, comment });
-
-      // Локально обновляем статус визита, чтобы сразу увидеть результат на экране
-      if (visits) {
-        const found = visits.find((v) => v.id === cancellingVisit.id);
-        if (found) {
-          found.status = "cancelled";
-          found.cancellation_reason = reason;
-          found.cancellation_comment = comment;
-        }
-      }
-
-      setShowCancelModal(false);
-    } catch (error) {
-      console.error("Ошибка отмены визита:", error);
-    } finally {
-      setLoadingCancel(false);
-    }
-  };
-
   return (
     <div className="visits-tab-viewport">
-      {/* Плашка «Наступило утро нового дня» ... её код оставляем без изменений */}
+      {/* Плашка «Наступило утро нового дня» */}
       {!isArchive && shiftStatus === "closed" && (
-        <div
-          style={
-            {
-              /* стили плашки */
-            }
-          }
-        >
-          {/* ... */}
-        </div>
+        <div style={{}}>{/* ... */}</div>
       )}
 
       {/* Финансовый Дашборд */}
@@ -158,9 +148,7 @@ const VisitsTab = ({
         loadingVisits={loadingVisits}
         shiftStatus={shiftStatus}
         onEditClick={handleEditClick}
-        onCancelClick={
-          handleCancelClick
-        } /* 🌟 ДОБАВЛЕНО: Передаем клик отмены */
+        onCancelClick={handleCancelClick} /* Передаем клик отмены */
       />
 
       {/* Окна расходов и редактирования визитов */}
@@ -180,7 +168,7 @@ const VisitsTab = ({
         servicePrices={allServices}
       />
 
-      {/* 🌟 ДОБАВЛЕНО: Новое модальное окно отмены визита */}
+      {/* Новое модальное окно отмены визита */}
       <CancelVisitModal
         isOpen={showCancelModal}
         onClose={() => setShowCancelModal(false)}
