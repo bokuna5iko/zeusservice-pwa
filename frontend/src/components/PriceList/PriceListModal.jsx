@@ -1,6 +1,6 @@
 // src/components/PriceListModal.jsx
 import React, { useState, useEffect } from "react";
-import { api } from "../api/apiService.js";
+import { api } from "../../api/apiService";
 import "./PriceListModal.css";
 
 // Карточки классов с народными примерами и путями к созданным иконкам
