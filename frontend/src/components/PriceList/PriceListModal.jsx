@@ -133,7 +133,7 @@ const PriceListModal = ({ isOpen, onClose, userCarClass = 3 }) => {
             >
               <div className="class-card-header">
                 <span>{cls.name}</span>
-                <i className={`${cls.icon} tab-class-icon`}></i>
+                {/* ❌ УДАЛЕНО: <i className={`${cls.icon} tab-class-icon`}></i> */}
               </div>
 
               {/* 🌟 ИСПРАВЛЕНО: Рендерим твою реальную картинку класса автомобиля */}
