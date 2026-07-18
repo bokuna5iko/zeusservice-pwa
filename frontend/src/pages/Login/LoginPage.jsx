@@ -54,7 +54,7 @@ const LoginPage = ({
         className={`pwa-smart-hint-banner ${showHintBanner ? "slide-down" : ""}`}
       >
         <i className="fas fa-info-circle"></i>
-        <span>Доступна новая версия бизнеса. Обновитесь!</span>
+        <span>Доступна новая версия приложения. Обновитесь!</span>
       </div>
 
       {/* 🌟 КНОПКА ОБНОВЛЕНИЯ: Позиционируется абсолютно в углу карточки или страницы */}
