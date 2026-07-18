@@ -1,65 +1,65 @@
-/* src/components/PriceListModal.css */
+/* src/components/PriceList/PriceListModal.css */
 
+/* 1. Оверлей фиксируется на весь экран и намертво перекрывает футер PWA */
 .price-modal-overlay {
-  /* 🌟 ИСПРАВЛЕНО: Меняем fixed на absolute, чтобы модалка подчинялась overflow родительского "телефона" */
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(2, 6, 23, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  /* 🌟 ИСПРАВЛЕНО: Индекс должен быть внутри рамок z-index глобального макета */
-  z-index: 150;
+  background: rgba(
+    0,
+    0,
+    0,
+    0.75
+  ); /* Плотное темное наложение как в калькуляторе */
   display: flex;
-  align-items: flex-end; /* Премиальный Bottom Sheet на мобилках */
+  align-items: flex-end; /* Шторка выезжает строго снизу экрана */
   justify-content: center;
+  z-index: 99999 !important; /* Гарантированный приоритет над навигацией */
 }
 
-@media (min-width: 500px) {
+@media (min-width: 640px) {
   .price-modal-overlay {
-    align-items: center; /* На ПК центрируем внутри коробки телефона */
+    align-items: center; /* Центрируем окно на ПК */
   }
 }
 
+/* 2. Карточка-шторка прейскуранта */
 .price-modal-content {
   background: #090d16;
   border: 1px solid #1e293b;
-  border-radius: 24px 24px 0 0;
+  border-radius: 24px 24px 0 0; /* Верхнее закругление шторки */
   width: 100%;
-
-  /* 🌟 ИСПРАВЛЕНО: Защита от вылета за рамки жесткого экрана. 
-     max-height считается от высоты .app-main, а не от всего окна браузера */
-  max-height: 85%;
-
+  max-width: 480px; /* Ограничение под размер смартфона */
+  max-height: 85vh; /* Ровно 85% высоты экрана — проверенный стандарт калькулятора */
   display: flex;
   flex-direction: column;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  animation: slideUpPriceModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow: hidden; /* Сама шторка монолитна и не имеет скролла */
+  animation: slideUpPriceModal 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (min-width: 500px) {
+@media (min-width: 640px) {
   .price-modal-content {
     border-radius: 24px;
-    max-height: 75%;
-    width: 92%; /* Красивые отступы по бокам внутри рамки десктопного телефона */
   }
 }
 
-/* Шапка */
+/* 3. Фиксированная шапка прейскуранта */
 .price-modal-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid #1e293b;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 20px 10px 20px;
-  flex-shrink: 0;
+  background: #090d16; /* Фиксированный бэкграунд */
+  flex-shrink: 0; /* Запрещаем сжиматься при нехватке высоты */
 }
 
 .price-modal-header h2 {
   color: #ffffff;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 800;
   margin: 0;
 }
@@ -68,14 +68,39 @@
   background: transparent;
   border: none;
   color: #64748b;
-  font-size: 28px;
+  font-size: 1.8rem;
   cursor: pointer;
   line-height: 1;
 }
 
+/* 4. 🌟 ИСПРАВЛЕНО: Прокручиваемое тело контента прайс-листа */
+.price-modal-body {
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  /* Включаем независимый нативный скролл строго здесь */
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch; /* Плавный инерционный скролл для iOS тачскрина */
+
+  /* Безопасный отступ снизу принудительно поднимет аккордеоны над элементами PWA */
+  padding-bottom: 95px !important;
+
+  /* Скрываем системный скроллбар для аккуратного мобильного UI */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Скрываем скроллбар тела для WebKit (Chrome, Safari) */
+.price-modal-body::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 /* 🔍 Строка поиска заглушка */
 .price-search-container-stub {
-  margin: 0 20px 12px 20px;
   position: relative;
   flex-shrink: 0;
 }
@@ -105,7 +130,6 @@
 .auto-focus-alert-banner {
   background: rgba(56, 189, 248, 0.08);
   border: 1px solid rgba(56, 189, 248, 0.2);
-  margin: 0 20px 16px 20px;
   padding: 10px 14px;
   border-radius: 10px;
   display: flex;
@@ -132,34 +156,33 @@
   line-height: 1;
 }
 
-/* 🏎️ ГОРИЗОНТАЛЬНЫЙ СКРОЛЛ-БАР КЛАССОВ */
+/* 🏎️ Горизонтальный скролл-бар классов */
 .class-scroll-bar-wrapper {
   display: flex;
   gap: 12px;
   overflow-x: auto;
-  padding: 4px 20px 16px 20px;
+  padding-bottom: 4px;
   flex-shrink: 0;
-  scrollbar-width: none; /* Убираем нативный скроллбар в Firefox */
+  scrollbar-width: none;
 }
 
 .class-scroll-bar-wrapper::-webkit-scrollbar {
-  display: none; /* Убираем нативный скроллбар в Chrome/Safari */
+  display: none;
 }
 
-/* Базовый фон неактивной карточки */
 .class-card-tab {
   background: #0f172a;
   border: 1px solid #1e293b;
   border-radius: 16px;
   padding: 12px;
   width: 135px;
-  height: 142px; /* Фиксируем общую высоту */
+  height: 142px;
   box-sizing: border-box;
   flex-shrink: 0;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Распределяем элементы равномерно */
+  justify-content: space-between;
   gap: 6px;
   transition: all 0.2s ease;
 }
@@ -177,7 +200,7 @@
 /* Контейнер под графику кузова автомобиля */
 .car-silhouette-placeholder {
   height: 52px;
-  width: 100%; /* Растягиваем на всю ширину карточки */
+  width: 100%;
   background: transparent;
   border-radius: 10px;
   display: flex;
@@ -196,19 +219,19 @@
   height: 100%;
   object-fit: contain;
   mix-blend-mode: color-dodge;
-  opacity: 0.3; /* Делаем силуэт ненавязчивым, когда вкладка не выбрана */
+  opacity: 0.3;
   filter: grayscale(1) brightness(0.8);
   transition: all 0.2s ease-in-out;
 }
 
-/* Защита от удлинения карточки. Текст заперт в свои рамки */
+/* Защита от удлинения карточки */
 .class-card-examples-text {
   color: #64748b;
   font-size: 0.72rem;
   line-height: 1.2;
   margin: 0;
   text-align: left;
-  height: 28px; /* Фиксированная высота для двух строк текста */
+  height: 28px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -219,7 +242,7 @@
   flex-shrink: 0;
 }
 
-/* Активное состояние карточки класса (Неоновое бирюзовое свечение) */
+/* Активное состояние карточки класса */
 .class-card-tab.active-neon-tab {
   background: #0f172a;
   border-color: #38bdf8;
@@ -230,7 +253,6 @@
   color: #38bdf8;
 }
 
-/* Эффект подсветки графики при выборе таба */
 .active-neon-tab .car-class-silhouette-img {
   opacity: 1;
   mix-blend-mode: normal;
@@ -246,34 +268,14 @@
   color: #cbd5e1;
 }
 
-/* Скролл-зона прайс-листа */
-.price-list-scroll {
-  flex-grow: 1;
-  overflow-y: auto !important; /* Жестко включаем внутренний вертикальный скролл */
-  padding: 0 20px 20px 20px;
-
-  /* 🌟 ИСПРАВЛЕНО: Явно разрешаем тач-действия для прокрутки */
-  touch-action: pan-y !important;
-  -webkit-overflow-scrolling: touch !important; /* Инерционный скролл на iOS */
-
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-/* Убираем скроллбар для Chrome, Safari и Opera */
-.price-list-scroll::-webkit-scrollbar {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-}
-
 .group-title {
   color: #64748b;
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 0 0 12px 0;
+  margin: 8px 0 4px 0;
+  text-align: left;
 }
 
 /* Элементы аккордеона услуг */

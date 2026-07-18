@@ -86,72 +86,70 @@ const PriceListModal = ({ isOpen, onClose, userCarClass = 3 }) => {
   return (
     <div className="price-modal-overlay" onClick={onClose}>
       <div className="price-modal-content" onClick={(e) => e.stopPropagation()}>
-        {/* Шапка модального окна */}
+        {/* 1. ФИКСИРОВАННАЯ ШАПКА МОДАЛКИ (Как в calc-modal-header) */}
         <div className="price-modal-header">
           <h2>Прейскурант услуг</h2>
           <button className="close-btn" onClick={onClose}>
             &times;
           </button>
         </div>
-
-        {/* СТРОКА ПОИСКА (Визуальная заглушка) */}
-        <div className="price-search-container-stub">
-          <i className="fas fa-search search-icon-stub"></i>
-          <input
-            type="text"
-            placeholder="Введите марку вашей машины..."
-            disabled
-            className="price-input-stub"
-          />
-        </div>
-
-        {/* ПЛАШКА АВТО-ФОКУСА */}
-        {isAutoFocused && userCarClass && (
-          <div className="auto-focus-alert-banner">
-            <div className="alert-banner-flex">
-              <i className="fas fa-info-circle text-cyan"></i>
-              <span>
-                Показываем цены для вашего класса авто (Класс {userCarClass})
-              </span>
-            </div>
-            <button
-              className="banner-dismiss-btn"
-              onClick={() => setIsAutoFocused(false)}
-            >
-              &times;
-            </button>
+        {/* 2. ПРОКРУЧИВАЕМОЕ ТЕЛО МОДАЛКИ (Аналог calc-modal-body) */}
+        <div className="price-modal-body">
+          {/* 🔍 Строка поиска (Визуальная заглушка) */}
+          <div className="price-search-container-stub">
+            <i className="fas fa-search search-icon-stub"></i>
+            <input
+              type="text"
+              placeholder="Введите марку вашей машины..."
+              disabled
+              className="price-input-stub"
+            />
           </div>
-        )}
 
-        {/* 🏎️ ГОРИЗОНТАЛЬНЫЙ СКРОЛЛ-БАР КЛАССОВ С ЖИВЫМИ КАРТИНКАМИ */}
-        <div className="class-scroll-bar-wrapper">
-          {CLASS_CAR_EXAMPLES.map((cls) => (
-            <div
-              key={cls.id}
-              className={`class-card-tab ${activeClass === cls.id ? "active-neon-tab" : ""}`}
-              onClick={() => setActiveClass(cls.id)}
-            >
-              <div className="class-card-header">
-                <span>{cls.name}</span>
-                {/* ❌ УДАЛЕНО: <i className={`${cls.icon} tab-class-icon`}></i> */}
+          {/* ⚠️ Плашка авто-фокуса */}
+          {isAutoFocused && userCarClass && (
+            <div className="auto-focus-alert-banner">
+              <div className="alert-banner-flex">
+                <i className="fas fa-info-circle text-cyan"></i>
+                <span>
+                  Показываем цены для вашего класса авто (Класс {userCarClass})
+                </span>
               </div>
-
-              {/* 🌟 ИСПРАВЛЕНО: Рендерим твою реальную картинку класса автомобиля */}
-              <div className="car-silhouette-placeholder">
-                <img
-                  src={cls.image}
-                  alt={cls.name}
-                  className="car-class-silhouette-img"
-                />
-              </div>
-
-              <p className="class-card-examples-text">{cls.examples}</p>
+              <button
+                className="banner-dismiss-btn"
+                onClick={() => setIsAutoFocused(false)}
+              >
+                &times;
+              </button>
             </div>
-          ))}
-        </div>
+          )}
 
-        {/* СПИСОК УСЛУГ И ДИНАМИЧЕСКИХ ЦЕН */}
-        <div className="price-list-scroll">
+          {/* 🏎️ Горизонтальный скролл-бар классов */}
+          <div className="class-scroll-bar-wrapper">
+            {CLASS_CAR_EXAMPLES.map((cls) => (
+              <div
+                key={cls.id}
+                className={`class-card-tab ${activeClass === cls.id ? "active-neon-tab" : ""}`}
+                onClick={() => setActiveClass(cls.id)}
+              >
+                <div className="class-card-header">
+                  <span>{cls.name}</span>
+                </div>
+
+                <div className="car-silhouette-placeholder">
+                  <img
+                    src={cls.image}
+                    alt={cls.name}
+                    className="car-class-silhouette-img"
+                  />
+                </div>
+
+                <p className="class-card-examples-text">{cls.examples}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Список динамических услуг */}
           <section className="price-group">
             <h3 className="group-title">
               Доступные услуги для Класса {activeClass}
@@ -205,7 +203,8 @@ const PriceListModal = ({ isOpen, onClose, userCarClass = 3 }) => {
               ))
             )}
           </section>
-        </div>
+        </div>{" "}
+        {/* /price-modal-body */}
       </div>
     </div>
   );
