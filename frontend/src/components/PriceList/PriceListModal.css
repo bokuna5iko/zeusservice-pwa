@@ -140,7 +140,7 @@
   display: none; /* Убираем нативный скроллбар в Chrome/Safari */
 }
 
-/* 🌟 ИСПРАВЛЕНО: Задали жесткую фиксированную высоту карточки, чтобы они были идеально одинаковыми */
+/* 🌟 ИСПРАВЛЕНО: Базовый фон неактивной карточки */
 .class-card-tab {
   background: #0f172a;
   border: 1px solid #1e293b;
@@ -179,8 +179,8 @@
   height: 52px;
   width: 100%; /* Растягиваем на всю ширину карточки */
 
-  /* 🌟 ИСПРАВЛЕНО: Красим фон контейнера ровно в цвет фона изображения */
-  background: #141a2c;
+  /* 🌟 ИСПРАВЛЕНО: По умолчанию делаем прозрачным, чтобы не было видно "внутренней рамки" */
+  background: transparent;
 
   border-radius: 10px;
   display: flex;
@@ -188,22 +188,24 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(30, 41, 59, 0.3);
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 /* Изображение внутри контейнера */
 .car-class-silhouette-img {
-  /* 🌟 ИСПРАВЛЕНО: Картинка занимает всю область плейсхолдера, сливаясь фонами */
   width: 100%;
   height: 100%;
-
   /* Сохраняем пропорции машины, чтобы геометрия кузова 721x542 не ломалась */
   object-fit: contain;
 
-  /* 🌟 ИСПРАВЛЕНО: Убрали mix-blend-mode, оставляем чистый вывод */
-  opacity: 0.5;
-  filter: brightness(0.8) grayscale(0.3);
+  /* 🌟 ИСПРАВЛЕНО: Для неактивной карточки используем блендинг color-dodge. 
+     Он идеально растворяет фоновый цвет картинки #141a2c на подложке #0f172a, 
+     оставляя только контуры машины! */
+  mix-blend-mode: color-dodge;
+  opacity: 0.3; /* Делаем силуэт ненавязчивым, когда вкладка не выбрана */
+  filter: grayscale(1) brightness(0.8);
   transition: all 0.2s ease-in-out;
 }
 
@@ -220,7 +222,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 2; /* Максимум 2 строки, дальше — аккуратное троеточие */
   -webkit-box-orient: vertical;
-  line-clamp: 2; /* 🌟 ДОБАВЛЕНО: Стандартное свойство, чтобы убрать предупреждение в VS Code */
+  line-clamp: 2;
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -247,10 +249,12 @@
 /* Эффект подсветки графики при выборе таба */
 .active-neon-tab .car-class-silhouette-img {
   opacity: 1;
+  mix-blend-mode: normal; /* Выключаем блендинг для активного состояния */
   filter: brightness(1.1) grayscale(0); /* Картинка становится сочной и чёткой */
 }
 
 .active-neon-tab .car-silhouette-placeholder {
+  background: #141a2c; /* 🌟 ДОБАВЛЕНО: Включаем твой точный цвет фона только при активе */
   border-color: rgba(
     56,
     189,
