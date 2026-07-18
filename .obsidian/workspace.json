@@ -11,17 +11,14 @@
             "id": "c6a32a8d05138e2e",
             "type": "leaf",
             "state": {
-              "type": "canvas",
+              "type": "markdown",
               "state": {
-                "file": "Projzeus/🗺RoadMap/Без названия.canvas",
-                "viewState": {
-                  "x": -119.61585403009398,
-                  "y": -30.523975614374464,
-                  "zoom": -0.8101057513040834
-                }
+                "file": "Projzeus/📚Docs/Tutorials/Git guide/🛠 Guide git for OBS&VSCODE.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-layout-dashboard",
-              "title": "Без названия"
+              "icon": "lucide-file",
+              "title": "🛠 Guide git for OBS&VSCODE"
             }
           }
         ]
@@ -196,8 +193,8 @@
   },
   "active": "c6a32a8d05138e2e",
   "lastOpenFiles": [
-    "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
     "Projzeus/🗺RoadMap/Без названия.canvas",
+    "Projzeus/🗺RoadMap/Versions/Global-Map.canvas",
     "Экоситема Zeus Family.md",
     "PWA Auto.md",
     "Projzeus/📚Docs/Tutorials/PGAdmin&postgreSQL.md",
