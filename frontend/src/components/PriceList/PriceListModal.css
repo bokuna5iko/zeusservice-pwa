@@ -240,11 +240,17 @@
   color: #cbd5e1;
 }
 
-/* 🌟 ИСПРАВЛЕНО: Вернули базовый класс контейнера скролла с правилами невидимого скроллбара */
+/* Скролл-зона прайс-листа */
 .price-list-scroll {
   flex-grow: 1;
-  overflow-y: auto; /* Возвращаем вертикальную прокрутку */
+  overflow-y: auto; /* Вертикальная прокрутка включена */
   padding: 0 20px 20px 20px;
+
+  /* 🌟 ИСПРАВЛЕНО ДЛЯ МОБИЛЬНЫХ: Запираем тач-скролл внутри этого блока, 
+     чтобы не дергался фон сайта */
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch; /* Включает плавный инерционный скролл на iOS Safari */
+
   scrollbar-width: none; /* Убираем скроллбар в Firefox */
   -ms-overflow-style: none; /* Убираем скроллбар в IE/Edge */
 }
