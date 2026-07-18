@@ -193,10 +193,12 @@
   height: 90%;
   width: auto;
   object-fit: contain;
-  opacity: 0.35;
-  filter: brightness(0.7) grayscale(0.4);
-  /* Смешиваем слои: убирает чужой фон у картинки, оставляя только сам силуэт авто */
-  mix-blend-mode: screen;
+  opacity: 0.5; /* Немного приподнимем прозрачность для лучшей видимости */
+  filter: brightness(0.9) grayscale(0.2);
+
+  /* 🌟 ИСПРАВЛЕНО: Растворяет белый/светлый фон картинки на синей подложке #1c2849 */
+  mix-blend-mode: multiply;
+
   transition: all 0.2s ease-in-out;
 }
 
