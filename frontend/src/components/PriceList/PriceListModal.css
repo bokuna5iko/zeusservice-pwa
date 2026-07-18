@@ -140,7 +140,7 @@
   display: none; /* Убираем нативный скроллбар в Chrome/Safari */
 }
 
-/* 🌟 ИСПРАВЛЕНО: Базовый фон неактивной карточки */
+/* Базовый фон неактивной карточки */
 .class-card-tab {
   background: #0f172a;
   border: 1px solid #1e293b;
@@ -168,20 +168,11 @@
   flex-shrink: 0;
 }
 
-.tab-class-icon {
-  font-size: 0.95rem;
-  color: #64748b;
-  transition: color 0.2s ease;
-}
-
 /* Контейнер под графику кузова автомобиля */
 .car-silhouette-placeholder {
   height: 52px;
   width: 100%; /* Растягиваем на всю ширину карточки */
-
-  /* 🌟 ИСПРАВЛЕНО: По умолчанию делаем прозрачным, чтобы не было видно "внутренней рамки" */
   background: transparent;
-
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -197,19 +188,14 @@
 .car-class-silhouette-img {
   width: 100%;
   height: 100%;
-  /* Сохраняем пропорции машины, чтобы геометрия кузова 721x542 не ломалась */
   object-fit: contain;
-
-  /* 🌟 ИСПРАВЛЕНО: Для неактивной карточки используем блендинг color-dodge. 
-     Он идеально растворяет фоновый цвет картинки #141a2c на подложке #0f172a, 
-     оставляя только контуры машины! */
   mix-blend-mode: color-dodge;
   opacity: 0.3; /* Делаем силуэт ненавязчивым, когда вкладка не выбрана */
   filter: grayscale(1) brightness(0.8);
   transition: all 0.2s ease-in-out;
 }
 
-/* 🌟 ИСПРАВЛЕНО: Защита от удлинения карточки. Текст заперт в свои рамки */
+/* Защита от удлинения карточки. Текст заперт в свои рамки */
 .class-card-examples-text {
   color: #64748b;
   font-size: 0.72rem;
@@ -217,16 +203,13 @@
   margin: 0;
   text-align: left;
   height: 28px; /* Фиксированная высота для двух строк текста */
-
-  /* Кроссбраузерное ограничение строк и многоточие */
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Максимум 2 строки, дальше — аккуратное троеточие */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   line-clamp: 2;
-
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: normal; /* Разрешаем перенос слов внутри лимита */
+  white-space: normal;
   flex-shrink: 0;
 }
 
@@ -241,35 +224,34 @@
   color: #38bdf8;
 }
 
-.active-neon-tab .tab-class-icon {
-  color: #38bdf8;
-  filter: drop-shadow(0 0 4px #38bdf8);
-}
-
 /* Эффект подсветки графики при выборе таба */
 .active-neon-tab .car-class-silhouette-img {
   opacity: 1;
-  mix-blend-mode: normal; /* Выключаем блендинг для активного состояния */
-  filter: brightness(1.1) grayscale(0); /* Картинка становится сочной и чёткой */
+  mix-blend-mode: normal;
+  filter: brightness(1.1) grayscale(0);
 }
 
 .active-neon-tab .car-silhouette-placeholder {
-  background: #141a2c; /* 🌟 ДОБАВЛЕНО: Включаем твой точный цвет фона только при активе */
-  border-color: rgba(
-    56,
-    189,
-    248,
-    0.35
-  ); /* Подсвечиваем рамку вокруг картинки */
+  background: #141a2c;
+  border-color: rgba(56, 189, 248, 0.35);
 }
 
 .active-neon-tab .class-card-examples-text {
   color: #cbd5e1;
 }
 
-/* 🌟 ДОБАВЛЕНО: Убираем скроллбар для Chrome, Safari и Opera */
+/* 🌟 ИСПРАВЛЕНО: Вернули базовый класс контейнера скролла с правилами невидимого скроллбара */
+.price-list-scroll {
+  flex-grow: 1;
+  overflow-y: auto; /* Возвращаем вертикальную прокрутку */
+  padding: 0 20px 20px 20px;
+  scrollbar-width: none; /* Убираем скроллбар в Firefox */
+  -ms-overflow-style: none; /* Убираем скроллбар в IE/Edge */
+}
+
+/* Убираем скроллбар для Chrome, Safari и Opera */
 .price-list-scroll::-webkit-scrollbar {
-  display: none;
+  display: none !important;
   width: 0 !important;
   height: 0 !important;
 }
