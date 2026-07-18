@@ -1,7 +1,8 @@
 /* src/components/PriceListModal.css */
 
 .price-modal-overlay {
-  position: fixed;
+  /* 🌟 ИСПРАВЛЕНО: Меняем fixed на absolute, чтобы модалка подчинялась overflow родительского "телефона" */
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -9,15 +10,16 @@
   background: rgba(2, 6, 23, 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: 999999;
+  /* 🌟 ИСПРАВЛЕНО: Индекс должен быть внутри рамок z-index глобального макета */
+  z-index: 150;
   display: flex;
   align-items: flex-end; /* Премиальный Bottom Sheet на мобилках */
   justify-content: center;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 500px) {
   .price-modal-overlay {
-    align-items: center; /* Центрируем модалку на десктопах */
+    align-items: center; /* На ПК центрируем внутри коробки телефона */
   }
 }
 
@@ -26,8 +28,11 @@
   border: 1px solid #1e293b;
   border-radius: 24px 24px 0 0;
   width: 100%;
-  max-width: 480px;
-  max-height: 90vh;
+
+  /* 🌟 ИСПРАВЛЕНО: Защита от вылета за рамки жесткого экрана. 
+     max-height считается от высоты .app-main, а не от всего окна браузера */
+  max-height: 85%;
+
   display: flex;
   flex-direction: column;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
@@ -35,10 +40,11 @@
   animation: slideUpPriceModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 500px) {
   .price-modal-content {
     border-radius: 24px;
-    max-height: 80vh;
+    max-height: 75%;
+    width: 92%; /* Красивые отступы по бокам внутри рамки десктопного телефона */
   }
 }
 
@@ -243,16 +249,15 @@
 /* Скролл-зона прайс-листа */
 .price-list-scroll {
   flex-grow: 1;
-  overflow-y: auto; /* Вертикальная прокрутка включена */
+  overflow-y: auto !important; /* Жестко включаем внутренний вертикальный скролл */
   padding: 0 20px 20px 20px;
 
-  /* 🌟 ИСПРАВЛЕНО ДЛЯ МОБИЛЬНЫХ: Запираем тач-скролл внутри этого блока, 
-     чтобы не дергался фон сайта */
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch; /* Включает плавный инерционный скролл на iOS Safari */
+  /* 🌟 ИСПРАВЛЕНО: Явно разрешаем тач-действия для прокрутки */
+  touch-action: pan-y !important;
+  -webkit-overflow-scrolling: touch !important; /* Инерционный скролл на iOS */
 
-  scrollbar-width: none; /* Убираем скроллбар в Firefox */
-  -ms-overflow-style: none; /* Убираем скроллбар в IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 /* Убираем скроллбар для Chrome, Safari и Opera */
