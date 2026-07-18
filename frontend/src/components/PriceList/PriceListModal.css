@@ -1,120 +1,364 @@
+/* src/components/PriceListModal.css */
+
 .price-modal-overlay {
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(2, 6, 23, 0.85);
   backdrop-filter: blur(8px);
-  z-index: 2000;
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 999999;
   display: flex;
-  align-items: flex-end; /* BottomSheet */
+  align-items: flex-end; /* Премиальный Bottom Sheet на мобилках */
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .price-modal-overlay {
+    align-items: center; /* Центрируем модалку на десктопах */
+  }
 }
 
 .price-modal-content {
-  background: #0f172a; /* Deep Navy */
+  background: #090d16;
+  border: 1px solid #1e293b;
+  border-radius: 24px 24px 0 0;
   width: 100%;
-
-  /* --- ВОТ ЭТИ СТРОКИ ИСПРАВЯТ ВИД НА ПК --- */
-  max-width: 500px; /* Устанавливаем ширину как у твоего «телефона» на ПК */
-  margin: 0 auto;   /* Центрируем по горизонтали */
-  /* ---------------------------------------- */
-
-  max-height: 92vh;
-  border-radius: 25px 25px 0 0;
-  color: white;
+  max-width: 480px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: slideUpPriceModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+@media (min-width: 640px) {
+  .price-modal-content {
+    border-radius: 24px;
+    max-height: 80vh;
+  }
 }
 
+/* Шапка */
 .price-modal-header {
-  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #1e293b;
+  padding: 20px 20px 10px 20px;
+  flex-shrink: 0;
 }
 
-.price-modal-header h2 { color: #e2e8f0; font-size: 1.2rem; }
-
-/* Sticky Bar */
-.class-selector-sticky {
-  position: sticky;
-  top: 0;
-  background: #1e293b;
-  display: flex;
-  padding: 10px;
-  gap: 8px;
-  overflow-x: auto;
-  z-index: 10;
-  border-bottom: 2px solid #334155;
+.price-modal-header h2 {
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
 }
 
-.class-tab {
-  flex: 1;
-  min-width: 80px;
-  padding: 8px;
-  border-radius: 12px;
-  border: 1px solid #475569;
+.close-btn {
   background: transparent;
-  color: #94a3b8;
-  white-space: nowrap;
+  border: none;
+  color: #64748b;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* 🔍 Строка поиска заглушка */
+.price-search-container-stub {
+  margin: 0 20px 12px 20px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.search-icon-stub {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #475569;
+}
+
+.price-input-stub {
+  width: 100%;
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 12px 14px 12px 40px;
+  color: #64748b;
+  box-sizing: border-box;
+  font-size: 0.9rem;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ⚠️ Плашка авто-фокуса */
+.auto-focus-alert-banner {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  margin: 0 20px 16px 20px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.alert-banner-flex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #38bdf8;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
-.class-tab.active {
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  color: #fbbf24; /* Золотистый */
-  border-color: #fbbf24;
+.banner-dismiss-btn {
+  background: transparent;
+  border: none;
+  color: #38bdf8;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
 }
 
-/* Список услуг */
-.price-list-scroll {
-  padding: 15px;
-  overflow-y: auto;
+/* 🏎️ Горизонтальный скролл-бар классов */
+.class-scroll-bar-wrapper {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 20px 16px 20px;
+  flex-shrink: 0;
+  scrollbar-width: none; /* Убираем нативный скроллбар в Firefox */
 }
 
-.price-item {
-  border-bottom: 1px solid #1e293b;
-  padding: 15px 0;
+.class-scroll-bar-wrapper::-webkit-scrollbar {
+  display: none; /* Убираем нативный скроллбар в Chrome/Safari */
 }
 
-.price-item-main {
+.class-card-tab {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 12px;
+  min-width: 135px; /* Немного расширили для комфортного размещения иконок */
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.class-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
-.service-title { font-weight: 500; font-size: 1rem; }
-
-.service-price {
-  color: #fbbf24;
-  font-weight: 800;
-  font-size: 1.1rem;
+.tab-class-icon {
+  font-size: 0.95rem;
+  color: #64748b;
+  transition: color 0.2s ease;
 }
 
-/* Анимация цены */
-.animated-price {
-  transition: transform 0.2s, color 0.2s;
+/* 🌟 ИСПРАВЛЕНО: Контейнер-плейсхолдер под твою графику (силуэты кузовов) */
+.car-silhouette-placeholder {
+  height: 52px; /* Увеличили высоту для четкого отображения твоих картинок 721x542 */
+  background: rgba(2, 6, 23, 0.4);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(30, 41, 59, 0.5);
 }
 
-.arrow { font-size: 0.8rem; margin-left: 10px; transition: 0.3s; color: #475569; }
-.arrow.up { transform: rotate(180deg); color: #fbbf24; }
+/* 🌟 ДОБАВЛЕНО: Пропорциональное сжатие твоих больших иконок */
+.car-class-silhouette-img {
+  height: 85%; /* Оставляем аккуратные защитные поля сверху и снизу */
+  width: auto; /* Ширина вычисляется автоматически, исключая сплющивание геометрии */
+  object-fit: contain;
+  opacity: 0.35; /* Приглушаем неактивные вкладки, убирая визуальный шум */
+  filter: brightness(0.7) grayscale(0.4);
+  transition: all 0.2s ease-in-out;
+}
 
-/* Accordion Detail */
-.service-details {
+.class-card-examples-text {
+  color: #64748b;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  margin: 0;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Активное состояние карточки класса (Неоновое бирюзовое свечение) */
+.class-card-tab.active-neon-tab {
+  background: #0f172a;
+  border-color: #38bdf8;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+}
+
+.active-neon-tab .class-card-header {
+  color: #38bdf8;
+}
+
+.active-neon-tab .tab-class-icon {
+  color: #38bdf8;
+  filter: drop-shadow(0 0 4px #38bdf8);
+}
+
+.active-neon-tab .car-silhouette-placeholder {
+  border-color: rgba(56, 189, 248, 0.25);
+  background: rgba(2, 6, 23, 0.6);
+}
+
+/* 🌟 ДОБАВЛЕНО: Эффект оживления и неоновой подсветки твоей иконки при выборе */
+.active-neon-tab .car-class-silhouette-img {
+  opacity: 1;
+  filter: brightness(1.2) grayscale(0); /* Включаем сочные оригинальные цвета и свет */
+}
+
+.active-neon-tab .class-card-examples-text {
+  color: #cbd5e1;
+}
+
+/* Скролл-зона прайс-листа */
+.price-list-scroll {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 20px 20px 20px;
+}
+
+.group-title {
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px 0;
+}
+
+/* Элементы аккордеона услуг */
+.price-item-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.price-item-main-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.service-main-info-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.service-title-text {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.arrow-indicator {
+  color: #475569;
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
+}
+
+.arrow-indicator.up {
+  transform: rotate(180deg);
+  color: #38bdf8;
+}
+
+.service-price-neon {
+  color: #38bdf8;
+  font-weight: 700;
+  font-size: 1rem;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
+}
+
+/* Выдвижной ящик с описанием того, что входит в пакет */
+.service-expanded-details-drawer {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease-out;
+  transition: max-height 0.2s ease-out;
+  background: #020617;
+  border-top: 0 solid #1e293b;
+}
+
+.price-item-card.open {
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.price-item-card.open .service-expanded-details-drawer {
+  max-height: 100px;
+  border-top-width: 1px;
+}
+
+.service-expanded-details-drawer p {
+  margin: 0;
+  padding: 12px 16px;
   color: #94a3b8;
   font-size: 0.85rem;
   line-height: 1.4;
 }
 
-.price-item.open .service-details {
-  max-height: 100px;
-  padding-top: 10px;
+/* Лоадеры и Фолбэки */
+.price-list-loading-notice,
+.price-list-empty-fallback {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748b;
+}
+
+.price-list-loading-notice i {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+}
+
+.price-list-empty-fallback i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.price-list-empty-fallback p {
+  color: #f1f5f9;
+  margin: 0 0 4px 0;
+  font-size: 0.95rem;
+}
+
+.demo-hint-text {
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+@keyframes slideUpPriceModal {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }

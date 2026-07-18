@@ -1,44 +1,77 @@
-import React, { useState } from 'react';
-import './PriceListModal.css';
+// src/components/PriceListModal.jsx
+import React, { useState, useEffect } from "react";
+import { api } from "../api/apiService";
+import "./PriceListModal.css";
 
-const priceData = {
-  classBased: [
-    {
-      id: "wash_2phase",
-      title: "2-х фазная мойка",
-      description: "Мойка эмульсией; Мойка пенным шампунем; Полная сушка кузова; Чернение резины.",
-      prices: { 1: 800, 2: 900, 3: 1000, 4: 1100, 5: 1200 }
-    },
-    {
-      id: "standard_plus",
-      title: "Стандарт + коврики",
-      description: "Бесконтактная мойка кузова; Промывка резиновых ковриков; Сушка порогов и зеркал.",
-      prices: { 1: 600, 2: 700, 3: 800, 4: 900, 5: 1000 }
-    },
-    {
-      id: "complex",
-      title: "Комплексная мойка",
-      description: "2-х фазная мойка; Уборка салона пылесосом; Влажная уборка пластика; Мойка стекол изнутри.",
-      prices: { 1: 1500, 2: 1800, 3: 2100, 4: 2400, 5: 2700 }
-    },
-    {
-      id: "chassis",
-      title: "Мойка днища",
-      description: "Промывка нижней части автомобиля специализированной насадкой.",
-      prices: { 1: 500, 2: 500, 3: 600, 4: 700, 5: 800 }
-    }
-  ],
-  fixed: [
-    { id: "moto", title: "Мойка мотоцикла", description: "Деликатная мойка узлов и агрегатов.", price: "от 500 ₽" },
-    { id: "engine", title: "Мойка двигателя", description: "Чистка составами-диэлектриками и консервация.", price: "2500 ₽" },
-    { id: "dry_clean", title: "Химчистка (1 элемент)", description: "Глубокая очистка ткани или кожи спецсоставами.", price: "от 1000 ₽" },
-    { id: "vacuum", title: "Пылесос салона", description: "Тщательная уборка пола, сидений и багажника.", price: "400 ₽" }
-  ]
-};
+// Карточки классов с народными примерами и путями к созданным иконкам
+const CLASS_CAR_EXAMPLES = [
+  {
+    id: 1,
+    name: "Класс 1",
+    examples: "Vitz, Fit, Demio",
+    icon: "fas fa-car-side",
+    image: "/assets/classes/class1.png",
+  },
+  {
+    id: 2,
+    name: "Класс 2",
+    examples: "Premio, Chaser, Fielder",
+    icon: "fas fa-car",
+    image: "/assets/classes/class2.png",
+  },
+  {
+    id: 3,
+    name: "Класс 3",
+    examples: "Rx300, Crown 200, Wish10",
+    icon: "fas fa-suv",
+    image: "/assets/classes/class3.png",
+  },
+  {
+    id: 4,
+    name: "Класс 4",
+    examples: "tlc200, Noah, Tank 500",
+    icon: "fas fa-truck-pickup",
+    image: "/assets/classes/class4.png",
+  },
+  {
+    id: 5,
+    name: "Класс 5",
+    examples: "Hiace, Tundra, Jac, Escalade",
+    icon: "fas fa-shuttle-van",
+    image: "/assets/classes/class5.png",
+  },
+];
 
-const PriceListModal = ({ isOpen, onClose }) => {
+const PriceListModal = ({ isOpen, onClose, userCarClass = 3 }) => {
   const [activeClass, setActiveClass] = useState(1);
   const [openAccordion, setOpenAccordion] = useState(null);
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isAutoFocused, setIsAutoFocused] = useState(true);
+
+  useEffect(() => {
+    if (isOpen) {
+      const fetchServices = async () => {
+        setLoading(true);
+        try {
+          const res = await api.getServices();
+          if (res && res.data) {
+            setServices(res.data);
+          }
+        } catch (err) {
+          console.error("Ошибка загрузки прайс-листа:", err);
+          setServices([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchServices();
+      if (userCarClass) {
+        setActiveClass(userCarClass);
+      }
+    }
+  }, [isOpen, userCarClass]);
 
   if (!isOpen) return null;
 
@@ -46,68 +79,131 @@ const PriceListModal = ({ isOpen, onClose }) => {
     setOpenAccordion(openAccordion === id ? null : id);
   };
 
+  const filteredServices = services.filter(
+    (s) => Number(s.car_class || s.car_type_id) === activeClass,
+  );
+
   return (
     <div className="price-modal-overlay" onClick={onClose}>
       <div className="price-modal-content" onClick={(e) => e.stopPropagation()}>
-        
-        {/* Header */}
+        {/* Шапка модального окна */}
         <div className="price-modal-header">
           <h2>Прейскурант услуг</h2>
-          <button className="close-btn" onClick={onClose}>&times;</button>
+          <button className="close-btn" onClick={onClose}>
+            &times;
+          </button>
         </div>
 
-        {/* Sticky Tabs */}
-        <div className="class-selector-sticky">
-          {[1, 2, 3, 4, 5].map((cls) => (
-            <button 
-              key={cls}
-              className={`class-tab ${activeClass === cls ? 'active' : ''}`}
-              onClick={() => setActiveClass(cls)}
+        {/* СТРОКА ПОИСКА (Визуальная заглушка) */}
+        <div className="price-search-container-stub">
+          <i className="fas fa-search search-icon-stub"></i>
+          <input
+            type="text"
+            placeholder="Введите марку вашей машины..."
+            disabled
+            className="price-input-stub"
+          />
+        </div>
+
+        {/* ПЛАШКА АВТО-ФОКУСА */}
+        {isAutoFocused && userCarClass && (
+          <div className="auto-focus-alert-banner">
+            <div className="alert-banner-flex">
+              <i className="fas fa-info-circle text-cyan"></i>
+              <span>
+                Показываем цены для вашего класса авто (Класс {userCarClass})
+              </span>
+            </div>
+            <button
+              className="banner-dismiss-btn"
+              onClick={() => setIsAutoFocused(false)}
             >
-              {cls} класс
+              &times;
             </button>
+          </div>
+        )}
+
+        {/* 🏎️ ГОРИЗОНТАЛЬНЫЙ СКРОЛЛ-БАР КЛАССОВ С ЖИВЫМИ КАРТИНКАМИ */}
+        <div className="class-scroll-bar-wrapper">
+          {CLASS_CAR_EXAMPLES.map((cls) => (
+            <div
+              key={cls.id}
+              className={`class-card-tab ${activeClass === cls.id ? "active-neon-tab" : ""}`}
+              onClick={() => setActiveClass(cls.id)}
+            >
+              <div className="class-card-header">
+                <span>{cls.name}</span>
+                <i className={`${cls.icon} tab-class-icon`}></i>
+              </div>
+
+              {/* 🌟 ИСПРАВЛЕНО: Рендерим твою реальную картинку класса автомобиля */}
+              <div className="car-silhouette-placeholder">
+                <img
+                  src={cls.image}
+                  alt={cls.name}
+                  className="car-class-silhouette-img"
+                />
+              </div>
+
+              <p className="class-card-examples-text">{cls.examples}</p>
+            </div>
           ))}
         </div>
 
+        {/* СПИСОК УСЛУГ И ДИНАМИЧЕСКИХ ЦЕН */}
         <div className="price-list-scroll">
-          {/* Группа 1: Зависимые от класса */}
           <section className="price-group">
-            <h3 className="group-title">Основные услуги</h3>
-            {priceData.classBased.map((item) => (
-              <div key={item.id} className={`price-item ${openAccordion === item.id ? 'open' : ''}`}>
-                <div className="price-item-main" onClick={() => toggleAccordion(item.id)}>
-                  <div className="service-info">
-                    <span className="service-title">{item.title}</span>
-                    <i className={`fas fa-chevron-down arrow ${openAccordion === item.id ? 'up' : ''}`}></i>
-                  </div>
-                  <span className="service-price animated-price">
-                    {item.prices[activeClass]} ₽
-                  </span>
-                </div>
-                <div className="service-details">
-                  <p>{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </section>
+            <h3 className="group-title">
+              Доступные услуги для Класса {activeClass}
+            </h3>
 
-          {/* Группа 2: Фиксированные */}
-          <section className="price-group">
-            <h3 className="group-title">Дополнительно</h3>
-            {priceData.fixed.map((item) => (
-              <div key={item.id} className={`price-item fixed-item ${openAccordion === item.id ? 'open' : ''}`}>
-                <div className="price-item-main" onClick={() => toggleAccordion(item.id)}>
-                  <div className="service-info">
-                    <span className="service-title">{item.title}</span>
-                    <i className={`fas fa-chevron-down arrow ${openAccordion === item.id ? 'up' : ''}`}></i>
-                  </div>
-                  <span className="service-price">{item.price}</span>
-                </div>
-                <div className="service-details">
-                  <p>{item.description}</p>
-                </div>
+            {loading ? (
+              <div className="price-list-loading-notice">
+                <i className="fas fa-spinner fa-spin text-cyan"></i>
+                <p>Синхронизация прайс-листа с PostgreSQL...</p>
               </div>
-            ))}
+            ) : filteredServices.length === 0 ? (
+              <div className="price-list-empty-fallback">
+                <i className="fas fa-folder-open"></i>
+                <p>В базе данных пока нет услуг для Класса {activeClass}.</p>
+                <span className="demo-hint-text">
+                  (Добавьте их через NocoDB в таблицу services)
+                </span>
+              </div>
+            ) : (
+              filteredServices.map((item) => (
+                <div
+                  key={item.id}
+                  className={`price-item-card ${openAccordion === item.id ? "open" : ""}`}
+                >
+                  <div
+                    className="price-item-main-row"
+                    onClick={() => toggleAccordion(item.id)}
+                  >
+                    <div className="service-main-info-block">
+                      <span className="service-title-text">
+                        {item.service_name}
+                      </span>
+                      <i
+                        className={`fas fa-chevron-down arrow-indicator ${openAccordion === item.id ? "up" : ""}`}
+                      ></i>
+                    </div>
+                    <span className="service-price-neon">
+                      {Number(
+                        item.base_price || item.price || 0,
+                      ).toLocaleString()}{" "}
+                      ₽
+                    </span>
+                  </div>
+                  <div className="service-expanded-details-drawer">
+                    <p>
+                      {item.description ||
+                        "Описание услуги настраивается в NocoDB."}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
           </section>
         </div>
       </div>
