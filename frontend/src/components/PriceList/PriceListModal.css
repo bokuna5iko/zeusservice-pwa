@@ -126,7 +126,7 @@
   line-height: 1;
 }
 
-/* 🏎️ Горизонтальный скролл-бар классов */
+/* 🏎️ ГОРИЗОНТАЛЬНЫЙ СКРОЛЛ-БАР КЛАССОВ */
 .class-scroll-bar-wrapper {
   display: flex;
   gap: 12px;
@@ -140,17 +140,21 @@
   display: none; /* Убираем нативный скроллбар в Chrome/Safari */
 }
 
+/* 🌟 ИСПРАВЛЕНО: Задали жесткую фиксированную высоту карточки, чтобы они были идеально одинаковыми */
 .class-card-tab {
   background: #0f172a;
   border: 1px solid #1e293b;
   border-radius: 16px;
   padding: 12px;
-  min-width: 135px; /* Немного расширили для комфортного размещения иконок */
+  width: 135px;
+  height: 142px; /* Фиксируем общую высоту */
+  box-sizing: border-box;
   flex-shrink: 0;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: space-between; /* Распределяем элементы равномерно */
+  gap: 6px;
   transition: all 0.2s ease;
 }
 
@@ -161,6 +165,7 @@
   color: #94a3b8;
   font-size: 0.85rem;
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .tab-class-icon {
@@ -169,9 +174,9 @@
   transition: color 0.2s ease;
 }
 
-/* 🌟 ИСПРАВЛЕНО: Контейнер-плейсхолдер под твою графику (силуэты кузовов) */
+/* Контейнер-плейсхолдер под графику */
 .car-silhouette-placeholder {
-  height: 52px; /* Увеличили высоту для четкого отображения твоих картинок 721x542 */
+  height: 48px;
   background: rgba(2, 6, 23, 0.4);
   border-radius: 10px;
   display: flex;
@@ -180,27 +185,40 @@
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(30, 41, 59, 0.5);
+  flex-shrink: 0;
 }
 
-/* 🌟 ДОБАВЛЕНО: Пропорциональное сжатие твоих больших иконок */
+/* 🌟 ИСПРАВЛЕНО: Вплавляем фон картинки в фон карточки и убираем границы */
 .car-class-silhouette-img {
-  height: 85%; /* Оставляем аккуратные защитные поля сверху и снизу */
-  width: auto; /* Ширина вычисляется автоматически, исключая сплющивание геометрии */
+  height: 90%;
+  width: auto;
   object-fit: contain;
-  opacity: 0.35; /* Приглушаем неактивные вкладки, убирая визуальный шум */
+  opacity: 0.35;
   filter: brightness(0.7) grayscale(0.4);
+  /* Смешиваем слои: убирает чужой фон у картинки, оставляя только сам силуэт авто */
+  mix-blend-mode: screen;
   transition: all 0.2s ease-in-out;
 }
 
+/* 🌟 ИСПРАВЛЕНО: Защита от удлинения карточки. Текст заперт в свои рамки */
 .class-card-examples-text {
   color: #64748b;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   line-height: 1.2;
   margin: 0;
   text-align: left;
-  white-space: nowrap;
+  height: 28px; /* Фиксированная высота для двух строк текста */
+
+  /* Кроссбраузерное ограничение строк и многоточие */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Максимум 2 строки, дальше — аккуратное троеточие */
+  -webkit-box-orient: vertical;
+  line-clamp: 2; /* 🌟 ДОБАВЛЕНО: Стандартное свойство, чтобы убрать предупреждение в VS Code */
+
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: normal; /* Разрешаем перенос слов внутри лимита */
+  flex-shrink: 0;
 }
 
 /* Активное состояние карточки класса (Неоновое бирюзовое свечение) */
@@ -224,10 +242,9 @@
   background: rgba(2, 6, 23, 0.6);
 }
 
-/* 🌟 ДОБАВЛЕНО: Эффект оживления и неоновой подсветки твоей иконки при выборе */
 .active-neon-tab .car-class-silhouette-img {
   opacity: 1;
-  filter: brightness(1.2) grayscale(0); /* Включаем сочные оригинальные цвета и свет */
+  filter: brightness(1.2) grayscale(0);
 }
 
 .active-neon-tab .class-card-examples-text {
