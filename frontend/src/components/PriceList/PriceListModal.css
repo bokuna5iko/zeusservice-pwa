@@ -174,10 +174,14 @@
   transition: color 0.2s ease;
 }
 
-/* Контейнер-плейсхолдер под графику */
+/* Контейнер под графику кузова автомобиля */
 .car-silhouette-placeholder {
-  height: 48px;
-  background: rgba(2, 6, 23, 0.4);
+  height: 52px;
+  width: 100%; /* Растягиваем на всю ширину карточки */
+
+  /* 🌟 ИСПРАВЛЕНО: Красим фон контейнера ровно в цвет фона изображения */
+  background: #1c2849;
+
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -188,17 +192,18 @@
   flex-shrink: 0;
 }
 
-/* 🌟 ИСПРАВЛЕНО: Вплавляем фон картинки в фон карточки и убираем границы */
+/* Изображение внутри контейнера */
 .car-class-silhouette-img {
-  height: 90%;
-  width: auto;
+  /* 🌟 ИСПРАВЛЕНО: Картинка занимает всю область плейсхолдера, сливаясь фонами */
+  width: 100%;
+  height: 100%;
+
+  /* Сохраняем пропорции машины, чтобы геометрия кузова 721x542 не ломалась */
   object-fit: contain;
-  opacity: 0.5; /* Немного приподнимем прозрачность для лучшей видимости */
-  filter: brightness(0.9) grayscale(0.2);
 
-  /* 🌟 ИСПРАВЛЕНО: Растворяет белый/светлый фон картинки на синей подложке #1c2849 */
-  mix-blend-mode: multiply;
-
+  /* 🌟 ИСПРАВЛЕНО: Убрали mix-blend-mode, оставляем чистый вывод */
+  opacity: 0.5;
+  filter: brightness(0.8) grayscale(0.3);
   transition: all 0.2s ease-in-out;
 }
 
@@ -239,14 +244,19 @@
   filter: drop-shadow(0 0 4px #38bdf8);
 }
 
-.active-neon-tab .car-silhouette-placeholder {
-  border-color: rgba(56, 189, 248, 0.25);
-  background: rgba(2, 6, 23, 0.6);
-}
-
+/* Эффект подсветки графики при выборе таба */
 .active-neon-tab .car-class-silhouette-img {
   opacity: 1;
-  filter: brightness(1.2) grayscale(0);
+  filter: brightness(1.1) grayscale(0); /* Картинка становится сочной и чёткой */
+}
+
+.active-neon-tab .car-silhouette-placeholder {
+  border-color: rgba(
+    56,
+    189,
+    248,
+    0.35
+  ); /* Подсвечиваем рамку вокруг картинки */
 }
 
 .active-neon-tab .class-card-examples-text {
