@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
 
-// 1. Импортируем контроллеры (🌟 ИСПРАВЛЕНО: Добавили импорт visitController)
+// 1. Импортируем контроллеры
 const statisticsController = require("../controllers/StatisticsController");
 const archiveController = require("../controllers/ArchiveController");
 const visitController = require("../controllers/visitController");
@@ -13,10 +13,13 @@ const { authenticateToken } = require("../middleware/authMiddleware");
 
 // Middleware для проверки роли админа
 const isAdmin = (req, res, next) => {
-  if (req.user && req.user.role === "admin") {
+  // 🌟 ИСПРАВЛЕНО: Теперь пропускаем и админа, и оунера, чтобы роуты не отдавали 403!
+  if (req.user && (req.user.role === "admin" || req.user.role === "owner")) {
     next();
   } else {
-    res.status(403).json({ message: "Требуются права администратора" });
+    res
+      .status(403)
+      .json({ message: "Требуются права администратора или владельца" });
   }
 };
 
@@ -57,8 +60,6 @@ router.get(
   adminController.verifyUserById,
 );
 
-// 🌟 ИСПРАВЛЕНО: Заменили authMiddleware на authenticateToken,
-// добавили жесткую защиту через isAdmin и подключили visitController!
 router.get(
   "/visits/today",
   authenticateToken,
@@ -67,7 +68,6 @@ router.get(
 );
 
 // Комплексная статистика за сегодня (метрики 2х2 + график по часам)
-// Полный путь: GET /api/admin/stats/today
 router.get(
   "/stats/today",
   authenticateToken,
@@ -75,8 +75,7 @@ router.get(
   statisticsController.getTodayDashboardStats,
 );
 
-// Архив клиентов (справочник с поиском и лимитом в 50 записей)
-// Полный путь: GET /api/admin/clients/archive
+// Архив клиентов
 router.get(
   "/clients/archive",
   authenticateToken,
@@ -85,7 +84,6 @@ router.get(
 );
 
 // Точечное редактирование полей заезда администратором (Умные формы)
-// Полный путь: PATCH /api/admin/visits/update/:id
 router.patch(
   "/visits/update/:id",
   authenticateToken,
@@ -99,6 +97,14 @@ router.get(
   authenticateToken,
   ownerOnly,
   visitController.getAuditLogs,
+);
+
+// 🌟 ДОБАВЛЕНО ПО ТЗ: Эндпоинт отмены визита с жесткой проверкой прав (заменили несуществующий adminOnly на исправленный isAdmin)
+router.post(
+  "/visits/:id/cancel",
+  authenticateToken,
+  isAdmin,
+  visitController.cancelVisit,
 );
 
 module.exports = router;

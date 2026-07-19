@@ -1,5 +1,5 @@
 // src/pages/AdminDashboard/components/DashboardSidebar.jsx
-import React, { useState } from "react";
+import React, { useState, useContext } from "react"; // 🌟 ИСПРАВЛЕНО: Импортируем useContext
 import "./DashboardSidebar.css";
 import { Layout, Menu } from "antd";
 import {
@@ -11,9 +11,10 @@ import {
   ClockCircleOutlined,
   ArrowLeftOutlined,
   BarChartOutlined,
-  AuditOutlined, // 🌟 ДОБАВЛЕНО: Специальная иконка для Журнала Аудита
+  AuditOutlined,
 } from "@ant-design/icons";
 import { useAdminDashboard } from "../../context/AdminDashboardContext";
+import { AuthContext } from "../../../../context/AuthContext"; // 🌟 ДОБАВЛЕНО: Подключаем корневой контекст авторизации
 
 const { Sider } = Layout;
 
@@ -31,13 +32,13 @@ const DashboardSidebar = () => {
     setTargetClosingShiftId,
     setShowForgottenModal,
     setShowCloseReportModal,
-    pwaProps, // 🌟 ДОБАВЛЕНО: Вытаскиваем пропсы из контекста для проверки роли
   } = useAdminDashboard();
 
   const [collapsed, setCollapsed] = useState(false);
 
-  // Получаем текущего пользователя из пропсов (корректируй под свой стейт, если используешь useAuth)
-  const currentUser = pwaProps?.user || {};
+  // 🌟 ИСПРАВЛЕНО: Извлекаем пользователя напрямую из AuthContext
+  const { user } = useContext(AuthContext);
+  const currentUser = user || {};
 
   // Базовое меню для повседневной работы пульта
   const baseMenuItems = [
@@ -68,7 +69,7 @@ const DashboardSidebar = () => {
     },
   ];
 
-  // 🌟 ИСПРАВЛЕНО: Динамически пушим "Аудит" строго для роли owner
+  // Динамически пушим "Аудит" строго для роли owner
   if (currentUser.role === "owner") {
     baseMenuItems.push({
       key: "audit",

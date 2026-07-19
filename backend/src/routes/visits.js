@@ -33,14 +33,6 @@ router.get(
 // Начисление визита (ТОЛЬКО для админов)
 router.post("/add", authenticateToken, adminOnly, visitController.addVisit);
 
-// 🌟 ДОБАВЛЕНО ПО ТЗ: Эндпоинт отмены визита с жесткой проверкой прав админа
-router.post(
-  "/visits/:id/cancel",
-  authenticateToken,
-  adminOnly,
-  visitController.cancelVisit,
-);
-
 // Обновление профиля (PUT)
 router.put("/update", authenticateToken, userController.updateProfile);
 

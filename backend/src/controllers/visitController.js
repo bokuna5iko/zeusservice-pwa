@@ -504,25 +504,25 @@ exports.getAuditLogs = async (req, res) => {
   console.log("🔍 [AUDIT] Запрос ленты активности для Owner");
 
   try {
-    // Делаем выборку, подтягивая имя админа (из users) и марку машины (из visits)
+    // 🌟 ИСПРАВЛЕНО: Экранируем системное имя al."timestamp" двойными кавычками
     const queryText = `
       SELECT 
         al.id,
-        al.timestamp,
+        al."timestamp" AS timestamp, 
         al.action_type,
         al.payload,
-        u.name AS admin_name,
-        COALESCE(v.manual_car_brand, v.car_brand, 'Удаленное авто') AS car_brand
+        u_admin.name AS admin_name,
+        COALESCE(v.manual_car_brand, u_client.car_brand, 'Удаленное авто') AS car_brand
       FROM action_logs al
-      LEFT JOIN users u ON al.admin_id = u.id
+      LEFT JOIN users u_admin ON al.admin_id = u_admin.id
       LEFT JOIN visits v ON al.visit_id = v.id
-      ORDER BY al.timestamp DESC
-      LIMIT 100 -- Ограничиваем первыми 100 записями для стабильной производительности
+      LEFT JOIN users u_client ON v.user_id = u_client.id
+      ORDER BY al."timestamp" DESC
+      LIMIT 100
     `;
 
     const result = await db.query(queryText);
 
-    // Возвращаем чистый массив карточек активности для таймлайна
     res.json({
       success: true,
       logs: result.rows,
