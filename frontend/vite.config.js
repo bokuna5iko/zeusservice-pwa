@@ -58,8 +58,8 @@ export default defineConfig({
               expiration: {
                 maxEntries: 1, // Нам нужен только 1 слепок текущего дня
                 maxAgeSeconds: 60 * 60 * 4, // Храним историю ровно  24 часа
-             },
-	      networkTimeoutSeconds: 3,  // Если сеть не ответила за 3 сек — берём из кэша
+              },
+              networkTimeoutSeconds: 3, // Если сеть не ответила за 3 сек — берём из кэша
             },
           },
           // 🛑 СТРАТЕГИЯ NETWORK ONLY: Полный запрет на кэширование остальных эндпоинтов (авторизация, создание визитов)
@@ -92,7 +92,13 @@ export default defineConfig({
     cors: true,
     proxy: {
       "/api": {
-        target: "http://localhost:3000",
+        target: "http://127.0.0.1:3000", // 🌟 Заменили localhost на 127.0.0.1
+        changeOrigin: true,
+        secure: false,
+      },
+      "/socket.io": {
+        target: "http://127.0.0.1:3000", // 🌟 Заменили localhost на 127.0.0.1
+        ws: true,
         changeOrigin: true,
         secure: false,
       },
