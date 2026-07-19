@@ -6,25 +6,234 @@ import {
   useAdminDashboard,
 } from "./context/AdminDashboardContext";
 
-// 🔄 ОБНОВЛЕНО: Импорты из новой структуры shared/
 import DashboardSidebar from "./shared/DashboardSidebar/DashboardSidebar";
 import DashboardHeader from "./shared/DashboardHeader/DashboardHeader";
 
-// 🔄 ОБНОВЛЕНО: Импорты операционных вкладок из features/
 import VisitsTab from "./features/visits/VisitsTab";
 import WorkersTab from "./features/workers/WorkersTab";
 import SimulatorTab from "./features/simulator/SimulatorTab";
 import AnalyticsTab from "./features/analytics/AnalyticsTab";
 import StatisticsTab from "./features/analytics/StatisticsTab";
 
+// 🌟 ДОБАВЛЕНО ПО ТЗ: Полноценный компонент Журнала системного аудита для роли Owner
+const AuditTab = () => {
+  const [logs, setLogs] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const res = await api.getAuditLogs();
+        if (res.data && res.data.success) {
+          setLogs(res.data.logs || []);
+        }
+      } catch (err) {
+        console.error("Ошибка при получении логов аудита:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLogs();
+  }, []);
+
+  const formatLogDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  };
+
+  // Метод парсинга payload для вывода понятных деталей изменений
+  const renderLogDetails = (type, payload) => {
+    if (!payload) return "—";
+    const data = typeof payload === "string" ? JSON.parse(payload) : payload;
+
+    switch (type) {
+      case "cancel":
+        return (
+          <div className="audit-detail-block">
+            <span className="audit-label">Сумма:</span>{" "}
+            <strong className="text-muted">{data.amount} ₽</strong> |{" "}
+            <span className="audit-label">Причина:</span>{" "}
+            <strong className="text-red">{data.reason}</strong>
+            {data.comment && (
+              <div>
+                <span className="audit-label">Коммент:</span>{" "}
+                <em>{data.comment}</em>
+              </div>
+            )}
+          </div>
+        );
+      case "edit":
+        return (
+          <div className="audit-detail-block">
+            <span className="audit-label">Услуга:</span>{" "}
+            <span>
+              {data.old_service} ➔ {data.new_service}
+            </span>{" "}
+            | <span className="audit-label">Сумма:</span>{" "}
+            <strong className="text-orange">
+              {data.old_price} ₽ ➔ {data.new_price} ₽
+            </strong>
+          </div>
+        );
+      case "note_add":
+        return (
+          <div className="audit-detail-block">
+            <span className="audit-label">Текст заметки:</span>{" "}
+            <em>{data.note_text || "Заметка добавлена"}</em>
+          </div>
+        );
+      default:
+        return JSON.stringify(data);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="admin-stats-loading">
+        <i className="fas fa-spinner fa-spin text-cyan"></i> Чтение журнала
+        логов action_logs...
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="audit-tab-container custom-scroll"
+      style={{ padding: "20px", height: "100%", overflowY: "auto" }}
+    >
+      <div className="audit-header-box" style={{ marginBottom: "20px" }}>
+        <h2
+          style={{
+            color: "#38bdf8",
+            fontSize: "1.4rem",
+            fontWeight: "800",
+            margin: 0,
+          }}
+        >
+          📋 Сквозной аудит действий персонала
+        </h2>
+        <p style={{ color: "#64748b", fontSize: "0.85rem", marginTop: "4px" }}>
+          Данные защищены на уровне СУБД PostgreSQL. Изменение или удаление
+          записей заблокировано.
+        </p>
+      </div>
+
+      {logs.length === 0 ? (
+        <div className="table-empty-notice" style={{ padding: "40px 0" }}>
+          Журнал аудита пока пуст. Изменения финансовых данных отсутствуют.
+        </div>
+      ) : (
+        <div
+          className="audit-activity-timeline"
+          style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+        >
+          {logs.map((log) => {
+            // Подбираем цветовые маркеры на основе ТЗ
+            let typeClass = "badge-edit";
+            let typeLabel = "ИЗМЕНЕНИЕ";
+            if (log.action_type === "cancel") {
+              typeClass = "badge-cancel";
+              typeLabel = "ОТМЕНА";
+            } else if (log.action_type === "note_add") {
+              typeClass = "badge-note";
+              typeLabel = "ЗАМЕТКА";
+            }
+
+            return (
+              <div
+                key={log.id}
+                className="audit-log-card"
+                style={{
+                  background: "#0f172a",
+                  border: "1px solid #1e293b",
+                  borderRadius: "12px",
+                  padding: "14px 18px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: "10px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: "#64748b",
+                        fontSize: "0.82rem",
+                        fontWeight: "600",
+                      }}
+                    >
+                      <i className="far fa-clock"></i>{" "}
+                      {formatLogDate(log.timestamp)}
+                    </span>
+                    <span
+                      style={{
+                        color: "#ffffff",
+                        fontWeight: "700",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      {log.admin_name || "Система"}
+                    </span>
+                    <span className={`audit-type-badge ${typeClass}`}>
+                      {typeLabel}
+                    </span>
+                  </div>
+                  <span
+                    style={{
+                      color: "#38bdf8",
+                      fontSize: "0.85rem",
+                      fontWeight: "700",
+                    }}
+                  >
+                    🚗 {log.car_brand}
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    padding: "8px 12px",
+                    background: "#020617",
+                    borderRadius: "8px",
+                    borderLeft: "3px solid var(--accent-color, #1e293b)",
+                  }}
+                >
+                  {renderLogDetails(log.action_type, log.payload)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
 import { api } from "../../api/apiService";
 
-// 🔄 ОБНОВЛЕНО: Импорты модалок из shared/modals/
 import ForgottenLockModal from "./shared/modals/ForgottenLockModal";
 import ShiftReportModal from "./shared/modals/ShiftReportModal";
 
 import "./AdminDashboard.css";
-// 🔄 ОБНОВЛЕНО: Путь к CSS воркеров
 import "./features/workers/WorkersTab.css";
 
 const { Content } = Layout;
@@ -39,15 +248,11 @@ const DashboardContent = () => {
     showForgottenModal,
     showCloseReportModal,
     targetClosingShiftId,
-    setTargetClosingShiftId,
-    setShowCloseReportModal,
-    setShowForgottenModal,
-    setShiftStatus,
     setCurrentShiftRaw,
+    setShiftStatus,
     setIsArchiveMode,
     setActiveTab,
     setArchivedShiftData,
-    handleExitArchiveMode,
   } = useAdminDashboard();
 
   const handleOpenShift = async () => {
@@ -112,14 +317,11 @@ const DashboardContent = () => {
         style={{ minHeight: "100vh" }}
         className="admin-dashboard-container"
       >
-        {/* 🧭 СВОРАЧИВАЕМЫЙ САЙДБАР КАК ОТДЕЛЬНЫЙ КОМПОНЕНТ */}
         <DashboardSidebar />
 
         <Layout className="admin-main-layout">
-          {/* 👑 НАША ЧИСТАЯ ШАПКА */}
           <DashboardHeader />
 
-          {/* 📲 ЕДИНСТВЕННЫЙ И ПРАВИЛЬНЫЙ ДИНАМИЧЕСКИЙ ХАБ ВКЛАДОК */}
           <Content className="dashboard-content-viewport admin-tab-content-wrapper">
             {activeTab === "visits" && (
               <VisitsTab
@@ -145,18 +347,17 @@ const DashboardContent = () => {
               />
             )}
             {activeTab === "simulator" && <SimulatorTab />}
-
-            {/* 🌟 ДОБАВЛЕНО: Рендер нового таба профессиональной аналитики */}
             {activeTab === "stats" && <StatisticsTab />}
 
-            {/* Старый архивный календарь дат по-прежнему работает независимо */}
+            {/* 🌟 ДОБАВЛЕНО: Рендер новой вкладки Аудита при клике в сайдбаре */}
+            {activeTab === "audit" && <AuditTab />}
+
             {activeTab === "archive" && (
               <AnalyticsTab onSelectArchiveDate={handleEnterArchiveReadOnly} />
             )}
           </Content>
         </Layout>
 
-        {/* 🪟 УПРАВЛЯЮЩИЕ МОДАЛКИ СМЕННОГО ЦИКЛА */}
         <ForgottenLockModal
           isOpen={showForgottenModal}
           shiftData={currentShiftRaw}

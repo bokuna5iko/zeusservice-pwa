@@ -20,6 +20,16 @@ const isAdmin = (req, res, next) => {
   }
 };
 
+// Мидлвара для проверки, является ли пользователь Owner-ом
+const ownerOnly = (req, res, next) => {
+  if (req.user && req.user.role === "owner") {
+    return next();
+  }
+  return res
+    .status(403)
+    .json({ message: "Доступ запрещен. Требуются права Владельца (Owner)" });
+};
+
 // Базовые роуты админки
 router.get("/stats/today-count", adminController.getTodayCount);
 router.get("/stats/last-visits", adminController.getLastVisits);
@@ -81,6 +91,14 @@ router.patch(
   authenticateToken,
   isAdmin,
   adminController.updateVisit,
+);
+
+// 🌟 ДОБАВЛЕНО ПО ТЗ: Роут для получения системных логов сквозного аудита
+router.get(
+  "/audit-logs",
+  authenticateToken,
+  ownerOnly,
+  visitController.getAuditLogs,
 );
 
 module.exports = router;

@@ -1,9 +1,9 @@
-// src/pages/AdminDashboard/components/VisitsTable.jsx
+// src/pages/AdminDashboard/features/visits/components/VisitsTable.jsx
 import React from "react";
+import { Tooltip } from "antd"; // 🌟 ДОБАВЛЕНО: Импортируем Tooltip для заметок и аудита цен
 import AddonPopoverBadge from "./AddonPopoverBadge";
 import "./VisitsTable.css";
 
-// 🌟 ОБНОВЛЕНО: В пропсы добавлен onCancelClick для вызова модалки отказа
 const VisitsTable = ({
   visits,
   loadingVisits,
@@ -21,7 +21,6 @@ const VisitsTable = ({
 
   return (
     <section className="visits-table-wrapper content-group-box">
-      {/* 🌟 ОБНОВЛЕНО: Добавлен класс custom-scroll для активации локального скролла */}
       <div className="arm-table-scroll-area custom-scroll">
         <table className="arm-table">
           <thead>
@@ -74,7 +73,6 @@ const VisitsTable = ({
                   ? v.manual_client_name || "Гость"
                   : v.name || v.client_name || v.manual_client_name || "Клиент";
 
-                // 🌟 ДОБАВЛЕНО: Проверяем, отменен ли визит
                 const isCancelled = v.status === "cancelled";
 
                 return (
@@ -91,14 +89,37 @@ const VisitsTable = ({
                       </div>
                     </td>
 
+                    {/* КОЛОНКА 1: МАРКА АВТОМОБИЛЯ + ЖЁЛТЫЙ ТЕГ ЗАМЕТОК С TOOLTIP ПО ТЗ */}
                     <td
                       style={{
                         fontWeight: "600",
                         textDecoration: isCancelled ? "line-through" : "none",
                       }}
                     >
-                      {carBrandDisplay}
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        <span>{carBrandDisplay}</span>
+
+                        {/* 🌟 ДОБАВЛЕНО: Желтый компактный тег заметки с Tooltip по ховеру */}
+                        {!isCancelled && v.note && v.note.trim() !== "" && (
+                          <Tooltip
+                            title={v.note}
+                            placement="top"
+                            color="#eab308"
+                          >
+                            <span className="note-popover-badge">
+                              +1 заметка
+                            </span>
+                          </Tooltip>
+                        )}
+                      </div>
                     </td>
+
                     <td
                       style={{
                         textDecoration: isCancelled ? "line-through" : "none",
@@ -129,7 +150,6 @@ const VisitsTable = ({
                         </span>
                         <AddonPopoverBadge addons={v.additional_services} />
 
-                        {/* 🌟 ДОБАВЛЕНО: Компактный тег с причиной отмены, если статус отменен */}
                         {isCancelled && v.cancellation_reason && (
                           <span
                             className="cancel-reason-tag"
@@ -141,11 +161,31 @@ const VisitsTable = ({
                       </div>
                     </td>
 
+                    {/* КОЛОНКА 2: СТОИМОСТЬ + ОРАНЖЕВЫЙ МАРКЕР ИЗМЕНЕНИЙ С ТЕКСТОМ «БЫЛО ➔ СТАЛО» */}
                     <td
                       className="table-amount-bold"
                       style={{ color: isCancelled ? "#94a3b8" : "inherit" }}
                     >
-                      {Number(v.amount ?? v.price ?? 0)} ₽
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                        }}
+                      >
+                        <span>{Number(v.amount ?? v.price ?? 0)} ₽</span>
+
+                        {/* 🌟 ДОБАВЛЕНО: Крошечная тусклая оранжевая точка-маркер аудита изменений цен */}
+                        {!isCancelled && v.edit_history && (
+                          <Tooltip
+                            title={`Было ${v.edit_history.old_price} ₽ ➔ Стало ${v.edit_history.new_price} ₽ (${v.edit_history.admin_name}, ${v.edit_history.time})`}
+                            placement="top"
+                            color="#f97316"
+                          >
+                            <span className="audit-price-dot-badge"></span>
+                          </Tooltip>
+                        )}
+                      </div>
                     </td>
 
                     <td>
@@ -160,7 +200,6 @@ const VisitsTable = ({
                     <td>{v.manual_payment_type || v.payment_type || "—"}</td>
                     <td>
                       <div className="table-actions-cell">
-                        {/* Кнопка изменения: блокируется, если смена закрыта или заезд уже отменен */}
                         <button
                           className="edit-row-btn"
                           disabled={shiftStatus === "closed" || isCancelled}
@@ -169,7 +208,6 @@ const VisitsTable = ({
                           <i className="fas fa-edit"></i>
                         </button>
 
-                        {/* 🌟 ОБНОВЛЕНО: Крестик теперь интерактивный и вызывает окно отмены */}
                         <button
                           className={`cancel-row-btn ${isCancelled ? "cancelled-active" : ""}`}
                           disabled={shiftStatus === "closed" || isCancelled}

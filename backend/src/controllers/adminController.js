@@ -416,10 +416,11 @@ exports.getAdminHistory = async (req, res) => {
   }
 };
 
-// 6. Обновление параметров визита + Доп. Услуги (JSONB) с пересчетом кассы
+// 6. Обновление параметров визита + Доп. Услуги (JSONB) с пересчетом кассы, сохранением ЗАМЕТОК и ЛОГАМИ АУДИТА
 exports.updateVisit = async (req, res) => {
-  console.log("=== БЭКЕНД: РЕДАКТИРОВАНИЕ ВИЗИТА + АПСЕЙЛ ДОПОВ ===");
+  console.log("=== БЭКЕНД: РЕДАКТИРОВАНИЕ ВИЗИТА + АПСЕЙЛ ДОПОВ + АУДИТ ===");
   const visitId = req.params.id;
+  const adminId = req.user.id; // Идентификатор администратора, делающего правку
   const {
     manual_car_brand,
     manual_client_name,
@@ -430,13 +431,15 @@ exports.updateVisit = async (req, res) => {
     price,
     additional_services,
     service_id,
+    note, // 🌟 ДОБАВЛЕНО ПО ТЗ: Получаем рабочую заметку от формы фронтенда
   } = req.body;
 
   try {
     await db.query("BEGIN");
 
+    // 1. Вытаскиваем старые параметры визита для финансового аудита и сравнения "Было"
     const oldVisitRes = await db.query(
-      "SELECT user_id, price, amount, payment_type, shift_id FROM visits WHERE id = $1",
+      "SELECT user_id, price, amount, payment_type, shift_id, manual_service_name, service_type FROM visits WHERE id = $1",
       [visitId],
     );
     if (oldVisitRes.rows.length === 0) {
@@ -447,8 +450,10 @@ exports.updateVisit = async (req, res) => {
 
     const oldPrice = Number(oldVisit.price || 0);
     const oldAmount = Number(oldVisit.amount || oldPrice);
+    const oldServiceName =
+      oldVisit.manual_service_name || oldVisit.service_type || "Не указана";
 
-    // 🌟 ИСПРАВЛЕНО: price (с фронта) - это базовая цена услуги без скидки
+    // price (с фронта) - это базовая цена услуги без скидки
     const basePrice = price !== undefined ? Number(price) : oldPrice;
 
     const addonsArray = Array.isArray(additional_services)
@@ -459,7 +464,7 @@ exports.updateVisit = async (req, res) => {
       0,
     );
 
-    // 🌟 ИСПРАВЛЕНО: Считаем финальную сумму с учётом скидки
+    // Считаем финальную сумму с учётом скидки лояльности
     const visitNum = manual_visit_number
       ? parseInt(manual_visit_number, 10)
       : null;
@@ -481,7 +486,7 @@ exports.updateVisit = async (req, res) => {
       .toLowerCase()
       .includes("нал");
 
-    // 🌟 ИСПРАВЛЕНО: Возвращаем все обновлённые поля
+    // 🌟 ИСПРАВЛЕНО И РАСШИРЕНО ПО ТЗ: Добавили сохранение note и возвращаем note в RETURNING
     const queryText = `
       UPDATE visits
       SET 
@@ -496,9 +501,10 @@ exports.updateVisit = async (req, res) => {
         amount = $8,
         additional_services = $9,
         bonus_type = $11,
-        service_id = $12
+        service_id = $12,
+        note = $13
       WHERE id = $10
-      RETURNING id, price, amount, manual_service_name, service_id, additional_services, bonus_type, manual_visit_number
+      RETURNING id, price, amount, manual_service_name, service_id, additional_services, bonus_type, manual_visit_number, note
     `;
 
     const values = [
@@ -508,17 +514,44 @@ exports.updateVisit = async (req, res) => {
       manual_service_name || null,
       manual_payment_type || null,
       manual_visit_number ? parseInt(manual_visit_number, 10) : null,
-      Number(basePrice), // 🌟 ИСПРАВЛЕНО: используем Number вместо parseInt
-      Number(finalAmount), // 🌟 ИСПРАВЛЕНО: используем Number вместо parseFloat
+      Number(basePrice),
+      Number(finalAmount),
       JSON.stringify(addonsArray),
       visitId,
       bonusType,
       service_id ? parseInt(service_id, 10) : null,
+      note !== undefined ? (note ? note.trim() : null) : null, // Заметка к визиту
     ];
 
     const updateResult = await db.query(queryText, values);
-    const updatedVisit = updateResult.rows[0]; // 🌟 Получаем обновлённый визит
+    const updatedVisit = updateResult.rows[0];
 
+    // 🌟 ДОБАВЛЕНО ПО ТЗ: ЛОГИРОВАНИЕ ИЗМЕНЕНИЙ (Сквозной системный аудит)
+    // Если изменилась итоговая стоимость визита или состав основной услуги — пишем в action_logs
+    const isAmountChanged = oldAmount !== Number(finalAmount);
+    const isServiceChanged =
+      manual_service_name && oldServiceName !== manual_service_name;
+
+    if (isAmountChanged || isServiceChanged) {
+      const logPayload = {
+        old_price: oldAmount,
+        new_price: Number(finalAmount),
+        old_service: oldServiceName,
+        new_service: manual_service_name || oldServiceName,
+      };
+
+      // Делаем системную запись лога с типом 'edit'
+      await db.query(
+        `INSERT INTO action_logs (admin_id, visit_id, action_type, payload) 
+         VALUES ($1, $2, 'edit', $3)`,
+        [adminId, visitId, JSON.stringify(logPayload)],
+      );
+      console.log(
+        `📋 [AUDIT LOG] Зафиксировано изменение параметров визита ${visitId} пользователем ${adminId}`,
+      );
+    }
+
+    // Восстановление/калибровка счетчиков лояльности пользователя
     const userId = oldVisit.user_id;
     if (userId && manual_visit_number !== undefined) {
       const currentLastVisitRes = await db.query(
@@ -537,6 +570,7 @@ exports.updateVisit = async (req, res) => {
       }
     }
 
+    // Пересчёт кассы смены
     if (oldVisit.shift_id) {
       const oldColumn = oldIsCash ? "cash_total" : "card_total";
       await db.query(
@@ -557,22 +591,20 @@ exports.updateVisit = async (req, res) => {
 
       await db.query("COMMIT");
 
-      // 🌟 ИСПРАВЛЕНО: Возвращаем обновлённый визит
       return res.status(200).json({
         success: true,
         message:
           "Параметры заезда, доп. услуги и баланс кассы успешно обновлены",
-        updatedVisit: updatedVisit, // 🌟 ДОБАВЛЕНО
+        updatedVisit: updatedVisit,
         updatedShift: updatedShiftRes.rows[0],
       });
     }
 
     await db.query("COMMIT");
 
-    // 🌟 ИСПРАВЛЕНО: Возвращаем обновлённый визит
     res.status(200).json({
       success: true,
-      updatedVisit: updatedVisit, // 🌟 ДОБАВЛЕНО
+      updatedVisit: updatedVisit,
     });
   } catch (err) {
     await db.query("ROLLBACK");

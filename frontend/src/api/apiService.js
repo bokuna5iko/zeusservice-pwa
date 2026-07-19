@@ -95,6 +95,27 @@ export const api = {
   updateVisitFields: (visitId, fields) =>
     apiService.patch(`/admin/visits/update/${visitId}`, fields),
 
+  // Получить список всех заездов за текущий операционный день
+  getTodayVisits: (date) =>
+    apiService.get(
+      date ? `/admin/visits/today?date=${date}` : "/admin/visits/today",
+    ),
+
+  // Точечное редактирование полей визита администратором (PATCH)
+  updateVisitFields: (visitId, fields) =>
+    apiService.patch(`/admin/visits/update/${visitId}`, fields),
+
+  // 🌟 ДОБАВЛЕНО ПО ТЗ: Отмена визита администратором
+  cancelVisit: (visitId, reason, comment) =>
+    apiService.post(`/admin/visits/${visitId}/cancel`, { reason, comment }),
+
+  // 🌟 ДОБАВЛЕНО ПО ТЗ: Получение журнала системного аудита (Activity Feed) для Owner
+  getAuditLogs: () => apiService.get("/admin/audit-logs"),
+
+  // Смена временного пароля на постоянный с хэшированием в БД
+  changePassword: (newPassword) =>
+    apiService.post("/user/change-password", { newPassword }),
+
   // Смена временного пароля на постоянный с хэшированием в БД
   changePassword: (newPassword) =>
     apiService.post("/user/change-password", { newPassword }),

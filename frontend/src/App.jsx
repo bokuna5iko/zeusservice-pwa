@@ -122,8 +122,8 @@ function App() {
     );
   }
 
-  // Условие для умного десктопного роутинга + Защита со сбросом пароля
-  if (user.role === "admin" && windowWidth >= 1024) {
+  // 🌟 ИСПРАВЛЕНО ДЛЯ ТЕСТИРОВАНИЯ АУДИТА: Разрешаем десктопный запуск пульта и для admin, и для owner!
+  if ((user.role === "admin" || user.role === "owner") && windowWidth >= 1024) {
     return (
       <>
         <ForceResetPasswordModal />
@@ -195,25 +195,39 @@ function App() {
             overflowY: "auto",
           }}
         >
-          {/* Динамически подменяем Главную страницу в зависимости от роли */}
+          {/* Динамически подменяем Главную страницу в зависимости от роли (admin или owner) */}
           {activePage === "home" &&
-            (user.role === "admin" ? <AdminHome /> : <HomePage />)}
+            (user.role === "admin" || user.role === "owner" ? (
+              <AdminHome />
+            ) : (
+              <HomePage />
+            ))}
 
           {/* Динамически подменяем Историю в зависимости от роли */}
           {activePage === "history" &&
-            (user.role === "admin" ? <AdminHistory /> : <HistoryPage />)}
+            (user.role === "admin" || user.role === "owner" ? (
+              <AdminHistory />
+            ) : (
+              <HistoryPage />
+            ))}
 
           {/* Динамически подменяем Профиль в зависимости от роли */}
           {activePage === "profile" &&
-            (user.role === "admin" ? <AdminProfile /> : <ProfilePage />)}
+            (user.role === "admin" || user.role === "owner" ? (
+              <AdminProfile />
+            ) : (
+              <ProfilePage />
+            ))}
 
-          {/* ПОДКЛЮЧАЕМ ЭКРАН СТАТИСТИКИ АДМИНИСТРАТОРА */}
+          {/* ПОДКЛЮЧАЕМ ЭКРАН СТАТИСТИКИ АДМИНИСТРАТОРА И ВЛАДЕЛЬЦА */}
           {(activePage === "stats" || activePage === "admin") &&
-            user.role === "admin" && <AdminStatistics />}
+            (user.role === "admin" || user.role === "owner") && (
+              <AdminStatistics />
+            )}
 
           {/* Динамически переключаем экран Смен в зависимости от роли */}
           {activePage === "shifts" &&
-            (user.role === "admin" ? (
+            (user.role === "admin" || user.role === "owner" ? (
               <AdminShiftsPage />
             ) : (
               <WorkerShiftsPage />

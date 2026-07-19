@@ -51,3 +51,64 @@
     transform: translateY(0);
   }
 }
+
+/* ==========================================================================
+   📋 СТИЛИ ДЛЯ ЛЕНТЫ АКТИВНОСТИ ЭКРАНА АУДИТА (Activity Feed)
+   ========================================================================== */
+
+.audit-type-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* Маркер отмены (Красный неоновый) */
+.audit-type-badge.badge-cancel {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.15);
+}
+
+/* Маркер изменений (Оранжевый неоновый) */
+.audit-type-badge.badge-edit {
+  background: rgba(249, 115, 22, 0.12);
+  color: #fb923c;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.15);
+}
+
+/* Маркер добавления рабочих заметок (Желтый) */
+.audit-type-badge.badge-note {
+  background: rgba(234, 179, 8, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.15);
+}
+
+/* Внутренние блоки логов */
+.audit-detail-block {
+  font-size: 0.88rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.audit-label {
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.text-red {
+  color: #f87171;
+}
+
+.text-orange {
+  color: #fb923c;
+}
+
+.text-cyan {
+  color: #38bdf8;
+}

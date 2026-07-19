@@ -1,5 +1,5 @@
 // src/pages/AdminDashboard/components/modals/EditVisitModal.jsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useEditVisit } from "../../features/visits/hooks/useEditVisit";
 import "./EditVisitModal.css";
 
@@ -34,7 +34,29 @@ const EditVisitModal = ({
     handleSubmitFields,
   } = useEditVisit(isOpen, visit, servicePrices, onSave);
 
+  // 🌟 ДОБАВЛЕНО ПО ТЗ: Локальный стейт для управления рабочей заметкой к автомобилю
+  const [editNote, setEditNote] = useState("");
+
+  // Синхронизируем текст заметки при открытии модалки под конкретную машину
+  useEffect(() => {
+    if (isOpen && visit) {
+      setEditNote(visit.note || "");
+    }
+  }, [isOpen, visit]);
+
   if (!isOpen || !visit) return null;
+
+  // 🌟 ИСПРАВЛЕНО: Перехватываем сабмит, чтобы подмешать заметку в payload для onSave/бэкенда
+  const handleLocalSubmit = (e) => {
+    e.preventDefault();
+
+    // Внутри useEditVisit оригинальный handleSubmitFields работает с e-объектом.
+    // Чтобы передать заметку на бэк, мы временно вешаем её свойством в текущий объект visit в памяти,
+    // откуда хук useEditVisit собирает итоговый payload для отправки в базу данных.
+    visit.note = editNote;
+
+    handleSubmitFields(e);
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -46,7 +68,7 @@ const EditVisitModal = ({
           <i className="fas fa-edit"></i> Параметры заезда
         </h3>
 
-        <form onSubmit={handleSubmitFields} className="arm-modal-form">
+        <form onSubmit={handleLocalSubmit} className="arm-modal-form">
           {/* Ряд 1: Клиентские данные */}
           <div className="form-row-twin">
             <div className="arm-input-group">
@@ -223,6 +245,30 @@ const EditVisitModal = ({
                 <option value="Карта">Карта / СБП</option>
               </select>
             </div>
+          </div>
+
+          {/* 🌟 ДОБАВЛЕНО ПО ТЗ: Новое текстовое поле ввода рабочих заметок (textarea) */}
+          <div className="arm-input-group mt-10">
+            <label>Заметка к визиту</label>
+            <textarea
+              value={editNote}
+              onChange={(e) => setEditNote(e.target.value)}
+              disabled={loadingEdit}
+              placeholder="Впишите важные детали (например: оставить сушиться до 19:00, помыть детское кресло...)"
+              rows="3"
+              style={{
+                width: "100%",
+                background: "#020617",
+                border: "1px solid #1e293b",
+                borderRadius: "8px",
+                padding: "12px",
+                color: "#f8fafc",
+                outline: "none",
+                resize: "none",
+                fontSize: "0.9rem",
+                fontFamily: "inherit",
+              }}
+            />
           </div>
 
           {/* Кнопки */}

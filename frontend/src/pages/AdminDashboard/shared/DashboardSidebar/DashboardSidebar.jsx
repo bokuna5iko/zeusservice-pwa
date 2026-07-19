@@ -10,7 +10,8 @@ import {
   PoweroffOutlined,
   ClockCircleOutlined,
   ArrowLeftOutlined,
-  BarChartOutlined, // 🌟 ДОБАВЛЕНО: Иконка для раздела статистики
+  BarChartOutlined,
+  AuditOutlined, // 🌟 ДОБАВЛЕНО: Специальная иконка для Журнала Аудита
 } from "@ant-design/icons";
 import { useAdminDashboard } from "../../context/AdminDashboardContext";
 
@@ -30,12 +31,16 @@ const DashboardSidebar = () => {
     setTargetClosingShiftId,
     setShowForgottenModal,
     setShowCloseReportModal,
+    pwaProps, // 🌟 ДОБАВЛЕНО: Вытаскиваем пропсы из контекста для проверки роли
   } = useAdminDashboard();
 
   const [collapsed, setCollapsed] = useState(false);
 
-  // Стандартное меню для повседневной работы пульта
-  const normalMenuItems = [
+  // Получаем текущего пользователя из пропсов (корректируй под свой стейт, если используешь useAuth)
+  const currentUser = pwaProps?.user || {};
+
+  // Базовое меню для повседневной работы пульта
+  const baseMenuItems = [
     {
       key: "visits",
       label: "Лента визитов",
@@ -47,7 +52,7 @@ const DashboardSidebar = () => {
       icon: <TeamOutlined />,
     },
     {
-      key: "stats", // 🌟 ДОБАВЛЕНО: Ключ совпадает с роутом в AdminDashboard
+      key: "stats",
       label: "Статистика",
       icon: <BarChartOutlined />,
     },
@@ -63,13 +68,22 @@ const DashboardSidebar = () => {
     },
   ];
 
-  // Специальное меню для режима просмотра архива (сохраняет структуру Ant Design)
+  // 🌟 ИСПРАВЛЕНО: Динамически пушим "Аудит" строго для роли owner
+  if (currentUser.role === "owner") {
+    baseMenuItems.push({
+      key: "audit",
+      label: "📋 Аудит",
+      icon: <AuditOutlined />,
+    });
+  }
+
+  // Специальное меню для режима просмотра архива
   const archiveMenuItems = [
     {
       key: "visits",
       label: "Лента заездов (Архив)",
       icon: <HistoryOutlined />,
-      className: "archive-menu-item-active", // Кастомный класс для желтой подсветки
+      className: "archive-menu-item-active",
     },
     {
       key: "exit_archive",
@@ -99,7 +113,6 @@ const DashboardSidebar = () => {
     setArchivedShiftData(null);
   };
 
-  // Обработка кликов по меню
   const handleMenuClick = ({ key }) => {
     if (key === "exit_archive") {
       handleExitArchiveMode();
@@ -118,7 +131,6 @@ const DashboardSidebar = () => {
       className={`admin-dashboard-sider ${isArchiveMode ? "sider-archive-mode" : ""}`}
     >
       <div className="sider-flex-wrapper">
-        {/* ВЕРХНЯЯ ЧАСТЬ: ЛОГОТИП И НАВИГАЦИЯ */}
         <div className="sider-top-content">
           <div className="admin-sidebar-logo-container">
             <span className="admin-sidebar-logo-text">
@@ -134,12 +146,11 @@ const DashboardSidebar = () => {
             theme="dark"
             mode="inline"
             selectedKeys={[activeTab]}
-            items={isArchiveMode ? archiveMenuItems : normalMenuItems}
+            items={isArchiveMode ? archiveMenuItems : baseMenuItems}
             onClick={handleMenuClick}
           />
         </div>
 
-        {/* НИЖНЯЯ ЧАСТЬ: КОНТРОЛЬ СМЕНЫ И ЧАСЫ */}
         <div className="sider-footer-content">
           {shiftStatus === "open" && !isArchiveMode && (
             <button

@@ -221,8 +221,8 @@ exports.getUserMe = async (req, res) => {
       total_visits: parseInt(user.total_visits || 0),
       bonus_points: parseInt(user.bonus_points || 0),
       nextBonusIn: user.visit_count >= 8 ? 0 : 8 - user.visit_count,
-      car_brand: user.car_brand || null,  // 🌟 Добавлено
-      avatar_url: user.avatar_url || "1.png",  // 🌟 Добавлено
+      car_brand: user.car_brand || null, // 🌟 Добавлено
+      avatar_url: user.avatar_url || "1.png", // 🌟 Добавлено
     });
   } catch (err) {
     console.error("Ошибка в getUserMe:", err);
@@ -294,7 +294,7 @@ exports.getUserHistory = async (req, res) => {
   }
 };
 
-// Получение истории визитов за текущие сутки
+// Получение истории визитов за текущие сутки с поддержкой заметок, отмен и истории аудита изменений цен
 exports.getAdminVisitsToday = async (req, res) => {
   try {
     if (req.query.date) {
@@ -305,37 +305,50 @@ exports.getAdminVisitsToday = async (req, res) => {
     let queryText = "";
     let values = [];
 
+    // Базовый набор полей + LEFT JOIN LATERAL для вытаскивания метаданных последнего редактирования цены
+    const selectFieldsAndLogs = `
+      SELECT 
+        v.id AS id, -- 🌟 Важно для фронтенда: подставляем чистый id визита вместо visit_id
+        v.id AS visit_id, v.user_id, v.service_id, u.role, u.total_visits,
+        COALESCE(v.manual_service_name, v.service_type) AS service_name, 
+        v.price, v.amount, v.created_at, v.status,
+        COALESCE(v.manual_client_name, u.name) AS name, 
+        COALESCE(v.manual_client_phone, u.phone) AS phone,
+        COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
+        COALESCE(v.manual_payment_type, v.payment_type) AS payment_type,
+        v.manual_car_brand, v.manual_client_name, v.manual_client_phone, v.manual_service_name, v.manual_payment_type, v.manual_visit_number,
+        v.additional_services,
+        v.note, -- 🌟 ДОБАВЛЕНО ПО ТЗ: Извлекаем рабочую заметку автомобиля
+        v.cancellation_reason, -- 🌟 ДОБАВЛЕНО ПО ТЗ: Причина отмены
+        v.cancellation_comment, -- 🌟 ДОБАВЛЕНО ПО ТЗ: Детали отмены
+        
+        -- 🌟 ДОБАВЛЕНО ПО ТЗ: Подтягиваем историю изменения стоимости, если лог типа 'edit' существует
+        (
+          SELECT json_build_object(
+            'old_price', (al.payload->>'old_price')::int,
+            'new_price', (al.payload->>'new_price')::int,
+            'admin_name', admin_user.name,
+            'time', to_char(al.timestamp, 'HH24:MI')
+          )
+          FROM action_logs al
+          LEFT JOIN users admin_user ON al.admin_id = admin_user.id
+          WHERE al.visit_id = v.id AND al.action_type = 'edit'
+          ORDER BY al.timestamp DESC
+          LIMIT 1
+        ) AS edit_history
+      FROM visits v
+      LEFT JOIN users u ON v.user_id = u.id
+    `;
+
     if (date) {
       queryText = `
-        SELECT 
-          v.id AS visit_id, v.user_id, v.service_id, u.role, u.total_visits,
-          COALESCE(v.manual_service_name, v.service_type) AS service_name, 
-          v.price, v.amount, v.created_at, 
-          COALESCE(v.manual_client_name, u.name) AS name, 
-          COALESCE(v.manual_client_phone, u.phone) AS phone,
-          COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
-          COALESCE(v.manual_payment_type, v.payment_type) AS payment_type,
-          v.manual_car_brand, v.manual_client_name, v.manual_client_phone, v.manual_service_name, v.manual_payment_type, v.manual_visit_number,
-          v.additional_services
-        FROM visits v
-        LEFT JOIN users u ON v.user_id = u.id
+        ${selectFieldsAndLogs}
         WHERE v.created_at::date = $1::date
         ORDER BY v.created_at DESC`;
       values = [date];
     } else {
       queryText = `
-        SELECT 
-          v.id AS visit_id, v.user_id, v.service_id, u.role, u.total_visits,
-          COALESCE(v.manual_service_name, v.service_type) AS service_name, 
-          v.price, v.amount, v.created_at, 
-          COALESCE(v.manual_client_name, u.name) AS name, 
-          COALESCE(v.manual_client_phone, u.phone) AS phone,
-          COALESCE(v.manual_visit_number, v.visit_number) AS visit_number,
-          COALESCE(v.manual_payment_type, v.payment_type) AS payment_type,
-          v.manual_car_brand, v.manual_client_name, v.manual_client_phone, v.manual_service_name, v.manual_payment_type, v.manual_visit_number,
-          v.additional_services
-        FROM visits v
-        LEFT JOIN users u ON v.user_id = u.id
+        ${selectFieldsAndLogs}
         WHERE v.created_at >= CURRENT_DATE
         ORDER BY v.created_at DESC`;
     }
@@ -347,5 +360,177 @@ exports.getAdminVisitsToday = async (req, res) => {
     res
       .status(500)
       .json({ message: "Ошибка сервера при получении операционной ленты" });
+  }
+};
+
+// Логика отмены визита со сквозным пересчетом кассы, возвратом счетчиков лояльности и записью в Аудит
+exports.cancelVisit = async (req, res) => {
+  const visitId = req.params.id;
+  const { reason, comment } = req.body;
+  const adminId = req.user.id; // Извлекается из authenticateToken мидлвары
+
+  console.log(`\n=======================================================`);
+  `🚀 [AUDIT] ПОСТУПИЛ ЗАПРОС НА ОТМЕНУ ВИЗИТА ID: ${visitId}`;
+  console.log(`Причина: ${reason} | Комментарий: ${comment}`);
+  console.log(`=======================================================\n`);
+
+  try {
+    await db.query("BEGIN");
+
+    // 1. Проверяем существование визита и его текущий статус
+    const visitRes = await db.query("SELECT * FROM visits WHERE id = $1", [
+      visitId,
+    ]);
+
+    if (visitRes.rows.length === 0) {
+      await db.query("ROLLBACK");
+      return res.status(404).json({ message: "Указанный визит не найден" });
+    }
+
+    const visit = visitRes.rows[0];
+
+    if (visit.status === "cancelled") {
+      await db.query("ROLLBACK");
+      return res
+        .status(400)
+        .json({ message: "Этот визит уже был отменен ранее" });
+    }
+
+    // 2. Меняем статус визита и фиксируем причины
+    await db.query(
+      `UPDATE visits 
+       SET status = 'cancelled', 
+           cancellation_reason = $1, 
+           cancellation_comment = $2 
+       WHERE id = $3`,
+      [reason, comment || null, visitId],
+    );
+
+    // 3. Вычитаем сумму из кассы смены (work_shifts), если у визита была стоимость
+    const finalAmount = parseFloat(visit.amount || 0);
+    const activeShiftId = visit.shift_id;
+    const paymentType = visit.payment_type || "Наличные";
+
+    if (activeShiftId && finalAmount > 0) {
+      const isCash = paymentType.toLowerCase().includes("нал");
+      const columnToUpdate = isCash ? "cash_total" : "card_total";
+
+      // Вычитаем сумму из кассы (UPDATE с уменьшением на $1)
+      await db.query(
+        `UPDATE work_shifts SET ${columnToUpdate} = ${columnToUpdate} - $1 WHERE id = $2`,
+        [finalAmount, activeShiftId],
+      );
+      console.log(
+        `📉 Касса смены ${activeShiftId} скорректирована: -${finalAmount} ₽ (${columnToUpdate})`,
+      );
+    }
+
+    // 4. Корректируем счетчики лояльности клиента (если это не гостевой заезд)
+    if (visit.user_id) {
+      const userRes = await db.query(
+        "SELECT visit_count, total_visits FROM users WHERE id = $1",
+        [visit.user_id],
+      );
+
+      if (userRes.rows.length > 0) {
+        const user = userRes.rows[0];
+        let currentCount = parseInt(user.visit_count || 0);
+        let currentTotal = parseInt(user.total_visits || 0);
+
+        // Откатываем общий счетчик назад
+        let newTotal = currentTotal > 0 ? currentTotal - 1 : 0;
+        let newCount = currentCount;
+
+        // Восстанавливаем внутренний цикл 1-8
+        if (visit.bonus_type === "100%") {
+          // Если отменяем 8-й (бесплатный) визит, возвращаем счетчик на 7
+          newCount = 7;
+        } else {
+          // В обычном случае просто уменьшаем на 1
+          newCount = currentCount > 0 ? currentCount - 1 : 0;
+          // Защита: если по какой-то причине счетчик обнулился, но это был переход через 8,
+          // восстанавливаем на 7 визитов
+          if (
+            currentCount === 0 &&
+            visit.bonus_type !== "100%" &&
+            currentTotal > 0
+          ) {
+            newCount = 7;
+          }
+        }
+
+        await db.query(
+          "UPDATE users SET visit_count = $1, total_visits = $2 WHERE id = $3",
+          [newCount, newTotal, visit.user_id],
+        );
+        console.log(
+          `🔄 Счетчик лояльности клиента ID ${visit.user_id} успешно откачен: ${newCount}/8`,
+        );
+      }
+    }
+
+    // 5. Записываем действие в лог сквозного аудита action_logs (наша вечная СУБД-таблица)
+    const logPayload = {
+      amount: finalAmount,
+      payment_type: paymentType,
+      reason: reason,
+      comment: comment || "",
+    };
+
+    await db.query(
+      `INSERT INTO action_logs (admin_id, visit_id, action_type, payload) 
+       VALUES ($1, $2, 'cancel', $3)`,
+      [adminId, visitId, JSON.stringify(logPayload)],
+    );
+
+    await db.query("COMMIT");
+    console.log(`🟢 Визит ${visitId} успешно отменен, логи записаны!`);
+
+    res.json({
+      success: true,
+      message: "Визит успешно отменен. Финансы и аудит зафиксированы.",
+    });
+  } catch (err) {
+    await db.query("ROLLBACK");
+    console.error("❌ ОШИБКА НА СЕРВЕРЕ ПРИ ОТМЕНЕ ВИЗИТА:", err);
+    res
+      .status(500)
+      .json({ message: "Ошибка сервера при выполнении отмены заказа" });
+  }
+};
+
+// Получение полной ленты логов сквозного аудита для роли Owner
+exports.getAuditLogs = async (req, res) => {
+  console.log("🔍 [AUDIT] Запрос ленты активности для Owner");
+
+  try {
+    // Делаем выборку, подтягивая имя админа (из users) и марку машины (из visits)
+    const queryText = `
+      SELECT 
+        al.id,
+        al.timestamp,
+        al.action_type,
+        al.payload,
+        u.name AS admin_name,
+        COALESCE(v.manual_car_brand, v.car_brand, 'Удаленное авто') AS car_brand
+      FROM action_logs al
+      LEFT JOIN users u ON al.admin_id = u.id
+      LEFT JOIN visits v ON al.visit_id = v.id
+      ORDER BY al.timestamp DESC
+      LIMIT 100 -- Ограничиваем первыми 100 записями для стабильной производительности
+    `;
+
+    const result = await db.query(queryText);
+
+    // Возвращаем чистый массив карточек активности для таймлайна
+    res.json({
+      success: true,
+      logs: result.rows,
+    });
+  } catch (err) {
+    console.error("❌ ОШИБКА НА СЕРВЕРЕ ПРИ ПОЛУЧЕНИИ ЛОГОВ АУДИТА:", err);
+    res
+      .status(500)
+      .json({ message: "Ошибка сервера при чтении журнала аудита" });
   }
 };
