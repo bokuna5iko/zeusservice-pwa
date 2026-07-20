@@ -1,0 +1,18 @@
+{
+	"nodes":[
+		{"id":"root","type":"text","text":"# 📝 Параметры заезда\nОсновная форма модального окна `zeus-auto`","x":0,"y":0,"width":300,"height":80},
+		{"id":"client_info","type":"text","text":"### 👤 Клиент\n- **Имя:** Гость\n- **Номер телефона:** —","x":-200,"y":150,"width":250,"height":120},
+		{"id":"car_info","type":"text","text":"### 🚗 Автомобиль\n- **Марка:** Гостевой авто\n- **Класс:** 1 (Выбран)","x":100,"y":150,"width":250,"height":120},
+		{"id":"services","type":"text","text":"### 🛠 Услуги\n- **Основная:** Мойка мотоцикла (500 ₽)\n- **Дополнительные:** *Не добавлено*","x":-200,"y":350,"width":250,"height":140},
+		{"id":"payment_promo","type":"text","text":"### 💰 Условия и Расчет\n- **Визит в акции:** 1/8\n- **Способ расчета:** Наличные","x":100,"y":350,"width":250,"height":140},
+		{"id":"notes","type":"text","text":"### 📌 Заметка к визиту\n*Плейсхолдер:* Впишите важные детали (например: оставить сушиться до 19:00...)","x":-50,"y":550,"width":400,"height":150}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"root","fromSide":"bottom","toNode":"client_info","toSide":"top"},
+		{"id":"e2","fromNode":"root","fromSide":"bottom","toNode":"car_info","toSide":"top"},
+		{"id":"e3","fromNode":"client_info","fromSide":"bottom","toNode":"services","toSide":"top"},
+		{"id":"e4","fromNode":"car_info","fromSide":"bottom","toNode":"payment_promo","toSide":"top"},
+		{"id":"e5","fromNode":"services","fromSide":"bottom","toNode":"notes","toSide":"top"},
+		{"id":"e6","fromNode":"payment_promo","fromSide":"bottom","toNode":"notes","toSide":"top"}
+	]
+}
