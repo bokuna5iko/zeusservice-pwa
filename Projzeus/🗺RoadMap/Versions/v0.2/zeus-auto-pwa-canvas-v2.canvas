@@ -38,5 +38,9 @@
 		{"id":"15","fromNode":"16","fromSide":"left","toNode":"12","toSide":"right","color":"3","label":"Bearer + {userId,amount,service} → /api/admin/visits/add"},
 		{"id":"16","fromNode":"16","fromSide":"left","toNode":"13","toSide":"right","color":"3","label":"Bearer → /api/admin/stats"},
 		{"id":"17","fromNode":"16","fromSide":"left","toNode":"14","toSide":"right","color":"3","label":"{ refreshToken } → /api/refresh"}
-	]
+	],
+	"metadata":{
+		"version":"1.0-1.0",
+		"frontmatter":{}
+	}
 }

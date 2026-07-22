@@ -65,5 +65,9 @@
 		{"id":"edge_b5_container_b6_container","fromNode":"b5_container","fromSide":"bottom","toNode":"b6_container","toSide":"top","color":"#ef4444","label":"Аудитория → Партнёры"},
 		{"id":"edge_b2_container_b3_container","fromNode":"b2_container","fromSide":"bottom","toNode":"b3_container","toSide":"top","color":"#f59e0b","label":"+ СТО"},
 		{"id":"edge_b3_container_b4_container","fromNode":"b3_container","fromSide":"bottom","toNode":"b4_container","toSide":"top","color":"#a855f7","label":"+ Масленка = Экосистема"}
-	]
+	],
+	"metadata":{
+		"version":"1.0-1.0",
+		"frontmatter":{}
+	}
 }

@@ -35,5 +35,9 @@
 		{"id":"16762022da6566f8","fromNode":"6399814c63b208f5","fromSide":"right","toNode":"adaac1419bd1871d","toSide":"left"},
 		{"id":"494be76514ec2bba","fromNode":"caa517ed4ed68607","fromSide":"right","toNode":"ffed16dacbaf7cde","toSide":"left"},
 		{"id":"deed5c6b7c8ecd08","fromNode":"ffed16dacbaf7cde","fromSide":"right","toNode":"fb44b0522e45ac3d","toSide":"left"}
-	]
+	],
+	"metadata":{
+		"version":"1.0-1.0",
+		"frontmatter":{}
+	}
 }

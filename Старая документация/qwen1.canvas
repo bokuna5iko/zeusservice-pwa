@@ -52,5 +52,9 @@
 		{"id":"e7","fromNode":"frontend_group","fromSide":"bottom","toNode":"global_components","toSide":"top"},
 		{"id":"e8","fromNode":"global_components","fromSide":"bottom","toNode":"deployment_group","toSide":"left"},
 		{"id":"e9","fromNode":"pwa_features","fromSide":"bottom","toNode":"global_components","toSide":"left"}
-	]
+	],
+	"metadata":{
+		"version":"1.0-1.0",
+		"frontmatter":{}
+	}
 }

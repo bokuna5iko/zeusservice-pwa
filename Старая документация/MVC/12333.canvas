@@ -21,5 +21,9 @@
 	],
 	"edges":[
 		{"id":"e_visits_to_table","fromNode":"nav_visits","fromSide":"right","toNode":"group_table","toSide":"left"}
-	]
+	],
+	"metadata":{
+		"version":"1.0-1.0",
+		"frontmatter":{}
+	}
 }

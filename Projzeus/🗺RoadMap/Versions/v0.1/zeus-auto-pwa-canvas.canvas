@@ -31,5 +31,9 @@
 		{"id":"e12","fromNode":"13","fromSide":"top","toNode":"7","toSide":"bottom","color":"3","label":"Админ-панель"},
 		{"id":"e13","fromNode":"15","fromSide":"left","toNode":"13","toSide":"right","color":"6","label":"Nginx раздаёт статику"},
 		{"id":"e14","fromNode":"15","fromSide":"left","toNode":"5","toSide":"right","color":"6","label":"PM2 + прокси /api"}
-	]
+	],
+	"metadata":{
+		"version":"1.0-1.0",
+		"frontmatter":{}
+	}
 }

@@ -29,5 +29,9 @@
 		{"id":"e6","fromNode":"middleware","fromSide":"right","toNode":"ctrl_visit","toSide":"left","label":"разрешает"},
 		{"id":"e7","fromNode":"ctrl_visit","fromSide":"bottom","toNode":"db_config","toSide":"top","label":"запрос данных"},
 		{"id":"e8","fromNode":"db_config","fromSide":"right","toNode":"database","toSide":"left","label":"SQL"}
-	]
+	],
+	"metadata":{
+		"version":"1.0-1.0",
+		"frontmatter":{}
+	}
 }
