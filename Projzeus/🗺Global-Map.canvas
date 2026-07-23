@@ -612,6 +612,37 @@
 			"width":260,
 			"height":60,
 			"color":"3"
+		},
+		{
+			"id":"53ec5e63f820a600",
+			"type":"text",
+			"text":"согласия в приложении",
+			"styleAttributes":{},
+			"x":-16940,
+			"y":7900,
+			"width":260,
+			"height":60,
+			"color":"3"
+		},
+		{
+			"id":"1a02d1843c1113ed",
+			"type":"text",
+			"text":"железо",
+			"styleAttributes":{},
+			"x":-16640,
+			"y":7900,
+			"width":260,
+			"height":60
+		},
+		{
+			"id":"b330834722677360",
+			"type":"text",
+			"text":"[[Политика]]",
+			"styleAttributes":{},
+			"x":-16940,
+			"y":8020,
+			"width":260,
+			"height":60
 		}
 	],
 	"edges":[
@@ -993,6 +1024,33 @@
 			"fromNode":"ecd0e03533cd183f",
 			"fromSide":"bottom",
 			"toNode":"165fa2e79be77cfa",
+			"toSide":"top"
+		},
+		{
+			"id":"b70af64f1e1b3054",
+			"styleAttributes":{},
+			"toFloating":false,
+			"fromNode":"02fb35ae43c43bb4",
+			"fromSide":"bottom",
+			"toNode":"53ec5e63f820a600",
+			"toSide":"top"
+		},
+		{
+			"id":"95fa80325cdf3466",
+			"styleAttributes":{},
+			"toFloating":false,
+			"fromNode":"02fb35ae43c43bb4",
+			"fromSide":"bottom",
+			"toNode":"1a02d1843c1113ed",
+			"toSide":"top"
+		},
+		{
+			"id":"8045e1b16c6e6906",
+			"styleAttributes":{},
+			"toFloating":false,
+			"fromNode":"53ec5e63f820a600",
+			"fromSide":"bottom",
+			"toNode":"b330834722677360",
 			"toSide":"top"
 		}
 	],
