@@ -1,28 +1,44 @@
 // controllers/userController.js
 const db = require("../config/db");
-const crypto = require("crypto"); // 🌟 ДОБАВЛЕНО: Нативный модуль для работы с хэшированием SHA-256
+const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
+const {
+  requirePersonalDataConsent,
+  getPdConsentFields,
+  PD_CONSENT_VERSION,
+} = require("../db/initSmsAuth");
 
-// 🌟 БЛОК №1: Эндпоинт генерации безопасной динамической строки для QR-кода клиента
+function formatUserForResponse(user) {
+  return {
+    id: user.id,
+    name: user.name,
+    username: user.username,
+    phone: user.phone,
+    role: user.role,
+    visit_count: user.visit_count,
+    total_visits: user.total_visits,
+    created_at: user.created_at,
+    car_brand: user.car_brand || null,
+    avatar_url: user.avatar_url || "1.png",
+    pd_consent_at: user.pd_consent_at || null,
+    pd_consent_version: user.pd_consent_version || null,
+  };
+}
+
 exports.generateQrString = async (req, res) => {
   try {
-    const userId = req.user.id; // Извлекаем ID залогиненного пользователя из JWT мидлвара
-    const timestamp = Math.floor(Date.now() / 1000); // Текущий UNIX-timestamp в секундах
-
-    // Достаем секретную соль из .env (с безопасным дефолтным значением на случай сброса конфига)
+    const userId = req.user.id;
+    const timestamp = Math.floor(Date.now() / 1000);
     const secretKey =
       process.env.QR_SECRET_KEY || "zeus_auto_super_secret_salt_2026";
 
-    // Генерируем уникальный хэш по формуле из ТЗ
     const hash = crypto
       .createHash("sha256")
-      .update(`${userId}${timestamp}${secretKey}`) // 🌟 ИСПРАВЛЕНО: Теперь тут железно текстовая склейка! "21780049609..."
+      .update(`${userId}${timestamp}${secretKey}`)
       .digest("hex");
 
-    // Собираем финальную защищенную строку
     const qrString = `${userId}:${timestamp}:${hash}`;
 
-    // Возвращаем её на фронтенд клиента
     res.json({ success: true, qrString });
   } catch (err) {
     console.error("Ошибка при генерации строки QR:", err);
@@ -33,14 +49,13 @@ exports.generateQrString = async (req, res) => {
   }
 };
 
-// БЛОК №2: Существующее обновление профиля
 exports.updateProfile = async (req, res) => {
   try {
     const { name, avatar_url, car_brand } = req.body;
     const userId = req.user.id;
 
     await db.query(
-      "UPDATE users SET name = COALESCE($1, name), avatar_url = COALESCE($2, avatar_url), car_brand = COALESCE($3, car_brand) WHERE id = $4",
+      "UPDATE users SET name = COALESCE($1, name), avatar_url = COALESCE($2, avatar_url), car_brand = COALESCE($3, car_brand) WHERE id = $4 AND deleted_at IS NULL",
       [name, avatar_url, car_brand, userId],
     );
 
@@ -77,7 +92,37 @@ exports.changePassword = async (req, res) => {
   }
 };
 
-// Отзыв согласия на обработку ПДн + обезличивание аккаунта (152-ФЗ)
+exports.acceptPrivacyPolicy = async (req, res) => {
+  try {
+    if (!requirePersonalDataConsent(req.body, res)) return;
+
+    const userId = req.user.id;
+    const { pdConsentAt, pdConsentVersion } = getPdConsentFields();
+
+    const result = await db.query(
+      `UPDATE users SET pd_consent_at = $1, pd_consent_version = $2
+       WHERE id = $3 AND deleted_at IS NULL
+       RETURNING id, username, phone, name, role, visit_count, total_visits, created_at, car_brand, avatar_url, pd_consent_at, pd_consent_version`,
+      [pdConsentAt, pdConsentVersion, userId],
+    );
+
+    const user = result.rows[0];
+    if (!user) {
+      return res.status(404).json({ message: "Пользователь не найден" });
+    }
+
+    res.json({
+      success: true,
+      mustAcceptPrivacyPolicy: false,
+      currentPdConsentVersion: PD_CONSENT_VERSION,
+      user: formatUserForResponse(user),
+    });
+  } catch (err) {
+    console.error("Ошибка acceptPrivacyPolicy:", err);
+    res.status(500).json({ message: "Не удалось сохранить согласие" });
+  }
+};
+
 exports.withdrawConsentAndDeleteAccount = async (req, res) => {
   try {
     const userId = req.user.id;

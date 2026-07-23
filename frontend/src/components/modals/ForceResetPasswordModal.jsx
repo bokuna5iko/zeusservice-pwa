@@ -5,7 +5,7 @@ import { api } from "../../api/apiService";
 import "./ForceResetPasswordModal.css"; // Стили добавим ниже
 
 const ForceResetPasswordModal = () => {
-  const { mustResetPassword, setMustResetPassword, logout } =
+  const { mustResetPassword, setMustResetPassword, logout, refreshProfile } =
     useContext(AuthContext);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -36,8 +36,8 @@ const ForceResetPasswordModal = () => {
       await api.changePassword(newPassword.trim());
 
       alert("Пароль успешно защищён! Добро пожаловать.");
-      // Снимаем блокировку на фронте
       setMustResetPassword(false);
+      await refreshProfile();
     } catch (err) {
       console.error(err);
       setError(

@@ -1,5 +1,5 @@
 import React from "react";
-import { privacyPolicySections, PD_CONSENT_VERSION } from "../../constants/privacyPolicy";
+import { privacyPolicySections, PD_CONSENT_VERSION, POLICY_META } from "../../constants/privacyPolicy";
 import "./PrivacyPolicyModal.css";
 
 const PrivacyPolicyModal = ({ isOpen, onClose }) => {
@@ -27,7 +27,9 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => {
         </header>
 
         <div className="privacy-modal-body">
-          <p className="privacy-modal-meta">Версия документа: {PD_CONSENT_VERSION}</p>
+          <p className="privacy-modal-meta">
+            Версия: {PD_CONSENT_VERSION} · действует с {POLICY_META.effectiveDate}
+          </p>
           {privacyPolicySections.map((section) => (
             <section key={section.title} className="privacy-section">
               <h3>{section.title}</h3>

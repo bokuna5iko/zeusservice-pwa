@@ -7,6 +7,7 @@ const { generateCode, sendSms } = require("../services/smsService");
 const {
   requirePersonalDataConsent,
   getPdConsentFields,
+  getPdConsentStatus,
 } = require("../db/initSmsAuth");
 
 const SMS_CODE_TTL_MINUTES = Number(process.env.SMS_CODE_TTL_MINUTES) || 5;
@@ -126,6 +127,7 @@ exports.login = async (req, res) => {
     res.json({
       accessToken: token,
       mustResetPassword,
+      ...getPdConsentStatus(user),
       user: formatUserResponse(user),
     });
   } catch (err) {
@@ -154,6 +156,7 @@ exports.getMe = async (req, res) => {
 
     res.json({
       mustResetPassword,
+      ...getPdConsentStatus(user),
       user: {
         id: user.id,
         name: user.name,
@@ -227,6 +230,8 @@ exports.register = async (req, res) => {
 
     res.status(201).json({
       accessToken: token,
+      mustAcceptPrivacyPolicy: false,
+      ...getPdConsentStatus(newUser),
       user: formatUserResponse(newUser),
     });
   } catch (err) {
@@ -376,6 +381,7 @@ exports.verifySmsCode = async (req, res) => {
         accessToken: token,
         isNewUser: false,
         mustResetPassword: false,
+        ...getPdConsentStatus(user),
         user: formatUserResponse(user),
       });
     }
@@ -423,6 +429,8 @@ exports.verifySmsCode = async (req, res) => {
       accessToken: token,
       isNewUser: true,
       mustResetPassword: false,
+      mustAcceptPrivacyPolicy: false,
+      ...getPdConsentStatus(newUser),
       user: formatUserResponse(newUser),
     });
   } catch (err) {

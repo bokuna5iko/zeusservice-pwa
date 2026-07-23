@@ -27,6 +27,7 @@ import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 
 // Импортируем блокировщик для форсированного сброса пароля
 import ForceResetPasswordModal from "./components/modals/ForceResetPasswordModal";
+import PrivacyPolicyConsentModal from "./components/modals/PrivacyPolicyConsentModal";
 
 // Импортируем менеджер онбординга PWA
 import PwaOnboardingManager from "./components/PwaOnboardingManager/PwaOnboardingManager";
@@ -127,6 +128,7 @@ function App() {
     return (
       <>
         <ForceResetPasswordModal />
+        <PrivacyPolicyConsentModal />
         <AdminDashboard
           needRefresh={needRefresh}
           showHintBanner={showHintBanner}
@@ -141,6 +143,7 @@ function App() {
   return (
     <div className="app-shell">
       <ForceResetPasswordModal />
+      <PrivacyPolicyConsentModal />
 
       {/* 🌟 ГЛОБАЛЬНЫЙ МЕНЕДЖЕР УСТАНОВКИ PWA (Абсолютный верхний слой) */}
       <PwaOnboardingManager />

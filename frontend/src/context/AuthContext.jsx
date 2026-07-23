@@ -14,6 +14,17 @@ export const AuthProvider = ({ children }) => {
 
   // 🌟 ДОБАВЛЕНО: Стейт принудительного сброса пароля
   const [mustResetPassword, setMustResetPassword] = useState(false);
+  const [mustAcceptPrivacyPolicy, setMustAcceptPrivacyPolicy] = useState(false);
+  const [currentPdConsentVersion, setCurrentPdConsentVersion] = useState("1.0");
+
+  const applyAuthFlags = (data) => {
+    if (!data) return;
+    setMustResetPassword(Boolean(data.mustResetPassword));
+    setMustAcceptPrivacyPolicy(Boolean(data.mustAcceptPrivacyPolicy));
+    if (data.currentPdConsentVersion) {
+      setCurrentPdConsentVersion(data.currentPdConsentVersion);
+    }
+  };
 
   const refreshProfile = async () => {
     const token = localStorage.getItem("accessToken");
@@ -21,15 +32,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await api.getProfile();
-
-      // 🌟 ИСПРАВЛЕНО: Читаем флаг из ответа профиля при F5
-      if (response.data && response.data.mustResetPassword) {
-        setMustResetPassword(true);
-      } else {
-        setMustResetPassword(false);
-      }
-
-      // Записываем чистый объект юзера без технического поля пароля
+      applyAuthFlags(response.data);
       setUser(response.data.user || response.data);
     } catch (err) {
       console.error("Ошибка при фоновом обновлении профиля:", err);
@@ -74,14 +77,7 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem("accessToken", data.accessToken);
       setUser(data.user);
-
-      // 🌟 ИСПРАВЛЕНО: Ловим флаг от бэкенда при входе
-      if (data.mustResetPassword) {
-        setMustResetPassword(true);
-      } else {
-        setMustResetPassword(false);
-      }
-
+      applyAuthFlags(data);
       setActivePage("home");
     } catch (err) {
       setError(err.message);
@@ -107,7 +103,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("accessToken", data.accessToken);
       }
       setUser(data.user);
-      setMustResetPassword(false); // При регистрации сброс не нужен
+      applyAuthFlags(data);
       setActivePage("home");
     } catch (err) {
       setError(err.message);
@@ -120,6 +116,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("accessToken");
     setUser(null);
     setMustResetPassword(false);
+    setMustAcceptPrivacyPolicy(false);
     setActivePage("home");
   };
 
@@ -160,7 +157,7 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem("accessToken", data.accessToken);
       setUser(data.user);
-      setMustResetPassword(Boolean(data.mustResetPassword));
+      applyAuthFlags(data);
       setActivePage("home");
       return data;
     } catch (err) {
@@ -181,6 +178,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("accessToken");
       setUser(null);
       setMustResetPassword(false);
+      setMustAcceptPrivacyPolicy(false);
       setActivePage("home");
     } catch (err) {
       const message =
@@ -211,6 +209,9 @@ export const AuthProvider = ({ children }) => {
         // 🌟 Прокидываем стейт сброса пароля в приложение
         mustResetPassword,
         setMustResetPassword,
+        mustAcceptPrivacyPolicy,
+        setMustAcceptPrivacyPolicy,
+        currentPdConsentVersion,
       }}
     >
       {children}

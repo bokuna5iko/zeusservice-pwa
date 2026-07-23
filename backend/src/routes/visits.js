@@ -37,6 +37,12 @@ router.post("/add", authenticateToken, adminOnly, visitController.addVisit);
 router.put("/update", authenticateToken, userController.updateProfile);
 
 router.post(
+  "/accept-privacy-policy",
+  authenticateToken,
+  userController.acceptPrivacyPolicy,
+);
+
+router.post(
   "/withdraw-consent",
   authenticateToken,
   userController.withdrawConsentAndDeleteAccount,

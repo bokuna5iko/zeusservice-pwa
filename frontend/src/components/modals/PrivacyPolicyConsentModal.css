@@ -1,0 +1,97 @@
+.privacy-consent-overlay {
+  position: fixed;
+  inset: 0;
+  background: #020617;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999998;
+  padding: 20px;
+}
+
+.privacy-consent-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 440px;
+  padding: 28px 24px;
+  text-align: center;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(56, 189, 248, 0.1);
+}
+
+.privacy-consent-icon-box {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+}
+
+.privacy-consent-card h2 {
+  margin: 0 0 12px;
+  color: #f8fafc;
+  font-size: 1.15rem;
+}
+
+.privacy-consent-subtitle {
+  margin: 0 0 20px;
+  color: #94a3b8;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.privacy-consent-form {
+  text-align: left;
+}
+
+.privacy-consent-error {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #f87171;
+  font-size: 0.82rem;
+}
+
+.btn-privacy-consent-submit {
+  width: 100%;
+  margin-top: 16px;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  background: #38bdf8;
+  color: #0f172a;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-privacy-consent-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-privacy-consent-logout {
+  width: 100%;
+  margin-top: 10px;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 12px;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.btn-privacy-consent-logout:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

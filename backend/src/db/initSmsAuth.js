@@ -59,9 +59,25 @@ function getPdConsentFields() {
   };
 }
 
+function needsPdConsentUpdate(user) {
+  if (!user) return false;
+  return (
+    !user.pd_consent_version || user.pd_consent_version !== PD_CONSENT_VERSION
+  );
+}
+
+function getPdConsentStatus(user) {
+  return {
+    mustAcceptPrivacyPolicy: needsPdConsentUpdate(user),
+    currentPdConsentVersion: PD_CONSENT_VERSION,
+  };
+}
+
 module.exports = {
   initSmsAuthTables,
   requirePersonalDataConsent,
   getPdConsentFields,
+  needsPdConsentUpdate,
+  getPdConsentStatus,
   PD_CONSENT_VERSION,
 };

@@ -104,6 +104,11 @@ export const api = {
 
   withdrawConsentAndDeleteAccount: () =>
     apiService.post("/user/withdraw-consent"),
+
+  acceptPrivacyPolicy: () =>
+    apiService.post("/user/accept-privacy-policy", {
+      personalDataConsent: true,
+    }),
 };
 
 export default apiService;
