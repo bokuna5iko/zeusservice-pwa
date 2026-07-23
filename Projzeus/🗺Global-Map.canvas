@@ -558,7 +558,8 @@
 			"x":-17280,
 			"y":7900,
 			"width":260,
-			"height":60
+			"height":60,
+			"color":"4"
 		},
 		{
 			"id":"413e3b8b455f2ac2",
@@ -568,7 +569,8 @@
 			"x":-17280,
 			"y":8040,
 			"width":260,
-			"height":60
+			"height":60,
+			"color":"4"
 		},
 		{
 			"id":"ecd0e03533cd183f",
@@ -599,6 +601,17 @@
 			"y":7775,
 			"width":260,
 			"height":60
+		},
+		{
+			"id":"165fa2e79be77cfa",
+			"type":"text",
+			"text":"регистрация отправителя на sms.ru\nжду ответ",
+			"styleAttributes":{},
+			"x":-17280,
+			"y":8320,
+			"width":260,
+			"height":60,
+			"color":"3"
 		}
 	],
 	"edges":[
@@ -972,6 +985,15 @@
 			"fromSide":"right",
 			"toNode":"68fb3371e35593f4",
 			"toSide":"right"
+		},
+		{
+			"id":"a01ee354a1940535",
+			"styleAttributes":{},
+			"toFloating":false,
+			"fromNode":"ecd0e03533cd183f",
+			"fromSide":"bottom",
+			"toNode":"165fa2e79be77cfa",
+			"toSide":"top"
 		}
 	],
 	"metadata":{
