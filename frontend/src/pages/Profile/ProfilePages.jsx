@@ -3,13 +3,16 @@ import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import "./ProfilePages.css";
 import PriceListModal from "../../components/PriceList/PriceListModal";
+import PrivacyPolicyModal from "../../components/PrivacyPolicyModal/PrivacyPolicyModal";
+import PersonalDataManageModal from "../../components/PersonalDataManageModal/PersonalDataManageModal";
 
 // 🌟 ДОБАВЛЕНО: Импортируем менеджер установки для резервного входа
 import PwaOnboardingManager from "../../components/PwaOnboardingManager/PwaOnboardingManager";
 
 const ProfilePage = () => {
   // 🌟 ИСПРАВЛЕНО: Теперь деструктурируем setUser из контекста!
-  const { user, setUser, logout } = useContext(AuthContext);
+  const { user, setUser, logout, withdrawAndDeleteAccount, refreshProfile, loading: authLoading } =
+    useContext(AuthContext);
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState("");
 
@@ -18,7 +21,8 @@ const ProfilePage = () => {
   const [newCarBrand, setNewCarBrand] = useState("");
 
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
-  const [activeModal, setActiveModal] = useState(null); // 'prices' | 'kb' | null
+  const [activeModal, setActiveModal] = useState(null); // 'prices' | 'kb' | 'privacy' | 'pd-manage' | null
+  const [pdDeleteLoading, setPdDeleteLoading] = useState(false);
 
   // 🌟 ДОБАВЛЕНО: Стейты для резервного управления PWA из профиля
   const [isPwaInstalled, setIsPwaInstalled] = useState(true);
@@ -68,6 +72,23 @@ const ProfilePage = () => {
 
     // 🌟 Погашаем неоновую точку-маркер, так как пользователь нажал на пункт
     setShowNotificationDot(false);
+  };
+
+  const handleOpenPdManage = async () => {
+    setActiveModal("pd-manage");
+    await refreshProfile();
+  };
+
+  const handleWithdrawAndDelete = async () => {
+    setPdDeleteLoading(true);
+    try {
+      await withdrawAndDeleteAccount();
+      setActiveModal(null);
+    } catch (err) {
+      alert(err.response?.data?.message || "Не удалось удалить аккаунт");
+    } finally {
+      setPdDeleteLoading(false);
+    }
   };
 
   // 🌟 ИСПРАВЛЕНО: Функция обновления профиля с правильным использованием setUser
@@ -317,6 +338,28 @@ const ProfilePage = () => {
 
             <div
               className="profile-action-item"
+              onClick={() => setActiveModal("privacy")}
+            >
+              <div className="action-left">
+                <i className="fas fa-shield-alt text-blue"></i>
+                <span>Политика конфиденциальности</span>
+              </div>
+              <i className="fas fa-chevron-right arrow-gray"></i>
+            </div>
+
+            <div
+              className="profile-action-item"
+              onClick={handleOpenPdManage}
+            >
+              <div className="action-left">
+                <i className="fas fa-user-shield text-blue"></i>
+                <span>Мои персональные данные</span>
+              </div>
+              <i className="fas fa-chevron-right arrow-gray"></i>
+            </div>
+
+            <div
+              className="profile-action-item"
               onClick={() => setActiveModal("kb")}
             >
               <div className="action-left">
@@ -353,6 +396,19 @@ const ProfilePage = () => {
       <PriceListModal
         isOpen={activeModal === "prices"}
         onClose={() => setActiveModal(null)}
+      />
+
+      <PrivacyPolicyModal
+        isOpen={activeModal === "privacy"}
+        onClose={() => setActiveModal(null)}
+      />
+
+      <PersonalDataManageModal
+        isOpen={activeModal === "pd-manage"}
+        onClose={() => setActiveModal(null)}
+        pdConsentAt={user?.pd_consent_at}
+        onWithdrawAndDelete={handleWithdrawAndDelete}
+        loading={pdDeleteLoading || authLoading}
       />
 
       {/* 🌟 ИСПРАВЛЕНО: Менеджер примонтирован всегда и сбрасывает стейт через onClose */}

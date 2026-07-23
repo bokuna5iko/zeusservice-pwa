@@ -1,9 +1,12 @@
 // src/pages/Login/LoginPage.jsx
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import PersonalDataConsent from "../../components/PersonalDataConsent/PersonalDataConsent";
+import PrivacyPolicyModal from "../../components/PrivacyPolicyModal/PrivacyPolicyModal";
 import "./LoginPage.css";
 
-// 🌟 ИСПРАВЛЕНО: Принимаем пропсы PWA-обновлений из App.jsx
+const RESEND_COOLDOWN_SEC = 60;
+
 const LoginPage = ({
   needRefresh,
   showHintBanner,
@@ -11,45 +14,133 @@ const LoginPage = ({
   isSpinning,
   handlePwaUpdate,
 }) => {
-  const [isRegister, setIsRegister] = useState(false); // false = Вход, true = Регистрация
-  const [authMethod, setAuthMethod] = useState("login"); // 'login' = по логину, 'phone' = по телефону
+  const [isRegister, setIsRegister] = useState(false);
+  const [authMethod, setAuthMethod] = useState("login");
 
-  // Стейты под систему авторизации
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState(""); // Поле скрыто на фронтенде, по умолчанию пустая строка
+  const [phone, setPhone] = useState("");
 
-  const { login, register, loading, error } = useContext(AuthContext);
+  const [phoneStep, setPhoneStep] = useState("phone");
+  const [smsCode, setSmsCode] = useState("");
+  const [devMode, setDevMode] = useState(false);
+  const [resendSec, setResendSec] = useState(0);
+  const [pdConsent, setPdConsent] = useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
 
-  const handleSubmit = (e) => {
+  const { login, register, sendSmsCode, verifySmsCode, loading, error } =
+    useContext(AuthContext);
+
+  useEffect(() => {
+    if (resendSec <= 0) return;
+    const timer = setInterval(() => {
+      setResendSec((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendSec]);
+
+  const resetPhoneFlow = () => {
+    setPhoneStep("phone");
+    setSmsCode("");
+    setDevMode(false);
+    setResendSec(0);
+  };
+
+  const switchAuthMethod = (method) => {
+    setAuthMethod(method);
+    resetPhoneFlow();
+  };
+
+  const switchRegisterMode = (registerMode) => {
+    setIsRegister(registerMode);
+    setPdConsent(false);
+    resetPhoneFlow();
+  };
+
+  const handlePasswordSubmit = (e) => {
     e.preventDefault();
-
     if (isRegister) {
-      if (register) {
-        // 🌟 ИСПРАВЛЕНО: Передаем пустую строку или null, чтобы на бэке сработал NULL-предохранитель
-        register({ name, username, password, phone: phone.trim() || null });
-      }
+      register({
+        name,
+        username,
+        password,
+        phone: phone.trim() || null,
+        personalDataConsent: pdConsent,
+      });
     } else {
-      if (login) {
-        login({ username, password });
+      login({ username, password });
+    }
+  };
+
+  const handleSendSms = async (e) => {
+    e.preventDefault();
+    if (!phone.trim()) return;
+    if (isRegister && name.trim().length < 2) return;
+
+    if (isRegister && !pdConsent) return;
+
+    try {
+      const data = await sendSmsCode(
+        phone.trim(),
+        isRegister ? "register" : "login",
+        isRegister ? pdConsent : false,
+      );
+      setPhoneStep("code");
+      setDevMode(Boolean(data.devMode));
+      setResendSec(RESEND_COOLDOWN_SEC);
+    } catch (err) {
+      if (err.response?.data?.code === "USER_NOT_FOUND") {
+        switchRegisterMode(true);
+      }
+      if (err.response?.data?.code === "PHONE_ALREADY_REGISTERED") {
+        switchRegisterMode(false);
       }
     }
   };
 
-  // Валидация полей
-  const isFormValid = isRegister
+  const handleVerifySms = async (e) => {
+    e.preventDefault();
+    if (smsCode.length !== 6) return;
+
+    try {
+      await verifySmsCode({
+        phone: phone.trim(),
+        code: smsCode,
+        name: isRegister ? name.trim() : undefined,
+        mode: isRegister ? "register" : "login",
+        personalDataConsent: isRegister ? pdConsent : false,
+      });
+    } catch (err) {
+      if (err.response?.data?.code === "USER_NOT_FOUND") {
+        switchRegisterMode(true);
+        resetPhoneFlow();
+      }
+      if (err.response?.data?.code === "PHONE_ALREADY_REGISTERED") {
+        switchRegisterMode(false);
+        resetPhoneFlow();
+      }
+    }
+  };
+
+  const isPasswordFormValid = isRegister
     ? name.trim().length > 0 &&
       username.trim().length > 0 &&
-      password.length >= 4
+      password.length >= 4 &&
+      pdConsent
     : username.trim().length > 0 && password.length > 0;
+
+  const isPhoneSendValid =
+    phone.trim().length >= 10 &&
+    (!isRegister || (name.trim().length >= 2 && pdConsent));
+
+  const isSmsCodeValid = smsCode.length === 6;
 
   return (
     <div
       className="login-page-wrapper"
       style={{ width: "100%", height: "100%", position: "relative" }}
     >
-      {/* 🌟 ВСПЛЫВАЮЩАЯ UX-ПОДСКАЗКА ДЛЯ СТРАНИЦЫ ЛОГИНА */}
       <div
         className={`pwa-smart-hint-banner ${showHintBanner ? "slide-down" : ""}`}
       >
@@ -57,7 +148,6 @@ const LoginPage = ({
         <span>Доступна новая версия приложения. Обновитесь!</span>
       </div>
 
-      {/* 🌟 КНОПКА ОБНОВЛЕНИЯ: Позиционируется абсолютно в углу карточки или страницы */}
       <div className="login-pwa-anchor">
         <button
           type="button"
@@ -81,12 +171,11 @@ const LoginPage = ({
             ZEUS <span>AUTO</span>
           </h1>
 
-          {/* ВЕРХНИЕ ТАБЫ: Вход / Регистрация */}
           <div className="auth-toggle-tabs">
             <button
               type="button"
               className={`toggle-tab ${!isRegister ? "active" : ""}`}
-              onClick={() => setIsRegister(false)}
+              onClick={() => switchRegisterMode(false)}
               disabled={loading}
             >
               Вход
@@ -94,26 +183,25 @@ const LoginPage = ({
             <button
               type="button"
               className={`toggle-tab ${isRegister ? "active" : ""}`}
-              onClick={() => setIsRegister(true)}
+              onClick={() => switchRegisterMode(true)}
               disabled={loading}
             >
               Регистрация
             </button>
           </div>
 
-          {/* ВНУТРЕННИЕ ПЕРЕКЛЮЧАТЕЛИ: По телефону / По логину */}
           <div className="method-toggle-container">
             <button
               type="button"
               className={`method-btn ${authMethod === "login" ? "selected" : ""}`}
-              onClick={() => setAuthMethod("login")}
+              onClick={() => switchAuthMethod("login")}
             >
               <i className="fas fa-key"></i> По логину
             </button>
             <button
               type="button"
               className={`method-btn ${authMethod === "phone" ? "selected" : ""}`}
-              onClick={() => setAuthMethod("phone")}
+              onClick={() => switchAuthMethod("phone")}
             >
               <i className="fas fa-phone"></i> По телефону
             </button>
@@ -121,21 +209,132 @@ const LoginPage = ({
 
           {error && <div className="login-error-msg">{error}</div>}
 
-          {/* Если выбран телефон — блокируем вход */}
           {authMethod === "phone" ? (
-            <div className="phone-blocked-notice">
-              <div className="blocked-icon-box">
-                <i className="fas fa-lock"></i>
-              </div>
-              <h3>Вход по телефону недоступен</h3>
-              <p>
-                Авторизация через СМС временно отключена технической поддержкой.
-                Пожалуйста, используйте вкладку <strong>«По логину»</strong>.
-              </p>
+            <div className="phone-auth-flow">
+              {phoneStep === "phone" ? (
+                <form onSubmit={handleSendSms} className="login-form">
+                  <p className="login-subtitle">
+                    {isRegister
+                      ? "Регистрация по номеру телефона"
+                      : "Вход по SMS-коду"}
+                  </p>
+
+                  {isRegister && (
+                    <div className="input-wrapper">
+                      <i className="fas fa-user"></i>
+                      <input
+                        type="text"
+                        placeholder="Ваше имя"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        disabled={loading}
+                        required
+                      />
+                    </div>
+                  )}
+
+                  <div className="input-wrapper">
+                    <i className="fas fa-phone"></i>
+                    <input
+                      type="tel"
+                      placeholder="+7 (900) 123-45-67"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      disabled={loading}
+                      autoComplete="tel"
+                      required
+                    />
+                  </div>
+
+                  {isRegister && (
+                    <PersonalDataConsent
+                      checked={pdConsent}
+                      onChange={setPdConsent}
+                      disabled={loading}
+                      onOpenPolicy={() => setIsPrivacyOpen(true)}
+                    />
+                  )}
+
+                  <button
+                    type="submit"
+                    className="login-btn"
+                    disabled={!isPhoneSendValid || loading}
+                  >
+                    {loading ? "Отправка..." : "Получить код"}
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={handleVerifySms} className="login-form">
+                  <p className="login-subtitle">
+                    Код отправлен на {phone}
+                  </p>
+
+                  {devMode && (
+                    <div className="sms-dev-hint">
+                      <i className="fas fa-flask"></i>
+                      Dev-режим: код в логе backend-сервера
+                    </div>
+                  )}
+
+                  <div className="input-wrapper">
+                    <i className="fas fa-shield-alt"></i>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={6}
+                      placeholder="6-значный код"
+                      value={smsCode}
+                      onChange={(e) =>
+                        setSmsCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                      }
+                      disabled={loading}
+                      autoComplete="one-time-code"
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="login-btn"
+                    disabled={
+                      !isSmsCodeValid ||
+                      loading ||
+                      (isRegister && !pdConsent)
+                    }
+                  >
+                    {loading
+                      ? "Проверка..."
+                      : isRegister
+                        ? "Зарегистрироваться"
+                        : "Войти"}
+                  </button>
+
+                  <div className="sms-actions-row">
+                    <button
+                      type="button"
+                      className="sms-link-btn"
+                      onClick={resetPhoneFlow}
+                      disabled={loading}
+                    >
+                      Изменить номер
+                    </button>
+                    <button
+                      type="button"
+                      className="sms-link-btn"
+                      onClick={handleSendSms}
+                      disabled={loading || resendSec > 0}
+                    >
+                      {resendSec > 0
+                        ? `Повтор через ${resendSec}с`
+                        : "Отправить снова"}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           ) : (
-            /* Если выбран логин — выводим форму */
-            <form onSubmit={handleSubmit} className="login-form">
+            <form onSubmit={handlePasswordSubmit} className="login-form">
               <p className="login-subtitle">
                 {isRegister
                   ? "Заполните данные для создания аккаунта"
@@ -182,25 +381,19 @@ const LoginPage = ({
                 />
               </div>
 
-              {/* 🌟 ИСПРАВЛЕНО: Инпут телефона полностью скрыт с экрана (display: "none"), 
-                  чтобы не собирать ПДн и не усложнять регистрацию на этапе релиза */}
               {isRegister && (
-                <div className="input-wrapper" style={{ display: "none" }}>
-                  <i className="fas fa-phone"></i>
-                  <input
-                    type="text"
-                    placeholder="Телефон"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    disabled={loading}
-                  />
-                </div>
+                <PersonalDataConsent
+                  checked={pdConsent}
+                  onChange={setPdConsent}
+                  disabled={loading}
+                  onOpenPolicy={() => setIsPrivacyOpen(true)}
+                />
               )}
 
               <button
                 type="submit"
                 className="login-btn"
-                disabled={!isFormValid || loading}
+                disabled={!isPasswordFormValid || loading}
               >
                 {loading
                   ? "Проверка..."
@@ -212,6 +405,11 @@ const LoginPage = ({
           )}
         </div>
       </div>
+
+      <PrivacyPolicyModal
+        isOpen={isPrivacyOpen}
+        onClose={() => setIsPrivacyOpen(false)}
+      />
     </div>
   );
 };

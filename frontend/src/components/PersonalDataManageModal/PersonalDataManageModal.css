@@ -1,0 +1,108 @@
+.pd-manage-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(2, 6, 23, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.pd-manage-card {
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pd-manage-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 16px 8px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.pd-manage-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.pd-manage-close {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.pd-manage-body {
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.pd-manage-meta {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 0 0 16px;
+}
+
+.pd-manage-section h3 {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: #38bdf8;
+}
+
+.pd-manage-section p {
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #94a3b8;
+}
+
+.pd-manage-confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 16px 0;
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  text-align: left;
+}
+
+.pd-manage-confirm input {
+  margin-top: 3px;
+  accent-color: #38bdf8;
+}
+
+.pd-manage-delete-btn {
+  width: 100%;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 10px;
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pd-manage-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pd-manage-delete-btn:not(:disabled):hover {
+  background: rgba(239, 68, 68, 0.2);
+}

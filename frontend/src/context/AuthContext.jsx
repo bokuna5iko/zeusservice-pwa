@@ -123,14 +123,86 @@ export const AuthProvider = ({ children }) => {
     setActivePage("home");
   };
 
+  const sendSmsCode = async (phone, mode = "login", personalDataConsent = false) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.sendSmsCode(phone, mode, personalDataConsent);
+      return response.data;
+    } catch (err) {
+      const message =
+        err.response?.data?.message || "Не удалось отправить код";
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifySmsCode = async ({
+    phone,
+    code,
+    name,
+    mode,
+    personalDataConsent,
+  }) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.verifySmsCode({
+        phone,
+        code,
+        name,
+        mode,
+        personalDataConsent,
+      });
+      const data = response.data;
+
+      localStorage.setItem("accessToken", data.accessToken);
+      setUser(data.user);
+      setMustResetPassword(Boolean(data.mustResetPassword));
+      setActivePage("home");
+      return data;
+    } catch (err) {
+      const message =
+        err.response?.data?.message || "Ошибка проверки кода";
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const withdrawAndDeleteAccount = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await api.withdrawConsentAndDeleteAccount();
+      localStorage.removeItem("accessToken");
+      setUser(null);
+      setMustResetPassword(false);
+      setActivePage("home");
+    } catch (err) {
+      const message =
+        err.response?.data?.message || "Не удалось удалить аккаунт";
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         login,
         register,
+        sendSmsCode,
+        verifySmsCode,
+        withdrawAndDeleteAccount,
         setUser,
-	logout,
+        logout,
         activePage,
         setActivePage,
         refreshProfile,

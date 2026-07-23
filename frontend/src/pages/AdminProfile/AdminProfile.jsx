@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import "./AdminProfile.css";
 import PriceListModal from "../../components/PriceList/PriceListModal";
+import PrivacyPolicyModal from "../../components/PrivacyPolicyModal/PrivacyPolicyModal";
 
 const AdminProfile = () => {
   const { user } = useContext(AuthContext); // Достаем текущего администратора из контекста
@@ -67,6 +68,17 @@ const AdminProfile = () => {
             <i className="fas fa-chevron-right admin-menu-arrow"></i>
           </div>
 
+          <div
+            className="admin-menu-item"
+            onClick={() => setActiveModal("privacy")}
+          >
+            <div className="admin-menu-left">
+              <i className="fas fa-shield-alt admin-menu-icon"></i>
+                <span>Политика конфиденциальности</span>
+            </div>
+            <i className="fas fa-chevron-right admin-menu-arrow"></i>
+          </div>
+
           {/* 2. База знаний */}
           <div className="admin-menu-item" onClick={() => setActiveModal("kb")}>
             <div className="admin-menu-left">
@@ -117,6 +129,11 @@ const AdminProfile = () => {
       {/* 1. Прейскурант (Твой готовый компонент, адаптированный под стили) */}
       <PriceListModal
         isOpen={activeModal === "prices"}
+        onClose={() => setActiveModal(null)}
+      />
+
+      <PrivacyPolicyModal
+        isOpen={activeModal === "privacy"}
         onClose={() => setActiveModal(null)}
       />
 

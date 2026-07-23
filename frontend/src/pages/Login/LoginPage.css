@@ -309,6 +309,51 @@
   color: #38bdf8;
 }
 
+/* SMS-авторизация */
+.phone-auth-flow {
+  margin-top: 10px;
+}
+
+.sms-dev-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 10px;
+  color: #7dd3fc;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.sms-actions-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.sms-link-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.2s;
+}
+
+.sms-link-btn:hover:not(:disabled) {
+  color: #38bdf8;
+}
+
+.sms-link-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Позиционирование кнопки обновления на экране логина */
 .login-pwa-anchor {
   position: absolute;

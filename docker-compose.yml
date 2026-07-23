@@ -57,6 +57,9 @@ services:
       PORT: 3000
       JWT_SECRET: ${JWT_SECRET}
       REFRESH_SECRET: ${REFRESH_SECRET}
+      SMS_PROVIDER: ${SMS_PROVIDER:-dev}
+      SMS_CODE_TTL_MINUTES: ${SMS_CODE_TTL_MINUTES:-5}
+      SMS_RESEND_COOLDOWN_SEC: ${SMS_RESEND_COOLDOWN_SEC:-60}
     depends_on:
       db:
         condition: service_healthy

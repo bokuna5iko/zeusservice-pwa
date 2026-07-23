@@ -36,7 +36,10 @@ apiService.interceptors.response.use(
 );
 
 export const api = {
-  login: (phone) => apiService.post("/auth/login", { phone }),
+  login: (credentials) => apiService.post("/auth/login", credentials),
+  sendSmsCode: (phone, mode, personalDataConsent) =>
+    apiService.post("/auth/sms/send", { phone, mode, personalDataConsent }),
+  verifySmsCode: (payload) => apiService.post("/auth/sms/verify", payload),
   getProfile: () => apiService.get("/user/me"),
   getServices: () => apiService.get("/admin/services"),
   getUserHistory: () => apiService.get("/user/history"),
@@ -98,6 +101,9 @@ export const api = {
   // Смена временного пароля на постоянный с хэшированием в БД
   changePassword: (newPassword) =>
     apiService.post("/user/change-password", { newPassword }),
+
+  withdrawConsentAndDeleteAccount: () =>
+    apiService.post("/user/withdraw-consent"),
 };
 
 export default apiService;

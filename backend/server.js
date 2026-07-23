@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const db = require("./src/config/db"); // Импортируем пул БД для проверки здоровья
+const db = require("./src/config/db");
+const { initSmsAuthTables } = require("./src/db/initSmsAuth");
 
 // 🌟 ДОБАВЛЕНО: Нативные модули для интеграции Socket.io
 const http = require("http");
@@ -93,13 +94,24 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Внутренняя ошибка сервера" });
 });
 
-// 🌟 ИСПРАВЛЕНО: Запускаем обернутый 'server', а не дефолтный 'app.listen'
-server.listen(PORT, () => {
-  console.log(`
+async function startServer() {
+  try {
+    await initSmsAuthTables();
+    console.log("✅ SMS auth tables ready");
+  } catch (err) {
+    console.error("⚠️ SMS auth init failed:", err.message);
+  }
+
+  server.listen(PORT, () => {
+    console.log(`
     ================================
     🚀 СЕРВЕР С SOCKET.IO ЗАПУЩЕН
     📍 Адрес: http://localhost:${PORT}
     🛠 Режим: Realtime Sync 2.0
+    📱 SMS: ${process.env.SMS_PROVIDER || "dev"}
     ================================
     `);
-});
+  });
+}
+
+startServer();

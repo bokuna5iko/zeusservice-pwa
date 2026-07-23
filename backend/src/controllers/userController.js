@@ -54,7 +54,7 @@ exports.updateProfile = async (req, res) => {
 exports.changePassword = async (req, res) => {
   try {
     const { newPassword } = req.body;
-    const userId = req.user.id; // Вытащено из мидлвары authenticateToken
+    const userId = req.user.id;
 
     if (!newPassword || newPassword.trim().length < 4) {
       return res
@@ -62,11 +62,9 @@ exports.changePassword = async (req, res) => {
         .json({ message: "Пароль должен быть не менее 4 символов" });
     }
 
-    // Хешируем новый безопасный постоянный пароль
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword.trim(), salt);
 
-    // Перезаписываем ячейку в PostgreSQL безопасным хэшем
     await db.query("UPDATE users SET password_hash = $1 WHERE id = $2", [
       hashedPassword,
       userId,
@@ -76,5 +74,52 @@ exports.changePassword = async (req, res) => {
   } catch (err) {
     console.error("Ошибка в userController (changePassword):", err);
     res.status(500).json({ message: "Ошибка сервера при обновлении пароля" });
+  }
+};
+
+// Отзыв согласия на обработку ПДн + обезличивание аккаунта (152-ФЗ)
+exports.withdrawConsentAndDeleteAccount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const userResult = await db.query(
+      "SELECT id, role, deleted_at FROM users WHERE id = $1",
+      [userId],
+    );
+    const user = userResult.rows[0];
+
+    if (!user || user.deleted_at) {
+      return res.status(404).json({ message: "Аккаунт не найден" });
+    }
+
+    if (user.role === "admin") {
+      return res.status(403).json({
+        message: "Администраторский аккаунт нельзя удалить через приложение",
+      });
+    }
+
+    const deletedUsername = `deleted_${userId}_${Date.now()}`;
+
+    await db.query(
+      `UPDATE users SET
+        name = $1,
+        phone = NULL,
+        username = $2,
+        password_hash = NULL,
+        car_brand = NULL,
+        avatar_url = '1.png',
+        pd_consent_withdrawn_at = NOW(),
+        deleted_at = NOW()
+       WHERE id = $3`,
+      ["Удалённый пользователь", deletedUsername, userId],
+    );
+
+    res.json({
+      success: true,
+      message: "Согласие отозвано, персональные данные удалены",
+    });
+  } catch (err) {
+    console.error("Ошибка withdrawConsentAndDeleteAccount:", err);
+    res.status(500).json({ message: "Не удалось удалить аккаунт" });
   }
 };
