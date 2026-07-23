@@ -6,6 +6,7 @@
 		{"id":"f12838c8ad9b3607","type":"group","x":-9040,"y":3360,"width":2640,"height":2400,"color":"2","label":"Чеклисты и задачи"},
 		{"id":"4da077182e5e546b","type":"group","x":-9040,"y":6040,"width":2640,"height":2400,"color":"#17d6d9","label":"Лента активности "},
 		{"id":"b20e8be52555a1c9","type":"group","x":-13360,"y":7960,"width":1680,"height":2980,"label":"LVL-UP"},
+		{"id":"79ecab57e4617388","type":"group","x":2800,"y":2377,"width":2920,"height":1680,"color":"3","label":"Мобильная версия"},
 		{"id":"c0b78fc1c332048e","type":"group","x":-34080,"y":3520,"width":2280,"height":1700,"label":"Зона идей"},
 		{"id":"f6a8ff1914b3de28","type":"group","x":-19180,"y":7520,"width":1670,"height":1025,"color":"3","label":"Заметки в визитах"},
 		{"id":"665c026db29029d2","type":"group","x":-4260,"y":2511,"width":300,"height":5323,"label":"Сайдбар (Левое меню)"},
@@ -15,12 +16,6 @@
 		{"id":"ea8e7329b4236ea7","type":"group","x":-3540,"y":2873,"width":1240,"height":623,"label":"Лента визитов (Таблица операций)"},
 		{"id":"a5e89deaf1a6d798","type":"group","x":-3540,"y":3674,"width":1240,"height":623,"label":"Персонал"},
 		{"id":"8c8d64b4e76fd192","type":"group","x":-8980,"y":6120,"width":560,"height":1210,"label":"20.07-26.07"},
-		{"id":"8944b144a6a63e18","type":"group","x":-12960,"y":9200,"width":820,"height":380,"color":"3","label":"✅ ЧЕКЛИСТ: Завершение мойки"},
-		{"id":"1d94e2d04246a246","type":"group","x":-18740,"y":6685,"width":820,"height":380,"color":"3","label":"✅ ЧЕКЛИСТ: Закрытие блока мойка"},
-		{"id":"6c22f4194429622b","type":"group","x":-3560,"y":2451,"width":1080,"height":275,"label":"Верхняя панель (Финансовая сводка дня)"},
-		{"id":"8c28339d2ba34cba","type":"group","x":-13000,"y":8430,"width":430,"height":640,"color":"4","label":"📱 ПРИЛОЖЕНИЕ"},
-		{"id":"4b56a25297a50b25","type":"group","x":-12540,"y":8430,"width":400,"height":640,"color":"6","label":"🎛️ ПУЛЬТ"},
-		{"id":"79ecab57e4617388","type":"group","x":2800,"y":2377,"width":2920,"height":1680,"color":"3","label":"Мобильная версия"},
 		{"id":"22941a734a4739c9","type":"group","x":-2160,"y":2873,"width":771,"height":722,"label":"Параметры заезда"},
 		{"id":"be39f7199b797dce","type":"group","x":3520,"y":3297,"width":520,"height":720,"color":"2","label":"История"},
 		{"id":"1f00965bb681c87b","type":"group","x":4060,"y":2477,"width":480,"height":757,"color":"4","label":"Профиль"},
@@ -30,7 +25,12 @@
 		{"id":"342930802ca6eb69","type":"group","x":2980,"y":2477,"width":480,"height":740,"color":"4","label":"Главный экран клиента"},
 		{"id":"bba34763328a1674","type":"group","x":2980,"y":3297,"width":480,"height":720,"color":"2","label":"Главный экран админа"},
 		{"id":"4d92bf3e2b6ba73f","type":"group","x":4120,"y":3297,"width":480,"height":720,"color":"2","label":"Профиль"},
+		{"id":"8944b144a6a63e18","type":"group","x":-12960,"y":9200,"width":820,"height":380,"color":"3","label":"✅ ЧЕКЛИСТ: Завершение мойки"},
+		{"id":"1d94e2d04246a246","type":"group","x":-18740,"y":6685,"width":820,"height":380,"color":"3","label":"✅ ЧЕКЛИСТ: Закрытие блока мойка"},
+		{"id":"6c22f4194429622b","type":"group","x":-3560,"y":2451,"width":1080,"height":275,"label":"Верхняя панель (Финансовая сводка дня)"},
 		{"id":"b0d2649f6a5a7a70","type":"group","x":3560,"y":3337,"width":440,"height":643,"color":"5","label":"История визитов"},
+		{"id":"8c28339d2ba34cba","type":"group","x":-13000,"y":8430,"width":430,"height":640,"color":"4","label":"📱 ПРИЛОЖЕНИЕ"},
+		{"id":"4b56a25297a50b25","type":"group","x":-12540,"y":8430,"width":400,"height":640,"color":"6","label":"🎛️ ПУЛЬТ"},
 		{"id":"bb3c9fa2abf6d344","type":"group","x":3560,"y":2577,"width":400,"height":580,"color":"5","label":"История визитов"},
 		{"id":"afe0cff7fcefc1dc","type":"group","x":4660,"y":3359,"width":440,"height":280,"color":"1","label":"Метрики"},
 		{"id":"a2d8b6154d40a8d3","type":"group","x":4120,"y":2557,"width":384,"height":280,"color":"5","label":"Мой профиль"},
@@ -238,16 +238,6 @@
 			"width":260,
 			"height":60,
 			"color":"1"
-		},
-		{
-			"id":"b667fd44e3bdb4ab",
-			"type":"text",
-			"text":"Написание логики на front",
-			"styleAttributes":{},
-			"x":-17800,
-			"y":8020,
-			"width":260,
-			"height":60
 		},
 		{
 			"id":"9b8be4e6cb050f12",
@@ -641,6 +631,26 @@
 			"styleAttributes":{},
 			"x":-16940,
 			"y":8020,
+			"width":260,
+			"height":60
+		},
+		{
+			"id":"e6ccebd8a894ba40",
+			"type":"text",
+			"text":"Написание логики на backend",
+			"styleAttributes":{},
+			"x":-18100,
+			"y":8010,
+			"width":260,
+			"height":60
+		},
+		{
+			"id":"b667fd44e3bdb4ab",
+			"type":"text",
+			"text":"Написание логики на front",
+			"styleAttributes":{},
+			"x":-17800,
+			"y":8010,
 			"width":260,
 			"height":60
 		}
@@ -1052,6 +1062,24 @@
 			"fromSide":"bottom",
 			"toNode":"b330834722677360",
 			"toSide":"top"
+		},
+		{
+			"id":"f76525be05557cbe",
+			"styleAttributes":{},
+			"toFloating":false,
+			"fromNode":"e27dae1413edf02f",
+			"fromSide":"bottom",
+			"toNode":"e6ccebd8a894ba40",
+			"toSide":"top"
+		},
+		{
+			"id":"041042e4fbe4ff5c",
+			"styleAttributes":{},
+			"toFloating":false,
+			"fromNode":"e6ccebd8a894ba40",
+			"fromSide":"bottom",
+			"toNode":"c6747ab314ef452b",
+			"toSide":"right"
 		}
 	],
 	"metadata":{
