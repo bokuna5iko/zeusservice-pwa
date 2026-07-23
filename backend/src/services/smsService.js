@@ -1,9 +1,10 @@
 /**
  * SMS-сервис с dev-режимом (код в консоль) и заготовкой под провайдеров.
  *
- * SMS_PROVIDER=dev     — код только в лог (по умолчанию)
- * SMS_PROVIDER=smsru   — SMS.ru (нужен SMS_API_KEY)
- * SMS_PROVIDER=smsc    — SMSC.ru (нужны SMS_LOGIN, SMS_PASSWORD)
+ * SMS_PROVIDER=dev      — код только в лог (по умолчанию)
+ * SMS_PROVIDER=smsaero    — SMS Aero (SMS_AERO_EMAIL + SMS_AERO_API_KEY)
+ * SMS_PROVIDER=smsru      — SMS.ru (нужен SMS_API_KEY)
+ * SMS_PROVIDER=smsc       — SMSC.ru (нужны SMS_LOGIN и SMS_PASSWORD)
  */
 
 function generateCode() {
@@ -118,6 +119,69 @@ async function sendViaSmsc(phone, code) {
   return { ok: true, provider: "smsc" };
 }
 
+function smsAeroAuthHeader() {
+  const email = process.env.SMS_AERO_EMAIL;
+  const apiKey = process.env.SMS_AERO_API_KEY;
+  if (!email || !apiKey) {
+    throw new Error(
+      "SMS_AERO_EMAIL и SMS_AERO_API_KEY не заданы для провайдера smsaero",
+    );
+  }
+  const token = Buffer.from(`${email}:${apiKey}`, "utf8").toString("base64");
+  return `Basic ${token}`;
+}
+
+async function sendViaSmsAero(phone, code) {
+  const sign = process.env.SMS_AERO_SIGN || "SMS Aero";
+  const text = `Zeus Auto: код входа ${code}`;
+
+  const params = new URLSearchParams({
+    number: phone,
+    text,
+    sign,
+  });
+
+  const url = `https://gate.smsaero.ru/v2/sms/send?${params.toString()}`;
+  logSms(`SMS Aero → отправка на +${phone}, sign=${sign}`);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: smsAeroAuthHeader(),
+      Accept: "application/json",
+    },
+  });
+
+  const rawText = await response.text();
+  let data;
+  try {
+    data = JSON.parse(rawText);
+  } catch {
+    logSms("SMS Aero: не JSON ответ", rawText.slice(0, 500));
+    throw new Error("SMS Aero вернул некорректный ответ");
+  }
+
+  logSms("SMS Aero ответ", data);
+
+  if (!response.ok || !data.success) {
+    throw new Error(
+      data.message || `SMS Aero ошибка HTTP ${response.status}`,
+    );
+  }
+
+  const item = Array.isArray(data.data) ? data.data[0] : data.data;
+  const extendStatus = item?.extendStatus;
+
+  if (extendStatus === "reject") {
+    throw new Error("SMS Aero отклонил сообщение (moderation/reject)");
+  }
+
+  logSms(
+    `SMS Aero: принято, id=${item?.id || "—"}, status=${extendStatus || "—"}`,
+  );
+  return { ok: true, provider: "smsaero", smsId: item?.id };
+}
+
 async function sendSms(phone, code) {
   const provider = (process.env.SMS_PROVIDER || "dev").toLowerCase();
   logSms(`Провайдер: ${provider}, телефон: +${phone}`);
@@ -129,6 +193,8 @@ async function sendSms(phone, code) {
       return sendViaSmsRu(phone, code);
     case "smsc":
       return sendViaSmsc(phone, code);
+    case "smsaero":
+      return sendViaSmsAero(phone, code);
     default:
       throw new Error(`Неизвестный SMS_PROVIDER: ${provider}`);
   }
